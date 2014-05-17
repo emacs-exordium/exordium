@@ -4,7 +4,7 @@
 ;;; Visual
 
 ;;; Font
-(osx-only
+(when (emacs-osx-p)
  (set-face-attribute 'default nil
                      :family "Consolas" :height 120 :weight 'normal)
  (setq default-frame-alist '((width . 100)

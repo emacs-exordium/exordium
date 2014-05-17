@@ -7,31 +7,28 @@
 ;;;;
 
 
-;;; Environment macros
+;;; Environment functions
 
-(defmacro gnu-emacs-only (&rest x)
-  (list 'if (string-match "GNU Emacs" (version))
-        (cons 'progn x)))
+(defun emacs-nw-p ()
+  (not window-system))
 
-(defmacro gnu-emacs24-only (&rest body)
-  (list 'if (string-match "GNU Emacs 24" (version))
-        (cons 'progn body)))
+(defun emacs-osx-p ()
+  (eq window-system 'ns))
 
-(defmacro gnu-emacs23-only (&rest body)
-  (list 'if (string-match "GNU Emacs 23" (version))
-        (cons 'progn body)))
+(defun emacs-x-p ()
+  (eq window-system 'x))
 
-(defmacro x-windows-only (&rest x)
-  (list 'if (eq window-system 'x)
-        (cons 'progn x)))
+(defun emacs-24-p ()
+  (string-match "GNU Emacs 24" (version)))
 
-(defmacro osx-only (&rest x)
-  (list 'if (eq window-system 'ns)
-        (cons 'progn x)))
+(defun emacs-23-p ()
+  (string-match "GNU Emacs 23" (version)))
 
-(defmacro linux-only (&rest body)
-  (list 'if (string-match "linux" (prin1-to-string system-type))
-        (cons 'progn body)))
+(defun emacs-22-p ()
+  (string-match "GNU Emacs 22" (version)))
+
+(defmacro emacs-linux ()
+  (string-match "linux" (prin1-to-string system-type)))
 
 
 ;;; Path for "require"
@@ -48,5 +45,8 @@
 ;;; Components
 
 (load "~/.emacs.d/init_user.el")
-(load "~/.emacs.d/init_extensions.el")
-(load "~/.emacs.d/init_themes.el")
+(load "~/\.emacs.d/init_extensions.el")
+
+(if (not (emacs-nw-p))
+    (load "~/.emacs.d/init_themes.el")
+  (set-face-background 'highlight nil))
