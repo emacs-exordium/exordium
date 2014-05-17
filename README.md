@@ -1,9 +1,6 @@
-# Goal
+# What is this repo
 
-Build a kick-ass portable emacs configuration.
-
-Put it in github, so that any improvement is synchronized with all my machines
-(home and Bloomberg).
+A kick-ass portable emacs configuration, synchronized between all my machines.
 
 # Features
 
@@ -12,9 +9,11 @@ own color theme.
 
 Languages supported:
 * ELisp
-* Clojure
-* C++ (with good indexing e.g. CEDET)
-* JavaScript, Python, Ruby.
+* TODO Clojure
+* TODO C++ (with good indexing e.g. CEDET)
+* TODO JavaScript
+* TODO Python
+* TODO Ruby.
 
 Other modes:
 * Markdown
@@ -25,16 +24,8 @@ Other modes:
 
 Should only target Emacs 24, but we can have a macro for Emacs 23 just in case.
 
-Must work in:
-* Emacs on OSX
-* Emacs on Linux (VM and Bloomberg)
+Test plan:
+* Emacs24 on OSX
+* Emacs24 on Linux (VM and Bloomberg)
 * emacs -nw
 * Optional: Emacs on Solaris (and screw AIX)
-
-# Implementation
-
-Start from scratch (copy dot.emacs and dot.emacs.d for reference).
-
-Add languages and modes one by one.
-
-Everything should fit into a git repo.

@@ -7,30 +7,32 @@
 ;;;;
 
 
-;;; Macros
+;;; Environment macros
 
 (defmacro gnu-emacs-only (&rest x)
-  (list 'if (string-match "GNU Emacs" (version)) (cons 'progn x)))
+  (list 'if (string-match "GNU Emacs" (version))
+        (cons 'progn x)))
 
-(defmacro xemacs-only (&rest x)
-  (list 'if (string-match "XEmacs" (version)) (cons 'progn x)))
+(defmacro gnu-emacs24-only (&rest body)
+  (list 'if (string-match "GNU Emacs 24" (version))
+        (cons 'progn body)))
 
 (defmacro x-windows-only (&rest x)
-  (list 'if (eq window-system 'x) (cons 'progn x)))
+  (list 'if (eq window-system 'x)
+        (cons 'progn x)))
 
-(defmacro mac-osx-only (&rest x)
-  (list 'if (eq window-system 'ns) (cons 'progn x)))
+(defmacro osx-only (&rest x)
+  (list 'if (eq window-system 'ns)
+        (cons 'progn x)))
 
-(defmacro mac-osx-or-x-windows-only (&rest x)
-  (list 'if (or (eq window-system 'ns) (eq window-system 'x)) (cons 'progn x)))
-
-(defmacro non-x-windows-only (&rest x)
-  (list 'if (not (eq window-system 'x)) (cons 'progn x)))
+(defmacro linux-only (&rest body)
+  (list 'if (string-match "linux" (prin1-to-string system-type))
+        (cons 'progn body)))
 
 
 ;;; Path for "require"
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/")
+(add-to-list 'load-path "~/.emacs.d/extensions/")
 
 
 ;;; Components

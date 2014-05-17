@@ -29,7 +29,7 @@
     (set-face-background 'default color-base03)
     (set-face-foreground 'default color-base1)
     ;; Selection
-    (set-face-background 'region color-base01)
+    (set-face-background 'region color-base3)
     ;; Modeline
     (custom-set-faces
      `(mode-line ((t (:foreground ,color-base1 :overline t :underline t)))))
