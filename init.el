@@ -17,6 +17,10 @@
   (list 'if (string-match "GNU Emacs 24" (version))
         (cons 'progn body)))
 
+(defmacro gnu-emacs23-only (&rest body)
+  (list 'if (string-match "GNU Emacs 23" (version))
+        (cons 'progn body)))
+
 (defmacro x-windows-only (&rest x)
   (list 'if (eq window-system 'x)
         (cons 'progn x)))
@@ -32,7 +36,13 @@
 
 ;;; Path for "require"
 
-(add-to-list 'load-path "~/.emacs.d/extensions/")
+(defun add-tree-to-load-path (dir)
+  "Add 'dir' and all its subdirs to the load path"
+  (add-to-list 'load-path dir)
+  (let ((default-directory dir))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(add-tree-to-load-path "~/.emacs.d/extensions/")
 
 
 ;;; Components

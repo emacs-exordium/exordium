@@ -1,0 +1,17 @@
+* General =====================================================================
+** TODO Packages/marlelade
+* Themes ======================================================================
+** TODO Better framework for themes
+   See https://github.com/chriskempson/tomorrow-theme/blob/master/GNU%20Emacs/color-theme-tomorrow.el
+** TODO Fix the color leaks!
+* Langages ====================================================================
+** TODO C++ with CEDET
+** TODO Clojure with lein
+** TODO JS (with integration in Chrome?)
+** TODO Python
+** TODO Ruby
+* Export ======================================================================
+** TODO Test on Linux in VM
+** TODO Test with -nw
+** TODO Move to GitHub
+** TODO Test at Bloomberg

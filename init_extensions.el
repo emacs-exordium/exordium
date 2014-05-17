@@ -46,3 +46,10 @@
 (setq fci-rule-width 1)
 (setq fci-rule-color "dim gray")
 (define-key global-map [(control |)] 'fci-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; FIXME mode
+
+(require 'fic-mode)
+(add-hook 'c++-mode-hook 'turn-on-fic-mode)
+(add-hook 'markdown-mode-hook 'turn-on-fic-mode)
