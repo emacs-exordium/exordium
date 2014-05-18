@@ -34,6 +34,13 @@
   (string-match "linux" (prin1-to-string system-type)))
 
 
+;;; Packages from Melpa and Marmelade
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; Do package-refresh-contents to update the cache
+
+
 ;;; Path for "require"
 
 (defun add-tree-to-load-path (dir)

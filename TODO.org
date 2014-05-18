@@ -1,5 +1,5 @@
 * General =====================================================================
-** TODO Packages/marlelade
+** TODO Packages/marmelade
 ** TODO magit
 * Themes ======================================================================
 ** DONE Better framework for themes
@@ -7,13 +7,14 @@
 ** DONE Fix the color leaks!
 ** TODO Try to fix colorized (higher contrast)
 * Langages ====================================================================
-** TODO C++ with CEDET
+** TODO C++ basics for BDE
+** TODO CEDET
 ** TODO Clojure with lein
 ** TODO JS (with integration in Chrome?)
 ** TODO Python
 ** TODO Ruby
 * Export ======================================================================
-** TODO Test on Linux in VM
-** TODO Test with -nw
+** DONE Test on Linux in VM
+** DONE Test with -nw
 ** TODO Move to GitHub
 ** TODO Test at Bloomberg
