@@ -18,11 +18,14 @@
 (defun emacs-x-p ()
   (eq window-system 'x))
 
+(defun gnu-emacs-p ()
+  (string-match "GNU Emacs" (version)))
+
 (defun emacs-24-p ()
-  (string-match "GNU Emacs 24" (version)))
+  (>= emacs-major-version 24))
 
 (defun emacs-23-p ()
-  (string-match "GNU Emacs 23" (version)))
+  (>= emacs-major-version 23))
 
 (defun emacs-22-p ()
   (string-match "GNU Emacs 22" (version)))
@@ -40,6 +43,7 @@
     (normal-top-level-add-subdirs-to-load-path)))
 
 (add-tree-to-load-path "~/.emacs.d/extensions/")
+(add-tree-to-load-path "~/.emacs.d/themes/")
 
 
 ;;; Components
@@ -50,3 +54,7 @@
 (if (not (emacs-nw-p))
     (load "~/.emacs.d/init_themes.el")
   (set-face-background 'highlight nil))
+
+
+;;; Test
+(setq custom-theme-directory "~/emacs.d/themes/")

@@ -1,9 +1,11 @@
 * General =====================================================================
 ** TODO Packages/marlelade
+** TODO magit
 * Themes ======================================================================
-** TODO Better framework for themes
+** DONE Better framework for themes
    See https://github.com/chriskempson/tomorrow-theme/blob/master/GNU%20Emacs/color-theme-tomorrow.el
-** TODO Fix the color leaks!
+** DONE Fix the color leaks!
+** TODO Try to fix colorized (higher contrast)
 * Langages ====================================================================
 ** TODO C++ with CEDET
 ** TODO Clojure with lein
