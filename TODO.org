@@ -1,16 +1,18 @@
 * General =====================================================================
-** TODO Packages/marmelade
-** TODO magit
+** DONE Packages/marmelade
+** DONE magit
+** TODO sr-speedbar
+** TODO yasnippet
 * Themes ======================================================================
 ** DONE Better framework for themes
-   See https://github.com/chriskempson/tomorrow-theme/blob/master/GNU%20Emacs/color-theme-tomorrow.el
 ** DONE Fix the color leaks!
-** TODO Try to fix colorized (higher contrast)
+** TODO Fix Tomorrow org, md, C++
+** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * Langages ====================================================================
-** TODO C++ basics for BDE
+** DONE C++ basics for BDE
 ** TODO CEDET
 ** TODO Clojure with lein
-** TODO JS (with integration in Chrome?)
+** TODO JavaScript (with Chrome integration?)
 ** TODO Python
 ** TODO Ruby
 * Export ======================================================================

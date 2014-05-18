@@ -5,8 +5,10 @@
 ;;;;  |  __/ | | | | | (_| | (__\__ \
 ;;;; (_)___|_| |_| |_|\__,_|\___|___/
 ;;;;
+;;;; Any editor can save your files. Only Emacs can save your soul.
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Environment functions
 
 (defun emacs-nw-p ()
@@ -34,14 +36,19 @@
   (string-match "linux" (prin1-to-string system-type)))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa and Marmelade
+
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 ;; Do package-refresh-contents to update the cache
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Path for "require"
+
+(setq custom-theme-directory "~/emacs.d/themes/")
 
 (defun add-tree-to-load-path (dir)
   "Add 'dir' and all its subdirs to the load path"
@@ -51,17 +58,18 @@
 
 (add-tree-to-load-path "~/.emacs.d/extensions/")
 (add-tree-to-load-path "~/.emacs.d/themes/")
+(add-tree-to-load-path "~/.emacs.d/bde/")
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Components
 
 (load "~/.emacs.d/init_user.el")
+(load "~/.emacs.d/init_util.el")
 (load "~/\.emacs.d/init_extensions.el")
 
 (if (not (emacs-nw-p))
     (load "~/.emacs.d/init_themes.el")
   (set-face-background 'highlight nil))
 
-
-;;; Test
-(setq custom-theme-directory "~/emacs.d/themes/")
+(load "~/.emacs.d/init_cpp.el")

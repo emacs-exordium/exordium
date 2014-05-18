@@ -39,7 +39,7 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 80-column ruler
+;;; 80-column ruler bound to Ctrl-|
 
 (require 'fill-column-indicator)
 (setq fci-rule-use-dashes t)
