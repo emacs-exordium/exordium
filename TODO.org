@@ -1,3 +1,5 @@
+#+TITLE: Emacs configuration todo list
+
 * General =====================================================================
 ** DONE Packages/marmelade
 ** DONE magit
@@ -6,7 +8,10 @@
 * Themes ======================================================================
 ** DONE Better framework for themes
 ** DONE Fix the color leaks!
-** TODO Fix Tomorrow org, md, C++
+** TODO Fix Tomorrow
+*** For org
+*** For md
+*** For C++
 ** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * Langages ====================================================================
 ** DONE C++ basics for BDE

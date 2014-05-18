@@ -20,8 +20,7 @@
 ;;;     ;; #if 0
 ;;;     ;; // dead code here
 ;;;     ;; #endif
-;;;     (setq *bde-highlight-dead-code-color* "darkred")
-;;;     (add-hook 'c-mode-common-hook 'bde-highlight-dead-code)
+;;;     (add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
 ;;;
 ;;; Utilities:
 ;;;  * `bde-switch-h-cpp' - switch between the header and implementation of the
@@ -98,11 +97,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight dead code
 
-(defvar *bde-highlight-dead-code-color* "darkslateblue")
+(defvar *bde-highlight-dead-code-color* "Gray50")
 
 (defun bde-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
-  (let ((color *bde-highlight-dead-code-color*))
+  (let ((color (face-foreground 'font-lock-warning-face)))
     (setq cpp-known-face 'default)
     (setq cpp-unknown-face 'default)
     (setq cpp-known-writable 't)
@@ -111,6 +110,9 @@
                           ("1" default (background-color . ,color) both)))
     (cpp-highlight-buffer t)))
 
+(defun bde-highlight-dead-code-hook ()
+  (bde-highlight-dead-code)
+  (add-hook 'after-save-hook 'bde-highlight-dead-code 'append 'local))
 
 ;;; End of file
 (provide 'bde-util)

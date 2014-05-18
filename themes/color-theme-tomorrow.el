@@ -65,8 +65,8 @@
 
 (defmacro with-tomorrow-colors (mode &rest body)
   "Execute `BODY' in a scope with variables bound to the various tomorrow colors.
-
-`MODE' should be set to either 'day, 'night, 'night-eighties, 'night-blue or 'night-bright."
+`MODE' should be set to either 'day, 'night, 'night-eighties,
+'night-blue or 'night-bright."
   `(let* ((colors (or (cdr (assoc ,mode tomorrow-colors))
                       (error "no such theme flavor")))
           (background   (cdr (assoc 'background colors)))
@@ -86,7 +86,6 @@
 
 (defmacro tomorrow-face-specs ()
   "Return a backquote which defines a list of face specs.
-
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -117,7 +116,7 @@ names to which it refers are bound."
      (font-lock-regexp-grouping-construct ((,class (:foreground ,purple))))
      (font-lock-string-face ((,class (:foreground ,green))))
      (font-lock-type-face ((,class (:foreground ,yellow))))
-     (font-lock-variable-name-face ((,class (:foreground ,orange))))
+     (font-lock-variable-name-face ((,class (:foreground ,foreground)))) ;orange
      (font-lock-warning-face ((,class (:weight bold :foreground ,red))))
 
      ;; Flymake
@@ -127,7 +126,8 @@ names to which it refers are bound."
      ;; Clojure errors
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
      (clojure-test-error-face ((,class (:background nil :inherit flymake-errline))))
-     (clojure-test-success-face ((,class (:background nil :foreground nil :underline ,green))))
+     (clojure-test-success-face
+      ((,class (:background nil :foreground nil :underline ,green))))
 
      ;; For Brian Carper's extended clojure syntax table
      (clojure-keyword ((,class (:foreground ,yellow))))
@@ -161,7 +161,8 @@ names to which it refers are bound."
      (isearch-lazy-highlight-face
       ((,class (:foreground ,aqua :background ,background :inverse-video t))))
      (isearch-fail
-      ((,class (:background ,background :inherit font-lock-warning-face :inverse-video t))))
+      ((,class
+        (:background ,background :inherit font-lock-warning-face :inverse-video t))))
 
      ;; IDO
      (ido-subdir ((,class (:foreground ,comment))))
@@ -180,7 +181,7 @@ names to which it refers are bound."
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
-     (highlight ((,class (:background ,green))))
+     (highlight ((,class (:background ,green :foreground ,background)))) ;+:foreground
      (link ((,class (:foreground ,blue))))
      (link-visited ((,class (:foreground ,purple))))
      (gui-element ((,class (:background ,current-line :foreground ,foreground))))
@@ -212,7 +213,8 @@ names to which it refers are bound."
      (show-paren-mismatch ((,class (:background ,orange :foreground ,current-line))))
 
      ;; Parenthesis matching (mic-paren)
-     (paren-face-match ((,class (:foreground nil :background nil :inherit show-paren-match))))
+     (paren-face-match
+      ((,class (:foreground nil :background nil :inherit show-paren-match))))
      (paren-face-mismatch
       ((,class (:foreground nil :background nil :inherit show-paren-mismatch))))
      (paren-face-no-match
@@ -221,7 +223,8 @@ names to which it refers are bound."
      ;; Parenthesis dimming (parenface)
      (paren-face ((,class (:foreground ,comment :background nil))))
 
-     (sh-heredoc ((,class (:foreground nil :inherit font-lock-string-face :weight normal))))
+     (sh-heredoc
+      ((,class (:foreground nil :inherit font-lock-string-face :weight normal))))
      (sh-quoted-exec ((,class (:foreground nil :inherit font-lock-preprocessor-face))))
      (slime-highlight-edits-face ((,class (:weight bold))))
      (slime-repl-input-face ((,class (:weight normal :underline nil))))
@@ -240,8 +243,10 @@ names to which it refers are bound."
 
      (ediff-even-diff-A ((,class (:foreground nil :background nil :inverse-video t))))
      (ediff-even-diff-B ((,class (:foreground nil :background nil :inverse-video t))))
-     (ediff-odd-diff-A  ((,class (:foreground ,comment :background nil :inverse-video t))))
-     (ediff-odd-diff-B  ((,class (:foreground ,comment :background nil :inverse-video t))))
+     (ediff-odd-diff-A
+      ((,class (:foreground ,comment :background nil :inverse-video t))))
+     (ediff-odd-diff-B
+      ((,class (:foreground ,comment :background nil :inverse-video t))))
 
      (eldoc-highlight-function-argument ((,class (:foreground ,green :weight bold))))
 
@@ -327,6 +332,11 @@ names to which it refers are bound."
      (mm/master-face ((,class (:inherit region :foreground nil :background nil))))
      (mm/mirror-face ((,class (:inherit region :foreground nil :background nil))))
 
+     ;; Org
+     (org-level-1 ((,class (:foreground ,purple :weight bold))))
+     (org-level-2 ((,class (:foreground ,aqua))))
+     (org-level-3 ((,class (:foreground ,blue))))
+     (org-level-4 ((,class (:foreground ,comment))))
      (org-agenda-structure ((,class (:foreground ,purple))))
      (org-agenda-date ((,class (:foreground ,blue :underline nil))))
      (org-agenda-done ((,class (:foreground ,green))))
@@ -338,7 +348,7 @@ names to which it refers are bound."
      (org-date ((,class (:foreground ,purple :underline t))))
      (org-document-info ((,class (:foreground ,aqua))))
      (org-document-info-keyword ((,class (:foreground ,green))))
-     (org-document-title ((,class (:weight bold :foreground ,orange :height 1.44))))
+     (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
      (org-done ((,class (:foreground ,green))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
@@ -354,6 +364,7 @@ names to which it refers are bound."
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
 
+     ;; Markdown
      (markdown-url-face ((,class (:inherit link))))
      (markdown-link-face ((,class (:foreground ,blue :underline t))))
 
@@ -385,11 +396,14 @@ names to which it refers are bound."
      (js3-private-function-call-face ((,class (:foreground ,red))))
 
      ;; nxml
-     (nxml-name-face ((,class (:foreground unspecified :inherit font-lock-constant-face))))
+     (nxml-name-face
+      ((,class (:foreground unspecified :inherit font-lock-constant-face))))
      (nxml-attribute-local-name-face
       ((,class (:foreground unspecified :inherit font-lock-variable-name-face))))
-     (nxml-ref-face ((,class (:foreground unspecified :inherit font-lock-preprocessor-face))))
-     (nxml-delimiter-face ((,class (:foreground unspecified :inherit font-lock-keyword-face))))
+     (nxml-ref-face
+      ((,class (:foreground unspecified :inherit font-lock-preprocessor-face))))
+     (nxml-delimiter-face
+      ((,class (:foreground unspecified :inherit font-lock-keyword-face))))
      (nxml-delimited-data-face
       ((,class (:foreground unspecified :inherit font-lock-string-face))))
      (rng-error-face ((,class (:underline ,red))))
@@ -411,7 +425,8 @@ names to which it refers are bound."
       ((,class (:inherit message-header-other :weight bold :foreground ,orange))))
      (message-header-cc ((,class (:inherit message-header-to :foreground nil))))
      (message-header-name ((,class (:foreground ,blue :background nil))))
-     (message-header-newsgroups ((,class (:foreground ,aqua :background nil :slant normal))))
+     (message-header-newsgroups
+      ((,class (:foreground ,aqua :background nil :slant normal))))
      (message-separator ((,class (:foreground ,purple))))
 
      ;; Jabber
@@ -473,24 +488,36 @@ names to which it refers are bound."
      (gnus-group-mail-4 ((,class (:foreground nil :weight normal :inherit outline-4))))
      (gnus-group-mail-5 ((,class (:foreground nil :weight normal :inherit outline-5))))
      (gnus-group-mail-6 ((,class (:foreground nil :weight normal :inherit outline-6))))
-     (gnus-group-mail-1-empty ((,class (:inherit gnus-group-mail-1 :foreground ,comment))))
-     (gnus-group-mail-2-empty ((,class (:inherit gnus-group-mail-2 :foreground ,comment))))
-     (gnus-group-mail-3-empty ((,class (:inherit gnus-group-mail-3 :foreground ,comment))))
-     (gnus-group-mail-4-empty ((,class (:inherit gnus-group-mail-4 :foreground ,comment))))
-     (gnus-group-mail-5-empty ((,class (:inherit gnus-group-mail-5 :foreground ,comment))))
-     (gnus-group-mail-6-empty ((,class (:inherit gnus-group-mail-6 :foreground ,comment))))
+     (gnus-group-mail-1-empty
+      ((,class (:inherit gnus-group-mail-1 :foreground ,comment))))
+     (gnus-group-mail-2-empty
+      ((,class (:inherit gnus-group-mail-2 :foreground ,comment))))
+     (gnus-group-mail-3-empty
+      ((,class (:inherit gnus-group-mail-3 :foreground ,comment))))
+     (gnus-group-mail-4-empty
+      ((,class (:inherit gnus-group-mail-4 :foreground ,comment))))
+     (gnus-group-mail-5-empty
+      ((,class (:inherit gnus-group-mail-5 :foreground ,comment))))
+     (gnus-group-mail-6-empty
+      ((,class (:inherit gnus-group-mail-6 :foreground ,comment))))
      (gnus-group-news-1 ((,class (:foreground nil :weight normal :inherit outline-5))))
      (gnus-group-news-2 ((,class (:foreground nil :weight normal :inherit outline-6))))
      (gnus-group-news-3 ((,class (:foreground nil :weight normal :inherit outline-7))))
      (gnus-group-news-4 ((,class (:foreground nil :weight normal :inherit outline-8))))
      (gnus-group-news-5 ((,class (:foreground nil :weight normal :inherit outline-1))))
      (gnus-group-news-6 ((,class (:foreground nil :weight normal :inherit outline-2))))
-     (gnus-group-news-1-empty ((,class (:inherit gnus-group-news-1 :foreground ,comment))))
-     (gnus-group-news-2-empty ((,class (:inherit gnus-group-news-2 :foreground ,comment))))
-     (gnus-group-news-3-empty ((,class (:inherit gnus-group-news-3 :foreground ,comment))))
-     (gnus-group-news-4-empty ((,class (:inherit gnus-group-news-4 :foreground ,comment))))
-     (gnus-group-news-5-empty ((,class (:inherit gnus-group-news-5 :foreground ,comment))))
-     (gnus-group-news-6-empty ((,class (:inherit gnus-group-news-6 :foreground ,comment))))
+     (gnus-group-news-1-empty
+      ((,class (:inherit gnus-group-news-1 :foreground ,comment))))
+     (gnus-group-news-2-empty
+      ((,class (:inherit gnus-group-news-2 :foreground ,comment))))
+     (gnus-group-news-3-empty
+      ((,class (:inherit gnus-group-news-3 :foreground ,comment))))
+     (gnus-group-news-4-empty
+      ((,class (:inherit gnus-group-news-4 :foreground ,comment))))
+     (gnus-group-news-5-empty
+      ((,class (:inherit gnus-group-news-5 :foreground ,comment))))
+     (gnus-group-news-6-empty
+      ((,class (:inherit gnus-group-news-6 :foreground ,comment))))
 
      (erc-direct-msg-face ((,class (:foreground ,orange))))
      (erc-error-face ((,class (:foreground ,red))))

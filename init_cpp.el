@@ -11,5 +11,4 @@
 (global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
 
 ;;; Highlight dead code between "#if 0" and "#endif"
-;;(setq *bde-highlight-dead-code-color* "darkred")
-;;(add-hook 'c-mode-common-hook 'bde-highlight-dead-code)
+(add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
