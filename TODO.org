@@ -2,7 +2,10 @@
 
 * General =====================================================================
 ** DONE Packages/marmelade
-** DONE magit
+** TODO add init_local.el
+** TODO magit
+*** fix it on emacs 24.4 / linux
+*** upgrade emacs on the mac
 ** TODO sr-speedbar
 ** TODO yasnippet
 * Themes ======================================================================

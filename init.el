@@ -72,3 +72,7 @@
   (set-face-background 'highlight nil))
 
 (load "~/.emacs.d/init_cpp.el")
+
+;;; Stuff that is not on all machines
+(when (file-exists-p "~/.emacs.d/init_local.el")
+  (load "~/.emacs.d/init_local.el"))

@@ -10,6 +10,21 @@
  (setq default-frame-alist '((width . 100)
                              (height . 65))))
 
+(when (and (emacs-x-p) (getenv "MBIG_NUMBER"))
+  (setq default-frame-alist
+        (append `(;;(font . ,(choose-frame-font))
+                  (font . "Monospace 12")
+                  ;;(font . "-*-verdana-medium-r-*-*-12-*-*-*-*-*-*-*")
+                  ;;(font . "-*-consolas-medium-r-*-*-*-*-*-*-*-*-*-*")
+                  ;;(font . "-*-courier-*-r-*-*-14-*-*-*-*-*-*-*")
+                  (width . 120)
+                  (height . 65)
+                  (vertical-scroll-bars . right)
+                  (internal-border-width . 0)
+                  ;;(border-width . 0)
+                  (horizontal-scroll-bars . t))
+                default-frame-alist)))
+
 ;;; Remove the toolbar
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
