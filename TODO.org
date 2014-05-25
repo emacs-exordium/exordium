@@ -14,9 +14,10 @@
 ** DONE Fix Tomorrow theme for org and C++
 ** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * Langages ====================================================================
+** DONE Elisp
 ** DONE C++ basics for BDE
-** TODO CEDET
 ** TODO Clojure with lein
+** TODO CEDET
 ** TODO JavaScript (with Chrome integration?)
 ** TODO Python
 ** TODO Ruby
