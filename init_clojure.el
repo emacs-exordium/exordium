@@ -1,6 +1,16 @@
 ;;;; Let's give Light Table a run for its money
-
-;;;; TODO This is not yet ready
+;;;;
+;;;; Installed packages (and dependencies):
+;;;; - cider
+;;;; - rainbow-delimiters
+;;;; - paredit
+;;;; And you need 'lein' from leiningen.org in your path.
+;;;; Note that clojure.el is in subdir 'vendor'.
+;;;;
+;;;; Usage:
+;;;;   M-x cider-jack-in
+;;;;   (Ignore the error when it starts). Use M-C-x to evaluate Clojure forms.
+;;;;   C-c C-q to quit in the REPL (or use teh CIDER menu)
 
 ;;; Env PATH
 (defun set-exec-path-for-lein ()
@@ -15,7 +25,7 @@
 ;;; Flyspell often slows down editing so it's turned off
 (remove-hook 'text-mode-hook 'turn-on-flyspell)
 
-(load "~/.emacs.d/vendor/clojure")
+(load "~/.emacs.d/vendor/clojure.el")
 
 ;;; Hippie expand - don't try to complete with file names
 (setq hippie-expand-try-functions-list

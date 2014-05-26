@@ -67,12 +67,19 @@
 (load "~/.emacs.d/init_util.el")
 (load "~/\.emacs.d/init_extensions.el")
 
+;;; Themes
 (if (not (emacs-nw-p))
     (load "~/.emacs.d/init_themes.el")
   (set-face-background 'highlight nil))
 
+;;; C++
 (load "~/.emacs.d/init_cpp.el")
+
+;;; Clojure
+(load "~/.emacs.d/init_clojure.el")
 
 ;;; Stuff that is not on all machines
 (when (file-exists-p "~/.emacs.d/init_local.el")
   (load "~/.emacs.d/init_local.el"))
+
+;;; end of file

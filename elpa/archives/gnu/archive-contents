@@ -29,14 +29,21 @@
        ((:url . "http://elpa.gnu.org/packages/all.html")
 	(:keywords "matching"))])
  (ascii-art-to-unicode .
-		       [(1 7)
+		       [(1 8)
 			nil "a small artist adjunct" single
 			((:url . "http://elpa.gnu.org/packages/ascii-art-to-unicode.html")
-			 (:keywords))])
+			 (:keywords "ascii" "unicode" "box-drawing"))])
  (auctex .
-	 [(11 87 4)
+	 [(11 87 5)
 	  nil "Integrated environment for *TeX*" tar
 	  ((:url . "http://www.gnu.org/software/auctex/"))])
+ (chess .
+	[(2 0 0)
+	 ((cl-lib
+	   (0 5)))
+	 "Play chess in GNU Emacs" tar
+	 ((:keywords "games")
+	  (:url . "http://elpa.gnu.org/packages/chess.html"))])
  (cl-lib .
 	 [(0 5)
 	  nil "Properly prefixed CL functions and macros" single
@@ -151,9 +158,12 @@
  (gnugo .
 	[(2 3 1)
 	 ((ascii-art-to-unicode
-	   (1 5)))
+	   (1 5))
+	  (xpm
+	   (1 0 0)))
 	 "play GNU Go in a buffer" tar
-	 ((:url . "http://elpa.gnu.org/packages/gnugo.html"))])
+	 ((:keywords "games" "processes")
+	  (:url . "http://elpa.gnu.org/packages/gnugo.html"))])
  (heap .
        [(0 3)
 	nil "Heap (a.k.a. priority queue) data structure" single
@@ -245,8 +255,13 @@
 	    ((:url . "http://elpa.gnu.org/packages/omn-mode.html")
 	     (:keywords))])
  (org .
-      [(20140512)
+      [(20140526)
        nil "Outline-based notes management and organizer" tar nil])
+ (osc .
+      [(0 1)
+       nil "Open Sound Control protocol library" single
+       ((:url . "http://elpa.gnu.org/packages/osc.html")
+	(:keywords "comm" "processes" "multimedia"))])
  (poker .
 	[(0 1)
 	 nil "Texas hold'em poker" single
@@ -383,9 +398,10 @@
 	 ((:url . "http://elpa.gnu.org/packages/xclip.html")
 	  (:keywords "convenience" "tools"))])
  (xpm .
-      [(1 0 0)
+      [(1 0 1)
        nil "edit XPM images" tar
-       ((:url . "http://elpa.gnu.org/packages/xpm.html"))])
+       ((:keywords "multimedia" "xpm")
+	(:url . "http://elpa.gnu.org/packages/xpm.html"))])
  (yasnippet .
 	    [(0 8 0)
 	     nil "Yet another snippet extension for Emacs." tar
