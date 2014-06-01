@@ -539,7 +539,6 @@ names to which it refers are bound."
      )))
 
 
-;; JUST FOR A TEST
 (defun set-colors-tomorrow-day ()
   "Sets the colors to the tomorrow day theme"
   (interactive)
