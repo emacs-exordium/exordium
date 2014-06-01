@@ -189,7 +189,7 @@ names to which it refers are bound."
      (font-lock-type-face
        ((,class (:foreground ,blue :italic t))))
      (font-lock-variable-name-face
-       ((,class (:foreground ,orange))))
+       ((,class (:foreground ,monokai-fg))))
      (font-lock-warning-face
        ((,class (:foreground ,orange :weight bold :slant italic :underline t))))
      (c-annotation-face
