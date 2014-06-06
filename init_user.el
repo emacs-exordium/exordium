@@ -61,7 +61,12 @@
 
 ;;; Syntax highlighing
 (global-font-lock-mode 1)
-(setq font-lock-maximum-decoration t)  ; Maximum colors
+(setq font-lock-maximum-decoration t
+      ;; '((emacs-lisp-mode . t)
+      ;;   (c-mode . t )
+      ;;   (C++-mode . t) ;; or 1 or 2
+      ;;   (t . t))
+      )
 (when (emacs-24-p)
   ;; Lazy font-lock to avoid the bug in Emacs 24
   (cond ((fboundp 'jit-lock-mode)
