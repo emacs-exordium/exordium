@@ -1,0 +1,11 @@
+;; Object semantic/tests
+;; EDE Project Files are auto generated: Do Not Edit
+(ede-proj-project "semantic/tests"
+  :file "Project.ede"
+  :name "Tests"
+  :targets
+  (list
+    (ede-proj-target-makefile-miscelaneous "Tests"
+      :name "Tests"
+      :path ""
+      :source '("test.c" "test.cpp" "templates.cpp" "test.make" "scopetest.cpp" "scopetest.java" "testdoublens.cpp" "testdoublens.hpp" "testsubclass.cpp" "testsubclass.hh" "testspp.c" "testsppreplace.c" "testsppreplaced.c" "testtypedefs.cpp" "testfriends.cpp" "testusing.hh" "testusing.cpp" "testtemplates.cpp" "testjavacomp.java" "testsppcomplete.c" "teststruct.cpp" "testvarnames.c" "testnsp.cpp" "testsppcond.cpp" "testf90.f90" "testmodule.f90" "test-fmt.cpp" "test-fmt.el" "testlocalvars.cpp" "testvarnames.java"))))

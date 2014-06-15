@@ -1,0 +1,196 @@
+;;; cogre/wisent-dot.wy --- GraphViz DOT file parser
+
+;; Copyright (C) 2003, 2004, 2009 Eric M. Ludlam
+
+;; Author: Eric Ludlam <zappo@gnu.org>
+;; Keywords: syntax
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2, or (at
+;; your option) any later version.
+
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Commentary:
+;;
+;; Parser for GraphViz DOT language.
+;; The language is declaritive and the whole thing is parsed.
+;; The result could be used as a data structure representing a graph.
+
+%package wisent-dot-wy
+%provide cogre/wisent-dot-wy
+
+%languagemode  graphviz-dot-mode
+
+%start dot_file
+;; Needed for EXPANDFULL
+%start graph-contents
+%start attribute-block
+
+;;; KEYWORDS
+%type    <keyword>
+%keyword DIGRAPH  "digraph"
+%put     DIGRAPH  summary "digraph <name> { <graph elements> ... }"
+%keyword GRAPH    "graph"
+%put     GRAPH    summary "graph <name> { <graph elements> ... }"
+%keyword SUBGRAPH "subgraph"
+%put     SUBGRAPH summary "subgraph <name> { <graph elements> ... }"
+%keyword NODE     "node"
+%put     NODE     summary "node [<attribute>...];"
+
+;;; Punctuation Types
+%type  <punctuation> syntax "\\s.+"
+%token <punctuation> DILINK "->"
+%put   DILINK summary "<node> -> <node>;   Directed link"
+%token <punctuation> LINK   "--"
+%put   LINK   summary "<node> -- <node>;   Link"
+%token <punctuation> EQUAL  "="
+%token <punctuation> SEMI   ";"
+%token <punctuation> COMMA  ","
+
+;;; BLOCK types
+%type  <block>
+%token <block>       BRACKET_BLOCK "(LBRACKET RBRACKET)"
+%token <block>       BRACE_BLOCK   "(LBRACE RBRACE)"
+%token <block>       PAREN_BLOCK   "(LPAREN RPAREN)"
+%token <open-paren>  LBRACE        "{"
+%token <close-paren> RBRACE        "}"
+%token <open-paren>  LBRACKET      "["
+%token <close-paren> RBRACKET      "]"
+%token <open-paren>  LPAREN        "("
+%token <close-paren> RPAREN        ")"
+
+
+;;; Bland default types
+%type  <symbol>
+%token <symbol> symbol
+
+%type  <string>
+%token <string> string
+
+%type  <number>
+%token <number> number
+
+%%
+
+dot_file
+  : digraph
+  | graph
+  ;
+
+digraph
+  : DIGRAPH symbol BRACE_BLOCK
+    (TAG $2 'digraph :members (EXPANDFULL $3 graph-contents))
+  ;
+
+graph
+  : GRAPH symbol BRACE_BLOCK
+    (TAG $2 'graph :members (EXPANDFULL $3 graph-contents))
+  ;
+
+graph-contents
+  : LBRACE
+    ()
+  | RBRACE
+    ()
+  | graph-attributes
+  | subgraph
+  | node
+  | graphgeneric
+  | named-node
+  | links
+  ;
+
+subgraph
+  : SUBGRAPH symbol BRACE_BLOCK
+    (TAG $2 'graph :members (EXPANDFULL $3 graph-contents))
+  ;
+
+graphgeneric
+  : GRAPH BRACKET_BLOCK SEMI
+    (TAG "GRAPH" 'generic-graph :attributes (EXPANDFULL $2 attribute-block))
+  ;
+
+node
+  : NODE BRACKET_BLOCK SEMI
+    (TAG "NODE" 'generic-node :attributes (EXPANDFULL $2 attribute-block))
+  ;
+
+graph-attributes
+  : GRAPH BRACKET_BLOCK SEMI
+    (TAG "GRAPH" 'graph-attributes :attributes (EXPANDFULL $2 attribute-block))
+  ;
+
+named-node
+  : name BRACKET_BLOCK SEMI
+    (TAG $1 'node :attributes (EXPANDFULL $2 attribute-block))
+  ;
+
+links
+  : name DILINK name opt-link-attributes opt-semi
+    (TAG $1 'link :to $3 :attributes $4)
+  | name LINK name opt-link-attributes opt-semi
+    (TAG $1 'link :to $3 :attributes $4)
+  ;
+
+name
+  : symbol
+    ( identity $1 )
+  | string
+    ( read $1 ) ;; This un-strings it.
+  ;
+
+attribute-block
+  : LBRACKET 
+    ()
+  | RBRACKET
+    ()
+  | COMMA
+    ()
+ ;; This is a catch-all in case we miss some keyword.
+  | symbol EQUAL name
+    (TAG $1 'attribute :value $3)
+  ;
+
+opt-semi
+  : SEMI
+    ()
+  | ;; Empty
+  ;
+
+opt-link-attributes
+  : BRACKET_BLOCK
+    (EXPANDFULL $1 attribute-block)
+  | ;; Empty
+  ;
+
+%%
+
+(define-lex wisent-dot-lexer
+  "Lexical analyzer that handles DOT buffers.
+It ignores whitespace, newlines and comments."
+  semantic-lex-ignore-whitespace
+  semantic-lex-ignore-newline
+  semantic-lex-ignore-comments
+  wisent-dot-wy--<keyword>-keyword-analyzer
+  wisent-dot-wy--<symbol>-regexp-analyzer
+  wisent-dot-wy--<block>-block-analyzer
+  ;; ?? semantic-lex-close-paren
+  wisent-dot-wy--<number>-regexp-analyzer
+  wisent-dot-wy--<string>-sexp-analyzer
+  wisent-dot-wy--<punctuation>-string-analyzer
+  semantic-lex-default-action
+  )
+
+;;; cogre/wisent-dot.wy ends here

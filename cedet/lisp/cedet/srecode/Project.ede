@@ -1,0 +1,32 @@
+;; Object SRecode
+;; EDE project file.
+(ede-proj-project "cedet/srecode"
+  :name "srecode"
+  :version "1.1"
+  :file "Project.ede"
+  :targets (list 
+   (ede-proj-target-elisp-autoloads "autoloads"
+    :name "autoloads"
+    :path ""
+    :partofall nil
+    :autoload-file "loaddefs.el"
+    )
+   (semantic-ede-proj-target-grammar "lang"
+    :name "lang"
+    :path ""
+    :source '("srt.wy")
+    )
+   (ede-proj-target-elisp "srecode"
+    :name "srecode"
+    :path ""
+    :source '("mode.el" "compile.el" "insert.el" "semantic.el" "template.el" "dictionary.el" "args.el" "table.el" "filters.el" "find.el" "ctxt.el" "getset.el" "cpp.el" "expandproto.el" "el.el" "srt.el" "texi.el" "map.el" "extract.el" "java.el" "fields.el" "android.el" "document.el" "m3.el" "srt-mode.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :metasubproject 't
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L ../ --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  )

@@ -1,0 +1,31 @@
+;; Object semantic/bovine
+;; EDE project file.
+(ede-proj-project "semantic/bovine"
+  :name "bovinator"
+  :file "Project.ede"
+  :targets (list 
+   (semantic-ede-proj-target-grammar "by"
+    :name "by"
+    :path ""
+    :source '("c.by" "make.by" "scm.by" "erlang.by" "f90.by")
+    )
+   (ede-proj-target-elisp "bovinator"
+    :name "bovinator"
+    :path ""
+    :source '("grammar.el" "debug.el" "grammar-macros.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   (ede-proj-target-elisp "languages"
+    :name "languages"
+    :path ""
+    :source '("c.el" "el.el" "make.el" "scm.el" "erlang.el" "gcc.el" "f90.el" "clang.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L ../../ --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  )

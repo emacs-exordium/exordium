@@ -1,0 +1,273 @@
+;;; f90.by -- Basic Bovine grammar for Fortran 90
+;;
+;; Copyright (C) 2010 Free Software Foundation
+;;
+;; Author: David Engster <dengste@eml.cc>
+;;
+;; .bnf is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;;
+;; This software is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Commentary:
+
+;; This is a very basic grammar for Fortran 90.
+;;
+;; Note that this grammar makes heavy use of special lexers, and most
+;; tags are also finalized in the expand function (see semantic-f90.el
+;; for details). It does not even remotely try to completely parse
+;; Fortran 90. It is only used to extract tags from the code which are
+;; useful for completion and navigation, which includes:
+;;
+;; * 'function', 'subroutine', 'module', 'program', including
+;;   'interface' and 'contains'
+;; * Derived Types 
+;; * Variables (attributes/kind is silently ignored) 
+;; * 'use'
+;; 
+;; If you encounter parser errors, please send me a code snippet where
+;; this happens.
+
+%package semantic-f90-by
+%provide semantic/bovine/f90-by
+
+%languagemode  f90-mode
+%start         starting_rule
+%scopestart    spec-one-part
+
+;; Make common keywords into tokens returned by the lexer.
+;; This improves accuracy, makes this file more readable.
+;; Use SOMETHING in your rules as a terminal
+%token END "end"
+%token SUBROUTINE "subroutine"
+%token FUNCTION "function"
+%token MODULE "module"
+%token USE "use"
+%token CONTAINS "contains"
+%token INTERFACE "interface"
+
+;; builtin types
+%token INT "integer"
+%token REAL "real"
+%token CHAR "char"
+%token LOGICAL "logical"
+%token COMPLEX "complex"
+
+;; attributes
+%token PARAMETER "parameter"
+%token ALLOCATABLE "allocatable"
+%token DIMENSION "dimension"
+%token EXTERNAL "external"
+%token INTENT "intent"
+%token INTRINSIC "intrinsic"
+%token OPTIONAL "optional"
+%token POINTER "pointer"
+%token SAVE "save"
+%token TARGET "target"
+
+
+%token IMPLICIT "implicit"
+%token END "end"
+%token CALL "call"
+%token TYPE "type"
+%token ONLY "only"
+
+;; Adding a summary help's `eldoc' mode display useful information
+;; in your language.
+%put SOMETHING summary "Describe something"
+
+;; Turn common punctuation elements into tokens.
+;; This does not effect lexical analysis or accuracy,
+;; but does make your file more readable.
+%token <punctuation> PERIOD "\\`[.]\\'"
+%token <punctuation> OPERATORS "[-+*/%^|&]"
+%token <punctuation>   HASH       "\\`[#]\\'"
+%token <punctuation>   PERIOD     "\\`[.]\\'"
+%token <punctuation>   COLON      "\\`[:]\\'"
+%token <punctuation>   SEMICOLON  "\\`[;]\\'"
+%token <punctuation>   STAR       "\\`[*]\\'"
+%token <punctuation>   AMPERSAND  "\\`[&]\\'"
+%token <punctuation>   DIVIDE     "\\`[/]\\'"
+%token <punctuation>   PLUS       "\\`[+]\\'"
+%token <punctuation>   MINUS      "\\`[-]\\'"
+%token <punctuation>   BANG       "\\`[!]\\'"
+%token <punctuation>   EQUAL      "\\`[=]\\'"
+%token <punctuation>   LESS       "\\`[<]\\'"
+%token <punctuation>   GREATER    "\\`[>]\\'"
+%token <punctuation>   COMMA      "\\`[,]\\'"
+%token <punctuation>   TILDE      "\\`[~]\\'"
+%token <punctuation>   PERCENT    "\\`[%]\\'"
+%token <punctuation>   HAT        "\\`\\^\\'"
+%token <punctuation>   OR         "\\`[|]\\'"
+%token <open-paren>    LPAREN     "("
+%token <close-paren>   RPAREN     ")"
+
+%%
+
+starting_rule : punit
+	      ;
+
+punit : PROGRAM symbol semantic-list
+	( TAG $2 'program  )
+      | SUBROUTINE symbol semantic-list semantic-list
+	( TAG $2 'subroutine :arguments (EXPANDFULL $3 funarg) )
+      |	one-or-no-type FUNCTION symbol semantic-list semantic-list
+	( TAG $3 'function :arguments (EXPANDFULL $4 funarg) :type (car $1))
+      | MODULE symbol semantic-list
+	( TAG $2 'module )
+      ;
+
+local-vars : builtin-type COLON COLON var-decl newline spec-part
+	   | builtin-type COMMA attributes COLON COLON var-decl newline spec-part
+	   ;
+
+spec-part : newline
+	    ( )
+	  | spec-one-part newline
+	    ( ,$1 )
+	  ;
+
+spec-one-part : IMPLICIT symbol
+		( TAG $2 'implicit )
+	      | USE symbol opt-only
+		( TAG $2 'use )
+	      | TYPE symbol semantic-list
+		( TAG $2 'type :kind 'derived-type )
+	      | END TYPE symbol
+		( nil )
+	      | END TYPE
+		( nil )
+	      | one-type COLON COLON var-decl
+		( VARIABLE-TAG $4 (car $1) nil )
+	      | one-type COMMA attribute-list COLON COLON var-decl
+		( ,(apply 'semantic-tag-new-variable $6 (car $1) nil $3 ) )
+	     ;; old style declarations - will break if attributes are
+	     ;; also defined like this
+	      | one-type var-decl
+		( VARIABLE-TAG $2 (car $1) nil )
+	      ;
+
+one-or-no-type: one-type 
+	      | ;; empty
+	      ;
+
+one-type : single-type semantic-list
+	   ( ,$1 )
+	 | single-type
+	 ;
+
+single-type : derived-type
+	    | builtin-type
+	    | symbol
+	    ;
+
+;; FIXME: This catches only the most simple cases
+opt-only: COMMA ONLY COLON symbol punctuation punctuation symbol 
+	  ()
+	| COMMA ONLY COLON symbol
+	  ()
+	| ;; empty
+	;
+
+var-decl : single-variable EQUAL symbol-or-number COMMA var-decl
+	   ( ,(append $1 $5) )
+	 | single-variable COMMA var-decl
+	   ( ,(append $1 $3 ) )
+	 | single-variable EQUAL symbol
+	 | single-variable
+	 ;
+
+single-variable : symbol semantic-list
+		  ( $1 )
+		| symbol
+		;
+
+builtin-type : INT
+	       ( "integer" )
+	     | REAL
+	       ( "real" )
+	     | DPREC
+	       ( "double precision" )
+	     | CHAR
+	       ( "character" )
+	     | COMPLEX
+	       ( "complex" )
+	     | LOGICAL
+	       ( "logical" )
+	     ;
+
+derived-type : TYPE semantic-list
+	       ( EXPANDFULL $2 dtype )
+	     ;
+
+dtype: LPAREN
+       (nil)
+     | RPAREN
+       (nil)
+     | symbol
+       ( TAG $1 'type )
+     ;
+
+other-type : symbol
+	   | ;; empty
+	   ;
+
+attribute-list: single-attribute COMMA attribute-list
+		( ,(append $1 $3) )
+	      | single-attribute
+	      ;
+
+single-attribute: attribute semantic-list
+		  ( (car $1) (downcase (buffer-substring-no-properties 
+					(1+ (car $2)) (1- (cdr $2)))) )
+		| attribute
+		  ( (car $1) 't )
+		;
+
+attribute : PARAMETER
+	    ( ':parameter )
+	  | ALLOCATABLE
+	    ( ':allocatable )
+	  | DIMENSION
+	    ( ':dimension )
+	  | EXTERNAL
+	    ( ':external )
+	  | INTENT
+	    ( ':intent )
+	  | INTRINSIC
+	    ( ':intrinsic )
+	  | OPTIONAL
+	    ( ':optional )
+	  | POINTER
+	    ( ':pointer )
+	  | SAVE
+	    ( ':save )
+	  | TARGET
+	    ( ':target )
+	  ;
+
+funarg : LPAREN
+	 (nil)
+       | COMMA
+	 (nil)
+       | RPAREN
+	 (nil)
+       | symbol
+	 ( VARIABLE-TAG $1 nil nil )
+       ;
+
+symbol-or-number: symbol
+		| number
+		;
+
+;;; f90.by ends here

@@ -1,0 +1,213 @@
+CEDET NEWS -- History of major user visible changes.
+
+Copyright (C) 2012, Free Software Foundation, Inc.
+
+This file contains news for CEDET 1.1 starting after 
+     CEDET 1.0 (released 2010-08-27).
+
+
+* Support for Android Development
+
+** common/cedet-android.el - New support for calling android SDK utilities,
+including adb, android, and ddms.
+
+** ede/ede-android.el - New support for detecting android projects,
+including support for compilation, debugging, AndroidManifest, and
+installing projects on a device.
+
+** srecode/srecode-android.el - New support for android looksups
+
+** srecode/templates/android-java.srt - 
+
+
+* Support for Arduino Development
+
+** ede/ede-arduino.el - Project support for Arduino sketches.
+Includes support for automatic compilation and uploading of projects.
+
+** arduino-mode: supported as a sub-mode of C++.
+
+** tag searches includes auto-included arduino header (based on arduino version)
+
+** srecode/templates/arduino-pde.srt - templates for arduino-mode.
+
+** ede/templates/make.srt - support the Arduino makefile template
+
+
+* Support for Java Development
+
+** common/cedet-java.el - New support for java utility function
+integration, including calling java, jar, and javap
+
+** semantic/semanticdb-javap.el - New semantic database back-end that reads
+symbols from jar files.
+
+** EDE projects can now provide a java classpath.
+
+** Parsing support for javap output.
+
+** semantic-decorate-includes
+*** support for includes that have a tag table, but no associated file.
+This can happen for tags created with semanticdb-javap.
+
+** Smart Completion support for Java:
+*** Support 'this' in tag lookups.
+*** symbol splitting (on .) for fully qualified names.
+*** remove recursive searches through imported symbols.
+
+** SRecode support for more package name differentiation
+
+
+* Universal context menu
+
+** common/cedet-m3.el - New (mouse 3 universal context menu support).
+To enable, use `cedet-m3-minor-mode'.
+
+** ede/ede-m3.el - New m3 support for projects (compile) 
+** semantic/semantic-m3.el - New m3 support for Semantic
+(smart completion, tag info, etc)
+** srecode/srecode-m3.el - New m3 support for SRecode
+(inserting templates)
+
+
+* EDE Changes
+
+** Security Fixes:
+*** ede-project-directories: New variable tracking safe projects.
+*** Avoid loading projects unless they are "safe".
+*** Some project types are automatically 'safe' if they do not load code from disk.
+
+** Menu support for the Configuration feature.  Allows users to choose the
+active configuration (such as debug or install) from a menu.
+
+** ede-set : new command to interactively set project-local variables.
+
+** Generic projects
+*** Support for compile, debug, and running.
+
+** Disable local variable reading if EDE needs to pull an Emacs Lisp file
+into a buffer temporarilly.
+
+** Fixed vc-dir support
+
+** Autoconf editing support for M4 macros with complex arguments.
+
+** EDE developers can now flush the directory hash, forcing EDE to re-check
+a directory for the project it belongs to.
+
+** Linux project type - support compilation
+
+** EDE autoload structures no longer load the ede project Emacs Lisp code
+unless a project of that type exists.
+
+** When building a project keymap, combine target and project keybindings
+together.
+
+** Fix bug allowing new targets to be created in dired-mode
+
+** Deprecated: ede-simple.el
+
+
+* Semantic Changes
+
+** C/C++
+*** Parsing includes inside a namespace.
+*** Use c-scan-conditionals when available during lexical analysis
+*** Improved extern "C" support
+*** Support to ignore more common special preprocessor symbols, such as
+__nonnull, and __asm.
+*** Add __cplusplus macro when parsing C++.
+*** Use cdefs.h as a source of preprocessor symbols.
+*** Improved function pointer parsing.
+
+** clang
+*** New support for clang for smart completion.
+
+** Javascript
+*** Support for js-mode and js2-mode
+
+** Fortran - New parser support
+*** semantic/bovine/f90.by, semantic/bovine/semantic-f90.el - New parser
+support for Fortran
+
+** Python
+*** Support to convert imports to include files names.
+*** Ability to dynamically determine the python load path.
+*** Support for WITH & AT keywords
+*** Python3k support
+
+** Exuberent CTags
+*** Support for Debian installs of ctags
+
+** Replace semantic-analyze-tag-prototype-p with semantic-tag-prototype-p.
+
+** semantic-create-tag-proxy, semantic-tag-set-proxy, semantic-tag-resolve-proxy
+new utilities to enable the creation of tags that represent things that
+does not resolve to code in a buffer.  eg - directory package names in java.
+
+** semantic-complete - improve tooltip completion list display.
+
+
+* SRecode Changes
+
+** Tag generation supports constructor/destructor settings
+
+** Tag generation supports system include differentiation
+
+** Added 'Framework' support.  Frameworks are specified when a particular
+kind of library (such as Android) is needed in a common language mode (like
+Java).
+
+** Support nested templates and have variables override based on priority.
+
+** Support merging tables from multiple related modes, such as the stack of
+modes: default -> c++ -> arduino
+
+
+* COGRE Changes
+
+
+* EIEIO
+
+** Security Fixes: eieio-persistent-read now takes an extra argument
+specifying the class being loaded.
+*** Any other class is never read in.
+*** New specialized reader for pulling in classes, and erroring without
+evaluation suspicious code.
+*** All slots that contain objects must have a :type.  Slots with lists of
+objects must use a new type predicate for a list of an object type.
+
+** classes produce a new predicates that returns t on an input that is a
+list of that object type.
+
+** Added filename support to generated symbols to support find-function and
+similar utilities.
+
+
+* General changes
+
+** Continued support for Emacs 22, Emacs 23
+
+** Support for Emacs 24 and lexbind compatibility.
+
+** Improved error messages if CEDET is installed incorrectly.
+
+** Update cscope support for version 15.7
+
+** Support for SXEmacs
+*** Version number checking in SXEmacs
+*** SXEmacs source code support in EDE
+*** Bug fixes
+
+
+** Many Updated test suites.
+
+** Many bug fixes
+
+
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

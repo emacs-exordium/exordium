@@ -1,0 +1,3 @@
+VERSION    = 1
+PATCHLEVEL = 2
+SUBLEVEL   = 3

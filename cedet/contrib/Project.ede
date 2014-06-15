@@ -1,0 +1,47 @@
+;; Object Contrib
+;; EDE Project Files are auto generated: Do Not Edit
+(ede-proj-project "Contrib"
+  :file "Project.ede"
+  :name "Contrib"
+  :version "1.1"
+  :targets (list 
+   (ede-proj-target-aux "misc"
+    :name "misc"
+    :path ""
+    :source '("ChangeLog")
+    )
+   (ede-proj-target-elisp-autoloads "autoloads"
+    :name "autoloads"
+    :path ""
+    :autoload-file "contrib-loaddefs.el"
+    )
+   (ede-proj-target-elisp "init"
+    :name "init"
+    :path ""
+    :source '("cedet-contrib-load.el")
+    )
+   (ede-proj-target-elisp "setup"
+    :name "setup"
+    :path ""
+    :source '("cedet-contrib.el")
+    :versionsource '("cedet-contrib.el")
+    :aux-packages '("cedet-devel-load" "cedet-compat" "semantic")
+    )
+   (semantic-ede-proj-target-grammar "wy"
+    :name "wy"
+    :path ""
+    :source '("wisent-csharp.wy" "wisent-ruby.wy" "wisent-php.wy")
+    :aux-packages '("cedet-devel-load" "semantic" "cedet-compat")
+    :pre-load-packages '("cedet-devel-load" "cedet-compat" "semantic/grammar" "semantic/bovine/grammar" "semantic/wisent/grammar")
+    )
+   (ede-proj-target-elisp "lisp"
+    :name "lisp"
+    :path ""
+    :source '("wisent-csharp.el" "semantic-tag-folding.el" "eassist.el" "wisent-ruby.el" "wisent-php.el" "ede-gnustep.el" "semantic-ectag-scala.el")
+    :aux-packages '("cedet-devel-load" "cedet-contrib-load")
+    )
+   )
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../cedet-remove-builtin.el\"") ("EMACS" . "@echo \"    > $@\";emacs") ("AUTOGENFLAGS" . "-L ../lisp/cedet --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  :configuration-variables 'nil
+  :metasubproject 't
+  )

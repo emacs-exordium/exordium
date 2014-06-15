@@ -1,0 +1,27 @@
+;; Object speedbar
+;; EDE project file.
+(ede-proj-project "speedbar"
+  :name "speedbar"
+  :file "Project.ede"
+  :targets (list 
+   (ede-proj-target-elisp-autoloads "autoloads"
+    :name "autoloads"
+    :path ""
+    :partofall nil
+    :autoload-file "loaddefs.el"
+    )
+   (ede-proj-target-elisp "opt"
+    :name "opt"
+    :path ""
+    :source '("rpm.el" "sb-info.el" "sb-rmail.el" "sb-texinfo.el" "sb-html.el" "sb-ant.el")
+    :aux-packages '("cedet-compat" "sb-texinfo")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :configuration-variables 'nil
+  :metasubproject 't
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L ../cedet --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  )

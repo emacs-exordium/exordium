@@ -1,0 +1,6 @@
+*-compile-script
+contrib-loaddefs.el
+*-make-script
+wisent-csharp-wy.el
+wisent-php-wy.el
+wisent-ruby-wy.el

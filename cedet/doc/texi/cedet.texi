@@ -1,0 +1,1310 @@
+\input texinfo  @c -*-texinfo-*-
+@c %**start of header
+@setfilename cedet.info
+@set TITLE  CEDET Manual
+@set AUTHOR Eric M. Ludlam
+@settitle @value{TITLE}
+
+@c *************************************************************************
+@c @ Header
+@c *************************************************************************
+@macro cedet{}
+@i{CEDET}
+@end macro
+
+@copying
+This manual documents @cedet{}, a collection of other tools.
+
+Copyright @copyright{} 2007, 2008, 2009, 2010, 2011, 2012, 2013 Eric M. Ludlam
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being list their titles, with the Front-Cover Texts
+being list, and with the Back-Cover Texts being list.  A copy of the
+license is included in the section entitled ``GNU Free Documentation
+License''.
+@end quotation
+@end copying
+
+@ifinfo
+@dircategory Emacs
+@direntry
+* CEDET: (cedet).       Collection of Emacs Development Environment Tools
+@end direntry
+@end ifinfo
+
+@iftex
+@finalout
+@end iftex
+
+@ifinfo
+This file documents @cedet{}.
+@emph{Collection of Emacs Development Environment Tools}
+
+Copyright @copyright{} 2007 @value{AUTHOR}
+@end ifinfo
+
+@titlepage
+@sp 10
+@title @value{TITLE}
+@author by @value{AUTHOR}
+@vskip 0pt plus 1 fill
+Copyright @copyright{} 2007 @value{AUTHOR}
+@page
+@vskip 0pt plus 1 fill
+@insertcopying
+@end titlepage
+@page
+
+@macro semantic{}
+@i{semantic}
+@end macro
+
+@macro srecode{}
+@i{SRecode}
+@end macro
+
+@macro eieio{}
+@i{EIEIO}
+@end macro
+
+@macro ede{}
+@i{EDE}
+@end macro
+
+@macro cogre{}
+@i{COGRE}
+@end macro
+
+@macro speedbar{}
+@i{Speedbar}
+@end macro
+
+
+@c *************************************************************************
+@c @ Document
+@c *************************************************************************
+@contents
+
+@node top
+@top @value{TITLE}
+
+@cedet{} is a @i{Collection of Emacs Development Environment Tools}
+including core libraries such as @eieio{}, and @semantic{}, and user
+interface tools such as @speedbar{}, @ede{}, and @cogre{}.
+
+While these tools are independent, and all have their own manuals,
+they are also all co-dependent within @cedet{}, and are dependent on
+the @cedet{} common libraries such as @i{inversion} and @i{ezimage}.
+
+This manual describes how to configure the tools as a whole to
+accomplish some tasks.
+
+To send bug reports, or participate in discussions about @cedet{},
+use the mailing list cedet-devel.net via the URL:
+@url{http://lists.sourceforge.net/lists/listinfo/cedet-devel}
+
+@menu
+* Overview::                    
+* Installation/Basic Configuration::
+* CEDET Context Menu::                
+* JDEE Target::
+* ECB Target::
+* Project Management::
+* Code Completion::
+* Code Generation::     
+* C++ Features::        
+* Arduino Features::    
+* Java Features::
+* Android Features::    
+* GNU Global::  
+* ID Utils::    
+* CScope::      
+* Maintenance:: Maintaining your @cedet{} Data files
+* GNU Free Documentation License::  
+* Index::                       
+@end menu
+
+@node Overview
+@chapter Overview
+
+The @cedet{} collection is made up of several tools.  Each tool has
+its own manual with details for that tool.
+
+At the core of the @cedet{} suite is @eieio{}, which is an
+@i{Implementation of Emacs Interpreted Objects}.  This provides a CLOS
+like interface to writing object-oriented code in Emacs.  @eieio{}
+forms the base of most of the other tools, with the notable exception
+of @speedbar{}.
+
+Several other tools form the next layer of @cedet{} functionality.
+For project management, @ede{} provides a simple way to create
+projects.  You can create an @ede{} centric project, which uses
+either Makefiles, or AutoMakefiles, or it can wrap an automake based
+program you've already developed.  You can also create simple @ede{}
+wrappers on top of any style of project.  @ede{} provides a backgrop
+for any other @cedet{} tool that needs to know the filesystem scope of
+a code base, where include directories might be.
+
+@semantic{} provides another mid-level layer.  @semantic{} provides a
+set of tools for developing parsers for different languages, and an
+API for searching and manipulating tags generated from your source
+code.  @semantic{} also provides a wide range of core tag centric
+utilities such as enhanced tag decoration, code analysis, and the
+coveted ``Smart Completion'' feature.
+
+Another mid-level tool is @srecode{} or the @i{Semantic Recoder}.
+@srecode{} is a template management system designed with the goal of
+providing a way to build code-generating applications that are easily
+modified or extended by users.  At its core is a template authoring
+and insertion system.  A minor mode provides a simple way to insert
+templates from the various template libraries.
+
+@speedbar{} is a user interface tool that provides a narrow view into
+your filesystem and tags.  Speedbar is also an API for designing other
+tools and is used for displaying @ede{} project information, Semantic
+smart completion options, Email, Info, and even GDB stack information.
+
+Lastly, @cogre{} is a @i{COnnected GRaph Editor}.  The core is an
+object design and library for drawing, saving, and restoring simple
+connected graphs.  Built on this is a UML based tool which interfaces
+with Semantic Tag information to draw simple UML diagrams of your
+code.  As of this writing @cogre{} is quite simple.  Longer term
+plans include using @cogre{} as a way of manipulating source code
+indirectly.
+
+All these tools depend on a suite of simple library functions, such as
+@i{inversion}, @i{ezimage}, @i{pretty printing}, and @i{mode-local}
+variables.
+
+@menu
+* EIEIO::       Object system for Emacs.
+* Semantic::    Parser generator and tag management tool.
+* SRecode::     Semantic Recoder Template manager
+* Speedbar::    File and tag explorer, plus more.
+* EDE::         Project Management tool.
+* COGRE::       Diagram editor for object design.
+* Other Library Functions::
+@end menu
+
+@node EIEIO
+@section @eieio{}
+
+@eieio{} contains the core object library for @cedet{}.  You can
+define classes, and methods for those classes using @i{CLOS} style
+syntax.  Objects can be customized using the Emacs customization tool,
+which allows easy creation of dialog box style UIs.  A series of base
+classes allows the creation of Emacs centric tools, wrapping up the
+details of persistence, instance tracking, or instance inheritance.
+
+@eieio{} also includes an example tool, @file{chart.el} for drawing
+simple charts.
+
+Lastly, @eieio{} has baseclasses for writing @speedbar{} interfaces.
+Take an existing object hierarchy and inherit from these baseclasses
+to be browsable in Speedbar.
+
+For more details on @eieio{}, read the
+@inforef{top, EIEIO Reference Manul, eieio}.
+
+
+@node Semantic
+@section Semantic
+
+@semantic{} is a parser generator, lexical analyzer, parser
+development environment, parser, tag generation and management system.
+Build on this is a persistent tag management system database and
+search utility.  Code analysis and completion generation is also
+provided.  @semantic{} includes tools such as speedbar interfaces to
+tags, context analysis, and completion options, Popup smart
+completion, tag decoration, and support for a wide range of Emacs
+tools such as Imenu, which-func, hippie-expand, isearch, and
+cut/copy/paste.
+
+For high level overviews, configuration advice, etc, please read
+@inforef{Top, Semantic Manual, semantic}.
+
+If you are an application developer and need to know the functions and
+concepts, 
+@inforef{Top, the Application Development Manual, semantic-appdev}.
+
+To support a new language,
+@inforef{Top, the Language Support Developer's Guide, semantic-langdev}.
+
+To use the grammar writing environment, and write in the rule based
+language, 
+@inforef{Top, the Grammar Framework Manual, grammar-fw}.
+
+For details on the original @semantic{} @acronym{LL} parser,
+@inforef{Top, the Bovine Parser Manual, bovine}.
+ 
+For details on the Bison-like @acronym{LALR} parser,
+@inforef{Top, the Wisent Parser Manual, wisent}.
+
+
+@node SRecode
+@section @srecode{}
+
+@srecode{} is a Template manager for writing code from Semantic
+templates.  It includes a specialized template authoring language and
+environment, template loader and interpreter.  A minor mode for
+inserting mode specific templates, and some sample applications that
+also uses templates to write code.
+
+For more details on @srecode{}, read the
+@inforef{top, SRecode Manual, srecode};
+
+@node Speedbar
+@section Speedbar
+
+@speedbar{} is an abbreviated everything browser.  If you can
+conceptualize browsable information into 20 columns, then Speedbar can
+display it for you.
+
+Speedbar comes with several interfaces, with the primary one being for
+files and tags.  It can also display buffer lists, RMAIL boxes, and
+Info nodes.  Combined with @cedet{}, it also provides project tracking,
+smart completion lists, Class browsing, Connected graph browsing.
+
+You can use speedbar to write your own browsers.  Some external tools
+include ERC (Irc client), xslt-process, MH-E (mail reader), and ECB, a
+code browser which embeds Speebar.
+
+@speedbar{} has been a part of Emacs for quite a while.  The @cedet{}
+version of speedbar (as of this writing, Jul 08) is nearly identical
+to the version in Emacs 22.
+
+For more details, read the 
+@inforef{top, Speedbar Manual, speedbar}.
+
+@node EDE
+@section @ede{}
+
+@ede{} is the @i{Emacs Development Environment}, which means that it
+manages projects, and can build Makefiles, track distribution and web
+sites associated with your GNU project.
+
+@ede{} has several types of projects it can manage with varying
+degrees of development support.  An @ede{} centric project will generate
+Makefiles or Automake files, and provides menus and keybindings for
+compiling any target, debugging programs by providing the arguments to
+your debugger, and will make sure you don't forget to include some
+file in your targets.  It will help you build distribution files, and
+post them to the web (such as with SourceForge).  @ede{} will track
+revision numbers and make sure they are updated in multiple places.
+
+Projects that are merely wrapped with @ede{} can support a small
+subset of the above.  All project provide an API to other programs
+that need to know the scope of a project, such as which files belong
+together, where include directories might be, how to find
+documentation, and details of that nature.  You can even create
+project-local variables, which are Emacs variables with specific
+values within the scope of an @ede{} controlled project.
+
+Read more about it in the
+@inforef{top, EDE reference manual, ede}.
+
+@node COGRE
+@section COGRE
+
+@cogre{} is a @i{COnnected GRaph Editor}.  You can use it to create
+simple connected graphs and diagrams.  You can also create more
+complex UML class diagrams in it, or even bind UML diagrams directly
+to source code, navigating your source via the UML diagram.
+
+While @cogre{} does have a lot of functionality, it still needs more
+work.  Consider improving @cogre{}.
+
+Read more a bout it in
+@inforef{top, the COGRE manual, cogre}.
+
+@node Other Library Functions
+@section Other @cedet{} Library functions
+
+@cedet{} provides several other useful libraries in the
+@file{common/} directory.  These libraries supply most of their
+documentation through the Commentary section of the Emacs Lisp file.
+
+Some of the libraries are:
+
+@itemize @file
+@item cedet-edebug.el
+Collection of extensions to support custom @cedet{} datatypes.
+@item pulse.el
+Simple way to briefly highlight a region or line.  For Emacs 22, it
+will pulse the line, with the color drifting from one shade to
+another.  For older versions Emacs, it will just highlight the line
+briefly.
+@item mode-local.el
+Specify functions that have different behaviors based on major-mode,
+or variables with different local values based on major mode.  Setting
+a value to a specific mode causes the value to change for all buffers
+of that mode.
+
+mode-local is also aware of mode inheritance, such that C++ mode
+inherits some C configurations.  You can also run code, or access
+variables from other modes by with a temorary scoped setting.
+
+mode local is used extensively throughout the @semantic{} package.
+@end itemize
+
+@node Installation/Basic Configuration
+@chapter Installation and Basic Configuration
+
+If your are compiling @cedet{} from the cedet bzr repository on
+sourceforge, please see the INSTALL file in the repository for
+directions to overriding the CEDET that comes with Emacs with the
+development version.
+
+If you want to use the version of CEDET that comes with Emacs, then
+move on to the next section.
+
+@enumerate
+@item Configuration
+
+To turn on basic Semantic parsing of your files and several
+development modes, you can use this configuration:
+
+@example
+;; Add further minor-modes to be enabled by semantic-mode.
+;; See doc-string of `semantic-default-submodes' for other things
+;; you can use here.
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+
+;; Enable Semantic
+(semantic-mode 1)
+
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+@end example
+
+You will likely need to configure @cedet{} to your specific use.
+Visit the other chapters in this manual for samples to get some ideas
+on possible configuration scenarios.
+
+@item Contribute to @cedet{}
+
+For general discussions on development of these tools, use the mailing
+list cedet-devel@@sourceforge.net via the URL:
+
+@url{http://lists.sourceforge.net/lists/listinfo/cedet-devel}
+
+For @semantic{} development use the mailing list cedet-semantic.net via
+the URL:
+
+@url{http://lists.sourceforge.net/lists/listinfo/cedet-semantic}
+
+For @eieio{} use the mailing list cedet-eieio@@sourceforge.net via the
+URL:
+
+@url{http://lists.sourceforge.net/lists/listinfo/cedet-eieio}
+
+@item Install Additional Tools
+
+You may also need to download some of the following files for more
+obscure features.
+
+To use the JavaScript parser:
+javascript-mode.el : @url{http://www.emacswiki.org/cgi-bin/wiki/JavaScriptMode}
+
+To use Exuberent ctags to emable Semantic support in more major modes,
+or as an extra database backend parser, install ctags:
+@url{http://ctags.sourceforge.net/}
+
+For developing Android programs:
+@url{http://developer.android.com/sdk/index.html}.
+
+For developing Arduino programs:
+Major Mode: @url{https://github.com/bookest/arduino-mode}
+Arduino IDE:@url{http://arduino.cc/en/Main/Software}
+   
+To use the UML chart generation from @code{M-x semantic-dot}
+graphviz dot programs, including @file{dotty}
+@url{http://www.graphviz.org/}
+
+To use the graphviz dot parser: @file{graphviz-dot-mode.el} see the
+commentary in cogre/wisent-dot.el
+
+@end enumerate
+
+@node CEDET Context Menu
+@chapter CEDET Context Menu
+
+@cedet{} is a collection of different tools, but it includes a minor mode of
+it's own that enables a context menu.  If you enable CEDET's context
+menu by adding this to your @file{.emacs}:
+
+@example
+(global-cedet-m3-minor-mode 1)
+@end example
+
+Once enabled, you can activate the context menu by right-clicking
+(with @kbd{mouse-3}).  You could bind this menu to a key with a
+command such as this which binds it to @kbd{C-c SPC}:
+
+@example
+(define-key cedet-m3-mode-map "\C-c " 'cedet-m3-menu-kbd)
+@end example
+
+The context menu pulls together helpful context aware suggestions from
+@semantic{}, or templates to insert with @srecode{}.  It also suggests
+compilation steps to take from @ede{}.
+
+
+@node JDEE Target
+@chapter @i{JDEE} Target
+
+@i{JDEE}, or the @i{Java Development Environment}, depends on @cedet{}
+for both @eieio{}, the object system, and Semantic, for parsing and
+providing tagging information.
+
+In addition to the basic @cedet{} configuration, you will likely want to
+add the following Semantic configuration to your @file{.emacs} file.
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-minimum-features)
+@end example
+
+This provides basic idle-time parsing of files, and persistence to
+support the semantic APIs.
+
+If you would like to use more of the Semantic tools for your coding in
+Java, you may want to enable this instead:
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-code-helpers)
+@end example
+
+or the fancier
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-guady-code-helpers)
+@end example
+
+See the
+@inforef{Canned Configuration, Semantic Configuration, semantic}.
+section of the semantic manual for more details about these features.
+
+The JDEE doesn't act as an EDE project type as used by CEDET to manage
+smart completion.  As such, you will need to also have a Java based
+project associated with your JDEE project.
+
+You can set this up using the @code{java-root} project type.  Basic
+setup is like this:
+
+@example
+(ede-java-root-project "MYPROJ" :file "/home/user/projects/myProj"
+		      :srcroot '( "src" )
+		      :classpath nil
+		      )
+@end example
+
+See the commentary for ede/java-root.el for more details.
+
+@node ECB Target
+@chapter ECB Target
+
+@i{ECB}, or the @i{Emacs Code Browser} depends on @cedet{} for the @semantic{}
+parsing engine, and several other features.  @i{ECB} can display a
+window that shows semantic tag information.
+
+@i{ECB} can also be used with @i{JDEE}.
+
+In addition to the basic @cedet{} configuration, you will likely want to
+add the following Semantic configuration to your @file{.emacs} file.
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-code-helpers)
+@end example
+
+or the fancier
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-guady-code-helpers)
+@end example
+
+See the
+@inforef{Canned Configuration, Semantic Configuration, semantic}.
+section of the semantic manual for more details about these features.
+
+@node Project Management
+@chapter Project Management
+
+If you are looking for @cedet{} to help you manage a project full of
+sourcecode, then you will be using @ede{} and @semantic{}.
+
+To enable @ede{} add this to your @file{.emacs} file after @cedet{}
+is loaded:
+
+@example
+(global-ede-mode 1)
+@end example
+
+You can use @ede{} to define
+your projects.  If you are starting a new project, put a file from
+your new project into a buffer, and type:
+
+@example
+M-x ede-new RET
+@end example
+
+Now select either ``Make'' or ``Automake'', which determines the
+underlying build technology to use for compilation.
+
+Use the menu to add targets.  You can then use either Speedbar or
+dired to populate your targets with files.
+
+For more details, see the 
+@inforef{Top, EDE reference manual, ede}.
+
+
+In addition to @ede{} and basic @cedet{} configuration, you will likely
+want to add the following @semantic{} configuration to your
+@file{.emacs} file.
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-code-helpers)
+@end example
+
+See the
+@inforef{Canned Configuration, Semantic Configuration, semantic}.
+section of the semantic manual for more details about these features.
+
+You may also want to enable the @srecode{} template insertion mode.
+
+@example
+(srecode-minor-mode 1)
+@end example
+
+Both @semantic{} and @srecode{} take advantage of @ede{}'s knowledge of a
+projects structure.
+
+@node Code Completion
+@chapter Code Completion
+
+Code Completion, or perhaps ``Intellisense'' is a difficult problem to
+get working in Emacs.  To use the @cedet{} suite to do it, you will
+need to start by augmenting the basic @cedet{} install in your
+@file{.emacs} file with:
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-code-helpers)
+@end example
+
+Basic code helpers enable idle parsing and summary mode.  To get
+idle-completions mode, and some more decorative features, use:
+
+@example
+(require 'semantic/canned-configs)
+(semantic-load-enable-guady-code-helpers)
+@end example
+
+TODO - add other handy bindings here.
+
+For more on configuration
+@inforef{Canned Configuration, Semantic Configuration, semantic}.
+section of the semantic manual for more details about these features.
+
+The basic idea is that Semantic will need to parse your source code and
+build lookup tables.  The tables are then searched to provide the
+completion you might be looking for.
+
+To improve the things Semantic can find and complete with, you then
+need to configure a few more things.  This is done mainly by providing
+details on where Semantic can find the source code where your tag
+definitions are.
+
+For more, 
+@inforef{Semanticdb Search Configuration, Semantic search configuration, semantic-user}.
+
+Once you've optimized @semantic{}'s ability to find your sources,
+there are several code completion options.  For more,
+@inforef{Analyzer, semantic analyzer, semantic-user}.
+
+If code completion doesn't work on your code right away, please read
+the section on @inforef{Smart Completion Debugging, Smart Completion Debugging, semantic-user}.
+
+@node Code Generation
+@chapter Code Generation
+
+Code Generation, or the ability to automatically write code from some
+set of static data is done through the @srecode{} library.
+@srecode{} is a template manager that uses the @semantic{}
+infrastructure to support common concepts across multiple languages.
+
+To effectively create a code-generation library, you need to configure
+@semantic{}.
+Read @inforef{Canned Configuration, Semantic Configuration, semantic}.
+for more.
+@refill
+
+Secondly, you will need to configure @srecode{}.  Read
+@inforef{Quick Start, SRecode Manual, srecode};
+@refill
+
+Once installed, you can jump right in to writing your Lisp and
+@inforef{Template Writing, Template Writing, screcode}.
+
+
+@node C++ Features
+@chapter C++ Features
+
+If you are using @cedet{} with C or C++, then there are a few C/C++ specific
+options you may need to update.
+
+@section C Pre-processor
+
+C and C++ use pre-processor directives, and the @semantic{} parser has
+some basic support for a pre-processor.  As such, you may need to set
+up some macros.  You can do that in two ways.
+
+The first option is to create your own symbol map in Emacs Lisp.  You
+can customize the preprocessor symbol map.
+
+@defvar semantic-lex-c-preprocessor-symbol-map
+@anchor{semantic-lex-c-preprocessor-symbol-map}
+Table of @var{c} Preprocessor keywords used by the Semantic @var{c} lexer.
+Each entry is a cons cell like this:
+  ( ``@var{keyword}`` . ''REPLACEMENT'' )
+Where @var{keyword} is the macro that gets replaced in the lexical phase,
+and @var{replacement} is a string that is inserted in its place.  Empty string
+implies that the lexical analyzer will discard @var{keyword} when it is encountered.
+
+Alternately, it can be of the form:
+  ( ``@var{keyword}`` ( @var{lexsym1} ``str'' @var{1} @var{1} ) @dots{} ( @var{lexsymn} ''str'' @var{1} @var{1} ) )
+where @var{lexsym} is a symbol that would normally be produced by the
+lexical analyzer, such as @code{symbol} or @dfn{string}.  The string in the
+second position is the text that makes up the replacement.  This is
+the way to have multiple lexical symbols in a replacement.  Using the
+first way to specify text like ``foo::bar'' would not work, because :
+is a separate lexical symbol.
+
+A quick way to see what you would need to insert is to place a
+definition such as:
+
+#define @var{mysym} foo::bar
+
+into a @var{c} file, and do this:
+  @kbd{M-x} semantic-lex-spp-describe
+
+The output table will describe the symbols needed.
+@end defvar
+
+Alternately, you can use an existing C header file, or write your own
+custom C header file, and use the macros in that to initialize the
+preprocessor list.
+
+@defvar semantic-lex-c-preprocessor-symbol-file
+@anchor{semantic-lex-c-preprocessor-symbol-file}
+List of @var{c}/@var{c}++ files that contain preprocessor macros for the @var{c} lexer.
+Each entry is a filename and each file is parsed, and those macros
+are included in every @var{c}/@var{c}++ file parsed by semantic.
+You can use this variable instead of @code{semantic-lex-c-preprocessor-symbol-map}
+to store your global macros in a more natural way.
+@end defvar
+
+Some such symbols for @file{stdio.h} as found on Linux are defined in
+@code{semantic-lex-c-preprocessor-symbol-map-builtin}.
+
+Lastly, you could just opt to ignore conditional parsing.
+
+@deffn Option semantic-c-obey-conditional-section-parsing-flag
+@anchor{semantic-c-obey-conditional-section-parsing-flag}
+Non-@code{nil} means to interpret preprocessor #if sections.
+This implies that some blocks of code will not be parsed based on the
+values of the conditions in the #if blocks.
+@end deffn
+
+
+@defun semantic-lex-c-nested-namespace-ignore-second
+@anchor{semantic-lex-c-nested-namespace-ignore-second}
+Should _@var{GLIBCXX_BEGIN_NESTED_NAMESPACE} ignore the second namespace?
+It is really there, but if a majority of uses is to squeeze out
+the second namespace in use, then it should not be included.
+
+If you are having problems with smart completion and @var{STL} templates,
+it may that this is set incorrectly.  After changing the value
+of this flag, you will need to delete any semanticdb cache files
+that may have been incorrectly parsed.
+@end defun
+
+@section System Include path
+
+If you want the code-completion to work with C++ system header file,
+you will need to update @code{semantic-dependency-system-include-path} for
+C++ mode.
+
+@example
+M-x customize-variable RET semantic-c-dependency-system-include-path RET
+@end example
+
+
+Customizing this variable will allow you to setup your system include path
+and will update all files when you use custom to do it.
+
+@section EDE Setup
+
+For large C or C++ programs, it is important to setup @ede{} for it.
+While @ede{} can be used to create Makefiles or use Automake files,
+@ede{} also provides a way to merely describe a project so that tools
+like @semantic{} can find your sources.
+
+If your project already uses Automake, or if your project is Emacs or
+the Linux Kernel, there are pre-existing EDE project types that will
+automatically detect these projects.
+
+If you use a generic project type, such as Make (using a Makefile),
+SCons, or CMake, you can use a @inforef{Generic project, Generic, ede}.
+Generic projects allow some basic customization for C/C++.  Enable
+generic projects with @code{ede-enable-generic-projects}.
+
+If the options there are insufficient, or if Generic projects can't
+identify your build system you will need to use the very simple
+@code{ede-cpp-root-project} type.  To use it, add this to your
+@file{.emacs} file, or other configuration:
+
+@example
+(global-ede-mode 1) ;; Enable EDE
+(ede-cpp-root-project "SOMENAME" :file "/dir/to/some/file")
+@end example
+
+where SOMENAME is a name for this project, and the file is a file name
+that exists at the root of your project directory.  There are many
+more options for the optimization of finding your header files.
+For more on this option, including include path setting, and providing
+macro to the C pre-processor, see
+@inforef{the ede-cpp-root chapter, ede-cpp-root, ede}.
+
+@node Arduino Features
+@chapter Arduino Sketchbook Features
+
+If you do Arduino development using the Arduino IDE, you can use CEDET
+and EDE in Emacs as a replacement.  So far, I have only verified usage
+of Arduino development with CEDET on Linux.
+
+First, you need to install both the Arduino IDE
+@url{http://arduino.cc/en/Main/Software},
+and arduino-mode for Emacs.
+@url{https://github.com/bookest/arduino-mode}
+
+@section Create an Arduino Sketch (Project)
+
+To create an arduino sketch, you will need to first use the Arduino
+IDE.  Use the preferences to set the location of your sketchbook
+(where your arduino sketches will be kept.)  You should also plug your
+Arduino into your computer, and try out one of the examples using the
+IDE.  This will force the IDE to select the correct serial terminal to
+use, and it will configure other aspects of your Arduino.
+
+Once the IDE has save your Arduino's information, Emacs will read the
+preferences file from the arduino IDE, and use that to development.
+
+@defvar ede-arduino-preferences-file
+@anchor{ede-arduino-preferences-file}
+The location of personl preferences for the arduino @var{IDE}.
+@end defvar
+
+@section EDE Setup
+
+EDE will detect arduino projects once you have used the IDE to create
+your arduino preferences file.
+
+When you use EDE to compile your arduino project, it will
+automatically generated a Makefile that will include the Arduino.mk
+helper makefile.  This build system allows you to compile and upload
+arduino sketches into your arduino.
+
+EDE provides the following convenience features for arduino projects:
+
+@table @key
+@item C-c . c
+@itemx C-c . C
+Compile your arduino project.
+@item C-c . U
+Upload your arduino project to your Arduino.
+@item Menu: Project -> Project Options -> Serial Monitor
+Open a serial monitor to your arduino so you can interact with you
+sketch.  This uses the Emacs @code{serial-term} command.
+@end table
+
+@section Serial Monitor
+
+The Arduino IDE has a serial monitor you can use to interact with your
+Arduino.  You can open a serial monitor in Emacs for your arduino
+also.
+
+@defun cedet-arduino-serial-monitor
+@anchor{cedet-arduino-serial-monitor}
+Start up a serial monitor for a running arduino board.
+Uses @dfn{serial-term}.
+@end defun
+
+The serial term in Emacs is imperfect in some ways becaus it can
+create a conflict with uploading new sketches to your Arduino, so be
+sure to kill it before uploading new sketches.
+
+@section Arduino support for SRecode
+
+You can create macros for use with arduino-mode.  (Files that end in
+@file{.pde}, or @file{.ino}.)  By default, a handy empty file macro
+can be used to create the standard setup and loop functions.
+
+@section Arduino and smart completion
+
+The Arduino environment hides a common include file for wither
+@file{WProgram.h} or @file{Arduino.h}, depending on the version of
+your IDE.  The smart completion engine will automatically load these
+header files for buffers in @code{arduino-mode} for use in smart
+completion.
+
+@node Java Features
+@chapter Java Features
+
+If you are using @cedet{} with Java, then there are a few Java
+specific options you may need to configure for your system.
+
+@section Java programs
+
+You can configure @cedet{} to use programs from the JDK, such as
+@file{java} and @file{javap}.
+
+@defvar cedet-java-command
+@anchor{cedet-java-command}
+The command for running the java program.
+@end defvar
+
+@defvar cedet-javap-command
+@anchor{cedet-javap-command}
+The command for running the javap program.
+This program is used by @semantic{} to extract symbols from Jar files.
+@end defvar
+
+@section Using JAR files for Semantic data
+
+Semantic can use your system Jar files to look up data for smart
+completion and other uses.  To enable the system, you need to use the
+javap extension for semanticdb.  To do that, require the semantic
+javap database in your @file{.emacs} file
+
+@example
+(require 'semantic/db-javap)
+@end example
+
+@section System Class Path
+In order for @semantic{} to find your sources, or jar files for use
+with the javap database extension, you need a way to customize the
+classpaths used.
+
+You can do that through a couple variables, and through EDE.
+
+@defvar cedet-java-classpath-extension
+@anchor{cedet-java-classpath-extension}
+List of extended classpath directories and Jar files to pass to java
+commands.  This will affect ALL calls to java and javap that @cedet{}
+makes so that java programs will use those libraries.  This path is
+ignored when @semantic{} looks up files.
+@end defvar
+
+@defvar semanticdb-javap-classpath
+@anchor{semanticdb-javap-classpath}
+List of extended classpath directories and Jar files used by
+@file{semantic/db-javap} when searching for classes.  This classpath is NOT
+passed to java when invoking java commands.
+@end defvar
+
+@section EDE Setup
+
+For large Java programs, it is important to setup @ede{} for it.
+While @ede{} can be used to create Makefiles or use Automake files for
+several languages, @ede{} also provides a way to merely describe a
+project so that tools like @semantic{} can find your sources.
+
+If you are programming for Android, then there is already a special
+EDE project type for that.  See @ref{Android Features} for more.
+
+If you aren't programming with a supported EDE Java projec type, you
+can identify your build system with the very simple
+@code{ede-java-root-project} type.  To use it, add this to your
+@file{.emacs} file, or other configuration:
+
+@example
+(global-ede-mode 1) ;; Enable EDE
+(ede-java-root-project "SOMENAME" :file "/dir/to/some/file")
+@end example
+
+where SOMENAME is a name for this project, and the file is a file or
+directory name that exists at the root of your java project directory.
+There are also options for customizing your classpath, both for the
+system, and local to your project.  For more on this option, including
+class path settings
+@inforef{ede-java-root, the ede-java-root chapter, ede}.
+
+@node Android Features
+@chapter Android Features
+
+If you are building Android applications using CEDET, there are
+several features that can help with this task.
+
+First, you need to download the android SDK.  You can get that from
+@url{http://developer.android.com/sdk/index.html}.  Make sure all the
+tools the android sdk needs has been installed.
+
+@section Create an Android project
+
+The Android SDK has a command called @code{android} which is used to
+do several things, one of which is to create a template project
+directory hierarcy.  In order for Emacs to detect your SDK and find
+@code{android}, you may need to configure the @cedet{} android support.
+
+@defun cedet-android-sdk-root
+@anchor{cedet-android-sdk-root}
+The root to the android @var{SDK}.
+@end defun
+
+You can then create a project from Emacs:
+
+@defun cedet-android-create-project name package target &optional dir
+@anchor{cedet-android-create-project}
+Create an android project with @var{NAME}.
+Your activity class will be created in the java @var{PACKAGE}.
+You need to specify a @var{TARGET}, which is a number specifying the desired type
+of package you intend to build.
+Create the project in optional @var{DIR}, or in the default directory if not specified.
+@var{NAME} will be used as the name of the project.
+@end defun
+
+It may be better, however, to let EDE do it for you instead by calling
+@code{ede-new}.  For example:
+
+@example
+C-x C-f ~/subdir/newprojectdir RET     ; go to an empty directory
+M-x ede-new RET                        ; Create the project.  Answer
+                                         questions like name, etc.
+@end example
+
+@section EDE Setup
+
+EDE will automatically detect android projects created with the
+AndroidManifest.xml file.  The first time you visit a project, it is
+good to visit AndroidManifest.xml to make sure EDE will detect your
+project.  Sometimes it can fail to detect your project if you visit a
+sub-directory of your project first.
+
+EDE provides the following conveniences for
+android projects:
+
+@table @key
+@item C-c . e
+This will always jump to the AndroidManifest.xml file.
+@item C-c . c
+@itemx C-c . C
+This will compile your project using ant.  To change what type of
+build you do, you will need to change the current configuration.  You
+can select a configuration such as install or release from the Project menu.
+@item C-c . D
+Debug your project.  This will also start ddms, the debug proxy for
+your android emulator or device.
+@item C-c . E
+Visit a resource file from a buffer from a Java buffer.  Cursor must be on the code
+representing the resource, such as:
+@example
+R.layout.mylayout
+@end example
+@item c-c . A
+Visit a Java Activity buffer from the XML manifest file.  Cursor must
+be in an activity element for Emacs to figure out which activity to
+visit.
+@item C-c . S
+Visit the strings.xml file from anywhere.
+@item C-c . g
+Rescan the @file{AndroidManifest.xml} file for version, package, etc.
+@end table
+
+There are other items in the menu as well, such as calling layoutopt
+to debug your layout files or starting the ADB shell.
+
+EDE supports different build configurations through the standard EDE
+configuration mode.  In the Project->Project Options menu, select
+``Default Configuration'' and select one of the options.  These
+options map directly to the command line arguments of ant, so if you
+select ``debug'', then the compile command will be: @code{ant debug}.
+
+@table @code
+@item debug
+Builds the project in debug mode.
+@item install
+Builds the project in debug mode, and installs in your emulator or
+device.
+@item release
+Builds the project in release mode.
+@end table
+
+@section ADB Features
+
+CEDET supports several calls to ADB, including the following:
+
+@table @code
+@item cedet-android-adb-devices
+Show the list of devices available.
+@item cedet-android-adb-version-check
+Check that the ADB install is supported by CEDET.
+@item cedet-android-adb-shell
+Create a shell buffer in Emacs which provides a unix-like shell into
+your running Android device or emulator.
+@end table
+
+@section Android Sample Projects
+
+CEDET supports a handy way to find sample programs from the SDK.
+
+@defun cedet-android-visit-sample sample
+@anchor{cedet-android-visit-sample}
+Visit @var{SAMPLE} code in the Android @var{SDK} samples directory.
+@end defun
+
+@section Android support for SRecode
+
+You can create macros for use with android.  Add the :android argument
+to your templates to get some android specific features.
+
+@node GNU Global
+@chapter GNU Global
+
+Several tools in @cedet{} can support the use of GNU Global.  If you use
+GNU Global in your project, you should enable the use of it to enhance
+or speed up various tools in @cedet{}.
+
+You can download GNU Global from @url{http://www.gnu.org/software/global}
+
+To make sure your GNU Global installation is good, use the command
+
+@example
+M-x cedet-gnu-global-version-check RET
+@end example
+
+You can wrap any @cedet{} / GNU Global configurations in your
+@file{.emacs} file like this:
+
+@example
+(setq cedet-global-command "global") ; Change to path of global as needed
+(when (cedet-gnu-global-version-check t)  ; Is it ok?
+    ;; Configurations for GNU Global and CEDET
+    )
+@end example
+
+@section @ede{} and GNU Global
+
+The @ede{} project system can use GNU Global to accelerate finding
+files within a project.  The EDE command to @code{ede-find-file}
+bound to @kbd{C-c . f} is one direct application.  @semantic{} also
+makes heavy use of of the feature to find header files.
+
+To enable it, configure the variable @code{ede-locate-setup-options}.
+Something like this can work in your @file{.emacs} file.
+
+@example
+(setq ede-locate-setup-options
+      '(ede-locate-global 
+        ede-locate-base))
+@end example
+
+@section @semantic{} Database
+
+@semantic{} can use GNU Global as a back end for database searches.
+To enable it, use:
+
+@example
+(semanticdb-enable-gnu-global-databases 'c++-mode)
+@end example
+
+where the first argument is a @code{major-mode} in which to use it.
+
+GNU Global will then be used for project-wide searches as a backup
+when pre-existing @semantic{} database searches may not have parsed
+all your files.
+
+@section @semantic Symref
+
+The semantic symref tool can use GNU Global to local symbol
+references.  This tool will automatically detect GNU Global and use
+it.  You can search for references via the commands:
+
+@table @code
+@item semantic-symref
+Find references to the tag under the cursor.
+@item semantic-symref-symbol
+Find references to an arbitrary symbol.
+@end table
+
+@node ID Utils
+@chapter ID Utils
+
+Several tools in @cedet{} can support the use of ID Utils.  If you use
+ID Utils in your project, you should enable the use of it to enhance
+or speed up various tools in @cedet{}.
+
+You can download ID Utils from @url{http://www.gnu.org/software/idutils/}
+
+To make sure your ID Utils installation is good, use the command
+
+@example
+M-x cedet-idutils-version-check RET
+@end example
+
+You can wrap any @cedet{} / ID Utils configurations in your
+@file{.emacs} file like this:
+
+@example
+(when (cedet-idutils-version-check t)  ; Is it ok?
+    ;; Configurations for ID Utils and @cedet{}.
+    )
+@end example
+
+@section @ede{} and ID Utils
+
+The @ede{} project system can use ID Utils to accelerate finding
+files within a project.  The EDE command to @code{ede-find-file}
+bound to @kbd{C-c . f} is one direct application.  @semantic{} also
+makes heavy use of of the feature to find header files.
+
+To enable it, configure the variable @code{ede-locate-setup-options}.
+Something like this can work in your @file{.emacs} file.
+
+@example
+(setq ede-locate-setup-options
+      '(ede-locate-idutils
+        ede-locate-base))
+@end example
+
+@section @semantic Symref
+
+The semantic symref tool can use ID Utils to local symbol
+references.  This tool will automatically detect ID Utils and use
+it.  You can search for references via the commands:
+
+@table @code
+@item semantic-symref
+Find references to the tag under the cursor.
+@item semantic-symref-symbol
+Find references to an arbitrary symbol.
+@end table
+
+@node CScope
+@chapter CScope
+
+Several tools in @cedet{} can support the use of CScope.  If you use
+CScope in your project, you can enable the use of it to enhance
+or speed up various tools in @cedet{}.
+
+You can download CScope from @url{http://cscope.sourceforge.net/}
+
+To make sure your CScope installation is good, use the command
+
+@example
+M-x cedet-cscope-version-check RET
+@end example
+
+You can wrap any @cedet{} / CScope configurations in your
+@file{.emacs} file like this:
+
+@example
+(when (cedet-cscope-version-check t)  ; Is it ok?
+    ;; Configurations for CScope and CEDET.
+    )
+@end example
+
+@section Detecting CScope
+
+CScope is detected by the presense of a @file{cscope.out} file at the
+ROOT of your current project, as specified by @ede{}.  CScope the program
+supports multiple @file{cscope.out} files spread out through your
+project, but this is not detected by @cedet{}.  It will also use a
+@file{cscope.out} in the same directory as your sources if you do not
+use @ede{}
+
+If you use CScope and need this feature, please consider fixing it.
+Contact the cedet-devel mailing list.
+
+@section @ede{} and CScope
+
+The @ede{} project system can use CScope to accelerate finding
+files within a project.  The EDE command to @code{ede-find-file}
+bound to @kbd{C-c . f} is one direct application.  @semantic{} also
+makes heavy use of of the feature to find header files for C and C++.
+
+To enable it, configure the variable @code{ede-locate-setup-options}.
+Something like this can work in your @file{.emacs} file.
+
+@example
+(setq ede-locate-setup-options
+      '(ede-locate-cscope
+        ede-locate-base))
+@end example
+
+@section @semantic{} Database
+
+@semantic{} can use CScope as a back end for database searches.
+To enable it, use:
+
+@example
+(semanticdb-enable-cscope-databases)
+@end example
+
+This will enable the use of cscope for all C and C++ buffers.
+
+CScope will then be used for project-wide searches as a backup when
+pre-existing @semantic{} database searches may not have parsed all
+your files.
+
+@section @semantic Symref
+
+The semantic symref tool can use CScope to local symbol references.
+This tool will automatically detect CScope and use it.  You can search
+for references via the commands:
+
+@table @code
+@item semantic-symref
+Find references to the tag under the cursor.
+@item semantic-symref-symbol
+Find references to an arbitrary symbol.
+@end table
+
+@node Maintenance
+@chapter Maintenance
+
+Most of the @cedet{} tools do their best to maintain their data files and
+caches.  It is useful, however, to periodically run:
+
+@example
+M-x semanticdb-cleanup-cache-files RET
+@end example
+
+to delete old database cache files that may no longer be associated
+with directories on your system.
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include semantic/fdl.texi
+
+@node Index
+@unnumbered Index
+@printindex cp
+
+@iftex
+@contents
+@summarycontents
+@end iftex
+
+@bye

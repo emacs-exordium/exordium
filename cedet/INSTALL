@@ -1,0 +1,202 @@
+CEDET: Collection of Emacs Development Environment Tools
+
+CEDET is a top-level project containing several individual packages for Emacs,
+including:
+
+   EIEIO -    CLOS layer for Emacs Lisp
+   Semantic - Parser Infrastructure for Emacs
+   EDE -      File manager/ Makefile generator
+   SRecode -  Template manager/ code generator
+   COGRE -    Connected Graph Editor
+
+REQUIREMENTS:
+
+   The full CEDET suite requires Emacs 23.2 or newer.
+
+   Compilation of CEDET currently requires GNU Make.
+
+INSTALL:
+
+- Byte Compilation
+
+  Byte compilation is done by entering the top directory and calling
+
+    make
+
+  If you want to byte-compile with a specific Emacs version, use
+
+    make EMACS=<Emacs binary>
+
+  CEDET is designed to be used 'in-place', so you do *not* have to
+  call 'make install' afterwards.
+
+- Documentation
+
+  By default, info files containing the CEDET documentation will be
+  generated through the above 'make' call and put into
+
+    <CEDET-TOPDIR>/doc/info
+
+  where they will be automatically made known to Emacs when CEDET is
+  loaded (so usually, you can stop reading here).  Like the EMACS
+  variable above, you can specify binaries for makeinfo and
+  install-info, as well as the location for the generated info files,
+  by using the 'MAKEINFO', 'INSTALL-INFO' and 'INFODIR' variables,
+  respectively.  Note that if you use another INFODIR than the
+  default, you have to make sure that they are found by Emacs
+  yourself.  Additionally, if writing into your custom INFODIR
+  requires special permissions, you'll have to call
+
+    make install-info
+
+  manually as root or via sudo.
+
+- Install CEDET into your Emacs init files (.emacs):
+
+  To enable the CEDET development version in Emacs you need to
+  override the CEDET that comes with Emacs.  To do that, load the
+  cedet-devel-load.el file that is next to this INSTALL file.
+
+  You should place the `cedet-devel-load.el' command near the
+  beginning of your init file, otherwise parts of CEDET like EIEIO
+  might already be loaded from core Emacs. For more details on other
+  configuration options topic, see the info file common/cedet.info.
+
+  This code snippet can be copied into your .emacs file to enable the
+  development version of cedet, and turn on all the features.'
+
+-----------
+;; Load CEDET.
+;; See cedet/common/cedet.info for configuration details.
+;; IMPORTANT: Tou must place this *before* any CEDET component (including
+;; EIEIO) gets activated by another package (Gnus, auth-source, ...).
+(load-file "/home/user/cedet/cedet-devel-load.el")
+
+;; Add further minor-modes to be enabled by semantic-mode.
+;; See doc-string of `semantic-default-submodes' for other things
+;; you can use here.
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+
+;; Enable Semantic
+(semantic-mode 1)
+
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+
+-----------
+
+- Build Issues
+
+  If running MAKE fails due to other issues such as bad loaddef files,
+  custom-autoload or incomprehensible run time errors during a byte
+  compilation, do a
+
+    make clean-all
+
+  and try again. If you're running the development version from bzr,
+  you can also do
+
+    bzr revert
+    bzr clean-tree
+    bzr clean-tree --ignore
+
+  to get a clean slate of all files (deleting all new files you've
+  created and all changes you've made, of course).
+
+  If you're getting error messages about Makefiles that have to be
+  regenerated, or maybe this regeneration is triggered automatically
+  and it fails, you can always enforce the current Makefiles by
+  updating their timestamps through
+
+    make touch-makefiles
+
+- For Package Maintainers: Unpack CEDET sources
+
+  Do not put the copy of CEDET's standalone sources under Emacs' lisp
+  directory.  If you do, Emacs will attempt to add too much into the
+  load-path, and this will not work.
+
+  When installing CEDET standalone sources over an existing Emacs, put the
+  sources outside of Emacs' regular load path.  Use the install
+  instructions above for initializing CEDET use in Emacs.
+
+  https://sourceforge.net/tracker/?func=detail&atid=117886&aid=3585232&group_id=17886
+
+- Install CEDET CONTRIB files into your emacs init files (.emacs)
+
+  When you install CEDET standalone, you have the option of also
+  installing CEDET's "contrib" files.  These are additional programs
+  that work with CEDET for which Authors were unable to provide
+  copyright to the FSF for inclusion into Emacs.  They are kept
+  separately, and must be compiled and installed separately.  First
+  you have to compile them by entering the 'contrib' directory and
+  simply call 'make'.  You can then load them in your init file by
+  doing
+
+-----------
+;; Load CEDET CONTRIB.
+(load-file "/home/user/cedet/cedet-contrib-load.el")
+-----------
+
+
+BUGS/COMMENTS
+
+   To send bug reports, or participate in discussions on these
+   packages, there are three lists available:
+
+   For general discussions on CEDET, use cedet-devel@sourceforge.net
+   via the URL
+
+   http://lists.sourceforge.net/lists/listinfo/cedet-devel
+
+   For discussions specific to Semantic use the mailing list
+   cedet-semantic@sourceforge.net via the URL:
+
+   http://lists.sourceforge.net/lists/listinfo/cedet-semantic
+
+   For EIEIO, use the mailing list cedet-eieio@sourceforge.net
+   via the URL:
+
+   http://lists.sourceforge.net/lists/listinfo/cedet-eieio
+
+   All mailing lists are also available via Gmane (gmane.org) as
+
+     gmane.emacs.cedet
+     gmane.emacs.semantic
+     gmane.emacs.eieio
+
+OTHER OPTIONAL REQUIREMENTS:
+
+   You may also need to download some of the following files for more
+   obscure features.
+   
+   To use Exuberant CTags to parse files:
+   http://ctags.sourceforge.net/
+
+   To use GNU Global integration:
+   http://www.gnu.org/software/global
+
+   To use ID Utils integration:
+   http://www.gnu.org/software/idutils/
+
+   To use CScope integration:
+   http://cscope.sourceforge.net/
+
+   To use C/C++ completion with clang:
+   http://clang.llvm.org/
+
+   To use Javascript completions through Firefox and mozrepl:
+   https://github.com/bard/mozrepl/wiki
+
+   To use the JavaScript parser on older Emacsen you will need
+   javascript-mode.el (this only applies to version 23.1; version 23.2
+   and newer will have it included):
+   http://www.emacswiki.org/cgi-bin/wiki/JavaScriptMode
+
+   To use COGRE with Graphviz Dot integration:
+   http://www.graphviz.org/
+
+   And a major mode for dot (not required):
+   http://users.skynet.be/ppareit/projects/graphviz-dot-mode/graphviz-dot-mode.html

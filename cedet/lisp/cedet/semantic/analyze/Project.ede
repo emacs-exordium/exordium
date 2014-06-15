@@ -1,0 +1,19 @@
+;; Object ctags
+;; EDE project file.
+(ede-proj-project "semantic/analyze"
+  :name "Analyzer"
+  :file "Project.ede"
+  :targets (list 
+   (ede-proj-target-elisp "analyze"
+    :name "analyze"
+    :path ""
+    :source '("complete.el" "debug.el" "fcn.el" "refs.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L ../ --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  )

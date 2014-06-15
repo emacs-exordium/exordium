@@ -1,0 +1,25 @@
+This attempts to demonstrate on a small scale the problem described at:
+  http://sourceforge.net/mailarchive/forum.php?thread_name=515650CE.3030908%40siege-engine.com&forum_name=cedet-semantic
+
+Problem:
+    * When using GNU Global backend with semantic-symref, more files
+      are loaded than should be needed to find the prototypes.
+    * The reason is that the symbol is in a namespace, and that
+      namespace is looked up to make sure the hits are in the correct
+      namespaces.
+
+The Instructions:
+    * Run the cit-globalref test.  This will:
+      ** Copy these files into /tmp
+      ** Run 'global' on the directory to create a database.
+      ** Run two tests.
+
+    * One of the tests verifies that the symbol in the namespace only
+      loads the files once.  (They used to be loaded multiple times.)
+    * A second teste makes sure that only the one file hit is loaded,
+      but that has no namespaces involved.
+
+TODO:
+    * It should be possible to restrict the namespace loading only to
+      those files that have hits.  That is a task for a different day.
+

@@ -1,0 +1,6 @@
+(ede-proj-project "cedet-topdir"
+  :name "cedet-topdir"
+  :version "1.1beta"
+  :file "Project.ede"
+  :targets (list )
+)

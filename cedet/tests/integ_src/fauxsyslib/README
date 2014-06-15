@@ -1,0 +1,6 @@
+This directory is meant to have no project associated with it.
+
+Instead, it is a place to put fake "system libraries" for other tests.
+That way, when tests need to add something to a "system" level
+library, such as C++ system inculdes, or Java system Jar files, they
+can go here, and be easily found by other test files.

@@ -1,0 +1,37 @@
+;; Object semantic/wisent
+;; EDE project file.
+(ede-proj-project "semantic/wisent"
+  :name "wisent"
+  :file "Project.ede"
+  :targets (list 
+   (semantic-ede-proj-target-grammar "wy"
+    :name "wy"
+    :path ""
+    :source '("java-tags.wy" "calc.wy" "java.wy" "python.wy" "javascript.wy")
+    )
+   (ede-proj-target-elisp "tools"
+    :name "tools"
+    :path ""
+    :source '("bison-wisent.el")
+    )
+   (ede-proj-target-elisp "wisent"
+    :name "wisent"
+    :path ""
+    :source '("wisent.el" "comp.el" "expr.el" "grammar.el" "debug.el" "grammar-macros.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   (ede-proj-target-elisp "languages"
+    :name "languages"
+    :path ""
+    :source '("calc.el" "java.el" "java-tags.el" "python.el" "javascript.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :configuration-variables 'nil
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L ../../ --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  )

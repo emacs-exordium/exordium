@@ -74,7 +74,7 @@
 
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
-;;(load "~/.emacs.d/init_cedet.el")
+(load "~/.emacs.d/init_cedet.el")
 
 ;;; Clojure
 (load "~/.emacs.d/init_clojure.el")

@@ -1,0 +1,9 @@
+TESTPROJECTS:
+------------
+
+This directory contains example projects that can be used for testing
+CEDET/EDE features.  Projects in this directory will not be part of
+the distribution.  Projects in this directory would therefore not be
+part of either the unit test suite (utest), nor the interactive test
+suite (itest).
+

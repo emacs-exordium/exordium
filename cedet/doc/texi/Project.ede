@@ -1,0 +1,33 @@
+;; Object ede-proj-project
+;; EDE project file.
+(ede-proj-project "CEDET Documentation"
+  :name "CEDET-doc"
+  :file "Project.ede"
+  :targets (list 
+   (ede-proj-target-makefile-info "CEDET-overview"
+    :name "CEDET-overview"
+    :path ""
+    :source '("cedet.texi")
+    )
+   (ede-proj-target-makefile-info "cogre-doc"
+    :name "cogre-doc"
+    :path ""
+    :source '("cogre.texi")
+    )
+   (ede-proj-target-makefile-info "ede-doc"
+    :name "ede-doc"
+    :path ""
+    :source '("ede.texi")
+    )
+   (ede-proj-target-makefile-info "srecode-doc"
+    :name "srecode-doc"
+    :path ""
+    :source '("srecode.texi")
+    )
+   (ede-proj-target-makefile-info "eieio-doc"
+    :name "eieio-doc"
+    :path ""
+    :source '("eieio.texi")
+    )
+   )
+  )

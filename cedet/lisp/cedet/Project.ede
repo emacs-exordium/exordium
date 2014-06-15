@@ -1,0 +1,41 @@
+;; Object common
+;; EDE project file.
+(ede-proj-project "cedet"
+  :name "cedet"
+  :version "1.2beta"
+  :file "Project.ede"
+  :targets (list 
+   (ede-proj-target-elisp-autoloads "autoloads"
+    :name "autoloads"
+    :path ""
+    :partofall nil
+    :autoload-file "loaddefs.el"
+    )
+   (ede-proj-target-elisp "common"
+    :name "common"
+    :path ""
+    :source '("cedet-android.el" "cedet-compat.el" "cedet-cscope.el" "cedet-edebug.el"
+	      "cedet-files.el" "cedet-global.el" "cedet-graphviz.el" "cedet-idutils.el" "cedet-java.el"
+	      "cedet-m3.el" "cedet.el" "data-debug.el" "fame.el" "inversion.el"
+	      "mode-local.el" "pprint.el" "pulse.el" "working.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   (ede-proj-target-elisp "subproj-top"
+    :name "init"
+    :path ""
+    :source '("semantic.el" "srecode.el" "ede.el" "cogre.el")
+    :aux-packages '("cedet-compat" "cedet" "eieio")
+    :pre-load-packages '("cedet-compat")
+    )
+   )
+  :web-site-url "http://cedet.sourceforge.net/"
+  :web-site-directory "/r@scp:shell.sourceforge.net:cedet/htdocs"
+  :ftp-upload-site "/ftp@upload.sourceforge.net:/incoming"
+  :variables '(("EMACSFLAGS" . "-batch --no-site-file --eval '(setq debug-on-error t)' -l \"../../cedet-remove-builtin.el\"")
+	       ("EMACS" . "@echo \"    > $@\";emacs")
+	       ;; This is a hack we still need for Emacs 23.1
+	       ("AUTOGENFLAGS" . "-L . --eval '(progn (require (quote cedet-compat)) (require (quote mode-local)))'"))
+  :configuration-variables 'nil
+  :metasubproject 't
+  )

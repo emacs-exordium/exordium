@@ -1,0 +1,264 @@
+This is cogre.info, produced by makeinfo version 4.8 from cogre.texi.
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* cogre: (cogre).       Graphs & UML for Emacs
+END-INFO-DIR-ENTRY
+
+
+File: cogre.info,  Node: Top,  Next: Getting Started,  Up: (dir)
+
+COGRE: COnnected GRaph Editor
+*****************************
+
+COGRE is a package that enables Emacs to display connected graph
+diagrams in a text buffer.  The main goal is to provide UML class
+diagrams, but any kind of graph can be supported through object
+inheritance via EIEIO *Note (eieio)Top::.
+
+   Warning: Very little in this manual has been written.
+
+* Menu:
+
+* Getting Started::       Graphs, Nodes, and Links
+* Class Diagrams::        Creating Class diagrams
+* Export::                Exporting your graph to different formats.
+* Semantic Support::      Emacs can make diagrams for you
+* Index::
+
+
+File: cogre.info,  Node: Getting Started,  Next: Class Diagrams,  Prev: Top,  Up: Top
+
+1 Getting Started
+*****************
+
+There are three basic parts to any COGRE interface.
+
+  1. Graph The graph consists of a buffer, and all child elements in
+     that graph.  The graph is treated as any other Emacs buffer.  When
+     that buffer is selected, Graph editing commands are available.
+
+  2. Node A Node consists of a square region of screen space, and
+     usually a name.  Nodes can be anything, but common examples are
+     Classes, Packages, or other "object like" things.
+
+  3. Link A Link is a line that connects two nodes.  A link may not
+     exist without a node at both ends.  When a node is deleted, all
+     links connected to it in some way are also deleted.
+
+   The first step to using COGRE is to create a new graph.  Once you
+have a graph, you can create nodes and links.
+
+   You can create a new graph with the `cogre' command, or open a new
+file that ends with the `.cgr' extension.
+
+   Use normal keybindings such as `C-x C-s' to save your graph into a
+file.  Use a `.cgr' extension so Emacs can correctly parse the file
+into a graph again later.
+
+ -- Function: cogre name &optional graph-class
+     Create a new graph not associated with a buffer.  The new graph
+     will be given NAME.  See "cogre-mode" for details.  Optional
+     argument GRAPH-CLASS indicates the type of graph to create.
+
+* Menu:
+
+* Creating Nodes and Links ::   Create new nodes and links
+* Moving Nodes ::               Move nodes around
+* Customizing Nodes ::          Customize details about a node
+
+
+File: cogre.info,  Node: Creating Nodes and Links,  Next: Moving Nodes,  Up: Getting Started
+
+1.1 Creating Nodes and Links
+============================
+
+The easiest way to create a node is with the insert popup menu.  Right
+click anywhere in the graph where there is no pre-existing node or
+link, and a menu will appear allowing you to select the node style you
+want.
+
+   Nodes are created with the command `cogre-new-node', which is also
+bound to `N' in the graph.
+
+ -- Command: cogre-new-node point nodetype
+     Insert a new node at the current point.  Argument POINT is a
+     position to insert this node to.  NODETYPE is the eieio class name
+     for the node to insert.
+
+   The easiest way to create a link is with a `mouse-2' drag operation.
+Click the middle mouse button on a node, and drag the cursor to a
+second node.  A popup menu will appear where the link type can be
+selected.  The new link will be created connecting the two nodes.
+
+   New links can also be created with the command `cogre-new-link'
+which is bound to `L'.
+
+ -- Command: cogre-new-link mark point &optional linktype
+     Insert a new link from the node at MARK to POINT of LINKTYPE.
+     MARK is the node within which the current mark is set.  POINT is
+     the node the cursor is in.  LINKTYPE is the EIEIO class name for
+     the link to insert.
+
+   To configure the default type of node to insert via the keyboard,
+such as a UML class node, use `cogre-default-node'.  Likewise, use
+`cogre-default-link'.  These are bound to `C-c C-n', and `C-c C-l'
+respectively.
+
+ -- Command: cogre-default-node &optional node prefix
+     Return the default node type.  If run interactively, query for a
+     new node to make the default.  If called non-interactivly there is
+     no default, query for one.  If NODE is supplied, use that.  If
+     there is a PREFIX argument, then force a query for one.
+
+ -- Command: cogre-default-link &optional link prefix
+     Return the default link type.  If run interactively, query for a
+     new link to make the default.  If called non-interactivly there is
+     no default, query for one.  If LINK is supplied, use that.  If
+     there is a PREFIX argument, then force a query for one.
+
+
+File: cogre.info,  Node: Moving Nodes,  Next: Customizing Nodes,  Prev: Creating Nodes and Links,  Up: Getting Started
+
+1.2 Moving Nodes
+================
+
+Moving nodes around is also how to move links around.  As a node moves,
+the links will re-route.  Movement is done with the mouse, or with meta
+key bindings.
+
+   To use the mouse, click with the left mouse button (`mouse-1') and
+drag the node to a new location.
+
+`M-b'
+`meta left'
+     Move a node left one character
+
+`M-f'
+`meta right'
+     Move a node right one character
+
+`M-n'
+`meta down'
+     Move a node down one character
+
+`M-p'
+`meta up'
+     Move a node up one character
+
+`TAB'
+     Move point to the next node
+
+`M-TAB'
+     Move point to the previous node
+
+   Sometimes the movement via keyboard of nodes will cause other nodes
+to get their graphic to be partially erased.  Minimal steps are taken to
+refresh the graph to keep things fast in large drawings.  To fix the
+problem, use the `R' keybinding to redraw the entire graph from scratch.
+
+
+File: cogre.info,  Node: Customizing Nodes,  Prev: Moving Nodes,  Up: Getting Started
+
+1.3 Customizing Nodes
+=====================
+
+Nodes and links are EIEIO objects, and can be customized.  Press `RET'
+on a node or link to customize the slots of that object.
+
+
+File: cogre.info,  Node: Class Diagrams,  Next: Export,  Prev: Getting Started,  Up: Top
+
+2 Class Diagrams
+****************
+
+Add text here
+
+
+File: cogre.info,  Node: Export,  Next: Semantic Support,  Prev: Class Diagrams,  Up: Top
+
+3 Export
+********
+
+COGRE can export your graph into different formats.  The simplest
+format is into an all ASCII diagram:
+
+ -- Function: cogre-export-ascii
+     Export the current diagram into an ASCII buffer.
+
+   Other formats are supported through the configuration of Graphviz
+tools.  You will need to install and configure Graphviz to use these
+features.  The CEDET variables controlling how dot and neato are called
+are:
+
+ -- Function: cedet-graphviz-dot-command
+     Command name for the Graphviz DOT executable.
+
+ -- Function: cedet-graphviz-neato-command
+     Command name for the Graphviz NEATO executable.
+
+   Also, when converting to and from DOT formatted files, a scaling
+factor needs to be applied as the DOT coordinates (in points) are
+converted into character sized units for COGRE.
+
+ -- Function: cogre-dot-node-position-scale
+     The scale to use when converting between COGRE and DOT position
+     values.  This is of the format ( XSCALE . YSCALE ).  DOT uses
+     points, where as COGRE uses characters.
+
+   Here are some handy exporting commands.
+
+ -- Function: cogre-export-dot
+     Export the current COGRE graph to DOT notation.  DOT is a part of
+     GraphViz.
+
+ -- Function: cogre-export-dot-png
+     Export the current COGRE graph to DOT, then convert that to PNG.
+     The png file is then displayed in an Emacs buffer.  DOT is a part
+     of GraphVis.
+
+ -- Function: cogre-export-dot-postscript-print
+     Print the current graph.  This is done by exporting the current
+     COGRE graph to DOT, then convert that to Postscript before
+     printing.  DOT is a part of GraphVis.
+
+
+File: cogre.info,  Node: Semantic Support,  Next: Index,  Prev: Export,  Up: Top
+
+4 Semantic Support
+******************
+
+Add text here
+
+
+File: cogre.info,  Node: Index,  Prev: Semantic Support,  Up: Top
+
+5 Index
+*******
+
+
+
+Tag Table:
+Node: Top182
+Node: Getting Started855
+Ref: cogre2071
+Node: Creating Nodes and Links2454
+Ref: cogre-new-node2966
+Ref: cogre-new-link3554
+Ref: cogre-default-node4059
+Ref: cogre-default-link4385
+Node: Moving Nodes4657
+Node: Customizing Nodes5668
+Node: Class Diagrams5931
+Node: Export6073
+Ref: cogre-export-ascii6322
+Ref: cedet-graphviz-dot-command6634
+Ref: cedet-graphviz-neato-command6729
+Ref: cogre-dot-node-position-scale7010
+Ref: cogre-export-dot7267
+Ref: cogre-export-dot-png7389
+Ref: cogre-export-dot-postscript-print7597
+Node: Semantic Support7774
+Node: Index7912
+
+End Tag Table

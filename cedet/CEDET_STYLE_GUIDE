@@ -1,0 +1,79 @@
+CEDET Developer's style guide
+
+This document is a set of guidelines for CEDET developers to keep in
+mind while working on CEDET.
+
+
+Documentation Strings:
+
+  In general, please start with the Emacs Lisp Developer's guide.  In
+  particular chapters labeled: "Documentation"
+
+  Specific items to keep in mind are:
+  * All functions, no matter how small, should have a doc string.
+  * If you are unsure of all the Emacs doc string rules, run the
+    command "checkdoc" in the file with your changes to check.
+
+Use of CL:
+
+  Use of the CL package in Emacs is restricted, but it is OK to use
+  macros that are compiled out (thus not requiring CL at run time.)
+
+Autoload cookies:
+
+  Autoload cookies are the ";;;#autoload" comments that allows Emacs
+  to know about a function without loading the file.
+
+  Autoload cookies can be used for:
+   * User commands. (They have an `interactive' call in them.)
+   * EIEIO classes that users would create as part of a configuration
+     as long as the class is in a file in a subdirectory of  lisp/cedet
+
+  Autoload cookies cannot be used for:
+   * EIEIO methods.
+   * EIEIO classes in lisp, lisp/cedet, or lisp/
+
+  All files that have an autoload cookie must have a local variables
+  section that sets generated-autoload-file.  For example:
+
+;; Local variables:
+;; generated-autoload-file: "loaddefs.el"
+;; generated-autoload-load-name: "ede/cpp-root"
+;; End:
+
+  If your file has circular dependencies and you want to resolve
+  compile warnings, use 'declare-function'.
+
+Compatibility
+
+  Your code should work on Emacs 23.2 and newer.  The Buildbot at
+
+  http://www.randomsample.de/cedet-buildbot
+
+  will compile all new revisions on several Emacs versions, and also
+  run the unit and integration tests.  If something fails, it will
+  send you an e-mail.
+
+Compiler Warnings
+
+  Our goal is that CEDET compiles on the current Emacs stable release
+  without warnings.  Even if you know that a warning is harmless, you
+  should change your code so that it compiles without it.  Otherwise,
+  new and possibly serious warnings will become harder to spot.
+
+  As a last resort, you can use the `with-no-warnings' macro to wrap
+  problematic code, but then you should document why you have to use
+  it.
+
+  Warnings on older Emacs versions or on current Emacs trunk are OK,
+  as long as you are sure that they don't indicate real problems.
+
+Checking code into BZR:
+
+  Check in each file with its own comment, and format the comments in
+  ChangeLog form.  The check-in comments are later extracted to create
+  the ChangeLog files.
+
+  Having good check-in comments expressing exactly which functions
+  where modified and why can be very helpful later when trying to
+  determine why a change was made.

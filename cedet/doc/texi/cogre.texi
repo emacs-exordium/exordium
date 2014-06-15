@@ -1,0 +1,270 @@
+\input texinfo   @c -*-texinfo-*-
+@c
+@c $Id: cogre.texi,v 1.4 2009-04-06 02:02:12 zappo Exp $
+@c
+@setfilename cogre.info
+@set TITLE COGRE: COnnected GRaph Editor 
+@set AUTHOR Eric M. Ludlam
+@settitle @value{TITLE}
+
+@ifinfo
+@dircategory Emacs
+@format
+START-INFO-DIR-ENTRY
+* cogre: (cogre).       Graphs & UML for Emacs
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@titlepage
+@sp 10
+@center @titlefont{cogre}
+@vskip 0pt plus 1 fill
+Copyright @copyright{} 2001, 2008, 2009 Eric M. Ludlam
+@end titlepage
+
+@macro COGRE{}
+@i{COGRE}
+@end macro
+
+@macro EIEIO{}
+@i{EIEIO}
+@end macro
+
+@node Top
+@top @value{TITLE}
+
+@COGRE{} is a package that enables Emacs to display connected graph
+diagrams in a text buffer.  The main goal is to provide UML class
+diagrams, but any kind of graph can be supported through object
+inheritance via @EIEIO{} @xref{(eieio)Top}.
+
+Warning: Very little in this manual has been written.
+
+@menu
+* Getting Started::       Graphs, Nodes, and Links
+* Class Diagrams::        Creating Class diagrams
+* Export::                Exporting your graph to different formats.
+* Semantic Support::      Emacs can make diagrams for you
+* Index::
+@end menu
+
+@node Getting Started
+@comment  node-name,  next,  previous,  up
+@chapter Getting Started
+
+There are three basic parts to any @COGRE{} interface.
+
+@enumerate
+@item Graph
+The graph consists of a buffer, and all child elements in that graph.
+The graph is treated as any other Emacs buffer.  When that buffer is
+selected, Graph editing commands are available.
+@item Node
+A Node consists of a square region of screen space, and usually a
+name.  Nodes can be anything, but common examples are Classes,
+Packages, or other ``object like'' things.
+@item Link
+A Link is a line that connects two nodes.  A link may not exist
+without a node at both ends.  When a node is deleted, all links
+connected to it in some way are also deleted.
+@end enumerate
+
+The first step to using @COGRE{} is to create a new graph.  Once you
+have a graph, you can create nodes and links.
+
+You can create a new graph with the @code{cogre} command, or open a
+new file that ends with the @file{.cgr} extension.
+
+Use normal keybindings such as @kbd{C-x C-s} to save your graph into a
+file.  Use a @file{.cgr} extension so Emacs can correctly parse the
+file into a graph again later.
+
+@defun cogre name &optional graph-class
+@anchor{cogre}
+Create a new graph not associated with a buffer.
+The new graph will be given @var{NAME}.  See @dfn{cogre-mode} for details.
+Optional argument @var{GRAPH-CLASS} indicates the type of graph to create.
+@end defun
+
+@menu
+* Creating Nodes and Links ::   Create new nodes and links
+* Moving Nodes ::               Move nodes around
+* Customizing Nodes ::          Customize details about a node
+@end menu
+
+@node Creating Nodes and Links
+@section Creating Nodes and Links
+
+The easiest way to create a node is with the insert popup menu.  Right
+click anywhere in the graph where there is no pre-existing node or
+link, and a menu will appear allowing you to select the node style you
+want.
+
+Nodes are created with the command @code{cogre-new-node}, which is
+also bound to @kbd{N} in the graph.
+
+@deffn Command cogre-new-node point nodetype
+@anchor{cogre-new-node}
+Insert a new node at the current point.
+Argument @var{point} is a position to insert this node to.
+@var{nodetype} is the eieio class name for the node to insert.
+@end deffn
+
+The easiest way to create a link is with a @kbd{mouse-2} drag
+operation.  Click the middle mouse button on a node, and drag the
+cursor to a second node.  A popup menu will appear where the link type
+can be selected.  The new link will be created connecting the two
+nodes.
+
+New links can also be created with the command @code{cogre-new-link}
+which is bound to @kbd{L}.
+
+@deffn Command cogre-new-link mark point &optional linktype
+@anchor{cogre-new-link}
+Insert a new link from the node at @var{mark} to @var{point} of @var{linktype}.
+@var{mark} is the node within which the current mark is set.
+@var{point} is the node the cursor is in.
+@var{linktype} is the @EIEIO{} class name for the link to insert.
+@end deffn
+
+To configure the default type of node to insert via the keyboard, such
+as a UML class node, use @code{cogre-default-node}.  Likewise, use
+@code{cogre-default-link}.  These are bound to @kbd{C-c C-n}, and
+@kbd{C-c C-l} respectively.
+
+@deffn Command cogre-default-node &optional node prefix
+@anchor{cogre-default-node}
+Return the default node type.
+If run interactively, query for a new node to make the default.
+If called non-interactivly there is no default, query for one.
+If @var{node} is supplied, use that.
+If there is a @var{prefix} argument, then force a query for one.
+@end deffn
+
+@deffn Command cogre-default-link &optional link prefix
+@anchor{cogre-default-link}
+Return the default link type.
+If run interactively, query for a new link to make the default.
+If called non-interactivly there is no default, query for one.
+If @var{link} is supplied, use that.
+If there is a @var{prefix} argument, then force a query for one.
+@end deffn
+
+@node Moving Nodes
+@section Moving Nodes
+
+Moving nodes around is also how to move links around.  As a node
+moves, the links will re-route.  Movement is done with the mouse, or
+with meta key bindings.
+
+To use the mouse, click with the left mouse button (@kbd{mouse-1}) and
+drag the node to a new location.
+
+@table @kbd
+@item M-b
+@itemx meta left
+Move a node left one character
+@item M-f
+@itemx meta right
+Move a node right one character
+@item M-n
+@itemx meta down
+Move a node down one character
+@item M-p
+@itemx meta up
+Move a node up one character
+@item TAB
+Move point to the next node
+@item M-TAB
+Move point to the previous node
+@end table
+
+Sometimes the movement via keyboard of nodes will cause other nodes to
+get their graphic to be partially erased.  Minimal steps are taken to
+refresh the graph to keep things fast in large drawings.  To fix the
+problem, use the @kbd{R} keybinding to redraw the entire graph from
+scratch.
+
+@node Customizing Nodes
+@section Customizing Nodes
+
+Nodes and links are @EIEIO{} objects, and can be customized.  Press
+@kbd{RET} on a node or link to customize the slots of that object.
+
+@node Class Diagrams
+@chapter Class Diagrams
+
+Add text here
+
+@node Export
+@chapter Export
+
+COGRE can export your graph into different formats.  The simplest
+format is into an all ASCII diagram:
+
+@defun cogre-export-ascii
+@anchor{cogre-export-ascii}
+Export the current diagram into an @var{ASCII} buffer.
+@end defun
+
+Other formats are supported through the configuration of Graphviz
+tools.  You will need to install and configure Graphviz to use these
+features.  The CEDET variables controlling how dot and neato are
+called are:
+
+@defun cedet-graphviz-dot-command
+@anchor{cedet-graphviz-dot-command}
+Command name for the Graphviz @var{DOT} executable.
+@end defun
+
+@defun cedet-graphviz-neato-command
+@anchor{cedet-graphviz-neato-command}
+Command name for the Graphviz @var{NEATO} executable.
+@end defun
+
+Also, when converting to and from DOT formatted files, a scaling
+factor needs to be applied as the DOT coordinates (in points) are
+converted into character sized units for COGRE.
+
+@defun cogre-dot-node-position-scale
+@anchor{cogre-dot-node-position-scale}
+The scale to use when converting between @var{COGRE} and @var{DOT} position values.
+This is of the format ( @var{XSCALE} . @var{YSCALE} ).
+@var{DOT} uses points, where as @var{COGRE} uses characters.
+@end defun
+
+Here are some handy exporting commands.
+
+@defun cogre-export-dot
+@anchor{cogre-export-dot}
+Export the current @var{COGRE} graph to @var{DOT} notation.
+@var{DOT} is a part of GraphViz.
+@end defun
+
+@defun cogre-export-dot-png
+@anchor{cogre-export-dot-png}
+Export the current @var{COGRE} graph to @var{DOT}, then convert that to @var{PNG}.
+The png file is then displayed in an Emacs buffer.
+@var{DOT} is a part of GraphVis.
+@end defun
+
+@defun cogre-export-dot-postscript-print
+@anchor{cogre-export-dot-postscript-print}
+Print the current graph.
+This is done by exporting the current @var{COGRE} graph to @var{DOT}, then
+convert that to Postscript before printing.
+@var{DOT} is a part of GraphVis.
+@end defun
+
+@node Semantic Support
+@chapter Semantic Support
+
+Add text here
+
+@node Index
+@chapter Index
+
+@contents
+
+@bye
