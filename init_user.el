@@ -101,6 +101,15 @@
 ;;; Mouse selection
 (setq x-select-enable-clipboard t)
 
+;;; Full screen
+(when (and (emacs-24-p) (emacs-osx-p))
+  (defun toggle-fullscreen ()
+    "Toggle full screen"
+    (interactive)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Keyboard
@@ -120,14 +129,19 @@
 ;;;(global-visual-line-mode 1) ; Wordwrap at word boundaries
 
 ;;; Shortcut keys
-
-;;; Meta-G         = goto
-;;; Ctrl-Z         = undo
-;;; Meta-Backspace = delete word
-;;; Ctrl-Esc       = delete other windows
-;;; Ctrl-`         = kill current buffer (Ctrl-X K)
-;;; Meta-Enter     = return + tab
-;;; f10            = speedbar
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; Meta-g         Goto line
+;;; Ctrl-z         Undo
+;;; Meta-backspace Delete word
+;;; Ctrl-esc       Delete other windows
+;;; Ctrl-`         Kill current buffer (= Ctrl-x k)
+;;; Meta-enter     Return + tab
+;;; F10            Speedbar
+;;; Super-arrow    Move between windows (= Ctrl-x o)
+;;; Meta-ctrl-l    Switch to last buffer
+;;; -------------- -------------------------------------------------------
 (global-set-key [(meta g)] 'goto-line)
 (define-key global-map [(control z)] 'advertised-undo)
 (define-key global-map [(meta backspace)] 'backward-kill-word)
@@ -149,7 +163,6 @@
   "Alternates between the two most recent buffers"
   (interactive)
   (switch-to-buffer (other-buffer)))
-
 (define-key global-map [(meta control l)] 'switch-to-other-buffer)
 
 

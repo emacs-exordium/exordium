@@ -1,30 +1,15 @@
 #+TITLE: Emacs configuration todo list
 
 * General =====================================================================
-** DONE Packages/marmelade
-** DONE add init_local.el
-** DONE magit
-*** fix it on emacs 24.4 / linux
-*** upgrade emacs on the mac
-** TODO fix font lock speed for C++
 ** TODO sr-speedbar
 ** TODO yasnippet
+* C++ =========================================================================
+** TODO Fix font lock on older versions of Emacs 24 (test on Linux)
+** TODO Test semanticdb indexing on large source tree
+** TODO Source browser
 * Themes ======================================================================
-** DONE Better framework for themes
-** DONE Fix the color leaks!
-** DONE Fix Tomorrow theme for org and C++
-** TODO Add monokai
 ** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
-* Langages ====================================================================
-** DONE Elisp
-** DONE C++ basics for BDE
-** TODO Clojure with lein
-** TODO CEDET
+* Other =======================================================================
 ** TODO JavaScript (with Chrome integration?)
 ** TODO Python
 ** TODO Ruby
-* Export ======================================================================
-** DONE Test on Linux in VM
-** DONE Test with -nw
-** DONE Move to GitHub
-** TODO Test at Bloomberg

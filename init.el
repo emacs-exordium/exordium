@@ -65,7 +65,7 @@
 
 (load "~/.emacs.d/init_user.el")
 (load "~/.emacs.d/init_util.el")
-(load "~/\.emacs.d/init_extensions.el")
+(load "~/.emacs.d/init_extensions.el")
 
 ;;; Themes
 (if (not (emacs-nw-p))
@@ -74,12 +74,13 @@
 
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
+;;(load "~/.emacs.d/init_cedet.el")
 
 ;;; Clojure
 (load "~/.emacs.d/init_clojure.el")
 
-;;; Stuff that is not on all machines
+;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init_local.el")
   (load "~/.emacs.d/init_local.el"))
 
-;;; end of file
+;;; End of file

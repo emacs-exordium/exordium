@@ -554,11 +554,24 @@ names to which it refers are bound."
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night-bright ()
-  "Sets the colors to the tomorrow night night theme"
+  "Sets the colors to the tomorrow night bright theme"
   (interactive)
   (with-tomorrow-colors
    'night-bright
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
+(defun set-colors-tomorrow-night-eighties ()
+  "Sets the colors to the tomorrow night night 80's theme"
+  (interactive)
+  (with-tomorrow-colors
+   'night-eighties
+   (apply 'custom-set-faces (tomorrow-face-specs))))
+
+(defun set-colors-tomorrow-night-blue ()
+  "Sets the colors to the tomorrow night blue theme"
+  (interactive)
+  (with-tomorrow-colors
+   'night-blue
+   (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (provide 'color-theme-tomorrow)

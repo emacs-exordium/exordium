@@ -97,11 +97,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight dead code
 
-(defvar *bde-highlight-dead-code-color* "Gray50")
+;;(defvar *bde-highlight-dead-code-color* "Gray50")
 
 (defun bde-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
-  (let ((color (face-foreground 'font-lock-warning-face)))
+  (let ((color (face-background 'region)))
     (setq cpp-known-face 'default)
     (setq cpp-unknown-face 'default)
     (setq cpp-known-writable 't)
