@@ -143,7 +143,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ECB - Emacs Code Browser
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/cedet/ecb/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/cedet-ecb/"))
 (require 'ecb)
 
 (defvar ecb-toggle-status nil)

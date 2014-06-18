@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+<title>Conflicts - ECB - the Emacs Code Browser</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="ECB - the Emacs Code Browser">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="ecb.html#Top">
+<link rel="up" href="Conflicts-and-bugs.html#Conflicts-and-bugs" title="Conflicts and bugs">
+<link rel="prev" href="Conflicts-and-bugs.html#Conflicts-and-bugs" title="Conflicts and bugs">
+<link rel="next" href="Bugs.html#Bugs" title="Bugs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Conflicts"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Bugs.html#Bugs">Bugs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Conflicts-and-bugs.html#Conflicts-and-bugs">Conflicts and bugs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Conflicts-and-bugs.html#Conflicts-and-bugs">Conflicts and bugs</a>
+<hr>
+</div>
+
+<h3 class="section">12.1 Conflicts with other packages</h3>
+
+<p>This chapter contains a list of already known conflict between ECB and
+other packages and how to solve them - in most cases ECB already
+contains a suitable workaround.
+
+   <p>That is followed by a general recipe what you can do when you have
+detected a conflict between ECB and a package is not listed in the
+know-conflicts-section.
+
+<h4 class="subsection">12.1.1 Proved workarounds or recommendations for other packages</h4>
+
+<p>Here is a list of packages which are proved to work properly with ECB
+and if not (i.e. there are conflicts) then helpful
+solutions/hints/workarounds are offered:
+
+<h5 class="subsubsection">12.1.1.1 Package bs.el</h5>
+
+<p><a name="index-bs-package-367"></a><a name="index-bs_002dshow-368"></a>The package bs.el offers a nifty buffer-selection buffer. The main
+command of this package is <code>bs-show</code>. With ECB &lt; 2.20 this
+command does not really working well within activated ECB. But as of
+version 2.20 of ECB there should be no problems using this package.
+
+   <p>If you add &ldquo;*buffer-selection*&rdquo; as buffer-name to the option
+<code>ecb-compilation-buffer-names</code> then ECB will always display the
+buffer-selection buffer of bs in the compile-window (if there is one). 
+Otherwise bs will use the edit-area to do its job.
+
+<h5 class="subsubsection">12.1.1.2 Package BBDB</h5>
+
+<p><a name="index-BBDB-369"></a>As of ECB 2.21 there should be no conflicts between BBDB and ECB, so
+BBDB can be used even when the ECB-windows are visible.
+
+   <p>But if you encounter problems then it is recommened to use one of the
+window-managers escreen.el or winring.el (see <a href="Window_002dmanagers-and-ECB.html#Window_002dmanagers-and-ECB">Window-managers and ECB</a>). With such a window-manager ECB and BBDB should work together
+very well under all circumstances!
+
+<h5 class="subsubsection">12.1.1.3 Package calendar.el</h5>
+

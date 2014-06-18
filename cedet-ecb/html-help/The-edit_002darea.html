@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>The edit-area - ECB - the Emacs Code Browser</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="ECB - the Emacs Code Browser">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="ecb.html#Top">
+<link rel="up" href="Usage-of-ECB.html#Usage-of-ECB" title="Usage of ECB">
+<link rel="prev" href="Using-the-keyboard.html#Using-the-keyboard" title="Using the keyboard">
+<link rel="next" href="Temp_002d-and-compile_002dbuffers.html#Temp_002d-and-compile_002dbuffers" title="Temp- and compile-buffers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="The-edit-area"></a>
+<a name="The-edit_002darea"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Temp_002d-and-compile_002dbuffers.html#Temp_002d-and-compile_002dbuffers">Temp- and compile-buffers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-the-keyboard.html#Using-the-keyboard">Using the keyboard</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Usage-of-ECB.html#Usage-of-ECB">Usage of ECB</a>
+<hr>
+</div>
+
+<h3 class="section">6.3 Working with the edit-window(s) of the edit-area</h3>
+
+<p><a name="index-edit_002dwindow-25"></a>ECB offers you all what you need to work with the edit-area as if the
+edit-windows of the edit-area would be the only windows of the
+ECB-frame.
+
+   <p><a name="index-Adviced-functions-26"></a>ECB advices the following user-commands so they work best with ECB:
+
+     <ul>
+<li><code>balance-windows</code>
+<li><code>delete-other-windows</code>
+<li><code>delete-window</code>
+<li><code>delete-windows-on</code>
+<li><code>display-buffer</code>
+<li><code>shrink-window-if-larger-than-buffer</code>
+<li><code>split-window</code>
+<li><code>split-window-horizontally</code>
+<li><code>split-window-vertically</code>
+<li><code>switch-to-buffer</code>
+<li><code>switch-to-buffer-other-window</code>
+<li><code>other-window</code>
+<li><code>other-window-for-scrolling</code>
+</ul>
+
+   <p>The behavior of the adviced functions is (slightly simplified):
+
+     <ul>
+<li>All these adviced functions behaves exactly like their corresponding
+original functions but they always act as if the edit-window(s) of ECB
+would be the only window(s) of the ECB-frame. So the edit-window(s) of
+ECB seems to be a normal Emacs-frame to the user. This means that you
+can split and delete edit-windows without any restriction - ECB
+ensures that neither the special ECB-windows nor the compile-window
+will be damaged.
+
+     <li>If there is a persistent compile-window (see <a href="Temp_002d-and-compile_002dbuffers.html#Temp_002d-and-compile_002dbuffers">Temp- and compile-buffers</a>) then all compilation-buffers in the sense of
+<code>ecb-compilation-buffer-p</code> will be displayed in the
+compile-window.
+
+     <li>If called in another frame than the ECB-frame these functions behave
+exactly like the not adviced original versions! 
+</ul>
+
+   <p><strong>Please note</strong>: All these advices are only enabled when ECB is
+enabled.
+
+   <p>Another interesting option in the context of the edit-window and these
+adviced functions is <code>ecb-layout-always-operate-in-edit-window</code>!
+
+<h4 class="subsection">6.3.1 Documentation of the adviced window functions</h4>
+
+<p>This section describes for every adviced window function (s.a.) how it
+differs from the original version. Only the differences are mentioned,
+so if you want the full documentation of such a function call
+<code>describe-function</code> or <kbd>C-h f</kbd>.
+
+<div class="defun">
+&mdash; Command: <b>other-window</b><var> ARG &amp;optional ALL-FRAMES<a name="index-other_002dwindow-27"></a></var><br>
+<blockquote><p>Around-advice <code>ecb</code>: The ECB-version of <code>other-window</code>. 
+Works exactly like the original function with the following
+ECB-adjustment: The behavior depends on
+<code>ecb-other-window-behavior</code>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Command: <b>delete-window</b><var> &amp;optional WINDOW<a name="index-delete_002dwindow-28"></a></var><br>
+<blockquote><p>Around-advice <code>ecb</code>: The ECB-version of <code>delete-window</code>. 
+Works exactly like the original function with the following
+ECB-adjustment:
+
+        <p>If optional argument WINDOW is nil (i.e. probably called
+interactively): If called in a splitted edit-window then it works like
+as if all the edit-windows would be the only windows in the frame. 
+This means the current edit-window which contains the point will be
+destroyed and its place will be occupied from another one. If called
+in an unsplitted edit-window then nothing is done. If called in the
+compile-window of ECB then the compile-window will be hidden (like
+with <code>ecb-toggle-compile-window</code>). If called in an ecb-window
+of the current ECB-layout there are two alternatives:
+
+          <ul>
+<li>If the function is contained in
+<code>ecb-layout-always-operate-in-edit-window</code> the right edit-window
+is selected (depends on the value of the option

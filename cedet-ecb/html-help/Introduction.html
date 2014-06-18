@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+<title>Introduction - ECB - the Emacs Code Browser</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="ECB - the Emacs Code Browser">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="ecb.html#Top">
+<link rel="up" href="tree_002dbuffer.html#tree_002dbuffer" title="tree-buffer">
+<link rel="prev" href="tree_002dbuffer.html#tree_002dbuffer" title="tree-buffer">
+<link rel="next" href="A-new-tree_002dbuffer.html#A-new-tree_002dbuffer" title="A new tree-buffer">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Introduction"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="A-new-tree_002dbuffer.html#A-new-tree_002dbuffer">A new tree-buffer</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="tree_002dbuffer.html#tree_002dbuffer">tree-buffer</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="tree_002dbuffer.html#tree_002dbuffer">tree-buffer</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.3.1 General description of tree-buffers</h4>
+
+<p>This subchapter is a general introduction in the main concepts of a
+tree-buffer.
+
+<h5 class="subsubsection">11.3.1.1 What is a tree-buffer?</h5>
+
+<p>A <dfn>tree-buffer</dfn> is meant to display certain informations (e.g. a
+directory-tree) in a tree-structure consisting of <dfn>tree-nodes</dfn>. 
+Every line in a tree-buffer displays exactly one tree-node. Each node
+has exactly one parent-node and can have any arbitrary number of
+<dfn>children</dfn>-nodes. If a tree-node has no children then it is called
+a <dfn>leaf</dfn>. A tree-node contains several &ldquo;slots&rdquo; wheras the most
+important ones are the &ldquo;name&rdquo;, &ldquo;displayed-name&rdquo; and &ldquo;data&rdquo;. See
+<a href="A-new-tree_002dnode.html#A-new-tree_002dnode">A new tree-node</a> for a detailed explanation.
+
+   <p>The difference between a natural tree like a fir and a tree-buffer is
+that the root(-node) of a tree-buffer is not visible but only its
+children. In the example below the nodes parent-node-1 and
+parent-node-2 are the children of the invisible root-node. Each
+tree-buffer has exactly one root-node which is created automatically
+by `tree-buffer-create'.
+
+   <p>If a tree-node contains at least one child it is displayed with a
+special expand/collapse-symbol (see the example below). This symbol
+allows expanding (rsp. collapsing) the tree-node wheras expanding
+means to display the children-nodes and collapsing means to hide the
+childrens of a tree-node.
+
+   <p>Here is an example of a tree-buffer:
+
+<pre class="example">   &lt;root-node&gt;  ------------------------[root-node (invisible)]
+       [+] &lt;parent-node-1&gt;  -------.
+       [-] &lt;parent-node-2&gt;  -------|
+           [-] &lt;expanded&gt;  --------|
+               &lt;leaf-node-1&gt;  -----|
+               &lt;leaf-node-2&gt;  -----|-----[tree-nodes]
+               &lt;leaf-node-3&gt;  -----|
+               &lt;leaf-node-4&gt;  -----|

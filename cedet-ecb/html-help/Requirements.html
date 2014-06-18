@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>Requirements - ECB - the Emacs Code Browser</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="ECB - the Emacs Code Browser">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="ecb.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Installation.html#Installation" title="Installation">
+<link rel="next" href="ECB-as-XEmacs_002dpackage.html#ECB-as-XEmacs_002dpackage" title="ECB as XEmacs-package">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Requirements"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="ECB-as-XEmacs_002dpackage.html#ECB-as-XEmacs_002dpackage">ECB as XEmacs-package</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installation.html#Installation">Installation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h4 class="subsection">1.1.1 Requirements</h4>
+
+<p>This section describes the requirements of ECB. Just ensure that these
+requirements of ECB are fulfilled.
+
+   <p>The short story: With Emacs &gt;= 23.2 there is nothing to do. With XEmacs or
+Emacs &lt; 23.2 you have to install the CEDET-suite.
+
+   <p>The long story:
+
+     <ol type=1 start=1>
+
+     <li>Emacs-version:
+ECB works only with (X)Emacs &gt;= 21! If you have an older one, please upgrade.
+
+     <li>CEDET-suite:
+If Emacs &gt;= 23.2 is used then CEDET is already integrated into Emacs and there
+is nothing to do.
+
+     <p>For users of any XEmacs-version, any Emacs-version &lt; 23.2 or the latest author
+CEDET version: Get it from <a href="http://cedet.sourceforge.net">http://cedet.sourceforge.net</a>, read the
+setup-instructions in <a href="http://cedet.sourceforge.net/setup.shtml">http://cedet.sourceforge.net/setup.shtml</a> and read
+also the shipped file <samp><span class="file">INSTALL</span></samp>.
+
+     <p><strong>Please note</strong>: If ECB detects an author version of CEDET (as available
+at <a href="http://cedet.sourceforge.net">http://cedet.sourceforge.net</a>) then ECB will ALWAYS try to use that
+one even if you use Emacs &gt;= 23.2! This is for users who want to use latest
+Emacs &gt;= 23.2 but still prefer using the latest author version of CEDET
+instead of the Emacs-integrated one.
+
+     <p>So if you want to use the Emacs-integrated CEDET-suite of Emacs &gt;= 23.2 you
+have to ensure that no author-version of CEDET is in the <code>load-path</code>! 
+This means that the library cedet.el of the author-version MUST NOT be loaded
+into Emacs (as described in the file INSTALL of CEDET)! This is a valid check:
+(locate-library "semantic-ctxt") must return nil!
+
+     <li>Only for XEmacs-users:
+If you use XEmacs you must have installed the
+package c-support (contains hideshow.el). If you want to read the online-help
+of ECB in HTML-format you must have the library browse-url (part of the
+mail-lib XEmacs package) installed; this package is also needed for submitting
+problem-reports to the ECB-maintainers!
+
+     <li>Optional for Java-coding:
+ECB works very well with the JDEE package (
+<a href="http://jdee.sourceforge.net">http://jdee.sourceforge.net</a>) but JDEE is not required by ECB.
+
+        </ol>
+
+   <p>Do not install ECB before you have successfully installed the requirements!
+
+   </body></html>
+

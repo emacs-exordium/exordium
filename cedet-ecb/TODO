@@ -1,0 +1,34 @@
+- Distinction of include-tags by "" or <>. This can be done via
+  (semantic-tag-include-system-p TAG). Thanks to Markus grietsch.
+  But probably it would be the best if semantic itself does this special
+  formating! 
+
+- Prevent layout-engine from splitting windows when smaller than
+  window-min-height/width.
+
+- (BUG) if a buffer is opened from within an archive (zip or tar) then
+  clicking onto a method in this buffer tries to jump somewhere in the archive
+  (tar or zip) buffer (Klaus)
+
+  This is fixed for GNU Emacs - for XEmacs see next point
+
+- KB: I think it would be best if ECB would not be so file-based means it
+  would be good if all semantic-parsable buffers could be displayed correct -
+  regardless if saved in a file or not - this would be good for sources not
+  yet saved as file or for extracted files from an archive with XEmacs (XEmacs
+  does not handle such extracts as normal files like GUN Emacs does)
+
+  But this implies some deeper changes - because we must take care of
+  ecb-path-selected-source and ecb-path-selected-directory and all places
+  where buffer-file-name is used and ECB currently expects a real existing
+  file...
+
+  A solution could be instead of storing filenames as tree-buffer-data storing
+  either filenames (in case of real files) or buffer-object in case of buffers
+  which can be parsed but are not real files (not saved sources or
+  archive-extracts for example).
+
+- For left-right-layouts: Not only hiding all the ecb-windows but offering to
+  hide only one of the left or the right column. Maybe toggling in the
+  sequence "Hide left" --> "Hide all" --> Hide right" --> "Show all". But i
+  (Klaus) think this is not so easy........

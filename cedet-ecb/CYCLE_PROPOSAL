@@ -1,0 +1,162 @@
+                                        
+One of the limitations of the ECB is that it does not support multiple buffers
+per ECB window.
+
+For example there is no way to support multiple buffers within the 'directories'
+window or the 'methods' window.  IE it would be nice to support the speedbar and
+the ECB directories buffer within the same window and allow the user to switch.
+
+Essentially what we are talking about is the ability to 'cycle' through buffers
+in specific windows and support changing the buffers at runtime.
+
+If you want to see what I mean you can check out ecb-cycle.el.  Right now this
+supports multiple programatic buffers within the `ecb-compile-window'.  This
+allows you to cycle through all compilation buffers and provides
+switch-to-buffer support using completion.
+
+This is already really nice because it allows me to jump to igrep buffers or
+jde-ant buffers quickly and without having to deal with the entire list of
+buffers.
+
+I want to expand on this concept so that ecb-cycle can support the directories
+and methods windows.  There is other information which we can display within
+these windows.
+
+For example in XML buffers, we could change the 'methods' window to support a
+hierarchical view of the current XML document.  It would be somewhat trivial to
+support this using tree-widget.el or relatives.  We could also support XML
+schema specific representations.  If the user is editing an Ant build.xml
+document, we could use this same XML representation but expand to show <tasks>.
+
+There are a *lot* of uses for this:
+
+- Support a Java CLASSPATH browser
+
+- Supporting jde-docindex integration for navigating sourcepath and
+  documentation based on hierarchical classname.
+
+- using the methods buffer to navigate a list of files that are being tailed via
+  'tail -f' and displaying the result int the compilation buffer.
+  
+- Support complex applications on top of ECB that can use ECB windows as their
+  UI.  (this would probably require another proposal)
+
+    - SQL browser (via JDBC, ODCB, etc)
+
+    - JDE/JPDA integration when a breakpoint it hit.  This would need to set
+      buffers in each window.  For example putting local variables in the
+      methods winow and possibly breakpoints in the directory window.
+
+    - Incremental compiler error lists (I plan on writing an incremental compile
+      integration package for jikes but I am waiting for them to fix a bug under
+      Linux).  It would be nice to navigate this list in the methods window.
+
+From what I see, in order to implement this, we have to pay significant
+attention to making this convenient so that it isn't confusing for the user.
+
+Should be compatible with all window configurations
+
+Should not significantly change any current ECB behavior.  We shouldn't force
+  users to use ecb-cycle.
+
+Need the ability to revert to default buffers on ecb-redraw-layout.  The user
+  should also be able to choose the default buffer per window within
+  customization.  The user should also be able to restore the defaults using a
+  ecb-cycle-restore-defaults or similar function.
+
+Need a consistent function metaphor so that we can use
+  `ecb-cycle-switch-to-directory-buffer' and
+  `ecb-cycle-switch-to-compilation-buffer', etc.
+
+Should support the ability to automatically change buffers on current-buffer
+sync.  For example if one methods-buffer is a better representation for the
+current buffer than the one in the methods window, it should automatically
+changed to the better one (this could also be disabled in customization).  A
+good example of this is XML.  The methods buffer doesn't support hierarchical
+XML navigation (nor should it).  We could automatically change to an XML
+hierarchical representation in the methods buffer when an XML buffer is
+selected.
+
+    - we will need to support some type of current buffer mapping.  For example
+      we could use regexps
+
+        - *.xml -> *ecb-xml-methods-buffer*
+        - * -> * ECB Methods* 
+  
+Should be able to cycle through buffers available for each window.  (should we
+  support forwards and backwards operation?)
+
+Should support profiles so that we can restore them. IE debug profile, eshell
+  profile, etc.  A profile whould just be a list of cons cells with buffer
+  names.
+
+   '((ecb-compile-window . "*eshell")
+     (ecb-directory-window . " *SPEEDBAR*"))
+
+    - also users should be able to create their own profiles in addition to the
+      default profiles.
+     
+ISSUES:
+
+    - This functionality should probably be held back for ECB 1.7.0
+
+    - It would be nice to support a tabbed window->buffer metaphor.  I think
+      XEmacs supports something like this but GNU Emacs does not.
+
+TODO:
+
+- We need to have a `ecb-directories-window' and an `ecb-methods-window',
+  'ecb-history-window' like `ecb-compile-window'
+
+- Need to provide an initial implementation in ecb-cycle
+
+- I was also thinking that we should add the ability to list every buffer
+available for selection.  This way you can have the directories window show all
+the buffers that are available for selection and then choose one.
+
+- We also need the ability to have a profile that used addition buffers that
+  weren't registered with the ability to cycle.  For example we could have a
+  'calc' profile. So that we can set this profile after calc is run.
+
+    - should this support be added in ecb-cycle-external-profiles???
+
+- need the ability to support a profile stack so that you can pop out of a
+  current profile and restore the last one.
+
+- When we restore the default window configuration (ecb-redraw-layout), we
+  should pop out of any profiles.  (should this be an option)
+
+- ability to *suggest* how a profile should be handled on redraw.
+
+    - always-destroy
+    - never-destroy
+    - yield-to-setting
+
+- All external profiles (gnus, calc, etc) should be stored in ecb-cycle-ext.el
+
+- the following windows need to be accounted for:
+
+    - sources
+    - methods
+    - directory
+    - history
+
+- need the ability to run a function prior to displaying a buffer.
+
+    Example: ' *ECB Directories*' needs to have ecb-update-directories-buffer
+    pior to viewing.
+
+    Actually this is a good way from keeping ecb-cycle from refreshing too many
+    buffers on ecb-current-buffer-sync.  By default we should run the update
+    function when we change to a buffer.
+    
+- use a design pattern for creating profiles.  AKA instead of a profile object I
+  could just do an:
+
+    - (defun ecb-cycle-create-profile(name buffers)
+
+- support the ability to compare two buffers to find out which should be higher
+  priority
+
+- support JIT buffer generation so that we aren't constantly regenerating
+  bufffers when they are actually hidden.

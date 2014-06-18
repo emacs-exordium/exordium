@@ -1,0 +1,7 @@
+
+* TODO Fix make.bat
+
+* Write macro that will emit emacs-specific code ?
+
+Macro should wrap code & emit it only if needed emacs/xemacs is selected - instead of
+evaluating this condition in run-time
