@@ -143,12 +143,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ECB - Emacs Code Browser
 
-;;; TODO first create a branch and commit without ecb
-;;; Then add ecb after testing.
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/cedet/ecb/"))
+(require 'ecb)
 
-;;(add-to-list 'load-path (expand-file-name "~/Code/ecb/"))
-;;(require 'ecb)
-;; then ecb-activate
+(defvar ecb-toggle-status nil)
+(defun ecb-toggle ()
+  "Toggle the Emacs Code Browser"
+  (interactive)
+  (if ecb-toggle-status
+      (progn
+        (ecb-deactivate)
+        (setq ecb-toggle-status nil))
+    (ecb-activate)
+    (setq ecb-toggle-status t)))
+
+(define-key global-map [f5] 'ecb-toggle)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EDE - Emacs Development Environment

@@ -19,6 +19,6 @@
 
 ;; Defaults
 
-(define-key global-map [f3] 'set-colors-tomorrow-night)
-(define-key global-map [f4] 'set-colors-tomorrow-day)
+;;(define-key global-map [f3] 'set-colors-tomorrow-night)
+;;(define-key global-map [f4] 'set-colors-tomorrow-day)
 (set-colors-tomorrow-night)
