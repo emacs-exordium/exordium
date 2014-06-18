@@ -22,14 +22,13 @@
 
 ;;; List of modes and associated parsing functions
 (setq semantic-new-buffer-setup-functions
-      '((emacs-lisp-mode . semantic-default-elisp-setup)
-        (c-mode . semantic-default-c-setup)
+      '((c-mode . semantic-default-c-setup)
         (c++-mode . semantic-default-c-setup)
-        (arduino-mode . semantic-default-c-setup)
+        ;;(emacs-lisp-mode . semantic-default-elisp-setup)
         ;;(html-mode . semantic-default-html-setup)
         ;;(java-mode . wisent-java-default-setup)
-        (js-mode . wisent-javascript-setup-parser)
-        (python-mode . wisent-python-default-setup)
+        ;;(js-mode . wisent-javascript-setup-parser)
+        ;;(python-mode . wisent-python-default-setup)
         ;;(scheme-mode . semantic-default-scheme-setup)
         ;;(f90-mode . semantic-default-f90-setup)
         ;;(srecode-template-mode . srecode-template-setup-parser)
@@ -101,15 +100,15 @@
 (when (cedet-ectag-version-check t)
   (semantic-load-enable-primary-ectags-support))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Include directories to index
-;;; TODO: (1) make this recursive!
-;;;       (2) make this generic with a variable defining the root dirs
 
 (defun directory-tree (dir)
   "Returns the list of subdirs excluding any dot files"
-  (let ((dir (directory-file-name dir))
-        (dirs '())
-        (files (directory-files dir nil nil t)))
+  (let* ((dir   (directory-file-name dir))
+         (dirs  '())
+         (files (directory-files dir nil nil t)))
     (dolist (f files)
       (unless (string-equal "." (substring f 0 1))
         (let ((f (concat dir "/" f)))
@@ -124,7 +123,21 @@
     (semantic-add-system-include d 'c++-mode)))
 
 ;;; Add the package groups to index in init_local.el like so:
-;;;(semantic-add-system-include-tree "/Users/phil/Code/cpp/bde/groups/bsl")
+;;(semantic-add-system-include-tree "/Users/phil/Code/cpp/bde/groups/bsl")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Source trees to index
+
+(defun semantic-index-source-tree (dir)
+  "Index all source files in the specified dir"
+  (dolist (d (cons dir (directory-tree dir)))
+    (let ((files (directory-files d t ".*\\.\\(cpp\\|h\\)")))
+      (dolist (f files)
+        (semanticdb-file-table-object f)))))
+
+;;; Add project source trees in init_local.el like so:
+;;(semantic-index-source-tree "/Users/phil/Code/cpp/foo")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
