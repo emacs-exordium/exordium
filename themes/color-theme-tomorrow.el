@@ -368,6 +368,9 @@ names to which it refers are bound."
      (markdown-url-face ((,class (:inherit link))))
      (markdown-link-face ((,class (:foreground ,blue :underline t))))
 
+     ;; Fic
+     (font-lock-fic-face ((, class (:foreground ,red :weight bold :slant italic))))
+
      (hl-sexp-face ((,class (:background ,current-line))))
      (highlight-80+ ((,class (:background ,current-line))))
 
