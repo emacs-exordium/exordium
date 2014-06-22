@@ -61,7 +61,7 @@
 
 ;;; Syntax highlighing
 (global-font-lock-mode 1)
-(setq font-lock-maximum-decoration t
+(setq font-lock-maximum-decoration nil
       ;; '((emacs-lisp-mode . t)
       ;;   (c-mode . t )
       ;;   (C++-mode . t) ;; or 1 or 2
@@ -147,7 +147,7 @@
 (define-key global-map [(meta backspace)] 'backward-kill-word)
 (global-set-key [(control escape)] 'delete-other-windows)
 (global-set-key [(control ?`)] 'kill-this-buffer)
-(global-set-key [(meta m)] 'newline-and-indent)
+(global-set-key [(meta return)] 'newline-and-indent)
 (global-set-key [f10] 'speedbar)
 
 ;;; Meta-Super-arrow = move the focus between visible buffers
