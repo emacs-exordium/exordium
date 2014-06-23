@@ -1,4 +1,12 @@
 ;;;; Extensions
+;;;
+;;; This file loads extensions: ido, cua, autopairs, markdown mode, fci mode and
+;;; fic mode.
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; Ctrl-|         Toggle fci mode on and off
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; IDO mode for everything (files and buffers)

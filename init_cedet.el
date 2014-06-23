@@ -1,10 +1,42 @@
 ;;;; Configuration for CEDET
-;;;;
-;;;; Resources:
-;;;; http://www.logilab.org/173886
-;;;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html#sec6
-;;;; http://www.gnu.org/software/emacs/manual/html_mono/semantic.html
-;;;; http://cxwangyi.wordpress.com/2010/08/21/using-cedet-with-emacs/
+;;;
+;;; Usage:
+;;; * Each file is indexed when visited. The content of the index is stored in
+;;;   ~/.emacs.d/semantics when Emacs exits.
+;;;
+;;; * Add pre-indexing of useful package group headers in your init_local.el:
+;;;   (semantic-add-system-include-tree "/path/to/groups/bsl")
+;;;
+;;; * Force pre-indexing of a full project (source and headers):
+;;;   M-x semantic-index-source-tree
+;;;   It will ask for the root directory (e.g. "mbs"). Indexing may take several
+;;;   minutes.
+;;;
+;;; Functions:
+;;; * `semantic-mode' - turn indexing on or off
+;;; * `semantic-add-system-include-tree' - (non-interactive) add a package
+;;;   group directory for indexing its headers (not sources)
+;;; * `semantic-index-source-tree' - ask for a directory name, then indexes
+;;;   all headers and sources in it.
+;;; * `ecb-toggle' - toggle Emacs code browser.
+;;;
+;;; ------------ ---------------------------------------------------------
+;;; Key          Definition
+;;; ------------ ---------------------------------------------------------
+;;; Meta-Space   autocomplete (menu)
+;;; F3           jump to definition
+;;; F4           open include file
+;;; F5           toggle ecb
+;;; Ctrl-C r     find references
+;;; Ctrl-C s     show signature
+;;; Ctrl-C d     show documentation (doesn't understand BDE style though)
+;;; ------------ ---------------------------------------------------------
+;;;
+;;; Resources:
+;;; http://www.logilab.org/173886
+;;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html#sec6
+;;; http://www.gnu.org/software/emacs/manual/html_mono/semantic.html
+;;; http://cxwangyi.wordpress.com/2010/08/21/using-cedet-with-emacs/
 
 (add-to-list 'load-path "~/.emacs.d/cedet/")
 (add-to-list 'load-path "~/.emacs.d/cedet/contrib")
@@ -58,16 +90,7 @@
 ;;; load contrib library
 (require 'eassist)
 
-;;; ------------ ---------------------------------------------------------
-;;; Key          Definition
-;;; ------------ ---------------------------------------------------------
-;;; Meta-Space   autocomplete (menu)
-;;; F3           jump to definition
-;;; F4           open include file
-;;; Ctrl-C r     find references
-;;; Ctrl-C s     show signature
-;;; Ctrl-C d     show documentation (doesn't understand BDE though)
-;;; ------------ ---------------------------------------------------------
+;;; Keys
 (global-unset-key (kbd "M-SPC"))
 (defun my-cedet-hook ()
   (local-set-key (kbd "M-SPC") 'semantic-ia-complete-symbol-menu)
@@ -131,6 +154,7 @@
 
 (defun semantic-index-source-tree (dir)
   "Index all source files in the specified dir"
+  (interactive "DIndex source directory: ")
   (dolist (d (cons dir (directory-tree dir)))
     (let ((files (directory-files d t ".*\\.\\(cpp\\|h\\)")))
       (dolist (f files)

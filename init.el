@@ -4,8 +4,7 @@
 ;;;;  |  __/ | | | | | (_| | (__\__ \
 ;;;; (_)___|_| |_| |_|\__,_|\___|___/
 ;;;;
-;;;; Any editor can save your files. Only Emacs can save your soul.
-
+;;;; Emacs Makes All Computing Simple.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Environment functions

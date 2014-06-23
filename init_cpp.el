@@ -1,4 +1,12 @@
 ;;;; Configuration for C++
+;;;
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; Ctrl-tab       Switch between .h and .cpp
+;;; Ctrl-c =       Insert BDE class header (definition)
+;;; Ctrl-c -       Insert BDE class header (implementation)
+
 
 (require 'bde-style)
 (require 'bde-util);

@@ -1,4 +1,14 @@
 ;;;; Small extensions
+;;;
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; Ctrl-%         Goto matching paren
+;;; Ctrl-c m       Push point
+;;; Ctrl-c p       Pop point
+;;; Ctrl-c d       Insert date
+;;; Ctrl-c t       Insert time
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Match parentheses

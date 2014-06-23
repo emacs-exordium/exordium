@@ -1,4 +1,21 @@
 ;;;; User preferences
+;;;
+;;; This file sets things like font, syntax highlighting and useful shortcuts.
+;;;
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; Meta-g         Goto line
+;;; Ctrl-z         Undo
+;;; Meta-backspace Delete word
+;;; Ctrl-esc       Delete other windows
+;;; Ctrl-`         Kill current buffer (= Ctrl-x k)
+;;; Meta-enter     Return + tab
+;;; F10            Speedbar
+;;; Super-arrow    Move between windows (= Ctrl-x o)
+;;; Meta-ctrl-l    Switch to last buffer
+;;; -------------- -------------------------------------------------------
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Visual
@@ -61,12 +78,12 @@
 
 ;;; Syntax highlighing
 (global-font-lock-mode 1)
-(setq font-lock-maximum-decoration nil
-      ;; '((emacs-lisp-mode . t)
-      ;;   (c-mode . t )
-      ;;   (C++-mode . t) ;; or 1 or 2
-      ;;   (t . t))
-      )
+(setq font-lock-maximum-decoration
+      '((emacs-lisp-mode . t)
+        (c-mode . t)
+        (C++-mode . 1) ;; t or 1 or 2
+        (t . t)))
+
 (when (emacs-24-p)
   ;; Lazy font-lock to avoid the bug in Emacs 24
   (cond ((fboundp 'jit-lock-mode)
@@ -129,19 +146,6 @@
 ;;;(global-visual-line-mode 1) ; Wordwrap at word boundaries
 
 ;;; Shortcut keys
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; Meta-g         Goto line
-;;; Ctrl-z         Undo
-;;; Meta-backspace Delete word
-;;; Ctrl-esc       Delete other windows
-;;; Ctrl-`         Kill current buffer (= Ctrl-x k)
-;;; Meta-enter     Return + tab
-;;; F10            Speedbar
-;;; Super-arrow    Move between windows (= Ctrl-x o)
-;;; Meta-ctrl-l    Switch to last buffer
-;;; -------------- -------------------------------------------------------
 (global-set-key [(meta g)] 'goto-line)
 (define-key global-map [(control z)] 'advertised-undo)
 (define-key global-map [(meta backspace)] 'backward-kill-word)
