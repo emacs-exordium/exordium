@@ -87,12 +87,17 @@
 ;; No sticky line on top
 (global-semantic-stickyfunc-mode 0)
 
+;; Re-parse current buffer when emacs is idle
+;;(global-semantic-idle-scheduler-mode 1)
+
 ;;; load contrib library
 (require 'eassist)
 
 ;;; Keys
 (global-unset-key (kbd "M-SPC"))
 (defun my-cedet-hook ()
+  (add-to-list 'ac-sources 'ac-source-semantic)
+  ;; Keys
   (local-set-key (kbd "M-SPC") 'semantic-ia-complete-symbol-menu)
   (local-set-key (kbd "<f3>") 'semantic-ia-fast-jump)
   (local-set-key "\C-cr" 'semantic-symref)
@@ -117,11 +122,13 @@
 
 (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
 
-(semanticdb-enable-gnu-global-databases 'c-mode t)
-(semanticdb-enable-gnu-global-databases 'c++-mode t)
+;; Use gnu-global
+;;(semanticdb-enable-gnu-global-databases 'c-mode t)
+;;(semanticdb-enable-gnu-global-databases 'c++-mode t)
 
-(when (cedet-ectag-version-check t)
-  (semantic-load-enable-primary-ectags-support))
+;; Use C-tags
+;; (when (cedet-ectag-version-check t)
+;;   (semantic-load-enable-primary-ectags-support))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

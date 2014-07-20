@@ -45,13 +45,16 @@
 
 ;;; Themes
 (if (not (emacs-nw-p))
-    (load "~/.emacs.d/init_themes.el")
+    (progn
+      (load "~/.emacs.d/init_themes.el")
+      (unless (emacs-bloomberg-p)
+        (load "~/.emacs.d/init_powerline.el")))
   (set-face-background 'highlight nil))
 
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
 (load "~/.emacs.d/init_autocomplete.el")
-;;(load "~/.emacs.d/init_cedet.el")
+(load "~/.emacs.d/init_cedet.el")
 
 ;;; Clojure
 (load "~/.emacs.d/init_clojure.el")
