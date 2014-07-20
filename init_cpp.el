@@ -20,3 +20,8 @@
 
 ;;; Highlight dead code between "#if 0" and "#endif"
 (add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
+
+;;; IEdit
+;;; Fix bug/key in mac (normal key is "C-;")
+(when (emacs-osx-p)
+  (define-key global-map (kbd "C-c ;") 'iedit-mode))
