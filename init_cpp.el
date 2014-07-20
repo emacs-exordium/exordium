@@ -6,6 +6,7 @@
 ;;; Ctrl-tab       Switch between .h and .cpp
 ;;; Ctrl-c =       Insert BDE class header (definition)
 ;;; Ctrl-c -       Insert BDE class header (implementation)
+;;; Ctrl-c ;       IEdit mode (rename selected variable)
 
 
 (require 'bde-style)
