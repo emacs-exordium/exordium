@@ -27,7 +27,7 @@
  (setq default-frame-alist '((width . 100)
                              (height . 65))))
 
-(when (and (emacs-x-p) (getenv "MBIG_NUMBER"))
+(when (emacs-bloomberg-p)
   (setq default-frame-alist
         (append `(;;(font . ,(choose-frame-font))
                   (font . "Monospace 12")

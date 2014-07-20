@@ -6,41 +6,17 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Environment functions
-
-(defun emacs-nw-p ()
-  (not window-system))
-
-(defun emacs-osx-p ()
-  (eq window-system 'ns))
-
-(defun emacs-x-p ()
-  (eq window-system 'x))
-
-(defun gnu-emacs-p ()
-  (string-match "GNU Emacs" (version)))
-
-(defun emacs-24-p ()
-  (>= emacs-major-version 24))
-
-(defun emacs-23-p ()
-  (>= emacs-major-version 23))
-
-(defun emacs-22-p ()
-  (string-match "GNU Emacs 22" (version)))
-
-(defmacro emacs-linux ()
-  (string-match "linux" (prin1-to-string system-type)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa and Marmelade
+;; Use M-x `package-refresh-contents' to update the cache.
+;; Use M-x `package-list-package' to load and display the list of packges,
+;; then press I to mark for installation and X to execute (it's like dired).
 
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;; Do package-refresh-contents to update the cache
+(package-initialize)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -62,6 +38,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Components
 
+(load "~/.emacs.d/init_prolog.el") ; must be loaded first
 (load "~/.emacs.d/init_user.el")
 (load "~/.emacs.d/init_util.el")
 (load "~/.emacs.d/init_extensions.el")
@@ -73,7 +50,8 @@
 
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
-(load "~/.emacs.d/init_cedet.el")
+(load "~/.emacs.d/init_autocomplete.el")
+;;(load "~/.emacs.d/init_cedet.el")
 
 ;;; Clojure
 (load "~/.emacs.d/init_clojure.el")

@@ -1,7 +1,13 @@
 ;;;; Extensions
 ;;;
-;;; This file loads extensions: ido, cua, autopairs, markdown mode, fci mode and
-;;; fic mode.
+;;; This file loads minor extensions:
+;;; ido ..........: smarter find fine and find buffer
+;;; cua ..........: use normal copy-paste keys when non-ambiguous
+;;; autopairs ....: autocomplete parentheses, braces and quotes
+;;; markdown mode : mode for .md files
+;;; fci mode .....: 80 column ruler (fill column indicator)
+;;; fic mode .....: color TODOs
+;;;
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------

@@ -127,19 +127,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Include directories to index
 
-(defun directory-tree (dir)
-  "Returns the list of subdirs excluding any dot files"
-  (let* ((dir   (directory-file-name dir))
-         (dirs  '())
-         (files (directory-files dir nil nil t)))
-    (dolist (f files)
-      (unless (string-equal "." (substring f 0 1))
-        (let ((f (concat dir "/" f)))
-          (when (file-directory-p f)
-            (setq dirs (append (cons f (directory-tree f))
-                               dirs))))))
-    dirs))
-
 (defun semantic-add-system-include-tree (dir)
   "Add any subdir as a semantic system include for the C++ mode"
   (dolist (d (directory-tree dir))
