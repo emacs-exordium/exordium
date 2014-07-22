@@ -68,3 +68,9 @@
 (require 'fic-mode)
 (add-hook 'c++-mode-hook 'turn-on-fic-mode)
 (add-hook 'markdown-mode-hook 'turn-on-fic-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Org mode
+
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))

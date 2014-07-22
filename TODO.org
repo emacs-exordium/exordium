@@ -2,15 +2,17 @@
 
 * General =====================================================================
 ** TODO sr-speedbar
-** TODO yasnippet
 * C++ =========================================================================
-** TODO Fix font lock on older versions of Emacs 24 (test on Linux)
+** DONE Fix font lock on older versions of Emacs 24 (test on Linux)
 ** DONE Test semanticdb indexing on large source tree
 ** DONE Source browser
-** TODO Lets try eclim: https://github.com/senny/emacs-eclim
+** TODO Try Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** TODO Try rtags https://github.com/Andersbakken/rtags
+** TODO Try eclim: https://github.com/senny/emacs-eclim
 * Themes ======================================================================
 ** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * Other =======================================================================
-** TODO JavaScript (with Chrome integration?)
+** TODO JavaScript j2
+** TODO JavaScript chrome integration
 ** TODO Python
 ** TODO Ruby

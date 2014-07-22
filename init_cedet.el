@@ -20,6 +20,8 @@
 ;;;   all headers and sources in it.
 ;;; * `ecb-toggle' - toggle Emacs code browser.
 ;;;
+;;; Note: to debug, try `semantic-c-describe-environment'.
+;;;
 ;;; ------------ ---------------------------------------------------------
 ;;; Key          Definition
 ;;; ------------ ---------------------------------------------------------
@@ -175,7 +177,9 @@
     (ecb-activate)
     (setq ecb-toggle-status t)))
 
-(define-key global-map [f5] 'ecb-toggle)
+(unless (emacs-bloomberg-p)
+  ;; It either loops or crashes our build of emacs :'(
+  (define-key global-map [f5] 'ecb-toggle))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -25,3 +25,12 @@
 ;;(define-key global-map [f3] 'set-colors-tomorrow-night)
 ;;(define-key global-map [f4] 'set-colors-tomorrow-day)
 (set-colors-tomorrow-night)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Org mode
+
+(with-tomorrow-colors
+ 'night
+ (setq org-todo-keyword-faces
+       `(("IN-PROGRESS" . (:foreground ,yellow :weight bold))
+         ("WAITING"     . (:foreground ,orange :weight bold)))))

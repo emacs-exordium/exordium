@@ -539,6 +539,9 @@ names to which it refers are bound."
      (custom-variable-tag ((,class (:foreground ,blue))))
      (custom-group-tag ((,class (:foreground ,blue))))
      (custom-state ((,class (:foreground ,green))))
+
+     ;; Misc
+     (menu ((,class (:foreground ,foreground :background ,selection))))
      )))
 
 

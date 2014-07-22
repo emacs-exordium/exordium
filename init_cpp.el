@@ -23,6 +23,5 @@
 (add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
 
 ;;; IEdit
-;;; Fix bug/key in mac (normal key is "C-;")
-(when (emacs-osx-p)
-  (define-key global-map (kbd "C-c ;") 'iedit-mode))
+;;; Fix A bug (normal key is "C-;")
+(define-key global-map (kbd "C-c ;") 'iedit-mode)
