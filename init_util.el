@@ -4,10 +4,15 @@
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
 ;;; Ctrl-%         Goto matching paren
-;;; Ctrl-c m       Push point
-;;; Ctrl-c p       Pop point
+;;;
+;;; Ctrl-c Ctrl-s  Push point ("save")
+;;; Ctrl-c Ctrl-b  Pop point ("back")
+;;;
 ;;; Ctrl-c d       Insert date
 ;;; Ctrl-c t       Insert time
+;;;
+;;; Ctrl-+         Duplicate line
+;;; Ctrl-\         Delete spaces forward (Meta-\ to delete all spaces)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,8 +84,8 @@
           (t
            (message "Invalid position in stack")))))
 
-(global-set-key [(control c)(m)] 'postack-push)
-(global-set-key [(control c)(p)] 'postack-pop)
+(global-set-key [(control c)(control s)] 'postack-push)
+(global-set-key [(control c)(control b)] 'postack-pop)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -111,3 +116,48 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 (global-set-key [(control c)(control d)] 'insert-current-date-time)
 (global-set-key [(control c)(control t)] 'insert-current-time)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Editing
+
+(defun copy-all ()
+  "Copy entire buffer to clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
+(defun duplicate-line (arg)
+  "Duplicate current line, leaving point in lower line."
+  (interactive "*p")
+  ;; save the point for undo
+  (setq buffer-undo-list (cons (point) buffer-undo-list))
+  ;; local variables for start and end of line
+  (let ((bol (save-excursion (beginning-of-line) (point)))
+        eol)
+    (save-excursion
+      ;; don't use forward-line for this, because you would have
+      ;; to check whether you are at the end of the buffer
+      (end-of-line)
+      (setq eol (point))
+      ;; store the line and disable the recording of undo information
+      (let ((line (buffer-substring bol eol))
+            (buffer-undo-list t)
+            (count arg))
+        ;; insert the line arg times
+        (while (> count 0)
+          (newline)         ;; because there is no newline in 'line'
+          (insert line)
+          (setq count (1- count))))
+      ;; create the undo information
+      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list))))
+  ;; put the point in the lowest line and return
+  (next-line arg))
+
+(global-set-key [(meta +)] 'duplicate-line)
+
+(defun delete-horizontal-space-forward ()
+  "Delete all spaces and tabs after point."
+  (interactive "*")
+  (delete-region (point) (progn (skip-chars-forward " \t") (point))))
+
+(global-set-key [(control \\)] 'delete-horizontal-space-forward)
