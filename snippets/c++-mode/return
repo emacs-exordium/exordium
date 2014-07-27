@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: RETURN
+# key: return
+# condition: (string-match "^[ \t]*return" (thing-at-point 'line))
+# type: command
+# --
+(end-of-line)
+;;(insert (or (car kill-ring) "NOPE"))
+(save-excursion
+  (insert "return;")
+  (end-of-line)
+  (dotimes (i (- 70 (current-column)))
+    (insert " "))
+  (insert "// RETURN"))
+(forward-char 6)

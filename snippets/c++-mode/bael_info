@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: BAEL INFO
+# key: info
+# binding: direct-keybinding
+# --
+BAEL_LOG_INFO << "$0" << BAEL_LOG_END;

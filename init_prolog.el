@@ -50,3 +50,19 @@ dirs. Input is a string and output is a list of strings."
             (setq dirs (append (cons f (directory-tree f))
                                dirs))))))
     dirs))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Strings
+
+(defun string/ends-with (string suffix)
+  "Return t if STRING ends with SUFFIX."
+  (and (string-match (rx-to-string `(: ,suffix eos) t)
+                     string)
+       t))
+
+(defun string/starts-with (string prefix)
+  "Return t if STRING starts with prefix."
+  (and (string-match (rx-to-string `(: bos ,prefix) t)
+                     string)
+       t))
