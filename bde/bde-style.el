@@ -194,5 +194,32 @@ backspace, delete, left or right."
              line col))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; BDE's right style comments such as // RETURN or // LOCK
+
+(defun bde-aligh-right-after-point ()
+  "Set the right amount of spaces around the point so the text
+  after point is right-aligned (for things such as // RETURN). It
+  works even if point is in a C++ comment."
+  (interactive)
+  ;; If we are in the middle of a comment, move point before the comment.
+  (re-search-backward "//" (point-at-bol) t)
+  (let ((right-thing-length 0)
+        (num-spaces         0))
+    ;; Remove all spaces around point and calculate the length of the text on
+    ;; the right
+    (save-excursion
+      (delete-horizontal-space)
+      (let ((col (current-column)))
+        (end-of-line)
+        (setq right-thing-length (- (current-column) col))))
+    ;; Now insert as many spaces as needed
+    (setq num-spaces (- 79 right-thing-length (current-column)))
+    (if (> num-spaces 0)
+        (dotimes (i num-spaces)
+          (insert " "))
+      (message "Sorry, not enough space..."))))
+
+
 ;;; End of file
 (provide 'bde-style)

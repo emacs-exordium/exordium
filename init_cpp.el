@@ -22,6 +22,9 @@
 ;;; Highlight dead code between "#if 0" and "#endif"
 (add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
 
-;;; IEdit
+;;; Ctrl-> to right-aligh the text after point
+(global-set-key [(control >)] 'bde-aligh-right-after-point)
+
+;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
