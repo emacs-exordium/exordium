@@ -7,6 +7,7 @@
 ;;; markdown mode : mode for .md files
 ;;; fci mode .....: 80 column ruler (fill column indicator)
 ;;; fic mode .....: color TODOs
+;;; org mode .....: organize your life
 ;;;
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
@@ -92,3 +93,4 @@
 
 (setq org-todo-keywords
       '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+(setq org-startup-truncated nil)
