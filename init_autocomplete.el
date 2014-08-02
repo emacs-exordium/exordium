@@ -21,6 +21,8 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+(define-key ac-completing-map (kbd "<escape>") 'ac-stop)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Yasnippet
 

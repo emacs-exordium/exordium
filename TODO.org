@@ -1,16 +1,21 @@
 #+TITLE: Emacs configuration todo list
 
 * General =====================================================================
+** TODO Add function key to switch the theme
 ** TODO sr-speedbar
+** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * C++ =========================================================================
 ** DONE Fix font lock on older versions of Emacs 24 (test on Linux)
-** DONE Test semanticdb indexing on large source tree
-** DONE Source browser
-** TODO Try Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** TODO Fix primitive types
+** DONE CEDET
+*** Test semanticdb indexing on large source tree
+*** Source browser
 ** TODO Try rtags https://github.com/Andersbakken/rtags
+*** install clang 3.5
+*** install rdm
+** TODO Try Malinka http://blog.refu.co/?tag=clang
+** TODO Try Irony http://clang.llvm.org/docs/ExternalClangExamples.html
 ** TODO Try eclim: https://github.com/senny/emacs-eclim
-* Themes ======================================================================
-** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
 * Other =======================================================================
 ** TODO JavaScript j2
 ** TODO JavaScript chrome integration
