@@ -10,7 +10,7 @@
 ;;; Meta-backspace Delete word
 ;;; Ctrl-esc       Delete other windows
 ;;; Ctrl-`         Kill current buffer (= Ctrl-x k)
-;;; Meta-enter     Return + tab
+;;; Shift-enter    Return + tab
 ;;; F10            Speedbar
 ;;; Super-arrow    Move between windows (= Ctrl-x o)
 ;;; Meta-ctrl-l    Switch to last buffer
@@ -154,7 +154,7 @@
 (define-key global-map [(meta backspace)] 'backward-kill-word)
 (global-set-key [(control escape)] 'delete-other-windows)
 (global-set-key [(control ?`)] 'kill-this-buffer)
-(global-set-key [(meta return)] 'newline-and-indent)
+(global-set-key [(shift return)] 'newline-and-indent)
 (global-set-key [f10] 'speedbar)
 
 ;;; Meta-Super-arrow = move the focus between visible buffers
