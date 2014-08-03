@@ -54,7 +54,10 @@
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
 (load "~/.emacs.d/init_autocomplete.el")
-(load "~/.emacs.d/init_cedet.el")
+;;(load "~/.emacs.d/init_cedet.el")
+
+;;; Javascript
+(load "~/.emacs.d/init_javascript.el")
 
 ;;; Clojure
 (load "~/.emacs.d/init_clojure.el")
