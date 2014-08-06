@@ -34,3 +34,10 @@
  (setq org-todo-keyword-faces
        `(("IN-PROGRESS" . (:foreground ,yellow :weight bold))
          ("WAITING"     . (:foreground ,orange :weight bold)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Linum extension
+
+(load "~/.emacs.d/themes/hilinum-mode.el")
+(require 'hlinum)
+(hlinum-activate)
