@@ -1,23 +1,30 @@
 #+TITLE: Emacs configuration todo list
 
-* General =====================================================================
-** TODO Add function key to switch the theme
-** TODO sr-speedbar
-** TODO Fix Solarized (add a 'higher' contrast and remove underlines)
-* C++ =========================================================================
-** DONE Fix font lock on older versions of Emacs 24 (test on Linux)
-** TODO Fix primitive types
+* Modules
+    - [ ] Comment/break up init.el
+    - [ ] Compile init*.el and test startup time
+    - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
+* Themes
+    - [X] Make linum face boring (not sure the fancy version works)
+    - [X] Make org mode more readable
+    - [ ] Function key to cycle between themes
+    - [ ] Primitive types for C++
+    - [ ] High-constrast version of solarized
+* C++
 ** DONE CEDET
-*** Test semanticdb indexing on large source tree
-*** Source browser
-** TODO Try rtags https://github.com/Andersbakken/rtags
-*** install clang 3.5
-*** install rdm
-** TODO Try Malinka http://blog.refu.co/?tag=clang
-** TODO Try Irony http://clang.llvm.org/docs/ExternalClangExamples.html
-** TODO Try eclim: https://github.com/senny/emacs-eclim
-* Other =======================================================================
-** TODO JavaScript j2
+** TODO Rtags https://github.com/Andersbakken/rtags
+    - [ ] Scripts for rdm
+      - [ ] No cerr color
+      - [ ] Path for wrappers
+    - [ ] Shortcut keys
+    - [ ] Switch project
+    - [ ] Test with a non-trivial code base
+    - [ ] Build on OS X
+** TODO Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** TODO Malinka http://blog.refu.co/?tag=clang
+** TODO Eclim: https://github.com/senny/emacs-eclim
+* Other languages
+** DONE JavaScript js2
 ** TODO JavaScript chrome integration
-** TODO Python
 ** TODO Ruby
+** TODO Python

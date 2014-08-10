@@ -17,3 +17,8 @@
 ;; built-in functions.
 
 (setq js2-highlight-level 3)
+
+;; Open JSON files with j2 modes by default, instead of the built-in javascript
+;; mode.
+
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))

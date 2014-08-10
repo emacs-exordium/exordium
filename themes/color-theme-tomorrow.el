@@ -177,8 +177,8 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
-     (linum ((,class (:background ,current-line))))
-     ;;(linum ((,class (:foreground ,comment))))
+     ;;(linum ((,class (:background ,current-line))))
+     (linum ((,class (:foreground ,comment :background ,background :height 1))))
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
@@ -335,9 +335,9 @@ names to which it refers are bound."
      (mm/mirror-face ((,class (:inherit region :foreground nil :background nil))))
 
      ;; Org
-     (org-level-1 ((,class (:foreground ,purple :weight bold))))
+     (org-level-1 ((,class (:foreground ,green :height 1.44))))
      (org-level-2 ((,class (:foreground ,aqua))))
-     (org-level-3 ((,class (:foreground ,blue))))
+     (org-level-3 ((,class (:foreground ,purple))))
      (org-level-4 ((,class (:foreground ,comment))))
      (org-agenda-structure ((,class (:foreground ,purple))))
      (org-agenda-date ((,class (:foreground ,blue :underline nil))))
@@ -351,7 +351,7 @@ names to which it refers are bound."
      (org-document-info ((,class (:foreground ,aqua))))
      (org-document-info-keyword ((,class (:foreground ,green))))
      (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
-     (org-done ((,class (:foreground ,green :weight bold))))
+     (org-done ((,class (:foreground ,green :weight bold :box t))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
      (org-formula ((,class (:foreground ,red))))
@@ -362,7 +362,7 @@ names to which it refers are bound."
      (org-scheduled-today ((,class (:foreground ,green))))
      (org-special-keyword ((,class (:foreground ,orange))))
      (org-table ((,class (:foreground ,purple))))
-     (org-todo ((,class (:foreground ,red :weight bold))))
+     (org-todo ((,class (:foreground ,red :weight bold :box t))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
 
