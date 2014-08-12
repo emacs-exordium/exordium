@@ -177,8 +177,8 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
-     ;;(linum ((,class (:background ,current-line))))
-     (linum ((,class (:foreground ,comment :background ,background :height 1))))
+     ;;(linum ((,class (:background ,current-line)))) ; grunge
+     (linum ((,class (:foreground ,comment :background ,background :height 1)))) ; boring
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
@@ -335,7 +335,7 @@ names to which it refers are bound."
      (mm/mirror-face ((,class (:inherit region :foreground nil :background nil))))
 
      ;; Org
-     (org-level-1 ((,class (:foreground ,green :height 1.44))))
+     (org-level-1 ((,class (:foreground ,foreground :height 1.44))))
      (org-level-2 ((,class (:foreground ,aqua))))
      (org-level-3 ((,class (:foreground ,purple))))
      (org-level-4 ((,class (:foreground ,comment))))
@@ -369,6 +369,7 @@ names to which it refers are bound."
      ;; Markdown
      (markdown-url-face ((,class (:inherit link))))
      (markdown-link-face ((,class (:foreground ,blue :underline t))))
+     (markdown-header-face-1 ((, class (:foreground ,blue :height 1.44))))
 
      ;; Fic
      (font-lock-fic-face ((, class (:foreground ,red :weight bold :slant italic))))

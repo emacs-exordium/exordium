@@ -1,9 +1,12 @@
 #+TITLE: Emacs configuration todo list
 
 * Modules
+    - [ ] C-+/- to zoom and new key for duplicate line
     - [ ] Comment/break up init.el
     - [ ] Compile init*.el and test startup time
+    - [ ] Highlight symbol at point
     - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
+    - [ ] Flycheck?
 * Themes
     - [X] Make linum face boring (not sure the fancy version works)
     - [X] Make org mode more readable
@@ -11,18 +14,24 @@
     - [ ] Primitive types for C++
     - [ ] High-constrast version of solarized
 * C++
+** TODO .h files = c++ mode
 ** DONE CEDET
 ** TODO Rtags https://github.com/Andersbakken/rtags
-    - [ ] Scripts for rdm
-      - [ ] No cerr color
-      - [ ] Path for wrappers
-    - [ ] Shortcut keys
-    - [ ] Switch project
-    - [ ] Test with a non-trivial code base
+    - [X] Generate LLVM compilation database
+      - [X] Test with bde
+      - [X] Test with multiple projects
+    - [ ] Better shortcut keys
+    - [X] Switch project
+    - [ ] Documentation
+    - [ ] Commit and retest on Linux
+    - [ ] Port number
+    - [ ] Display compilation errors/warnings with flymake
+    - [ ] Enable support for autocomplete
     - [ ] Build on OS X
 ** TODO Irony http://clang.llvm.org/docs/ExternalClangExamples.html
 ** TODO Malinka http://blog.refu.co/?tag=clang
 ** TODO Eclim: https://github.com/senny/emacs-eclim
+** TODO snippets
 * Other languages
 ** DONE JavaScript js2
 ** TODO JavaScript chrome integration
