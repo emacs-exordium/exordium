@@ -10,7 +10,7 @@
 
 
 (require 'bde-style)
-(require 'bde-util);
+(require 'bde-util)
 
 ;;; Ctrl-Tab to switch between .h and .cpp
 (global-set-key [(control tab)] 'bde-switch-h-cpp)

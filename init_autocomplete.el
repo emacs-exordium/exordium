@@ -1,9 +1,5 @@
 ;;;; Autocomplete extensions
 ;;;
-;;; This file load extensions:
-;;; auto-complete : auto completion backend
-;;; yasnippet ....: it completes auto complete
-;;;
 ;;; To auto-complete C++ headers, set variable `local-ac-c-header-trees' to the
 ;;; list of directories containing system include directory (or BDE package
 ;;; groups). For example:
@@ -21,13 +17,8 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+;; Use ESC to escape autocomplete (in addition to C-g)
 (define-key ac-completing-map (kbd "<escape>") 'ac-stop)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Yasnippet
-
-(require 'yasnippet)
-(yas-global-mode 1) ; always on
 
 ;; Auto-complete for C/C++ files
 (defvar system-ac-c-header-trees ()

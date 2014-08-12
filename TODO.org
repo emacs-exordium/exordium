@@ -1,10 +1,10 @@
 #+TITLE: Emacs configuration todo list
 
 * Modules
-    - [ ] C-+/- to zoom and new key for duplicate line
-    - [ ] Comment/break up init.el
-    - [ ] Compile init*.el and test startup time
-    - [ ] Highlight symbol at point
+    - [X] C-+/- to zoom and new key for duplicate line
+    - [X] Comment/break up init.el
+    - [ ] Require/Compile init*.el and test startup time
+    - [X] Highlight symbol at point
     - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
     - [ ] Flycheck?
 * Themes
@@ -20,10 +20,10 @@
     - [X] Generate LLVM compilation database
       - [X] Test with bde
       - [X] Test with multiple projects
-    - [ ] Better shortcut keys
+    - [X] Better shortcut keys
     - [X] Switch project
-    - [ ] Documentation
-    - [ ] Commit and retest on Linux
+    - [X] Documentation
+    - [X] Commit and retest on Linux
     - [ ] Port number
     - [ ] Display compilation errors/warnings with flymake
     - [ ] Enable support for autocomplete
@@ -32,6 +32,8 @@
 ** TODO Malinka http://blog.refu.co/?tag=clang
 ** TODO Eclim: https://github.com/senny/emacs-eclim
 ** TODO snippets
+    - [ ] New files
+    - [ ] Etc
 * Other languages
 ** DONE JavaScript js2
 ** TODO JavaScript chrome integration

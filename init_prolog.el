@@ -24,8 +24,8 @@
 (defun emacs-23-p ()
   (>= emacs-major-version 23))
 
-(defun emacs-22-p ()
-  (string-match "GNU Emacs 22" (version)))
+;; (defun emacs-22-p ()
+;;   (string-match "GNU Emacs 22" (version)))
 
 (defmacro emacs-linux-p ()
   (string-match "linux" (prin1-to-string system-type)))

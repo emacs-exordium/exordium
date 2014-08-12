@@ -6,6 +6,9 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
+(let ((minver 23))
+  (unless (>= emacs-major-version minver)
+    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa and Marmelade
@@ -38,10 +41,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Components
 
-(load "~/.emacs.d/init_prolog.el") ; must be loaded first
-(load "~/.emacs.d/init_user.el")
-(load "~/.emacs.d/init_util.el")
-(load "~/.emacs.d/init_extensions.el")
+(load "~/.emacs.d/init_prolog.el")      ; must be loaded first
+(load "~/.emacs.d/init_visual.el")      ; fonts, menu, syntax highlighting...
+(load "~/.emacs.d/init_user.el")        ; keys, backup files, trailing spaces...
+(load "~/.emacs.d/init_util.el")        ; utilities like match paren, bookmarks...
+(load "~/.emacs.d/init_extensions.el")  ; minor modes like 80 col, FIXME etc.
+(load "~/.emacs.d/init_ido.el")
+(load "~/.emacs.d/init_markdown.el")
+(load "~/.emacs.d/init_org.el")
 
 ;;; Themes
 (if (not (emacs-nw-p))
@@ -54,6 +61,7 @@
 ;;; C++
 (load "~/.emacs.d/init_cpp.el")
 (load "~/.emacs.d/init_autocomplete.el")
+(load "~/.emacs.d/init_yasnippet.el")
 ;;(load "~/.emacs.d/init_cedet.el")
 (load "~/.emacs.d/init_rtags.el")
 
@@ -61,7 +69,8 @@
 (load "~/.emacs.d/init_javascript.el")
 
 ;;; Clojure
-(load "~/.emacs.d/init_clojure.el")
+(unless (emacs-bloomberg-p)
+  (load "~/.emacs.d/init_clojure.el"))
 
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init_local.el")
