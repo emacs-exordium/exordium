@@ -48,7 +48,7 @@
 	     ((:url . "http://elpa.gnu.org/packages/caps-lock.html")
 	      (:keywords))])
  (chess .
-	[(2 0 3)
+	[(2 0 4)
 	 ((cl-lib
 	   (0 5)))
 	 "Play chess in GNU Emacs" tar
@@ -95,7 +95,7 @@
 	     ((:url . "http://www.dr-qubit.org/emacs.php")
 	      (:keywords "extensions" "matching" "data structures trie" "tree" "dictionary" "completion" "regexp"))])
  (diff-hl .
-	  [(1 5 3)
+	  [(1 6 0)
 	   ((cl-lib
 	     (0 2)))
 	   "Highlight uncommitted changes" tar
@@ -167,7 +167,11 @@
 			  (:keywords))])
  (flylisp .
 	  [(0 2)
-	   nil "Color unbalanced parentheses and parentheses inconsistent with indentation" single
+	   ((emacs
+	     (24 1))
+	    (cl-lib
+	     (0 4)))
+	   "Color unbalanced parentheses and parentheses inconsistent with indentation" single
 	   ((:url . "http://elpa.gnu.org/packages/flylisp.html")
 	    (:keywords))])
  (ggtags .
@@ -293,7 +297,7 @@
 	    ((:url . "http://elpa.gnu.org/packages/omn-mode.html")
 	     (:keywords))])
  (org .
-      [(20140721)
+      [(20140811)
        nil "Outline-based notes management and organizer" tar nil])
  (osc .
       [(0 1)
