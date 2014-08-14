@@ -10,6 +10,7 @@
 * Themes
     - [X] Make linum face boring (not sure the fancy version works)
     - [X] Make org mode more readable
+    - [ ] *FIX LINUM ON LINUX*
     - [ ] Function key to cycle between themes
     - [ ] Primitive types for C++
     - [ ] High-constrast version of solarized
@@ -24,6 +25,9 @@
     - [X] Switch project
     - [X] Documentation
     - [X] Commit and retest on Linux
+    - [ ] *Fixes for BB*
+      - [ ] Script to create links with package group headers in some dirs
+      - [ ] Make the compilation path per project (+ default?)
     - [ ] Port number
     - [ ] Display compilation errors/warnings with flymake
     - [ ] Enable support for autocomplete

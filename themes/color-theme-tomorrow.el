@@ -177,8 +177,8 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
-     ;;(linum ((,class (:background ,current-line)))) ; grunge
-     (linum ((,class (:foreground ,comment :background ,background :height 1)))) ; boring
+     (linum ((,class (:background ,current-line)))) ; grunge
+     ;;(linum ((,class (:foreground ,comment :background ,background :height 1)))) ; boring
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
