@@ -161,3 +161,5 @@ Uses `current-date-time-format' for the formatting the date/time."
   (delete-region (point) (progn (skip-chars-forward " \t") (point))))
 
 (global-set-key [(control \\)] 'delete-horizontal-space-forward)
+
+(provide 'init-util)

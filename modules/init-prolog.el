@@ -4,34 +4,23 @@
 ;;; CEDET etc. It should be loaded before any other module.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Environment functions
+;;; Environment variables
 
-(defun emacs-nw-p ()
-  (not window-system))
+(defconst *environment-osx* (eq system-type 'darwin)
+  "Non-nil if we are on a Mac")
 
-(defun emacs-osx-p ()
-  (eq window-system 'ns))
+(defconst *environment-linux* (string-match "linux" (prin1-to-string system-type))
+  "Non-nil if we are on Linux")
 
-(defun emacs-x-p ()
-  (eq window-system 'x))
+(defconst *environment-nw*  (not window-system)
+  "Non-nil if emacs is started in -nw mode")
 
-(defun gnu-emacs-p ()
-  (string-match "GNU Emacs" (version)))
+(defconst *environment-xwindow* (eq window-system 'x)
+  "Non-nil if we are in X-Window")
 
-(defun emacs-24-p ()
-  (>= emacs-major-version 24))
-
-(defun emacs-23-p ()
-  (>= emacs-major-version 23))
-
-;; (defun emacs-22-p ()
-;;   (string-match "GNU Emacs 22" (version)))
-
-(defmacro emacs-linux-p ()
-  (string-match "linux" (prin1-to-string system-type)))
-
-(defmacro emacs-bloomberg-p ()
-  (and (emacs-x-p) (getenv "MBIG_NUMBER")))
+(defconst *environment-bloomberg* (and *environment-xwindow*
+                                       (getenv "MBIG_NUMBER"))
+  "Non-nil if we are at Bloomberg")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -66,3 +55,5 @@ dirs. Input is a string and output is a list of strings."
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
+
+(provide 'init-prolog)

@@ -6,9 +6,11 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
-(let ((minver 23))
-  (unless (>= emacs-major-version minver)
-    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+(let ((min-version "24.0"))
+  (when (version< emacs-version min-version)
+    (error "This config requires at least Emacs %s, but you're running %s"
+           min-version emacs-version)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa and Marmelade
@@ -25,52 +27,56 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Path for "require"
 
-(setq custom-theme-directory "~/emacs.d/themes/")
+(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 
-(defun add-tree-to-load-path (dir)
+(defun add-directory-tree-to-load-path (dir)
   "Add 'dir' and all its subdirs to the load path"
   (add-to-list 'load-path dir)
   (let ((default-directory dir))
     (normal-top-level-add-subdirs-to-load-path)))
 
-(add-tree-to-load-path "~/.emacs.d/extensions/")
-(add-tree-to-load-path "~/.emacs.d/themes/")
-(add-tree-to-load-path "~/.emacs.d/bde/")
+(add-directory-tree-to-load-path "~/.emacs.d/extensions/")
+(add-directory-tree-to-load-path "~/.emacs.d/themes/")
+(add-directory-tree-to-load-path "~/.emacs.d/bde/")
+
+(setq custom-theme-directory "~/emacs.d/themes/")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Components
+;;; Load Modules
 
-(load "~/.emacs.d/init_prolog.el")      ; must be loaded first
-(load "~/.emacs.d/init_visual.el")      ; fonts, menu, syntax highlighting...
-(load "~/.emacs.d/init_user.el")        ; keys, backup files, trailing spaces...
-(load "~/.emacs.d/init_util.el")        ; utilities like match paren, bookmarks...
-(load "~/.emacs.d/init_extensions.el")  ; minor modes like 80 col, FIXME etc.
-(load "~/.emacs.d/init_ido.el")
-(load "~/.emacs.d/init_markdown.el")
-(load "~/.emacs.d/init_org.el")
+(require 'init-prolog)      ; environment; must be loaded first
+(require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
+(require 'init-user-prefs)  ; backup files, trailing spaces...
+(require 'init-keyboard)    ; key bindings
+(require 'init-util)        ; utilities like match paren, bookmarks...
+(require 'init-extensions)  ; minor modes like CUA, 80 col, FIXME etc.
+(require 'init-ido)
+(require 'init-markdown)
+(require 'init-org)
 
 ;;; Themes
-(if (not (emacs-nw-p))
-    (progn
-      (load "~/.emacs.d/init_themes.el")
-      (unless (emacs-bloomberg-p)
-        (load "~/.emacs.d/init_powerline.el")))
-  (set-face-background 'highlight nil))
+(if *environment-nw*
+    (set-face-background 'highlight nil)
+  (require 'init-themes)
+  (unless *environment-bloomberg*
+    (require 'init-powerline)))
+
+(when *environment-osx*
+  (require 'init-osx))
 
 ;;; C++
-(load "~/.emacs.d/init_cpp.el")
-(load "~/.emacs.d/init_autocomplete.el")
-(load "~/.emacs.d/init_yasnippet.el")
-;;(load "~/.emacs.d/init_cedet.el")
-(load "~/.emacs.d/init_rtags.el")
+(require 'init-cpp)
+(require 'init-autocomplete)
+(require 'init-yasnippet)
+;; (require 'init-cedet.el)
+(require 'init-rtags)
 
-;;; Javascript
-(load "~/.emacs.d/init_javascript.el")
-
-;;; Clojure
-(unless (emacs-bloomberg-p)
-  (load "~/.emacs.d/init_clojure.el"))
+;;; Other programming languages
+(require 'init-javascript)
+(unless *environment-bloomberg*
+  ;; Save a little bit of time
+  (require 'init-clojure))
 
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init_local.el")

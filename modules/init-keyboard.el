@@ -1,4 +1,4 @@
-;;;; User/keyboard preferences
+;;;; Key bindings
 ;;;
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
@@ -15,10 +15,6 @@
 ;;; Ctrl +/-       Zoom
 ;;; -------------- -------------------------------------------------------
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Keyboard
-
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -28,13 +24,6 @@
 ;;; Delete selection when typing
 (delete-selection-mode t)
 
-;;; Indent with spaces, not tabs
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-
-;;; Autofill at 79 characters
-(setq-default fill-column 79)
-;;;(global-visual-line-mode 1) ; Wordwrap at word boundaries
 
 ;;; Shortcut keys
 (global-set-key [(meta g)] 'goto-line)
@@ -64,18 +53,4 @@
 (define-key global-map [(control +)] 'text-scale-increase)
 (define-key global-map [(control -)] 'text-scale-decrease)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Files
-
-(setq large-file-warning-threshold nil)
-
-;; Remove trailing blanks on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;;; Disable backup files (e.g. file~)
-(defun no-backup-files ()
-  "Disable creation of backup files"
-  (interactive)
-  (setq make-backup-files nil))
-(no-backup-files)
+(provide 'init-keyboard)

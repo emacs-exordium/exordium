@@ -177,7 +177,7 @@
     (ecb-activate)
     (setq ecb-toggle-status t)))
 
-(unless (emacs-bloomberg-p)
+(unless *environment-bloomberg*
   ;; It either loops or crashes our build of emacs :'(
   (define-key global-map [f5] 'ecb-toggle))
 
@@ -207,3 +207,5 @@
 ;;; Source code generation using Semantics information, with templates.
 
 ;;(global-srecode-minor-mode 1)
+
+(provide 'init-cedet)

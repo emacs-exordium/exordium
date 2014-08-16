@@ -57,3 +57,5 @@
                              (powerline-render rhs)))))))
 
 (my-powerline-theme)
+
+(provide 'init-powerline)

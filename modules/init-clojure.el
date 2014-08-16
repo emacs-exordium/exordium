@@ -34,3 +34,5 @@
       (delete 'try-complete-file-name-partially hippie-expand-try-functions-list))
 
 ;; (setq ido-use-filename-at-point nil)
+
+(provide 'init-clojure)

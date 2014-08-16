@@ -32,3 +32,5 @@
    (ido-completing-read "Recentf open: "
                         (mapcar 'abbreviate-file-name recentf-list)
                         nil t)))
+
+(provide 'init-ido)

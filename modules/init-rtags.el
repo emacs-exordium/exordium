@@ -160,3 +160,5 @@
       (insert "];")
       (newline)
       (write-region (buffer-string) nil dbfilename))))
+
+(provide 'init-rtags)

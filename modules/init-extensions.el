@@ -53,3 +53,5 @@
 ;;   (add-hook hook 'highlight-symbol-nav-mode))
 (eval-after-load 'highlight-symbol
   '(diminish 'highlight-symbol-mode))
+
+(provide 'init-extensions)

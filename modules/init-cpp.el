@@ -31,3 +31,5 @@
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
+
+(provide 'init-cpp)

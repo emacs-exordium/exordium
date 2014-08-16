@@ -1,13 +1,21 @@
 ;;;; Emacs looks and feel
+;;; - Fonts
+;;; - Toolbar
+;;; - Menubar
+;;; - Splash screen
+;;; - Blinking cursor
+;;; - Scrolling
+;;; - Copy and paste
+;;; - Font lock
 
 ;;; Font
-(when (emacs-osx-p)
+(when *environment-osx*
  (set-face-attribute 'default nil
                      :family "Consolas" :height 120 :weight 'normal)
  (setq default-frame-alist '((width . 100)
                              (height . 65))))
 
-(when (emacs-bloomberg-p)
+(when *environment-bloomberg*
   (setq default-frame-alist
         (append `(;;(font . ,(choose-frame-font))
                   (font . "Monospace 12")
@@ -64,24 +72,22 @@
         (C++-mode . 1) ;; t or 1 or 2
         (t . t)))
 
-(when (emacs-24-p)
-  ;; Lazy font-lock to avoid the bug in Emacs 24
-  (cond ((fboundp 'jit-lock-mode)
-         (setq jit-lock-chunk-size 5000
-               jit-lock-context-time 0.2
-               jit-lock-defer-time .1
-               jit-lock-stealth-nice 0.2
-               jit-lock-stealth-time 5
-               jit-lock-stealth-verbose nil)
-         (jit-lock-mode t))
-        ((fboundp 'turn-on-lazy-shot)
-         (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot))
-        ((fboundp 'turn-on-lazy-lock)
-         (add-hook 'font-lock-mode-hook 'turn-on-lazy-lock)
-         (setq lazy-lock-stealth-time 10)
-         (setq lazy-lock-minimum-size 10000)))
-  ;;(setq fci-always-use-textual-rule t)
-  )
+;; Lazy font-lock to avoid the bug in Emacs 24
+(cond ((fboundp 'jit-lock-mode)
+       (setq jit-lock-chunk-size 5000
+             jit-lock-context-time 0.2
+             jit-lock-defer-time .1
+             jit-lock-stealth-nice 0.2
+             jit-lock-stealth-time 5
+             jit-lock-stealth-verbose nil)
+       (jit-lock-mode t))
+      ((fboundp 'turn-on-lazy-shot)
+       (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot))
+      ((fboundp 'turn-on-lazy-lock)
+       (add-hook 'font-lock-mode-hook 'turn-on-lazy-lock)
+       (setq lazy-lock-stealth-time 10)
+       (setq lazy-lock-minimum-size 10000)))
+;;(fci-always-use-textual-rule t)
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))
@@ -98,11 +104,4 @@
 ;;; Mouse selection
 (setq x-select-enable-clipboard t)
 
-;;; Full screen
-(when (and (emacs-24-p) (emacs-osx-p))
-  (defun toggle-fullscreen ()
-    "Toggle full screen"
-    (interactive)
-    (set-frame-parameter
-     nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+(provide 'init-ui)
