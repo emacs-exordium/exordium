@@ -1,5 +1,24 @@
 #+TITLE: Emacs configuration todo list
 
+* This weekend
+** DONE .h files == C++ mode by default
+** TODO performance profiling
+** TODO rtags
+    - [ ] Fixes for BB
+      - [ ] Script to create links with package group headers in some dirs?
+      - [ ] Compilation path per project (load a dot file containing an expression)
+      - [ ] Check system include paths with BDE
+    - [ ] Flymake - display compilation errors and warnings
+    - [ ] Autocomplete
+    - [ ] User manual (markdown?)
+** TODO fix linum!
+** TODO use require in init files and compile
+** TODO try helm
+** TODO write a user manual? Like https://github.com/bbatsov/prelude
+** TODO Keys
+    - [ ] ctrl-x g = magit status
+    - [ ] duplicate line
+    - [ ] recent files
 * Modules
     - [X] C-+/- to zoom and new key for duplicate line
     - [X] Comment/break up init.el
@@ -25,9 +44,6 @@
     - [X] Switch project
     - [X] Documentation
     - [X] Commit and retest on Linux
-    - [ ] *Fixes for BB*
-      - [ ] Script to create links with package group headers in some dirs
-      - [ ] Make the compilation path per project (+ default?)
     - [ ] Port number
     - [ ] Display compilation errors/warnings with flymake
     - [ ] Enable support for autocomplete

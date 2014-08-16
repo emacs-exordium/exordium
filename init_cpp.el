@@ -12,6 +12,9 @@
 (require 'bde-style)
 (require 'bde-util)
 
+;;; Open a header file in C++ mode by default
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
 ;;; Ctrl-Tab to switch between .h and .cpp
 (global-set-key [(control tab)] 'bde-switch-h-cpp)
 
