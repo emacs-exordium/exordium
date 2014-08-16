@@ -369,7 +369,7 @@ names to which it refers are bound."
      ;; Markdown
      (markdown-url-face ((,class (:inherit link))))
      (markdown-link-face ((,class (:foreground ,blue :underline t))))
-     (markdown-header-face-1 ((, class (:foreground ,blue :height 1.44))))
+     ;;(markdown-header-face-1 ((, class (:foreground ,blue :height 1.44))))
 
      ;; Fic
      (font-lock-fic-face ((, class (:foreground ,red :weight bold :slant italic))))
