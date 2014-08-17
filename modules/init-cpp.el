@@ -3,33 +3,81 @@
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
-;;; Ctrl-tab       Switch between .h and .cpp
-;;; Ctrl-c =       Insert BDE class header (definition)
-;;; Ctrl-c -       Insert BDE class header (implementation)
-;;; Ctrl-c ;       IEdit mode (rename selected variable)
+;;; C-tab          Switch between .h and .cpp
+;;; C-c ;          IEdit mode (rename selected variable)
+;;;
+;;; Features:
+;;; - Open .h files in C++ mode by default
+;;; - Highlight dead code between #if 0 and #endif (after saving)
 
-
-(require 'bde-style)
-(require 'bde-util)
 
 ;;; Open a header file in C++ mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
-;;; Ctrl-Tab to switch between .h and .cpp
-(global-set-key [(control tab)] 'bde-switch-h-cpp)
-
-;;; Ctrl-C = and Ctrl-C - for class header
-(global-set-key [(control c)(=)] 'bde-insert-define-class-header)
-(global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
-
-;;; Highlight dead code between "#if 0" and "#endif"
-(add-hook 'c-mode-common-hook 'bde-highlight-dead-code-hook)
-
-;;; Ctrl-> to right-aligh the text after point
-(global-set-key [(control >)] 'bde-aligh-right-after-point)
-
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Highlight dead code between #if 0 and #endif
+
+(defun cpp-highlight-dead-code ()
+  "highlight c/c++ #if 0 #endif macros"
+  (let ((color (face-background 'region)))
+    (setq cpp-known-face 'default)
+    (setq cpp-unknown-face 'default)
+    (setq cpp-known-writable 't)
+    (setq cpp-unknown-writable 't)
+    (setq cpp-edit-list `(("0" (background-color . ,color) default both)
+                          ("1" default (background-color . ,color) both)))
+    (cpp-highlight-buffer t)))
+
+(defun cpp-highlight-dead-code-hook ()
+  (cpp-highlight-dead-code)
+  (add-hook 'after-save-hook 'cpp-highlight-dead-code 'append 'local))
+
+;;; Highlight dead code between "#if 0" and "#endif"
+(add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Switch between .h <--> .cpp
+
+(defconst *cpp-header-switches* '(("h" .   ("cpp" "c"))
+                                  ("cpp" . ("h"))
+                                  ("c" .   ("h"))))
+
+(defun cpp-switch-h-cpp ()
+  "Switch .h and .cpp file."
+  (interactive)
+  (let* ((ext (file-name-extension (buffer-file-name)))
+         (base-name (my-string-without-last (buffer-name) (length ext)))
+         (base-path (my-string-without-last (buffer-file-name) (length ext)))
+         (count-ext (cdr (my-find-if (lambda (i)
+                                        (string= (car i) ext))
+                                      *cpp-header-switches*))))
+    (cond (count-ext
+           (catch 'found
+             ;; first look into the existing buffers
+             (let ((buffers (mapcar (lambda (i)
+                                      (concat base-name i))
+                                    count-ext)))
+               (dolist (buff buffers)
+                 (when (bufferp (get-buffer buff))
+                   (switch-to-buffer buff)
+                   (throw 'found nil))))
+             ;; if not such buffer, look into the files in the same dir
+             (let ((files (mapcar (lambda (count-ext)
+                                    (concat base-path count-ext))
+                                  count-ext)))
+               (dolist (file files)
+                 (when (file-exists-p file)
+                   (find-file file)
+                   (throw 'found nil))))))
+          (t (message "This is not a C/C++ file")))))
+
+;;; Ctrl-Tab to switch between .h and .cpp
+(global-set-key [(control tab)] 'cpp-switch-h-cpp)
 
 (provide 'init-cpp)

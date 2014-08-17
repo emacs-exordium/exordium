@@ -1,25 +1,19 @@
 ;;; bde-style.el --- Provide BDE-style C++ indentation
-
-;;; Authors: Philippe Grenet (pgrenet)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Usage
-;;; First create a symbolic link from ~/.emacs.d/lisp/bde-style.el to this
-;;; file.  Alternatively you can add the location of this file in your .emacs
-;;; with: (add-to-list 'load-path "/path/to/this/file/")
 ;;;
-;;; Then add this in your .emacs:
-;;;     (require 'bde-style)
+;;; See https://github.com/bloomberg/bde
 ;;;
-;;;     ;; Mini-mode for creating a class header:
-;;;     (global-set-key [(control c)(=)] 'bde-insert-define-class-header)
-;;;     (global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; C-c =          `bde-insert-define-class-header'
+;;; C-c -          `bde-insert-declare-class-header'
+;;; C->            `bde-aligh-right-after-point': align text after cursor
+;;;                to the right (for // RETURN or // LOCK)
 ;;;
 ;;; TODO
 ;;; - Enums are not correct
 ;;; - Add a function to align function arguments (with * and &)
-;;; - Add a function to generate a snippet based on the word under the cursor.
-;;;   For example "info" + F1 ==> BAEL_LOG_INFO << {cursor} << BAEL_LOG_END;
+
 
 (require 'cl)
 
@@ -179,19 +173,9 @@ backspace, delete, left or right."
   (interactive)
   (bde-insert-class-header ?-))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Pawel's python-based BDE-style formatter
-
-(defun bde-format-around-point ()
-  "Test Pawel's formatter"
-  (interactive)
-  (let ((line (- (line-number-at-pos) 1))
-        (col  (current-column)))
-    (compile
-     (format "python /Users/phil/Code/bdeformat/pythonx/bdeformatfile.py %s %d %d"
-             (shell-quote-argument (buffer-file-name))
-             line col))))
+;;; Ctrl-C = and Ctrl-C - for class header
+(global-set-key [(control c)(=)] 'bde-insert-define-class-header)
+(global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,6 +204,9 @@ backspace, delete, left or right."
           (insert " "))
       (message "Sorry, not enough space..."))))
 
+;;; Ctrl-> to right-aligh the text after point
+(global-set-key [(control >)] 'bde-aligh-right-after-point)
+
 
 ;;; End of file
-(provide 'bde-style)
+(provide 'init-bde-style)

@@ -24,7 +24,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Utility functions reused by several modules
+;;; Files
 
 (defun directory-tree (dir)
   "Returns the list of subdirs of 'dir' excluding any dot
@@ -44,16 +44,35 @@ dirs. Input is a string and output is a list of strings."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Strings
 
-(defun string/ends-with (string suffix)
-  "Return t if STRING ends with SUFFIX."
-  (and (string-match (rx-to-string `(: ,suffix eos) t)
-                     string)
-       t))
+(defun my-string-without-last (string n)
+  "Return string minus the last n characters."
+  (substring string 0 (max 0(- (length string) n))))
 
-(defun string/starts-with (string prefix)
+(defun my-string-ends-with (string tail)
+  "Predicate checking whether string ends with the given tail."
+  (string= tail (substring string (- (length tail)))))
+
+;; (defun string/ends-with (string suffix)
+;;   "Return t if STRING ends with SUFFIX."
+;;   (and (string-match (rx-to-string `(: ,suffix eos) t)
+;;                      string)
+;;        t))
+
+(defun my-string-starts-with (string prefix)
   "Return t if STRING starts with prefix."
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Others
+
+(defun my-find-if (predicate list)
+  (catch 'found
+    (dolist (elt list nil)
+      (when (funcall predicate elt)
+        (throw 'found elt)))))
+
 
 (provide 'init-prolog)

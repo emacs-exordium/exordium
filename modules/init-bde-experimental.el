@@ -59,3 +59,31 @@ must be inside the argument list."
     (kill-rectangle (point-min) (point)))
   (goto-char beg)
   (yank-rectangle))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Pawel's python-based BDE-style formatter
+
+(defun bde-format-around-point ()
+  "Test Pawel's formatter"
+  (interactive)
+  (let ((line (- (line-number-at-pos) 1))
+        (col  (current-column)))
+    (compile
+     (format "python /Users/phil/Code/bdeformat/pythonx/bdeformatfile.py %s %d %d"
+             (shell-quote-argument (buffer-file-name))
+             line col))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; BDE verify
+
+(defun bde-verify-buffer ()
+  "Runs bdeverify on the current file (asks to save if needed)"
+  (interactive)
+  (compile
+   (format "/bbshr/bde/bde-tools/bin/bdeverify %s"
+           (shell-quote-argument (buffer-file-name)))))
+
+
+(provide 'init-bde-experimental)

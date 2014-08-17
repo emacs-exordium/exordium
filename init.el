@@ -37,7 +37,6 @@
 
 (add-directory-tree-to-load-path "~/.emacs.d/extensions/")
 (add-directory-tree-to-load-path "~/.emacs.d/themes/")
-(add-directory-tree-to-load-path "~/.emacs.d/bde/")
 
 (setq custom-theme-directory "~/emacs.d/themes/")
 
@@ -67,6 +66,7 @@
 
 ;;; C++
 (require 'init-cpp)
+(require 'init-bde-style)
 (require 'init-autocomplete)
 (require 'init-yasnippet)
 ;; (require 'init-cedet.el)

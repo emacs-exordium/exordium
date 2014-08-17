@@ -143,7 +143,7 @@
           (dolist (default-directory subdirs)
             (let ((files   (file-expand-wildcards "*.cpp"))
                   ;; rdm does not like directories starting with "~/"
-                  (dirname (if (string/starts-with default-directory "~/")
+                  (dirname (if (my-string-starts-with default-directory "~/")
                                (substitute-in-file-name
                                 (concat "$HOME/" (substring default-directory 2)))
                              default-directory)))
