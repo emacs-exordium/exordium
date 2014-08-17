@@ -8,8 +8,8 @@
 ;;; Ctrl-c Ctrl-s  Push point ("save")
 ;;; Ctrl-c Ctrl-b  Pop point ("back")
 ;;;
-;;; Ctrl-c d       Insert date
-;;; Ctrl-c t       Insert time
+;;; (unbound)      Insert date
+;;; (unbound)      Insert time
 ;;;
 ;;; Ctrl-+         Duplicate line
 ;;; Ctrl-\         Delete spaces forward (Meta-\ to delete all spaces)
@@ -114,8 +114,8 @@ Uses `current-date-time-format' for the formatting the date/time."
   (insert (format-time-string current-time-format (current-time)))
   (insert "\n"))
 
-(global-set-key [(control c)(control d)] 'insert-current-date-time)
-(global-set-key [(control c)(control t)] 'insert-current-time)
+;; (global-set-key [(control c)(control d)] 'insert-current-date-time)
+;; (global-set-key [(control c)(control t)] 'insert-current-time)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -153,7 +153,7 @@ Uses `current-date-time-format' for the formatting the date/time."
   ;; put the point in the lowest line and return
   (next-line arg))
 
-(global-set-key [(meta +)] 'duplicate-line)
+(global-set-key [(control c)(control d)] 'duplicate-line)
 
 (defun delete-horizontal-space-forward ()
   "Delete all spaces and tabs after point."

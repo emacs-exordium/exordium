@@ -1,25 +1,27 @@
 #+TITLE: Emacs configuration todo list
 
-* This weekend
+* Work in progress
 ** DONE .h files == C++ mode by default
-** TODO performance profiling
+** DONE Use require in init files and compile
+** TODO Move BDE components into modules
+** TODO Keys
+    - [X] C-x g     = magit status
+    - [X] C-c C-d   = duplicate line
+    - [X] C-c C-f   = open recent file
+    - [ ] Duplicate line or region +/- comment
+** IN-PROGRESS User manual in the readme
+** IN-PROGRESS Fix performance problem with autocomplete
     - [ ] Compute the file list for autocomplete up front
-** TODO rtags
+** TODO Diminish minor modes
+** TODO Rtags
     - [ ] Fixes for BB
       - [ ] Script to create links with package group headers in some dirs?
       - [ ] Compilation path per project (load a dot file containing an expression)
       - [ ] Check system include paths with BDE
     - [ ] Flymake - display compilation errors and warnings
     - [ ] Autocomplete
-** TODO User manual in the readme (look at prelude's)
-** TODO fix linum!
-** TODO use require in init files and compile
-** TODO try helm
-** TODO write a user manual? Like https://github.com/bbatsov/prelude
-** TODO Keys
-    - [ ] ctrl-x g = magit status
-    - [ ] duplicate line
-    - [ ] recent files
+** TODO Fix linum!
+** TODO Install helm, it looks awesome
 * Modules
     - [X] C-+/- to zoom and new key for duplicate line
     - [X] Comment/break up init.el

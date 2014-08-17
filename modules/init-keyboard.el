@@ -13,6 +13,7 @@
 ;;; Super-arrow    Move between windows (= Ctrl-x o)
 ;;; Meta-ctrl-l    Switch to last buffer
 ;;; Ctrl +/-       Zoom
+;;; Ctrl-x g       Magit status
 ;;; -------------- -------------------------------------------------------
 
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
@@ -23,7 +24,6 @@
 
 ;;; Delete selection when typing
 (delete-selection-mode t)
-
 
 ;;; Shortcut keys
 (global-set-key [(meta g)] 'goto-line)
@@ -52,5 +52,8 @@
 ;;; Ctrl +/- to zoom in/out
 (define-key global-map [(control +)] 'text-scale-increase)
 (define-key global-map [(control -)] 'text-scale-decrease)
+
+;;; Ctrl-x g = magit-status
+(define-key global-map [(control x)(g)] 'magit-status)
 
 (provide 'init-keyboard)

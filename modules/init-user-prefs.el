@@ -11,8 +11,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; File saving and opening
 
-;; Don't tell me this file is too large
-(setq large-file-warning-threshold nil)
+;; warn when opening files bigger than 100MB (use nil to disable it entirely)
+(setq large-file-warning-threshold 100000000)
 
 ;; Remove trailing blanks on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -23,5 +23,10 @@
   (interactive)
   (setq make-backup-files nil))
 (no-backup-files)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Reduce the frequency of garbage collection by making it happen on
+;; each 50MB of allocated data (the default is on every 0.76MB)
+;;(setq gc-cons-threshold 50000000)
 
 (provide 'init-user-prefs)

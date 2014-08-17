@@ -58,13 +58,15 @@ as a mechanism to load machine-specific extensions.
 Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>ESC</kbd>     | Quit command; equivalent to <bkd>C-g</kbd>.
-<kbd>C-z</kbd>     | `undo`.
-<kbd>C-\`</kbd>     | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
+<kbd>C-z</kbd>     | Undo! (`undo`).
+<kbd>C-\`</kbd>    | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-ESC</kbd>   | `delete-other-windows` (just keep the current window).
+<kbd>C-c C-f</kbd> | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
 <kbd>M-g</kbd>     | `goto-line` (prompts for a line number).
 <kbd>C-+</kbd>     | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>     | Decrease font size (`text-scale-decrease`).
-<kbd>M-C-l</kbd>   | Switch back and forth between the 2 top buffers.
+<kbd>M-C-l</kbd>   | Switch back and forth between the 2 top buffers (from XEmacs).
+<kbd>M-ARROW</kbd> | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
 
 Editing any file:
 
@@ -72,7 +74,15 @@ Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>S-ENTER</kbd> | Return and indent.
 <kbd>M-BCKSP</kbd> | `backward-kill-word`.
-<kbd>C-&#124;<kbd>      | Toggle 80-col ruler (fill column indicator).
+<kbd>C-&#124;<kbd> | Toggle 80-column ruler (fill column indicator).
+<kbd>C-\\</kbd>    | Delete spaces after cursor (`delete-horizontal-space-forward`).
+<kbd>C-c C-d</kbd> | Duplicate line.
+
+Git:
+
+Keybinding         | Description
+-------------------|------------------------------------------------------------
+<kbd>C-x g</bkd>   | Open git status mode (`magit-status`).
 
 ### C++
 
