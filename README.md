@@ -95,7 +95,7 @@ BDE style:
 
 Keybinding         | Description
 -------------------|------------------------------------------------------------
-<kbd<C-&gt;</kbd>  | Insert text after cursor to the right (for return, lock etc.).
+<kbd>C-&gt;</kbd>  | Insert text after cursor to the right (for return, lock etc.).
 <kbd>C-c =</bkd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
