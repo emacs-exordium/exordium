@@ -51,6 +51,8 @@
 ;; (dolist (hook '(prog-mode-hook html-mode-hook))
 ;;   (add-hook hook 'highlight-symbol-mode)
 ;;   (add-hook hook 'highlight-symbol-nav-mode))
+
+;; Don't show this mode in the modeline
 (eval-after-load 'highlight-symbol
   '(diminish 'highlight-symbol-mode))
 

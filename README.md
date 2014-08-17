@@ -22,8 +22,8 @@ want to check these ones:
 
 ## Modules
 
-The root file is `init.el`. It loads a number of modules which can be
-individually enabled or disabled.
+The root file is `init.el`. It loads a number of modules in the `modules`
+directory which can be individually enabled or disabled.
 
 ```lisp
 ;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
@@ -74,7 +74,7 @@ Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>S-ENTER</kbd> | Return and indent.
 <kbd>M-BCKSP</kbd> | `backward-kill-word`.
-<kbd>C-&#124;<kbd> | Toggle 80-column ruler (fill column indicator).
+<kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
 <kbd>C-\\</kbd>    | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-c C-d</kbd> | Duplicate line.
 
