@@ -8,7 +8,7 @@ I mostly care about adding IDE-level features to Emacs for the programming
 languages I use every day: C++, JavaScript, Python, Ruby and various Lisps. If
 you are looking for a good generic Emacs configuration to start with, you might
 want to check these ones:
-* Prelule: https://github.com/bbatsov/prelude
+* Prelude: https://github.com/bbatsov/prelude
 * Steve Purcell's: https://github.com/purcell/emacs.d
 
 ## Content
@@ -72,7 +72,7 @@ Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>S-ENTER</kbd> | Return and indent.
 <kbd>M-BCKSP</kbd> | `backward-kill-word`.
-<kbd>C-\|<kbd>      | Toggle 80-col ruler (fill column indicator).
+<kbd>C-&#124;<kbd>      | Toggle 80-col ruler (fill column indicator).
 
 ### C++
 
