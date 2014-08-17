@@ -86,4 +86,20 @@ Keybinding         | Description
 
 ### C++
 
-TODO...
+Keybinding         | Description
+-------------------|------------------------------------------------------------
+<kbd>C-TAB</bkd>   | Alternate between header file and source file.
+<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
+
+BDE style:
+
+Keybinding         | Description
+-------------------|------------------------------------------------------------
+<kbd<C-\></kbd>    | Insert text after cursor to the right (for return, lock etc.).
+<kbd>C-c =</bkd>   | Insert class definition header.
+<kbd>C-c -</kbd>   | Insert class implementation header.
+
+
+## Using Rtags
+
+TBD.

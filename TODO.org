@@ -3,7 +3,7 @@
 * Work in progress
 ** DONE .h files == C++ mode by default
 ** DONE Use require in init files and compile
-** TODO Move BDE components into modules
+** DONE Move BDE components into modules
 ** DONE Keys
     - [X] C-x g     = magit status
     - [X] C-c C-d   = duplicate line
