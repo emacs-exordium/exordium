@@ -80,4 +80,15 @@
 ;;; Ctrl-Tab to switch between .h and .cpp
 (global-set-key [(control tab)] 'cpp-switch-h-cpp)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Font lock changes
+
+;;; Display TODO: and FIXME: in red
+(font-lock-add-keywords
+ 'c++-mode
+ '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
+   ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
+
+
 (provide 'init-cpp)

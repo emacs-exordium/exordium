@@ -124,7 +124,7 @@
 (defvar my-clang-command "/usr/bin/clang++ -Irelative -c -o "
   "Compilation command to use in compilation databases")
 
-(defvar my-included-projects '("~/Code/cpp/bde/groups")
+(defvar my-included-projects nil
   "List of default projects to include in all compilation
   databases (a list of strings e.g. paths to project roots). This
   is not needed if you index these projects individually.")

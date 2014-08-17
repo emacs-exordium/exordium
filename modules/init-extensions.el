@@ -40,9 +40,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FIXME mode
 
-(require 'fic-mode)
-(add-hook 'c++-mode-hook 'turn-on-fic-mode)
-(add-hook 'markdown-mode-hook 'turn-on-fic-mode)
+;; (require 'fic-mode)
+;; (add-hook 'c++-mode-hook 'turn-on-fic-mode)
+;; (add-hook 'markdown-mode-hook 'turn-on-fic-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight symbol
