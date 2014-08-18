@@ -16,7 +16,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;;
 ;;; Whenever rtags jumps somewhere it pushes a location onto its stack. Jump
-;;; back and forward in this stack with M-C-left and M-C-right (or default
+;;; back and forward in this stack with M-[ and M-] (or default
 ;;; C-x r [ and R-x r ] )
 ;;;
 ;;; Functions:
@@ -59,7 +59,7 @@
 ;;;
 ;;; 2. Create a compilation database JSON file in the project root dir.
 ;;;    See `http://clang.llvm.org/docs/JSONCompilationDatabase.html'.
-;;;    Use "rc -J" to reload it.
+;;;    use "rc -J" to reload it.
 ;;;
 ;;; The rest of this documentation assumes we use a compilation database with
 ;;; multiple projects. Note that there is only one index, so any project can
