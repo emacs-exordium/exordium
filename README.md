@@ -108,15 +108,15 @@ it allows loading and unloading projects.
 
 To use it, first start the deamon:
 
-#+BEGIN_SRC
+```bash
 $ rdm
-#+END_SRC
+```
 
 It starts by reading the saved indexes in `~/.rtags` if any. By default it logs
 to the console (use `--help` to see all its options).
 
-Then you need to tell it how to compile your project with Clang, by creating a
-compilation database in a file named `compile_commands.json` (see
+Then you need to tell it how to compile your project, by creating a compilation
+database in a file named `compile_commands.json` (see
 http://clang.llvm.org/docs/JSONCompilationDatabase.html).
 
 The first thing to do is to define the clang command to use to compile a single
@@ -160,10 +160,10 @@ project: /path/to/project
 
 Once the compilation database is ready, load it with `rc`:
 
-#+BEGIN_SRC
+```bash
 $ cd /where/your/compilation/db/is
 $ rc -J
-#+END_SRC
+```
 
 Check the output of `rdm` for any compilation errors and adjust your
 compilation database accordingly. Rerun `rc -J` to reload the compilation
