@@ -32,11 +32,11 @@
   (add-to-list 'ac-sources 'ac-source-c-headers)
   ;; Custom headers for BDE
   (dolist (tree system-ac-c-header-trees)
-    (dolist (dir (directory-tree tree))
+    (dolist (dir (pg/directory-tree tree))
       (add-to-list 'achead:include-directories dir))))
 
 ;; TODO fix this - it is wrong
-(add-hook 'c++-mode-hook 'my-ac-c-header-init)
-(add-hook 'c-mode-hook 'my-ac-c-header-init)
+;;(add-hook 'c++-mode-hook 'my-ac-c-header-init)
+;;(add-hook 'c-mode-hook 'my-ac-c-header-init)
 
 (provide 'init-autocomplete)

@@ -1,32 +1,13 @@
 ;;;; Init prolog
 ;;;
-;;; This file defines utility functions reused in many modules, such as themes,
-;;; CEDET etc. It should be loaded before any other module.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Environment variables
-
-(defconst *environment-osx* (eq system-type 'darwin)
-  "Non-nil if we are on a Mac")
-
-(defconst *environment-linux* (string-match "linux" (prin1-to-string system-type))
-  "Non-nil if we are on Linux")
-
-(defconst *environment-nw*  (not window-system)
-  "Non-nil if emacs is started in -nw mode")
-
-(defconst *environment-xwindow* (eq window-system 'x)
-  "Non-nil if we are in X-Window")
-
-(defconst *environment-bloomberg* (and *environment-xwindow*
-                                       (getenv "MBIG_NUMBER"))
-  "Non-nil if we are at Bloomberg")
+;;; This file defines utility functions reused in other modules. It should be
+;;; loaded before any other module.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Files
 
-(defun directory-tree (dir)
+(defun pg/directory-tree (dir)
   "Returns the list of subdirs of 'dir' excluding any dot
 dirs. Input is a string and output is a list of strings."
   (let* ((dir   (directory-file-name dir))
@@ -36,19 +17,25 @@ dirs. Input is a string and output is a list of strings."
       (unless (string-equal "." (substring f 0 1))
         (let ((f (concat dir "/" f)))
           (when (file-directory-p f)
-            (setq dirs (append (cons f (directory-tree f))
+            (setq dirs (append (cons f (pg/directory-tree f))
                                dirs))))))
     dirs))
+
+(defun pg/read-file-lines (file)
+  "Return a list of lines of the specified file"
+  (with-temp-buffer
+    (insert-file-contents file)
+    (split-string (buffer-string) "\n" t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Strings
 
-(defun my-string-without-last (string n)
+(defun pg/string-without-last (string n)
   "Return string minus the last n characters."
   (substring string 0 (max 0(- (length string) n))))
 
-(defun my-string-ends-with (string tail)
+(defun pg/string-ends-with (string tail)
   "Predicate checking whether string ends with the given tail."
   (string= tail (substring string (- (length tail)))))
 
@@ -58,7 +45,7 @@ dirs. Input is a string and output is a list of strings."
 ;;                      string)
 ;;        t))
 
-(defun my-string-starts-with (string prefix)
+(defun pg/string-starts-with (string prefix)
   "Return t if STRING starts with prefix."
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
@@ -68,7 +55,7 @@ dirs. Input is a string and output is a list of strings."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Others
 
-(defun my-find-if (predicate list)
+(defun pg/find-if (predicate list)
   (catch 'found
     (dolist (elt list nil)
       (when (funcall predicate elt)

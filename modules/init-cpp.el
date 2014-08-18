@@ -18,6 +18,8 @@
 ;;; Fix A bug (normal key is "C-;")
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
 
+;;; Don't show the abbrev minor mode in the mode line
+(diminish 'abbrev-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight dead code between #if 0 and #endif
@@ -52,11 +54,11 @@
   "Switch .h and .cpp file."
   (interactive)
   (let* ((ext (file-name-extension (buffer-file-name)))
-         (base-name (my-string-without-last (buffer-name) (length ext)))
-         (base-path (my-string-without-last (buffer-file-name) (length ext)))
-         (count-ext (cdr (my-find-if (lambda (i)
-                                        (string= (car i) ext))
-                                      *cpp-header-switches*))))
+         (base-name (pg/string-without-last (buffer-name) (length ext)))
+         (base-path (pg/string-without-last (buffer-file-name) (length ext)))
+         (count-ext (cdr (pg/find-if (lambda (i)
+                                       (string= (car i) ext))
+                                     *cpp-header-switches*))))
     (cond (count-ext
            (catch 'found
              ;; first look into the existing buffers

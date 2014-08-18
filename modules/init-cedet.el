@@ -138,7 +138,7 @@
 
 (defun semantic-add-system-include-tree (dir)
   "Add any subdir as a semantic system include for the C++ mode"
-  (dolist (d (directory-tree dir))
+  (dolist (d (pg/directory-tree dir))
     (semantic-add-system-include d 'c++-mode)))
 
 ;;; Add the package groups to index in init_local.el like so:
@@ -151,7 +151,7 @@
 (defun semantic-index-source-tree (dir)
   "Index all source files in the specified dir"
   (interactive "DIndex source directory: ")
-  (dolist (d (cons dir (directory-tree dir)))
+  (dolist (d (cons dir (pg/directory-tree dir)))
     (let ((files (directory-files d t ".*\\.\\(cpp\\|h\\)")))
       (dolist (f files)
         (semanticdb-file-table-object f)))))

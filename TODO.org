@@ -11,7 +11,7 @@
 ** DONE User manual in the readme
 ** IN-PROGRESS Fix performance problem with autocomplete
     - [ ] Compute the file list for autocomplete up front
-** TODO Diminish minor modes
+** DONE Diminish minor modes
 ** TODO Rtags
     - [ ] Fixes for BB
       - [ ] Script to create links with package group headers in some dirs?
@@ -19,33 +19,12 @@
       - [ ] Check system include paths with BDE
     - [ ] Flymake - display compilation errors and warnings
     - [ ] Autocomplete
+    - [ ] Documentation
 ** TODO Fix linum!
-** TODO Install helm, it looks awesome
-* Modules
-    - [X] C-+/- to zoom and new key for duplicate line
-    - [X] Comment/break up init.el
-    - [ ] Require/Compile init*.el and test startup time
-    - [X] Highlight symbol at point
-    - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
-    - [ ] Flycheck?
-* Themes
-    - [X] Make linum face boring (not sure the fancy version works)
-    - [X] Make org mode more readable
-    - [ ] *FIX LINUM ON LINUX*
-    - [ ] Function key to cycle between themes
-    - [ ] Primitive types for C++
-    - [ ] High-constrast version of solarized
+** TODO Install helm
 * C++
-** TODO .h files = c++ mode
 ** DONE CEDET
 ** TODO Rtags https://github.com/Andersbakken/rtags
-    - [X] Generate LLVM compilation database
-      - [X] Test with bde
-      - [X] Test with multiple projects
-    - [X] Better shortcut keys
-    - [X] Switch project
-    - [X] Documentation
-    - [X] Commit and retest on Linux
     - [ ] Port number
     - [ ] Display compilation errors/warnings with flymake
     - [ ] Enable support for autocomplete
@@ -56,6 +35,17 @@
 ** TODO snippets
     - [ ] New files
     - [ ] Etc
+* Modules
+    - [X] Highlight symbol at point
+    - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
+    - [ ] Flycheck?
+* Themes
+    - [X] Make linum face boring (not sure the fancy version works)
+    - [X] Make org mode more readable
+    - [ ] *FIX LINUM ON LINUX*
+    - [ ] Function key to cycle between themes
+    - [ ] Primitive types for C++
+    - [ ] High-constrast version of solarized
 * Other languages
 ** DONE JavaScript js2
 ** TODO JavaScript chrome integration

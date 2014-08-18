@@ -121,29 +121,78 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Create a compilation database
 
-(defvar my-clang-command "/usr/bin/clang++ -Irelative -c -o "
-  "Compilation command to use in compilation databases")
+(defvar *rtags-clang-command-prefix*
+  "/usr/bin/clang++ -Irelative "
+  "Compilation command prefix to use for creating compilation
+  databases. Override this variable for your local environment.")
 
-(defvar my-included-projects nil
+(defvar *rtags-clang-command-suffix*
+  " -c -o "
+  "Compilation command suffix to use for creating compilation
+  databases. Override this variable for you local environment.")
+
+(defvar *rtags-clang-include-projects* nil
   "List of default projects to include in all compilation
   databases (a list of strings e.g. paths to project roots). This
   is not needed if you index these projects individually.")
 
-(defun create-compilation-database (dir)
+(defvar *rtags-clang-exclude-directories* '("/group" "/doc" "/package" "/test")
+  "List of subdirectory names to exclude when computing a compilaton
+  command")
+
+(defvar *rtags-clang-include-dir-prefix* ""
+  "Prefix to add to any directory listed in `compile_includes'")
+
+(defun* rtags-is-include-directory-excluded (dir)
+  "Return non-nil if the specified directory is member of
+  *rtags-clang-exclude-directories*"
+  (catch 'return
+    (dolist (excluded *rtags-clang-exclude-directories*)
+      (when (pg/string-ends-with dir excluded)
+        (throw 'return t)))
+    (throw 'return nil)))
+
+(defun rtags-create-compilation-command (dir)
+  "Return the clang++ command string to use to compile the
+  specified directory. Assumes that the directory holds a file
+  `compile_includes' containing a list of project root
+  directories, and add -I directives for all subdirectories
+  within these root directories."
+  (let ((compile-includes-file (concat (file-name-as-directory dir)
+                                       "compile_includes")))
+    (cond ((file-exists-p compile-includes-file)
+           (let ((command *rtags-clang-command-prefix*)
+                 (included-projects (pg/read-file-lines
+                                     compile-includes-file)))
+             (dolist (included-project included-projects)
+               (dolist (subdir (pg/directory-tree
+                                (concat *rtags-clang-include-dir-prefix*
+                                        included-project)))
+                 (unless (rtags-is-include-directory-excluded subdir)
+                   (setq command (concat command " -I" subdir)))))
+             (concat command *rtags-clang-command-suffix*)))
+          (t
+           ;; No "compile_includes" file, use default
+           (concat *rtags-clang-command-prefix*
+                   *rtags-clang-command-suffix*)))))
+
+(defun rtags-create-compilation-database (dir)
   "Regenerates `compile_commands.json' in a specified directory"
   (interactive "DProject root: ")
-  (let ((dbfilename (concat (file-name-as-directory dir) "compile_commands.json"))
-        (projdirs   (cons dir my-included-projects)))
+  (let ((dbfilename (concat (file-name-as-directory dir)
+                            "compile_commands.json"))
+        (compile-command (rtags-create-compilation-command dir))
+        (projdirs (cons dir *rtags-clang-include-projects*)))
     (with-temp-buffer
       (insert "[")
       (newline)
       (dolist (projdir projdirs)
         (message "Processing project: %s" projdir)
-        (let ((subdirs (cons projdir (directory-tree projdir))))
+        (let ((subdirs (cons projdir (pg/directory-tree projdir))))
           (dolist (default-directory subdirs)
-            (let ((files   (file-expand-wildcards "*.cpp"))
+            (let ((files (file-expand-wildcards "*.cpp"))
                   ;; rdm does not like directories starting with "~/"
-                  (dirname (if (my-string-starts-with default-directory "~/")
+                  (dirname (if (pg/string-starts-with default-directory "~/")
                                (substitute-in-file-name
                                 (concat "$HOME/" (substring default-directory 2)))
                              default-directory)))
@@ -151,7 +200,7 @@
                 (insert "  { \"directory\": \"" dirname "\",")
                 (newline)
                 (insert "    \"command\":   \""
-                        my-clang-command
+                        compile-command
                         (file-name-sans-extension file) ".o "
                         file "\",")
                 (newline)

@@ -46,7 +46,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Load Modules
 
-(require 'init-prolog)      ; environment; must be loaded first
+(require 'init-prolog)      ; utility functions; load this first
+(require 'init-environment) ; environment variables
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
 (require 'init-user-prefs)  ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
