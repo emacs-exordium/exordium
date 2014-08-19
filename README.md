@@ -29,7 +29,7 @@ directory which can be individually enabled or disabled.
 ;;; or evaluate the require expression with M-C-x.
 
 (require 'init-prolog)      ; must be loaded first
-(require 'environment)      ; environment variables
+(require 'init-environment) ; environment variables
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
 (require 'init-user-prefs)  ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
