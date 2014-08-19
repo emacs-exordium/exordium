@@ -105,6 +105,7 @@
 ;;; $ rc -q
 ;;;     Shutdown rdm.
 
+(require 'init-prolog)
 (require 'rtags)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,19 +132,23 @@
   "Compilation command suffix to use for creating compilation
   databases. Override this variable for you local environment.")
 
-(defvar *rtags-clang-include-projects* nil
+(defvar *rtags-clang-include-projects*
+  ()
   "List of default projects to include in all compilation
   databases (a list of strings e.g. paths to project roots). This
   is not needed if you index these projects individually.")
 
-(defvar *rtags-clang-exclude-directories* '("/group" "/doc" "/package" "/test")
+(defvar *rtags-clang-exclude-directories*
+  '("/group" "/doc" "/package" "/test")
   "List of subdirectory names to exclude when computing a compilaton
   command")
 
-(defvar *rtags-clang-include-dir-prefix* ""
-  "Prefix to add to any directory listed in `compile_includes'")
+(defvar *rtags-clang-include-dir-prefix*
+  ""
+  "Prefix to add to any directory listed in `compile_includes',
+  if you only want relative paths in that file.")
 
-(defun* rtags-is-include-directory-excluded (dir)
+(defun rtags-is-include-directory-excluded (dir)
   "Return non-nil if the specified directory is member of
   *rtags-clang-exclude-directories*"
   (catch 'return

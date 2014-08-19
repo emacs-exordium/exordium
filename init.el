@@ -52,31 +52,40 @@
 (require 'init-user-prefs)  ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
-(require 'init-extensions)  ; minor modes like CUA, 80 col, FIXME etc.
+(require 'init-extensions)  ; minor modes like CUA, 80 col etc.
+
+;;; Usability
 (require 'init-ido)
+(require 'init-autocomplete)
+
+;;; Major modes
 (require 'init-markdown)
 (require 'init-org)
 
 ;;; Themes
 (if *environment-nw*
     (set-face-background 'highlight nil)
+  ;; Using Emacs with GUI:
   (require 'init-themes)
   (unless *environment-bloomberg*
     (require 'init-powerline)))
 
+;;; OS-specific things
 (when *environment-osx*
   (require 'init-osx))
 
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-(require 'init-autocomplete)
+(require 'init-header-autocomplete)
 (require 'init-yasnippet)
 ;; (require 'init-cedet.el)
 (require 'init-rtags)
 
-;;; Other programming languages
+;;; JS
 (require 'init-javascript)
+
+;;; Lisp
 (unless *environment-bloomberg*
   ;; Save a little bit of time
   (require 'init-clojure))

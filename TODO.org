@@ -12,14 +12,14 @@
 ** IN-PROGRESS Fix performance problem with autocomplete
     - [ ] Compute the file list for autocomplete up front
 ** DONE Diminish minor modes
-** TODO Rtags
+** IN-PROGRESS Rtags
     - [-] Fixes for BB
       - [ ] Script to create links with package group headers in some dirs?
       - [X] Compilation path per project (load a dot file containing an expression)
       - [X] Check system include paths with BDE
     - [ ] Flymake - display compilation errors and warnings
     - [ ] Autocomplete
-    - [ ] Documentation
+    - [X] Documentation
 ** TODO Fix linum!
 ** TODO Install helm
 * C++
