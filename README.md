@@ -44,6 +44,13 @@ directory which can be individually enabled or disabled.
 (require 'init-markdown)
 (require 'init-org)
 
+;;; Themes
+(if *environment-nw*
+    (set-face-background 'highlight nil)
+  ;; Using Emacs with GUI:
+  (require 'init-themes)
+  (require 'init-powerline))
+
 ;;; OS-specific things
 (require 'init-osx)
 
@@ -180,7 +187,7 @@ bde/groups/bdl
 bde/groups/bsl
 ```
 
-Next you may want to set a few variables in your `init_local.el":
+Next you may want to set a few variables in your `init_local.el`:
 
 ```lisp
 (when (featurep 'init-rtags)
