@@ -57,6 +57,7 @@
 ;;; Usability
 (require 'init-ido)
 (require 'init-autocomplete)
+(require 'init-helm)
 
 ;;; Major modes
 (require 'init-markdown)

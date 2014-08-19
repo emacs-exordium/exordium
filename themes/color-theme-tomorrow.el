@@ -158,7 +158,7 @@ names to which it refers are bound."
 
      ;; MMM-mode
      (mmm-code-submode-face ((,class (:background ,current-line))))
-     (mmm-comment-submode-face ((,class (:inherit font-lock-comment-face))))
+    (mmm-comment-submode-face ((,class (:inherit font-lock-comment-face))))
      (mmm-output-submode-face ((,class (:background ,current-line))))
 
      ;; Search
@@ -176,6 +176,21 @@ names to which it refers are bound."
      (ido-only-match ((,class (:foreground ,red :weight bold))))
      (ido-indicator ((,class (:foreground ,red :background ,background))))
      (ido-virtual ((,class (:foreground ,comment))))
+
+     ;; Helm
+     (helm-header ((,class (:foreground ,green
+                            :background ,background
+                            :underline nil
+                            :box nil))))
+     (helm-source-header ((,class (:foreground ,background
+                                   :background ,purple
+                                   :underline nil
+                                   :weight bold
+                                   :box nil))))
+     (helm-selection ((,class (:background ,selection :underline nil))))
+     (helm-selection-line ((,class (:background ,selection))))
+     (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
+     (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
 
      ;; which-function
      (which-func ((,class (:foreground ,blue :background nil :weight bold))))

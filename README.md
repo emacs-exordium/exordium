@@ -90,6 +90,7 @@ Keybinding         | Description
 <kbd>C--</kbd>     | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>   | Switch back and forth between the 2 top buffers (from XEmacs).
 <kbd>M-ARROW</kbd> | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
+<kbd>C-c h</kbd>   | Open anything (with Helm).
 
 Editing any file:
 

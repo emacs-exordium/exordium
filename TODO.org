@@ -1,27 +1,5 @@
 #+TITLE: Emacs configuration todo list
 
-* Work in progress
-** DONE .h files == C++ mode by default
-** DONE Use require in init files and compile
-** DONE Move BDE components into modules
-** DONE Keys
-    - [X] C-x g     = magit status
-    - [X] C-c C-d   = duplicate line
-    - [X] C-c C-f   = open recent file
-** DONE User manual in the readme
-** IN-PROGRESS Fix performance problem with autocomplete
-    - [ ] Compute the file list for autocomplete up front
-** DONE Diminish minor modes
-** IN-PROGRESS Rtags
-    - [-] Fixes for BB
-      - [ ] Script to create links with package group headers in some dirs?
-      - [X] Compilation path per project (load a dot file containing an expression)
-      - [X] Check system include paths with BDE
-    - [ ] Flymake - display compilation errors and warnings
-    - [ ] Autocomplete
-    - [X] Documentation
-** TODO Fix linum!
-** TODO Install helm
 * C++
 ** DONE CEDET
 ** TODO Rtags https://github.com/Andersbakken/rtags
@@ -42,7 +20,7 @@
 * Themes
     - [X] Make linum face boring (not sure the fancy version works)
     - [X] Make org mode more readable
-    - [ ] *FIX LINUM ON LINUX*
+    - [ ] *FIX LINUM ON LINUX!!!*
     - [ ] Function key to cycle between themes
     - [ ] Primitive types for C++
     - [ ] High-constrast version of solarized
