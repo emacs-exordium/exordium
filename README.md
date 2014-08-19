@@ -34,18 +34,34 @@ directory which can be individually enabled or disabled.
 (require 'init-user-prefs)  ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
-(require 'init-extensions)  ; minor modes like CUA, 80 col, FIXME etc.
+(require 'init-extensions)  ; minor modes like CUA, 80 col, etc.
+
+;;; Usability
 (require 'init-ido)
+(require 'init-autocomplete)
+
+;;; Major modes
 (require 'init-markdown)
 (require 'init-org)
+
+;;; OS-specific things
 (require 'init-osx)
+
+;;; C++
 (require 'init-cpp)
-(require 'init-autocomplete)
+(require 'init-bde-style)
+(require 'init-header-autocomplete)
 (require 'init-yasnippet)
 ;; (require 'init-cedet.el)
 (require 'init-rtags)
+
+;;; Other programming languages
 (require 'init-javascript)
 (require 'init-clojure)
+
+;;; Local extensions
+(when (file-exists-p "~/.emacs.d/init_local.el")
+  (load "~/.emacs.d/init_local.el"))
 ```
 
 If a file `init_local.el` exists, it will be loaded at the end; you can use this
@@ -101,10 +117,12 @@ Keybinding         | Description
 
 ## Using Rtags
 
+### Start rdm
+
 Rtags (see https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
 which provides a deamon called "rdm" to maintain an in-memory index, and a
 command-line client called "rc". Rtag uses a single index for all symbols, but
-it allows loading and unloading projects.
+it allows for loading and unloading projects individually.
 
 To use it, first start the deamon:
 
@@ -112,51 +130,80 @@ To use it, first start the deamon:
 $ rdm
 ```
 
-It starts by reading the saved indexes in `~/.rtags` if any. By default it logs
-to the console (use `--help` to see all its options).
+This will start the deamon on the foreground, using a number of threads that is
+function of the number of CPUs on the local machine. It starts by reading the
+saved project indices in `~/.rtags` if any. By default it logs to the console
+but you can make it log to a file instead. There are many options; use `--help`
+to see the list.  You can also create a file `~/.rdmrc` containing the default
+command line arguments.
 
-Then you need to tell it how to compile your project, by creating a compilation
-database in a file named `compile_commands.json` (see
-http://clang.llvm.org/docs/JSONCompilationDatabase.html).
+Note that rdm may crash while trying to index a file. If it does, it will retry
+a few times and then give up with the file it cannot parse.
 
-The first thing to do is to define the clang command to use to compile a single
-file in your project. First set up a few variables in `init_local.el`:
+### Set up your project
 
-* `*rtags-clang-command-prefix*`: default is `/usr/bin/clang++ -Irelative`.
-* `*rtags-clang-command-suffix*`: default is `-c -o`.
-
-You probably also need to set up the include paths e.g. the `-I`
-directives. You can set the variable `*rtags-clang-include-projects*` to the
-included directories, but since those are likely to be project-specific it is
-better to create a file `compile_includes` in your project root dir.  Set the
-content of this file to the list of directories to include, like for example:
-
-```
-/home/phil/work/bde/groups/bsl
-/home/phil/work/bde/groups/bdl
-```
-
-You only need to indicate top-level directories because we will scan
-sub-directories recursively from that list. You can set up a list of
-sub-directories to exclude with variable `*rtags-clang-exclude-directories*`;
-the default is `'("/group" "/doc" "/package" "/test")`. If you don't want to
-set absolute paths, define a prefix with variable
-`*rtags-clang-include-dir-prefix*` to something like `"/home/phil/work"`.
-
-Next, generate the compilation database with M-x
-`rtags-create-compilation-database`. It will prompt for a directory: use the
-root directory of your project. It will then scan for any ".cpp" file
-recursively and include the directives to compile this component in the
-generated file `compile_commands.json`. Note that the file is overriden if it
-exists.
-
-Note that if your project's root directory does not have a ".git" or ".svn"
-subdirectory, you also need to tell Rtags where the project root by creating a
-file `.rtags-config` at the root directory, with this content:
+If the project root directory does not contain a .git or .svn repo, create a
+file `.rtags-config` in the root directory with the specified content:
 
 ```
 project: /path/to/project
 ```
+
+Then you need to tell rdm how to compile your project, by creating a
+compilation database in a file named `compile_commands.json` (see
+http://clang.llvm.org/docs/JSONCompilationDatabase.html). The compilation
+database contains one entry for each file to compile, like the following
+(simplified for clarity):
+
+```javascript
+{ "directory": "/home/phil/workspaces/foo/",
+  "command":   "/usr/bin/clang++ -Irelative
+                -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
+                -I/home/phil/workspaces/bde/groups/bsl/bslma
+                -I/home/phil/workspaces/bde/groups/bsl/bsls
+                -c -o bar.o bar.cpp",
+   "file":      "bar.cpp" }
+```
+
+You can generate this compilation database with the command M-x
+`rtags-create-compilation-database`. But before you do, it needs a little help:
+you need to tell it what `clang++` command to use to compile any file, with all
+the `-I` directives that are necessary for your project.
+
+First, if your project depends on external includes, you may want to create a
+file `init_includes` in the project root directory, containing the paths for
+the included libraries that your project depends on (one path per line). For
+example:
+
+```
+bde/groups/bdl
+bde/groups/bsl
+```
+
+Next you may want to set a few variables in your `init_local.el":
+
+```lisp
+(when (featurep 'init-rtags)
+  ;; Prefix for any path in init_includes, if you want to use relative paths
+  ;; (default value is "")
+  (setq *rtags-clang-include-dir-prefix* "/home/phil/workspaces/"))
+  ;; List of subdirs to exclude from the include paths
+  ;; (that is the default value):
+  (setq *rtags-clang-exclude-directories* '("/group" "/doc" "/package" "/test"))
+  ;; Compilation command prefix (that is the default value):
+  (setq *rtags-clang-command-prefix* "/usr/bin/clang++ -Irelative ")
+  ;; Compilation command suffix (that is the default value):
+  (setq *rtags-clang-command-suffix* " -c -o ")
+```
+
+The function `rtags-create-compilation-database` will prompt for a project
+directory name, and then it will scan recursively any .cpp file in your project
+to create an entry for that file in the compilation database. The compile
+command will use include directives for any directory in your project as well
+as any directory mentionned in `compile_includes` if any such file is
+present. Note that it will recursively add an include directive for any
+subdirectory. Also note that the compilation database file is silently
+overriden if it exists.
 
 Once the compilation database is ready, load it with `rc`:
 
@@ -165,13 +212,17 @@ $ cd /where/your/compilation/db/is
 $ rc -J
 ```
 
-Check the output of `rdm` for any compilation errors and adjust your
-compilation database accordingly. Rerun `rc -J` to reload the compilation
-database.
+Check the output of rdm for any compilation errors and adjust your compilation
+database accordingly. Rerun `rc -J` to reload the compilation database.
+
+The rdm deamon should automatically re-compile any file you edit in Emacs as
+soon as you save it (it uses inotify).
 
 If you use multiple projects, you can list the loaded projects with `rc -w` and
 switch to a new project with `rc -w <proj>` (a regex). You can unload a project
 with `rc -W <proj>`.
+
+### Using the index
 
 Now comes the good part:
 
@@ -194,3 +245,30 @@ Useful functions:
 * `rtags-diagnostics`: starts an async process to receive warnings or errors
   from clang; integrates with flymake to put highlighting on code with warnings
   and errors.
+
+## Header file autocomplete
+
+This module sets up autocomplete for `#include` header files in C++ mode. It
+reuses the file `compile_includes` mentioned above.
+
+It is currently a bit redundant from Rtags. You need to define the following
+variables in `init_local.el`:
+
+```lisp
+(when (featurep 'init-header-autocomplete)
+  ;; Prefix for any path in init_includes, if you want to use relative paths
+  ;; (default value is "")
+  (setq *header-ac-include-dir-prefix* "/home/phil/workspaces/"))
+  ;; List of subdirs to exclude from the include paths
+  ;; (that is the default value):
+  (setq *header-ac-exclude-directories* '("/group" "/doc" "/package" "/test"))
+```
+
+Then set up the autocomplete for your project with the command M-x
+`set-header-autocomplete`. It should work for any subdirectory within your
+project or within any path mentionned in the compile includes file. You can
+display the list of include directories it uses with M-x
+`show-header-autocomplete`.
+
+Note that currently the setting is not saved and will be lost any time you
+restart Emacs.
