@@ -34,13 +34,17 @@
 ;;;     Index files which are reloaded when `rdm' restarts.
 ;;; `~/.rdmrc' (optional)
 ;;;     Config file for rdm (see rdm.cpp) containing default command line args.
-;;; `compile_commands.json' (optional)
+;;; `compile_commands.json' (optional, located in project root dir)
 ;;;     Compilation database for a given project, containing for each file the
-;;;     clang command to build it. Must be at the root of the project. Not
-;;;     needed if you use the compiler wrapper scripts.
-;;; `.rtags-config' (optional)
-;;;     Project configuration file. Must be at the root of the project. Not
-;;;     needed if there is a .git or .svn at the project root.
+;;;     clang command to build it. Not needed if you use the compiler wrapper
+;;;     scripts.
+;;; `.rtags-config' (optional, located in project root dir)
+;;;     Project configuration file. Not needed if there is a .git or .svn at
+;;;     the project root.
+;;;
+;;; In addition, this module uses an optional file `compile_includes' located
+;;; at project root, containing a list of include root directories to use for
+;;; the clang command (one directory per line).
 ;;;
 ;;; Running rdm
 ;;; ===========
@@ -72,17 +76,57 @@
 ;;; `.rtags-config' in the root dir with the specified content:
 ;;; project: /path/to/project
 ;;;
-;;; Set the variable `my-clang-command' to contain the exact command needed for
-;;; compiling a cpp file, with all necessary includes.
+;;; The next step is to create the compilation database
+;;; `compile_commands.json', which tells rdm how to compile each individual
+;;; file in your project. Each entry in the file looks like this (simplified
+;;; for clarity):
 ;;;
-;;; Then create a compilation DB with M-x `create-compilation-database'. It
-;;; will first prompt for the project's root dir, then scan all ".cpp" files
-;;; and write a file `compile_commands.json'. If additional directories need to
-;;; be scanned, use variable `my-included-projects'.
+;;; { "directory": "/home/phil/workspaces/foo/",
+;;;   "command":   "/usr/bin/clang++ -Irelative
+;;;                 -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
+;;;                 -I/home/phil/workspaces/bde/groups/bsl/bslma
+;;;                 -I/home/phil/workspaces/bde/groups/bsl/bsls
+;;;                 -c -o bar.o bar.cpp",
+;;;   "file":      "bar.cpp" },
 ;;;
-;;; Finally reload the compilation DB with "rc -J". Watch for errors in rdm's
-;;; logs. It may crash a few times on a file and finally give up with that
-;;; file.
+;;; You can generate this file with this command:
+;;; M-x `rtags-create-compilation-database'.
+;;;
+;;; This command will first prompt for a directory (use the project's root
+;;; directory). It will then scan recursively for any directory in your project
+;;; as well as any external include directory indicated as a dependency in a
+;;; file `compile_includes', if such file exists. It will then generate the
+;;; compilation database file.
+;;;
+;;; If the file `compile_includes' exists, it must contain directories to scan
+;;; for include files, with one path per line. For example:
+;;;
+;;; bde/groups/bsl
+;;; bde/groups/bdl
+;;;
+;;; Note that these directories come in addition to the project's own directory
+;;; tree (you should only use it for external dependencies). Also note that
+;;; `rtags-compilation-database' will recursively scan any directory in this
+;;; file. You can specify subdirectories to exclude by setting this variable in
+;;; your `init-local.el':
+;;;
+;;; (setq *rtags-clang-exclude-directories*
+;;;       '("/group" "/doc" "/package" "/test"))
+;;;
+;;; If you want the paths in `compile_includes' to be relative, you can set a
+;;; prefix to be added to each path in your `init-local.el' like so:
+;;;
+;;; (setq *rtags-clang-include-dir-prefix* "/home/phil/workspaces/")
+;;;
+;;; To control the clang++ command that is put into the compilation database,
+;;; you can also set a few variables in your `init_local.el':
+;;;
+;;; (setq *rtags-clang-command-prefix* "/usr/bin/clang++ -Irelative ")
+;;; (setq *rtags-clang-command-suffix* " -c -o ")
+;;;
+;;; Once the compilation database file is ready, tell rdm to reload it with "rc
+;;; -J". Watch for errors in rdm's logs. It may crash a few times on a file and
+;;; finally give up with that file.
 ;;;
 ;;; View the list of projects in the index with "rc -w". Switch to another
 ;;; project with "rc -w <proj>".
@@ -157,6 +201,16 @@
         (throw 'return t)))
     (throw 'return nil)))
 
+(defun rtags-add-dir-prefix (dirs)
+  "Add the prefix `*rtags-clang-include-dir-prefix*' to any
+  directory in the specified list"
+  (let ((result ()))
+    (dolist (dir dirs)
+      (setq result (cons (concat *rtags-clang-include-dir-prefix* dir)
+                         result)))
+    result))
+
+
 (defun rtags-create-compilation-command (dir)
   "Return the clang++ command string to use to compile the
   specified directory. Assumes that the directory holds a file
@@ -167,12 +221,11 @@
                                        "compile_includes")))
     (cond ((file-exists-p compile-includes-file)
            (let ((command *rtags-clang-command-prefix*)
-                 (included-projects (pg/read-file-lines
-                                     compile-includes-file)))
-             (dolist (included-project included-projects)
-               (dolist (subdir (pg/directory-tree
-                                (concat *rtags-clang-include-dir-prefix*
-                                        included-project)))
+                 (included-projects (rtags-add-dir-prefix
+                                     (pg/read-file-lines
+                                      compile-includes-file))))
+             (dolist (project (cons dir included-projects))
+               (dolist (subdir (pg/directory-tree project))
                  (unless (rtags-is-include-directory-excluded subdir)
                    (setq command (concat command " -I" subdir)))))
              (concat command *rtags-clang-command-suffix*)))

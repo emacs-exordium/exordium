@@ -47,7 +47,7 @@
     (throw 'return nil)))
 
 (defun header-ac-add-dir-prefix (dirs)
-  "Add the prefix `*header-ac-included-dir-prefix' to any
+  "Add the prefix `*header-ac-include-dir-prefix*' to any
   directory in the specified list"
   (let ((result ()))
     (dolist (dir dirs)
