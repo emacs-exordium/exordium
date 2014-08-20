@@ -9,8 +9,8 @@
 (require 'helm)
 
 ;;; Do not show these files in helm buffer
-(add-to-list helm-boring-file-regexp-list
-      '("\\.tsk$" "\\.log$"))
+;; (add-to-list helm-boring-file-regexp-list
+;;       '("\\.tsk$" "\\.log$"))
 
 ;; Use `recentf-list' instead of `file-name-history' in `helm-find-files'.
 ;;(setq helm-ff-file-name-history-use-recentf t)
