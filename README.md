@@ -174,7 +174,7 @@ database contains one entry for each file to compile, like the following
 ```
 
 You can generate this compilation database with the command M-x
-`rtags-create-compilation-database`. But before you do, it needs a little help:
+`create-compilation-database`. But before you do, it needs a little help:
 you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
@@ -195,23 +195,22 @@ Next you may want to set a few variables in your `init_local.el`:
   ;; Prefix for any path in init_includes, if you want to use relative paths
   ;; (default value is "")
   (setq *rtags-clang-include-dir-prefix* "/home/phil/workspaces/"))
-  ;; List of subdirs to exclude from the include paths
-  ;; (that is the default value):
-  (setq *rtags-clang-exclude-directories* '("/group" "/doc" "/package" "/test"))
+  ;; List of regex to exclude from the include paths
+  (setq *rtags-clang-exclude-directories*
+        '("00deps" "/group$" "/doc$" "/package$" "/test$"))
   ;; Compilation command prefix (that is the default value):
   (setq *rtags-clang-command-prefix* "/usr/bin/clang++ -Irelative ")
   ;; Compilation command suffix (that is the default value):
   (setq *rtags-clang-command-suffix* " -c -o ")
 ```
 
-The function `rtags-create-compilation-database` will prompt for a project
-directory name, and then it will scan recursively any .cpp file in your project
-to create an entry for that file in the compilation database. The compile
-command will use include directives for any directory in your project as well
-as any directory mentionned in `compile_includes` if any such file is
-present. Note that it will recursively add an include directive for any
-subdirectory. Also note that the compilation database file is silently
-overriden if it exists.
+The function `create-compilation-database` will prompt for a project directory
+name, and then it will scan recursively any .cpp file in your project to create
+an entry for that file in the compilation database. The compile command will
+use include directives for any directory in your project as well as any
+directory mentionned in `compile_includes` if any such file is present. Note
+that it will recursively add an include directive for any subdirectory. Also
+note that the compilation database file is silently overriden if it exists.
 
 Once the compilation database is ready, load it with `rc`:
 

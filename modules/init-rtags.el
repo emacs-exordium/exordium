@@ -90,7 +90,7 @@
 ;;;   "file":      "bar.cpp" },
 ;;;
 ;;; You can generate this file with this command:
-;;; M-x `rtags-create-compilation-database'.
+;;; M-x `create-compilation-database'.
 ;;;
 ;;; This command will first prompt for a directory (use the project's root
 ;;; directory). It will then scan recursively for any directory in your project
@@ -106,7 +106,7 @@
 ;;;
 ;;; Note that these directories come in addition to the project's own directory
 ;;; tree (you should only use it for external dependencies). Also note that
-;;; `rtags-compilation-database' will recursively scan any directory in this
+;;; `create-compilation-database' will recursively scan any directory in this
 ;;; file. You can specify subdirectories to exclude by setting this variable in
 ;;; your `init-local.el':
 ;;;
@@ -183,9 +183,9 @@
   is not needed if you index these projects individually.")
 
 (defvar *rtags-clang-exclude-directories*
-  '("/group" "/doc" "/package" "/test")
-  "List of subdirectory names to exclude when computing a compilaton
-  command")
+  '("/group$" "/doc$" "/package$" "/test$")
+  "List of regex to exclude from the include paths
+  when computing a compilation command")
 
 (defvar *rtags-clang-include-dir-prefix*
   ""
@@ -197,7 +197,7 @@
   *rtags-clang-exclude-directories*"
   (catch 'return
     (dolist (excluded *rtags-clang-exclude-directories*)
-      (when (pg/string-ends-with dir excluded)
+      (when (string-match excluded dir)
         (throw 'return t)))
     (throw 'return nil)))
 
@@ -209,7 +209,6 @@
       (setq result (cons (concat *rtags-clang-include-dir-prefix* dir)
                          result)))
     result))
-
 
 (defun rtags-create-compilation-command (dir)
   "Return the clang++ command string to use to compile the
@@ -234,7 +233,7 @@
            (concat *rtags-clang-command-prefix*
                    *rtags-clang-command-suffix*)))))
 
-(defun rtags-create-compilation-database (dir)
+(defun create-compilation-database (dir)
   "Regenerates `compile_commands.json' in a specified directory"
   (interactive "DProject root: ")
   (let ((dbfilename (concat (file-name-as-directory dir)
