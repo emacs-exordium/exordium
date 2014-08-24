@@ -13,6 +13,7 @@
 ;;; M-C-g
 ;;; C-x r I        Ido-based select a symbol in the current file
 ;;; C-x r v        Find virtuals at point
+;;; C-x r \        Show diagnostics buffer
 ;;; -------------- -------------------------------------------------------
 ;;;
 ;;; Whenever rtags jumps somewhere it pushes a location onto its stack. Jump
@@ -25,7 +26,15 @@
 ;;; `rtags-print-dependencies': show all include files (recursively)
 ;;; `rtags-diagnostics': starts an async process to receive warnings or errors
 ;;;     from clang; integrates with flymake to put highlighting on code with
-;;      warnings and errors.
+;;;     warnings and errors.
+;;;
+;;; Building rtags
+;;; ==============
+;;; $ git clone https://github.com/Andersbakken/rtags.git
+;;; $ cd rtags
+;;; $ git submodule init && git submodule update
+;;; $ cmake .
+;;; $ make
 ;;;
 ;;; Files
 ;;; =====
@@ -162,6 +171,14 @@
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map "\M-[" (function rtags-location-stack-back))
 (define-key c-mode-base-map "\M-]" (function rtags-location-stack-forward))
+
+(defun show-rtags-diagnostics-buffer ()
+  (interactive)
+  (let ((buffer-name "*RTags Diagnostics*"))
+    (if (get-buffer buffer-name)
+        (display-buffer buffer-name)
+      (message "Rtags diagnostic is not running"))))
+(define-key c-mode-base-map [(control x)(r)(\\)] 'show-rtags-diagnostics-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Create a compilation database

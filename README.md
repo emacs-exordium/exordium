@@ -229,31 +229,74 @@ If you use multiple projects, you can list the loaded projects with `rc -w` and
 switch to a new project with `rc -w <proj>` (a regex). You can unload a project
 with `rc -W <proj>`.
 
-### Using the index
-
-Now comes the good part:
+### Controlling rdm
 
 Keybinding         | Description
 -------------------|------------------------------------------------------------
-<kbd>F3</kbd>      | Jump to symbol definition (also <kbd>C-x r .</kbd>).
-<kbd>F4</kbd>      | Find references to symbol (also <kbd>C-x r ,</kbd>).
-<kbd>C-x r &gt;</kbd> | Same as <kbd>F3</kbd> but prompts for symbol name.
-<kbd>C-x r &lt;</kbd> | Same as <kbd>F4</kbd> but prompts for symbol name.
+<kbd>C-x r p</kbd> | Switch project.
+<kbd>C-x r e</kbd> | Reparse file, e.g. recompile.
+
+To kill rdm, run function `rtags-quit-rdm`.
+
+### Using the index
+
+Now comes the good part. Navigating keys:
+
+Keybinding                           | Description
+-------------------------------------|------------------------------------------
+<kbd>F3</kbd>, <kbd>C-x r .</kbd>    | Jump to symbol definition.
+<kbd>F4</kbd>, <kbd>C-x r ,</kbd>    | Find references to symbol.
+<kbd>C-x r &gt;</kbd>                | Find symbol (prompts for symbol name).
+<kbd>C-x r &lt;</kbd>                | Find references (prompts for symbol name).
+<kbd>C-x r v</kbd>                   | Find virtual functions.
+<kbd>M-C-g</kbd>, <kbd>C-x r I</kbd> | Imenu-like select symbol in file.
+<kbd>C-x r T</kbd>                   | Display tag list.
+<kbd>
+
+Any navigation is recorded onto a stack, so it is easy to go back and forth:
+
+Keybinding                         | Description
+-----------------------------------|--------------------------------------------
+<kbd>M-[</kbd>, <kbd>C-x r [</kbd> | Go back to previous location.
+<kbd>M-]</kbd>, <kbd>C-x r ]</kbd> | Go forward to next location.
+
+Refactoring:
+
+Keybinding         | Description
+-------------------|------------------------------------------------------------
 <kbd>C-x r R</kbd> | Rename symbol.
-<kbd>M-C-g</kbd>   | Ido-like select symbol in file.
-<kbd>C-x r v</kbd> | Find symbol virtual functions.
-<kbd>M-[</kbd>     | Go back to previous location.
-<kbd>M-]</kbd>     | Go forward to next location.
 
 Useful functions:
 * `rtags-find-file`: jump to file by name (full or partial).
 * `rtags-print-cursorinfo`: print debugging info about symbol at point.
 * `rtags-print-dependencies`: show all include files (recursively).
-* `rtags-diagnostics`: starts an async process to receive warnings or errors
-  from clang; integrates with flymake to put highlighting on code with warnings
-  and errors.
+
+### Using flymake
+
+The function `rtags-diagnostics`: starts an async process to receive warnings
+and errors from rdm. They are displayed into diagnostics buffer which works
+with flymake to put highlighting on code with warnings and errors (click on an
+error to jump to it).
+
+![Rtags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
+
+Keybinding         | Description
+-------------------|------------------------------------------------------------
+<kbd>C-x r D</kbd> | Run `rtags-diagnostics`.
+<kbd>C-x r \\<kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
+
+Other functions:
+* `rtags-next-diag` goes to the next problem.
+* `rtags-clear-diagnostics` clears any error or warning overlay.
+* `rtags-stop-diagnostics` stops the process.
+
+### Autocomplete
+
+NOT WORKING with Rtags at this time. Stay tuned.
 
 ## Header file autocomplete
+
+Note: this is a temporary solution until autocomplete uses Clang as a source.
 
 This module sets up autocomplete for `#include` header files in C++ mode. It
 reuses the file `compile_includes` mentioned above.

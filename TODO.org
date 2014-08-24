@@ -1,13 +1,17 @@
 #+TITLE: Emacs configuration todo list
 
+* HOT
+** TODO Rtags autocomplete
+** TODO Rtags flymake
+** TODO Keys: autocomplete, return+indent
 * C++
-** DONE CEDET
 ** TODO Rtags https://github.com/Andersbakken/rtags
-    - [ ] Port number
-    - [ ] Display compilation errors/warnings with flymake
     - [ ] Enable support for autocomplete
+    - [ ] Display compilation errors/warnings with flymake
+    - [ ] Port number
     - [ ] Build on OS X
 ** TODO Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** TODO autocomplete-clang https://github.com/brianjcj/auto-complete-clang
 ** TODO Malinka http://blog.refu.co/?tag=clang
 ** TODO Eclim: https://github.com/senny/emacs-eclim
 ** TODO snippets

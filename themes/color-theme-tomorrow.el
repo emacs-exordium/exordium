@@ -129,6 +129,10 @@ names to which it refers are bound."
      (flymake-warnline ((,class (:underline ,orange :background ,background))))
      (flymake-errline ((,class (:underline ,red :background ,background))))
 
+     ;; Rtags
+     (rtags-errline ((,class (:background ,red))))
+     (rtags-warnline ((,class (:background ,orange))))
+
      ;; Clojure errors
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
      (clojure-test-error-face ((,class (:background nil :inherit flymake-errline))))
