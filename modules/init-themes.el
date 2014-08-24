@@ -17,8 +17,8 @@
 
 ;;(require 'color-theme-test)
 (require 'color-theme-tomorrow)
-(require 'color-theme-solarized)
-(require 'color-theme-monokai)
+;;(require 'color-theme-solarized)
+;;(require 'color-theme-monokai)
 
 ;; Defaults
 

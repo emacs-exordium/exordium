@@ -5,11 +5,11 @@
 ** DONE Rtags flymake
 ** DONE Rtags find file
 ** DONE Update packages
-** TODO Fix header autocomplete with excludes (same as compilation DB)
+** DONE Fix header autocomplete with excludes (same as compilation DB)
 ** TODO Keys: autocomplete, return+indent
 ** DONE Linum
 ** TODO Helm
-** TODO Benchmark startup time
+** DONE Benchmark startup time (IT'S YAS!!!)
 ** TODO Build rtags on OS X
 * C++
 ** TODO Rtags https://github.com/Andersbakken/rtags
