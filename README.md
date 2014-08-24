@@ -299,7 +299,7 @@ Other functions:
 
 ### Autocomplete
 
-NOT WORKING with Rtags at this time. Stay tuned.
+Stay tuned. Close but no cigar :'(
 
 ## Header file autocomplete
 
