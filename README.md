@@ -251,7 +251,6 @@ Keybinding                           | Description
 <kbd>C-x r v</kbd>                   | Find virtual functions.
 <kbd>M-C-g</kbd>, <kbd>C-x r I</kbd> | Imenu-like select symbol in file.
 <kbd>C-x r T</kbd>                   | Display tag list.
-<kbd>
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
@@ -283,7 +282,7 @@ error to jump to it).
 Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>C-x r D</kbd> | Run `rtags-diagnostics`.
-<kbd>C-x r \\<kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
+<kbd>C-x r \\</kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
 
 Other functions:
 * `rtags-next-diag` goes to the next problem.
