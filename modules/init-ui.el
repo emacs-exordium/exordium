@@ -30,6 +30,12 @@
                   (horizontal-scroll-bars . t))
                 default-frame-alist)))
 
+(when (and *environment-linux* (not *environment-bloomberg*))
+  (set-face-attribute 'default nil
+                      :family "Mono" :height 120 :weight 'normal)
+  (setq default-frame-alist '((width . 110)
+                              (height . 65))))
+
 ;;; Remove the toolbar
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))

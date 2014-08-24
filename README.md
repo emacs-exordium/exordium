@@ -251,6 +251,7 @@ Keybinding                           | Description
 <kbd>C-x r v</kbd>                   | Find virtual functions.
 <kbd>M-C-g</kbd>, <kbd>C-x r I</kbd> | Imenu-like select symbol in file.
 <kbd>C-x r T</kbd>                   | Display tag list.
+<kbd>C-x r ;</kbd>                   | `rtags-find-file` using partial name.
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
@@ -266,7 +267,6 @@ Keybinding         | Description
 <kbd>C-x r R</kbd> | Rename symbol.
 
 Useful functions:
-* `rtags-find-file`: jump to file by name (full or partial).
 * `rtags-print-cursorinfo`: print debugging info about symbol at point.
 * `rtags-print-dependencies`: show all include files (recursively).
 

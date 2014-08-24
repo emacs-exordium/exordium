@@ -95,7 +95,7 @@
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
-   `(;; Standard font lock faces
+   `(;; Standard faces
      (default ((,class (:foreground ,foreground :background ,background))))
      (bold ((,class (:weight bold))))
      (bold-italic ((,class (:slant italic :weight bold))))
@@ -107,7 +107,7 @@ names to which it refers are bound."
      (warning ((,class (:foreground ,orange))))
      (outline-4 ((,class (:slant normal :foreground ,comment))))
 
-     ;; Font-lock stuff
+     ;; Font-lock
      (font-lock-builtin-face ((,class (:foreground ,aqua))))
      (font-lock-comment-delimiter-face ((,class (:foreground ,comment :slant italic))))
      (font-lock-comment-face ((,class (:foreground ,comment :slant italic))))
@@ -124,6 +124,103 @@ names to which it refers are bound."
      (font-lock-type-face ((,class (:foreground ,yellow))))
      (font-lock-variable-name-face ((,class (:foreground ,foreground)))) ;orange
      (font-lock-warning-face ((,class (:weight bold :foreground ,red))))
+
+     ;; Emacs interface
+     (cursor ((,class (:background ,red))))
+     (fringe ((,class (:background ,current-line))))
+     ;;(linum ((,class (:background ,current-line)))) ; grunge
+     (hl-line ((,class (:background ,current-line))))
+     (border ((,class (:background ,current-line))))
+     (border-glyph ((,class (nil))))
+     (highlight ((,class (:background ,green :foreground ,background)))) ;+:foreground
+     (link ((,class (:foreground ,blue :underline t))))
+     (link-visited ((,class (:foreground ,purple))))
+     (gui-element ((,class (:background ,current-line :foreground ,foreground))))
+
+     (mode-line ((,class (:background ,selection :foreground ,foreground))))
+     (mode-line-inactive ((,class (:background ,current-line :foreground ,foreground))))
+     (mode-line-buffer-id ((,class (:foreground ,purple :background nil))))
+     (mode-line-emphasis ((,class (:foreground ,foreground :slant italic))))
+     (mode-line-highlight ((,class (:foreground ,purple :box nil :weight bold))))
+     (minibuffer-prompt ((,class (:foreground ,blue))))
+
+     (region ((,class (:background ,selection))))
+     (secondary-selection ((,class (:background ,current-line))))
+
+     (widget-button ((,class (:underline t))))
+     (widget-field
+      ((,class (:background ,current-line :box (:line-width 1 :color ,foreground)))))
+
+     (header-line ((,class (:inherit mode-line :foreground ,purple :background nil))))
+     (menu ((,class (:foreground ,foreground :background ,selection))))
+
+     (custom-variable-tag ((,class (:foreground ,blue))))
+     (custom-group-tag ((,class (:foreground ,blue))))
+     (custom-state ((,class (:foreground ,green))))
+
+     ;; Search
+     (match ((,class (:foreground ,blue :background ,background :inverse-video t))))
+     (isearch ((,class (:foreground ,yellow :background ,background :inverse-video t))))
+     (isearch-lazy-highlight-face
+      ((,class (:foreground ,aqua :background ,background :inverse-video t))))
+     (isearch-fail
+      ((,class
+        (:background ,background :inherit font-lock-warning-face :inverse-video t))))
+
+     ;; IDO
+     (ido-subdir ((,class (:foreground ,comment))))
+     (ido-first-match ((,class (:foreground ,orange :weight bold))))
+     (ido-only-match ((,class (:foreground ,red :weight bold))))
+     (ido-indicator ((,class (:foreground ,red :background ,background))))
+     (ido-virtual ((,class (:foreground ,comment))))
+
+     ;; Helm
+     (helm-header ((,class (:foreground ,green
+                            :background ,background
+                            :underline nil
+                            :box nil))))
+     (helm-source-header ((,class (:foreground ,background
+                                   :background ,purple
+                                   :underline nil
+                                   :weight bold
+                                   :box nil))))
+     (helm-selection ((,class (:background ,selection :underline nil))))
+     (helm-selection-line ((,class (:background ,selection))))
+     (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
+     (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
+
+     ;; which-func-mode
+     (which-func ((,class (:foreground ,blue :background nil :weight bold))))
+
+     ;; Trailing whitespaces
+     (trailing-whitespace ((,class (:background ,red :foreground ,yellow))))
+     (whitespace-empty ((,class (:foreground ,red :background ,yellow))))
+     (whitespace-hspace ((,class (:background ,selection :foreground ,comment))))
+     (whitespace-indentation ((,class (:background ,yellow :foreground ,red))))
+     (whitespace-line ((,class (:background ,current-line :foreground ,purple))))
+     (whitespace-newline ((,class (:foreground ,comment))))
+     (whitespace-space ((,class (:background ,current-line :foreground ,comment))))
+     (whitespace-space-after-tab ((,class (:background ,yellow :foreground ,red))))
+     (whitespace-space-before-tab ((,class (:background ,orange :foreground ,red))))
+     (whitespace-tab ((,class (:background ,selection :foreground ,comment))))
+     (whitespace-trailing ((,class (:background ,red :foreground ,yellow))))
+     (hl-sexp-face ((,class (:background ,current-line))))
+     (highlight-80+ ((,class (:background ,current-line))))
+
+     ;; Parenthesis matching (built-in)
+     (show-paren-match ((,class (:background ,blue :foreground ,current-line))))
+     (show-paren-mismatch ((,class (:background ,orange :foreground ,current-line))))
+
+     ;; Parenthesis matching (mic-paren)
+     (paren-face-match
+      ((,class (:foreground nil :background nil :inherit show-paren-match))))
+     (paren-face-mismatch
+      ((,class (:foreground nil :background nil :inherit show-paren-mismatch))))
+     (paren-face-no-match
+      ((,class (:foreground nil :background nil :inherit show-paren-mismatch))))
+
+     ;; Parenthesis dimming (parenface)
+     (paren-face ((,class (:foreground ,comment :background nil))))
 
      ;; Flymake
      (flymake-warnline ((,class (:underline ,orange :background ,background))))
@@ -160,95 +257,7 @@ names to which it refers are bound."
      (rainbow-delimiters-depth-9-face ((,class (:foreground ,foreground))))
      (rainbow-delimiters-unmatched-face ((,class (:foreground ,red))))
 
-     ;; MMM-mode
-     (mmm-code-submode-face ((,class (:background ,current-line))))
-    (mmm-comment-submode-face ((,class (:inherit font-lock-comment-face))))
-     (mmm-output-submode-face ((,class (:background ,current-line))))
-
-     ;; Search
-     (match ((,class (:foreground ,blue :background ,background :inverse-video t))))
-     (isearch ((,class (:foreground ,yellow :background ,background :inverse-video t))))
-     (isearch-lazy-highlight-face
-      ((,class (:foreground ,aqua :background ,background :inverse-video t))))
-     (isearch-fail
-      ((,class
-        (:background ,background :inherit font-lock-warning-face :inverse-video t))))
-
-     ;; IDO
-     (ido-subdir ((,class (:foreground ,comment))))
-     (ido-first-match ((,class (:foreground ,orange :weight bold))))
-     (ido-only-match ((,class (:foreground ,red :weight bold))))
-     (ido-indicator ((,class (:foreground ,red :background ,background))))
-     (ido-virtual ((,class (:foreground ,comment))))
-
-     ;; Helm
-     (helm-header ((,class (:foreground ,green
-                            :background ,background
-                            :underline nil
-                            :box nil))))
-     (helm-source-header ((,class (:foreground ,background
-                                   :background ,purple
-                                   :underline nil
-                                   :weight bold
-                                   :box nil))))
-     (helm-selection ((,class (:background ,selection :underline nil))))
-     (helm-selection-line ((,class (:background ,selection))))
-     (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
-     (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
-
-     ;; which-function
-     (which-func ((,class (:foreground ,blue :background nil :weight bold))))
-
-     ;; Emacs interface
-     (cursor ((,class (:background ,red))))
-     (fringe ((,class (:background ,current-line))))
-     (linum ((,class (:background ,current-line)))) ; grunge
-     ;;(linum ((,class (:foreground ,comment :background ,background :height 1)))) ; boring
-     (hl-line ((,class (:background ,current-line))))
-     (border ((,class (:background ,current-line))))
-     (border-glyph ((,class (nil))))
-     (highlight ((,class (:background ,green :foreground ,background)))) ;+:foreground
-     (link ((,class (:foreground ,blue))))
-     (link-visited ((,class (:foreground ,purple))))
-     (gui-element ((,class (:background ,current-line :foreground ,foreground))))
-     (mode-line ((,class (:background ,selection :foreground ,foreground))))
-     (mode-line-inactive ((,class (:background ,current-line :foreground ,foreground))))
-     (mode-line-buffer-id ((,class (:foreground ,purple :background nil))))
-     (mode-line-emphasis ((,class (:foreground ,foreground :slant italic))))
-     (mode-line-highlight ((,class (:foreground ,purple :box nil :weight bold))))
-     (minibuffer-prompt ((,class (:foreground ,blue))))
-     (region ((,class (:background ,selection))))
-     (secondary-selection ((,class (:background ,current-line))))
-
-     (header-line ((,class (:inherit mode-line :foreground ,purple :background nil))))
-
-     (trailing-whitespace ((,class (:background ,red :foreground ,yellow))))
-     (whitespace-empty ((,class (:foreground ,red :background ,yellow))))
-     (whitespace-hspace ((,class (:background ,selection :foreground ,comment))))
-     (whitespace-indentation ((,class (:background ,yellow :foreground ,red))))
-     (whitespace-line ((,class (:background ,current-line :foreground ,purple))))
-     (whitespace-newline ((,class (:foreground ,comment))))
-     (whitespace-space ((,class (:background ,current-line :foreground ,comment))))
-     (whitespace-space-after-tab ((,class (:background ,yellow :foreground ,red))))
-     (whitespace-space-before-tab ((,class (:background ,orange :foreground ,red))))
-     (whitespace-tab ((,class (:background ,selection :foreground ,comment))))
-     (whitespace-trailing ((,class (:background ,red :foreground ,yellow))))
-
-     ;; Parenthesis matching (built-in)
-     (show-paren-match ((,class (:background ,blue :foreground ,current-line))))
-     (show-paren-mismatch ((,class (:background ,orange :foreground ,current-line))))
-
-     ;; Parenthesis matching (mic-paren)
-     (paren-face-match
-      ((,class (:foreground nil :background nil :inherit show-paren-match))))
-     (paren-face-mismatch
-      ((,class (:foreground nil :background nil :inherit show-paren-mismatch))))
-     (paren-face-no-match
-      ((,class (:foreground nil :background nil :inherit show-paren-mismatch))))
-
-     ;; Parenthesis dimming (parenface)
-     (paren-face ((,class (:foreground ,comment :background nil))))
-
+     ;; Slime
      (sh-heredoc
       ((,class (:foreground nil :inherit font-lock-string-face :weight normal))))
      (sh-quoted-exec ((,class (:foreground nil :inherit font-lock-preprocessor-face))))
@@ -258,8 +267,10 @@ names to which it refers are bound."
      (slime-repl-result-face ((,class (:foreground ,green))))
      (slime-repl-output-face ((,class (:foreground ,blue :background ,background))))
 
+     ;; Csv
      (csv-separator-face ((,class (:foreground ,orange))))
 
+     ;; Diff
      (diff-added ((,class (:foreground ,green))))
      (diff-changed ((,class (:foreground ,yellow))))
      (diff-removed ((,class (:foreground ,red))))
@@ -319,7 +330,7 @@ names to which it refers are bound."
      (diredp-symlink ((,class (:foreground ,purple))))
      (diredp-write-priv ((,class (:foreground ,yellow :background nil))))
 
-     ;; Magit (a patch is pending in magit to make these standard upstream)
+     ;; Magit
      (magit-branch ((,class (:foreground ,green))))
      (magit-header ((,class (:inherit nil :weight bold))))
      (magit-item-highlight ((,class (:background ,selection))))
@@ -337,11 +348,6 @@ names to which it refers are bound."
      (magit-log-head-label-remote ((,class (:foreground ,green))))
      (magit-log-head-label-tags ((,class (:foreground ,aqua :box nil :weight bold))))
      (magit-section-title ((,class (:inherit diff-hunk-header))))
-
-     (link ((,class (:foreground nil :underline t))))
-     (widget-button ((,class (:underline t))))
-     (widget-field
-      ((,class (:background ,current-line :box (:line-width 1 :color ,foreground)))))
 
      ;; Compilation (most faces politely inherit from 'success, 'error, 'warning etc.)
      (compilation-column-number ((,class (:foreground ,yellow))))
@@ -400,11 +406,8 @@ names to which it refers are bound."
      (markdown-link-face ((,class (:foreground ,blue :underline t))))
      ;;(markdown-header-face-1 ((, class (:foreground ,blue :height 1.44))))
 
-     ;; Fic
+     ;; Fic-mode (highlight FIXME TODO etc) - Note: disabled for now
      (font-lock-fic-face ((, class (:foreground ,red :weight bold :slant italic))))
-
-     (hl-sexp-face ((,class (:background ,current-line))))
-     (highlight-80+ ((,class (:background ,current-line))))
 
      ;; Python-specific overrides
      (py-builtins-face ((,class (:foreground ,orange :weight normal))))
@@ -416,19 +419,6 @@ names to which it refers are bound."
      (js2-function-param-face ((,class (:foreground ,blue))))
      (js2-instance-member-face ((,class (:foreground ,blue))))
      (js2-private-function-call-face ((,class (:foreground ,red))))
-
-     ;; js3-mode
-     (js3-warning-face ((,class (:underline ,orange))))
-     (js3-error-face ((,class (:foreground nil :underline ,red))))
-     (js3-external-variable-face ((,class (:foreground ,purple))))
-     (js3-function-param-face ((,class (:foreground ,blue))))
-     (js3-jsdoc-tag-face ((,class (:foreground ,orange))))
-     (js3-jsdoc-type-face ((,class (:foreground ,aqua))))
-     (js3-jsdoc-value-face ((,class (:foreground ,yellow))))
-     (js3-jsdoc-html-tag-name-face ((,class (:foreground ,blue))))
-     (js3-jsdoc-html-tag-delimiter-face ((,class (:foreground ,green))))
-     (js3-instance-member-face ((,class (:foreground ,blue))))
-     (js3-private-function-call-face ((,class (:foreground ,red))))
 
      ;; nxml
      (nxml-name-face
@@ -442,138 +432,6 @@ names to which it refers are bound."
      (nxml-delimited-data-face
       ((,class (:foreground unspecified :inherit font-lock-string-face))))
      (rng-error-face ((,class (:underline ,red))))
-
-     ;; RHTML
-     (erb-delim-face ((,class (:background ,current-line))))
-     (erb-exec-face ((,class (:background ,current-line :weight bold))))
-     (erb-exec-delim-face ((,class (:background ,current-line))))
-     (erb-out-face ((,class (:background ,current-line :weight bold))))
-     (erb-out-delim-face ((,class (:background ,current-line))))
-     (erb-comment-face ((,class (:background ,current-line :weight bold :slant italic))))
-     (erb-comment-delim-face ((,class (:background ,current-line))))
-
-     ;; Message-mode
-     (message-header-other ((,class (:foreground nil :background nil :weight normal))))
-     (message-header-subject
-      ((,class (:inherit message-header-other :weight bold :foreground ,yellow))))
-     (message-header-to
-      ((,class (:inherit message-header-other :weight bold :foreground ,orange))))
-     (message-header-cc ((,class (:inherit message-header-to :foreground nil))))
-     (message-header-name ((,class (:foreground ,blue :background nil))))
-     (message-header-newsgroups
-      ((,class (:foreground ,aqua :background nil :slant normal))))
-     (message-separator ((,class (:foreground ,purple))))
-
-     ;; Jabber
-     (jabber-chat-prompt-local ((,class (:foreground ,yellow))))
-     (jabber-chat-prompt-foreign ((,class (:foreground ,orange))))
-     (jabber-chat-prompt-system ((,class (:foreground ,yellow :weight bold))))
-     (jabber-chat-text-local ((,class (:foreground ,yellow))))
-     (jabber-chat-text-foreign ((,class (:foreground ,orange))))
-     (jabber-chat-text-error ((,class (:foreground ,red))))
-
-     (jabber-roster-user-online ((,class (:foreground ,green))))
-     (jabber-roster-user-xa ((,class :foreground ,comment)))
-     (jabber-roster-user-dnd ((,class :foreground ,yellow)))
-     (jabber-roster-user-away ((,class (:foreground ,orange))))
-     (jabber-roster-user-chatty ((,class (:foreground ,purple))))
-     (jabber-roster-user-error ((,class (:foreground ,red))))
-     (jabber-roster-user-offline ((,class (:foreground ,comment))))
-
-     (jabber-rare-time-face ((,class (:foreground ,comment))))
-     (jabber-activity-face ((,class (:foreground ,purple))))
-     (jabber-activity-personal-face ((,class (:foreground ,aqua))))
-
-     ;; Gnus
-     (gnus-cite-1 ((,class (:inherit outline-1 :foreground nil))))
-     (gnus-cite-2 ((,class (:inherit outline-2 :foreground nil))))
-     (gnus-cite-3 ((,class (:inherit outline-3 :foreground nil))))
-     (gnus-cite-4 ((,class (:inherit outline-4 :foreground nil))))
-     (gnus-cite-5 ((,class (:inherit outline-5 :foreground nil))))
-     (gnus-cite-6 ((,class (:inherit outline-6 :foreground nil))))
-     (gnus-cite-7 ((,class (:inherit outline-7 :foreground nil))))
-     (gnus-cite-8 ((,class (:inherit outline-8 :foreground nil))))
-     ;; there are several more -cite- faces...
-     (gnus-header-content ((,class (:inherit message-header-other))))
-     (gnus-header-subject ((,class (:inherit message-header-subject))))
-     (gnus-header-from
-      ((,class (:inherit message-header-other-face :weight bold :foreground ,orange))))
-     (gnus-header-name ((,class (:inherit message-header-name))))
-     (gnus-button ((,class (:inherit link :foreground nil))))
-     (gnus-signature ((,class (:inherit font-lock-comment-face))))
-
-     (gnus-summary-normal-unread ((,class (:foreground ,blue :weight normal))))
-     (gnus-summary-normal-read ((,class (:foreground ,foreground :weight normal))))
-     (gnus-summary-normal-ancient ((,class (:foreground ,aqua :weight normal))))
-     (gnus-summary-normal-ticked ((,class (:foreground ,orange :weight normal))))
-     (gnus-summary-low-unread ((,class (:foreground ,comment :weight normal))))
-     (gnus-summary-low-read ((,class (:foreground ,comment :weight normal))))
-     (gnus-summary-low-ancient ((,class (:foreground ,comment :weight normal))))
-     (gnus-summary-high-unread ((,class (:foreground ,yellow :weight normal))))
-     (gnus-summary-high-read ((,class (:foreground ,green :weight normal))))
-     (gnus-summary-high-ancient ((,class (:foreground ,green :weight normal))))
-     (gnus-summary-high-ticked ((,class (:foreground ,orange :weight normal))))
-     (gnus-summary-cancelled ((,class (:foreground ,red :background nil :weight normal))))
-
-     (gnus-group-mail-low ((,class (:foreground ,comment))))
-     (gnus-group-mail-low-empty ((,class (:foreground ,comment))))
-     (gnus-group-mail-1 ((,class (:foreground nil :weight normal :inherit outline-1))))
-     (gnus-group-mail-2 ((,class (:foreground nil :weight normal :inherit outline-2))))
-     (gnus-group-mail-3 ((,class (:foreground nil :weight normal :inherit outline-3))))
-     (gnus-group-mail-4 ((,class (:foreground nil :weight normal :inherit outline-4))))
-     (gnus-group-mail-5 ((,class (:foreground nil :weight normal :inherit outline-5))))
-     (gnus-group-mail-6 ((,class (:foreground nil :weight normal :inherit outline-6))))
-     (gnus-group-mail-1-empty
-      ((,class (:inherit gnus-group-mail-1 :foreground ,comment))))
-     (gnus-group-mail-2-empty
-      ((,class (:inherit gnus-group-mail-2 :foreground ,comment))))
-     (gnus-group-mail-3-empty
-      ((,class (:inherit gnus-group-mail-3 :foreground ,comment))))
-     (gnus-group-mail-4-empty
-      ((,class (:inherit gnus-group-mail-4 :foreground ,comment))))
-     (gnus-group-mail-5-empty
-      ((,class (:inherit gnus-group-mail-5 :foreground ,comment))))
-     (gnus-group-mail-6-empty
-      ((,class (:inherit gnus-group-mail-6 :foreground ,comment))))
-     (gnus-group-news-1 ((,class (:foreground nil :weight normal :inherit outline-5))))
-     (gnus-group-news-2 ((,class (:foreground nil :weight normal :inherit outline-6))))
-     (gnus-group-news-3 ((,class (:foreground nil :weight normal :inherit outline-7))))
-     (gnus-group-news-4 ((,class (:foreground nil :weight normal :inherit outline-8))))
-     (gnus-group-news-5 ((,class (:foreground nil :weight normal :inherit outline-1))))
-     (gnus-group-news-6 ((,class (:foreground nil :weight normal :inherit outline-2))))
-     (gnus-group-news-1-empty
-      ((,class (:inherit gnus-group-news-1 :foreground ,comment))))
-     (gnus-group-news-2-empty
-      ((,class (:inherit gnus-group-news-2 :foreground ,comment))))
-     (gnus-group-news-3-empty
-      ((,class (:inherit gnus-group-news-3 :foreground ,comment))))
-     (gnus-group-news-4-empty
-      ((,class (:inherit gnus-group-news-4 :foreground ,comment))))
-     (gnus-group-news-5-empty
-      ((,class (:inherit gnus-group-news-5 :foreground ,comment))))
-     (gnus-group-news-6-empty
-      ((,class (:inherit gnus-group-news-6 :foreground ,comment))))
-
-     (erc-direct-msg-face ((,class (:foreground ,orange))))
-     (erc-error-face ((,class (:foreground ,red))))
-     (erc-header-face ((,class (:foreground ,foreground :background ,selection))))
-     (erc-input-face ((,class (:foreground ,green))))
-     (erc-keyword-face ((,class (:foreground ,yellow))))
-     (erc-current-nick-face ((,class (:foreground ,green))))
-     (erc-my-nick-face ((,class (:foreground ,green))))
-     (erc-nick-default-face ((,class (:weight normal :foreground ,purple))))
-     (erc-nick-msg-face ((,class (:weight normal :foreground ,yellow))))
-     (erc-notice-face ((,class (:foreground ,comment))))
-     (erc-pal-face ((,class (:foreground ,orange))))
-     (erc-prompt-face ((,class (:foreground ,blue))))
-     (erc-timestamp-face ((,class (:foreground ,aqua))))
-
-     (custom-variable-tag ((,class (:foreground ,blue))))
-     (custom-group-tag ((,class (:foreground ,blue))))
-     (custom-state ((,class (:foreground ,green))))
-
-     ;; Misc
-     (menu ((,class (:foreground ,foreground :background ,selection))))
      )))
 
 

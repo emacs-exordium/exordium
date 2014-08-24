@@ -3,11 +3,11 @@
 * In Progress
 ** TODO Rtags autocomplete: almost there but no cigar :'(
 ** DONE Rtags flymake
-** TODO Rtags find file
+** DONE Rtags find file
 ** DONE Update packages
 ** TODO Fix header autocomplete with excludes (same as compilation DB)
 ** TODO Keys: autocomplete, return+indent
-** TODO Linum
+** DONE Linum
 ** TODO Helm
 ** TODO Benchmark startup time
 ** TODO Build rtags on OS X
