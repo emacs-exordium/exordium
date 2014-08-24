@@ -42,7 +42,7 @@
   *header-ac-exclude-directories*"
   (catch 'return
     (dolist (excluded *header-ac-exclude-directories*)
-      (when (string-match dir excluded)
+      (when (string-match excluded dir)
         (throw 'return t)))
     (throw 'return nil)))
 

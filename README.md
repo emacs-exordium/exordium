@@ -315,10 +315,10 @@ variables in `init_local.el`:
 (when (featurep 'init-header-autocomplete)
   ;; Prefix for any path in init_includes, if you want to use relative paths
   ;; (default value is "")
-  (setq *header-ac-include-dir-prefix* "/home/phil/workspaces/"))
+  (setq *header-ac-include-dir-prefix* "/home/phil/workspaces/")
   ;; List of regex to exclude from the include paths
   (setq *header-ac-exclude-directories*
-        '("/group$" "/doc$" "/package$" "/test$"))
+        '("/group$" "/doc$" "/package$" "/test$")))
 ```
 
 Then set up the autocomplete for your project with the command M-x
