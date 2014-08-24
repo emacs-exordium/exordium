@@ -223,13 +223,21 @@ Check the output of rdm for any compilation errors and adjust your compilation
 database accordingly. Rerun `rc -J` to reload the compilation database.
 
 The rdm deamon should automatically re-compile any file you edit in Emacs as
-soon as you save it (it uses inotify).
-
-If you use multiple projects, you can list the loaded projects with `rc -w` and
-switch to a new project with `rc -w <proj>` (a regex). You can unload a project
-with `rc -W <proj>`.
+soon as you save it or otherwise touch it.
 
 ### Controlling rdm
+
+Command            | Description
+-------------------|------------------------------------------------------------
+`rc -w`            | List projects.
+`rc -w proj`       | Switch to project "proj" (a regex).
+`rc -W proj`       | Unload project "proj".
+`rc -J`            | Reload the compilation DB from the current directory.
+`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
+`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
+`rc -q`            | Shutdown rdm.
+
+In Emacs:
 
 Keybinding         | Description
 -------------------|------------------------------------------------------------
@@ -308,9 +316,9 @@ variables in `init_local.el`:
   ;; Prefix for any path in init_includes, if you want to use relative paths
   ;; (default value is "")
   (setq *header-ac-include-dir-prefix* "/home/phil/workspaces/"))
-  ;; List of subdirs to exclude from the include paths
-  ;; (that is the default value):
-  (setq *header-ac-exclude-directories* '("/group" "/doc" "/package" "/test"))
+  ;; List of regex to exclude from the include paths
+  (setq *header-ac-exclude-directories*
+        '("/group$" "/doc$" "/package$" "/test$"))
 ```
 
 Then set up the autocomplete for your project with the command M-x

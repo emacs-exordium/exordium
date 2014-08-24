@@ -28,8 +28,8 @@
   `set-header-autococomplete'.")
 
 (defvar *header-ac-exclude-directories*
-  '("/group" "/doc" "/package" "/test")
-  "List of subdirectory names to exclude when computing the list
+  '("/group$" "/doc$" "/package$" "/test$")
+  "List of regex to exclude when computing the list
   of header directories in `set-header-autocomplete'.")
 
 (defvar *header-ac-include-dir-prefix*
@@ -42,7 +42,7 @@
   *header-ac-exclude-directories*"
   (catch 'return
     (dolist (excluded *header-ac-exclude-directories*)
-      (when (pg/string-ends-with dir excluded)
+      (when (string-match dir excluded)
         (throw 'return t)))
     (throw 'return nil)))
 
