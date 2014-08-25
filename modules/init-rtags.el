@@ -241,6 +241,11 @@
                                      (pg/read-file-lines
                                       compile-includes-file))))
              (dolist (project (cons dir included-projects))
+               (message "Creating compilation command: scanning %s" project)
+               ;; Add the project directory itself
+               (unless (rtags-is-include-directory-excluded project)
+                 (setq command (concat command " -I" project)))
+               ;; Add any subdirectory
                (dolist (subdir (pg/directory-tree project))
                  (unless (rtags-is-include-directory-excluded subdir)
                    (setq command (concat command " -I" subdir)))))

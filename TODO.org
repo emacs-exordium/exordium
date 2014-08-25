@@ -1,16 +1,14 @@
 #+TITLE: Emacs configuration todo list
 
 * In Progress
-** TODO Rtags autocomplete: almost there but no cigar :'(
-** DONE Rtags flymake
-** DONE Rtags find file
-** DONE Update packages
-** DONE Fix header autocomplete with excludes (same as compilation DB)
-** TODO Keys: autocomplete, return+indent
-** DONE Linum
-** TODO Helm
-** DONE Benchmark startup time (IT'S YAS!!!)
-** TODO Build rtags on OS X
+** TODO smarter compile_includes file
+*** TODO # comments
+*** TODO for a path: include subdirectories or not
+*** TODO exclude regexes directly in the file, not in a Lisp variable
+** TODO rtags-start-rdm
+** TODO clang autocomplete to use the compilation DB
+** TODO rtags autocomplete: almost there but no cigar :'(
+** TODO helm + projectile
 * C++
 ** TODO Rtags https://github.com/Andersbakken/rtags
     - [ ] Enable support for autocomplete
