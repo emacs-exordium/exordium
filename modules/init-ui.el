@@ -18,7 +18,7 @@
 (when *environment-bloomberg*
   (setq default-frame-alist
         (append `(;;(font . ,(choose-frame-font))
-                  (font . "Monospace 12")
+                  (font . "Monospace 13")
                   ;;(font . "-*-verdana-medium-r-*-*-12-*-*-*-*-*-*-*")
                   ;;(font . "-*-consolas-medium-r-*-*-*-*-*-*-*-*-*-*")
                   ;;(font . "-*-courier-*-r-*-*-14-*-*-*-*-*-*-*")

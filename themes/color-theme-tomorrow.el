@@ -333,7 +333,7 @@ names to which it refers are bound."
      ;; Magit
      (magit-branch ((,class (:foreground ,green))))
      (magit-header ((,class (:inherit nil :weight bold))))
-     (magit-item-highlight ((,class (:background ,selection))))
+     (magit-item-highlight ((,class (:background ,current-line))))
      ;;(magit-item-highlight ((,class (:inherit highlight))))
      ;;(magit-item-mark ((, class (:inherit region :foreground ,orange))))
      ;;(magit-diff-add ((,class (:inherit region :foreground ,green))))
