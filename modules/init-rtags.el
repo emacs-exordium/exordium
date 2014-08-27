@@ -13,7 +13,7 @@
 ;;; M-C-g
 ;;; C-x r I        Ido-based select a symbol in the current file
 ;;; C-x r v        Find virtuals at point
-;;; C-x r \        Show diagnostics buffer
+;;; C-x r q        Show diagnostics buffer (without reparsing)
 ;;; -------------- -------------------------------------------------------
 ;;;
 ;;; Whenever rtags jumps somewhere it pushes a location onto its stack. Jump
@@ -172,13 +172,24 @@
 (define-key c-mode-base-map "\M-[" (function rtags-location-stack-back))
 (define-key c-mode-base-map "\M-]" (function rtags-location-stack-forward))
 
-(defun show-rtags-diagnostics-buffer ()
+(defun rtags-start-rdm ()
+  "Start the rdm deamon in a subprocess and display output in a
+buffer"
+  (interactive)
+  (let ((buffer (get-buffer-create "*Rtags rdm*")))
+    (switch-to-buffer buffer)
+    (let ((process (start-process "rdm" buffer "rdm")))
+      (message "Started rdm - PID %d" (process-id process)))))
+
+(defun rtags-show-diagnostics-buffer ()
+  "Show the diagnostics buffer (same as `rtags-diagnostics' but
+without reparsing)"
   (interactive)
   (let ((buffer-name "*RTags Diagnostics*"))
     (if (get-buffer buffer-name)
         (display-buffer buffer-name)
       (message "Rtags diagnostic is not running"))))
-(define-key c-mode-base-map [(control x)(r)(\\)] 'show-rtags-diagnostics-buffer)
+(define-key c-mode-base-map [(control x)(r)(q)] 'rtags-show-diagnostics-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Create a compilation database

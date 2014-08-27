@@ -1,11 +1,14 @@
 #+TITLE: Emacs configuration todo list
 
 * In Progress
+** TODO keys: meta arrow and meta shift arrow
 ** TODO smarter compile_includes file
-*** TODO # comments
-*** TODO for a path: include subdirectories or not
-*** TODO exclude regexes directly in the file, not in a Lisp variable
+    # comment
+    +exclude "/test$"
+    /no/subdirs
+    /use/subdirs/**
 ** TODO rtags-start-rdm
+** TODO create-compilation-database: number of files + reload it
 ** TODO clang autocomplete to use the compilation DB
 ** TODO rtags autocomplete: almost there but no cigar :'(
 ** TODO helm + projectile

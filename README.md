@@ -290,7 +290,7 @@ error to jump to it).
 Keybinding         | Description
 -------------------|------------------------------------------------------------
 <kbd>C-x r D</kbd> | Run `rtags-diagnostics`.
-<kbd>C-x r \\</kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
+<kbd>C-x r q</kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
 
 Other functions:
 * `rtags-next-diag` goes to the next problem.
