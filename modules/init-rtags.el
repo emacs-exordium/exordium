@@ -164,13 +164,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Key bindings
 
+;; Default keys from rtags (with default prefix)
 (rtags-enable-standard-keybindings c-mode-base-map)
 
+;; Alias keys for common operations
 (define-key c-mode-base-map (kbd "<f3>") (function rtags-find-symbol-at-point))
 (define-key c-mode-base-map (kbd "<f4>") (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map "\M-[" (function rtags-location-stack-back))
 (define-key c-mode-base-map "\M-]" (function rtags-location-stack-forward))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Useful functions
+
+;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
+(defconst rtags-rdm-mode-keywords
+  `((,(regexp-opt '("error" "warn")    'words) . font-lock-warning-face)
+    (,(regexp-opt '("Jobs" "Restored") 'words) . font-lock-string-face)))
+
+(defconst rtags-rdm-mode-syntax-table
+  (let ((synTable (make-syntax-table)))
+    (modify-syntax-entry ?\[ "< b" synTable)
+    (modify-syntax-entry ?\n "> b" synTable)
+    synTable))
+
+(define-derived-mode rtags-rdm-mode fundamental-mode
+  "rdm log mode"
+  "Mode for viewing rdm logs"
+  :syntax-table rtags-rdm-mode-syntax-table
+  ;; Syntax highlighting:
+  (setq font-lock-defaults '((rtags-rdm-mode-keywords))))
 
 (defun rtags-start-rdm ()
   "Start the rdm deamon in a subprocess and display output in a
@@ -178,6 +201,7 @@ buffer"
   (interactive)
   (let ((buffer (get-buffer-create "*Rtags rdm*")))
     (switch-to-buffer buffer)
+    (rtags-rdm-mode)
     (let ((process (start-process "rdm" buffer "rdm")))
       (message "Started rdm - PID %d" (process-id process)))))
 
