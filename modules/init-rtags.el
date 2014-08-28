@@ -179,17 +179,20 @@
 
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
 (defconst rtags-rdm-mode-keywords
+  ;; Words and associated face.
   `((,(regexp-opt '("error" "warn")    'words) . font-lock-warning-face)
     (,(regexp-opt '("Jobs" "Restored") 'words) . font-lock-string-face)))
 
 (defconst rtags-rdm-mode-syntax-table
+  ;; Defines a "comment" as anything that starts with a square bracket, e.g.
+  ;; [100%] /path/to/file.cpp in 437ms. (1259 syms, etc) (dirty)
   (let ((synTable (make-syntax-table)))
     (modify-syntax-entry ?\[ "< b" synTable)
     (modify-syntax-entry ?\n "> b" synTable)
     synTable))
 
 (define-derived-mode rtags-rdm-mode fundamental-mode
-  "rdm log mode"
+  "rdm-log"
   "Mode for viewing rdm logs"
   :syntax-table rtags-rdm-mode-syntax-table
   ;; Syntax highlighting:
@@ -199,7 +202,7 @@
   "Start the rdm deamon in a subprocess and display output in a
 buffer"
   (interactive)
-  (let ((buffer (get-buffer-create "*Rtags rdm*")))
+  (let ((buffer (get-buffer-create "*RTags rdm*")))
     (switch-to-buffer buffer)
     (rtags-rdm-mode)
     (let ((process (start-process "rdm" buffer "rdm")))
