@@ -44,6 +44,13 @@
 ;; (add-hook 'c++-mode-hook 'turn-on-fic-mode)
 ;; (add-hook 'markdown-mode-hook 'turn-on-fic-mode)
 
+;; This is better:
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (font-lock-add-keywords
+             nil
+             '(("\\<\\(TODO\\|FIXME\\|TBD\\):" 1 font-lock-warning-face t)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight symbol
 
