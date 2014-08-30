@@ -22,11 +22,16 @@ dirs. Input is a string and output is a list of strings."
     dirs))
 
 (defun pg/read-file-lines (file)
-  "Return a list of lines of the specified file"
+  "Return a list of lines (strings) of the specified file"
   (with-temp-buffer
     (insert-file-contents file)
     (split-string (buffer-string) "\n" t)))
 
+(defun pg/read-file-as-string (file)
+  "Return the content of the specified file as a string."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Strings

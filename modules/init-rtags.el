@@ -175,9 +175,21 @@
 (define-key c-mode-base-map "\M-]" (function rtags-location-stack-forward))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Useful functions
+;;; Start rdm as a subprocess, with output in a buffer
 
+(defun rtags-start-rdm ()
+  "Start the rdm deamon in a subprocess and display output in a
+buffer"
+  (interactive)
+  (let ((buffer (get-buffer-create "*RTags rdm*")))
+    (switch-to-buffer buffer)
+    (rtags-rdm-mode)
+    (let ((process (start-process "rdm" buffer "rdm")))
+      (message "Started rdm - PID %d" (process-id process)))))
+
+;; Mode for rdm log output
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
+
 (defconst rtags-rdm-mode-keywords
   ;; Words and associated face.
   `((,(regexp-opt '("error" "warn")    'words) . font-lock-warning-face)
@@ -198,15 +210,8 @@
   ;; Syntax highlighting:
   (setq font-lock-defaults '((rtags-rdm-mode-keywords))))
 
-(defun rtags-start-rdm ()
-  "Start the rdm deamon in a subprocess and display output in a
-buffer"
-  (interactive)
-  (let ((buffer (get-buffer-create "*RTags rdm*")))
-    (switch-to-buffer buffer)
-    (rtags-rdm-mode)
-    (let ((process (start-process "rdm" buffer "rdm")))
-      (message "Started rdm - PID %d" (process-id process)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Display the diagnostics buffer without force reparsing
 
 (defun rtags-show-diagnostics-buffer ()
   "Show the diagnostics buffer (same as `rtags-diagnostics' but
@@ -221,6 +226,8 @@ without reparsing)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Create a compilation database
 
+;; Override these variables in your .emacs as needed:
+
 (defvar *rtags-clang-command-prefix*
   "/usr/bin/clang++ -Irelative "
   "Compilation command prefix to use for creating compilation
@@ -231,100 +238,181 @@ without reparsing)"
   "Compilation command suffix to use for creating compilation
   databases. Override this variable for you local environment.")
 
-(defvar *rtags-clang-include-projects*
-  ()
-  "List of default projects to include in all compilation
-  databases (a list of strings e.g. paths to project roots). This
-  is not needed if you index these projects individually.")
+;; Do not set these variables in your .emacs, they are generated:
 
-(defvar *rtags-clang-exclude-directories*
-  '("/group$" "/doc$" "/package$" "/test$")
-  "List of regex to exclude from the include paths
-  when computing a compilation command")
+(defvar *rtags-project-source-dirs* ()
+  "List of directories containing the source and header files of
+  the current project. We scan these directories for .cpp files
+  to put into the compilation database.")
 
-(defvar *rtags-clang-include-dir-prefix*
-  ""
-  "Prefix to add to any directory listed in `compile_includes',
-  if you only want relative paths in that file.")
+(defvar *rtags-project-include-dirs* ()
+  "List of directories to include for compiling the current
+  project (e.g. third party libraries). We use these directories
+  to generate -I directives that the clang compilation command
+  needs.")
 
-(defun rtags-is-include-directory-excluded (dir)
-  "Return non-nil if the specified directory is member of
-  *rtags-clang-exclude-directories*"
+(defun rtags-load-compile-include-file-content (compile-includes-file)
+  "Read and parse the specified compile-includes file, and return
+a list of 3 sublists:
+- The list of src directives
+- The list of include directives
+- The list of exclude directive."
+  (let ((line-number  1)
+        (value        nil)
+        (src-list     ())
+        (include-list ())
+        (exclude-list ()))
+    (dolist (record (pg/read-file-lines compile-includes-file))
+      (incf line-number)
+      (setq value (second (split-string record " ")))
+      (cond ((or (eq "" record)
+                 (pg/string-starts-with record "#"))
+             nil) ; comment or empty string; skip it
+            ((pg/string-starts-with record "src")
+             (when value
+               (setq src-list (cons value src-list))))
+            ((pg/string-starts-with record "include")
+             (when value
+               (setq include-list (cons value include-list))))
+            ((pg/string-starts-with record "exclude")
+             (when value
+               (setq exclude-list (cons value exclude-list))))
+            (t
+             (error "Syntax error line %d: %s" line-number record))))
+    (list src-list include-list exclude-list)))
+
+(defun rtags-include-directory-excluded-p (dir excluded-regexs)
+  "Return non-nil if the specified directory matches any regex in
+the list of excluded regexs"
   (catch 'return
-    (dolist (excluded *rtags-clang-exclude-directories*)
+    (dolist (excluded excluded-regexs)
       (when (string-match excluded dir)
         (throw 'return t)))
     (throw 'return nil)))
 
-(defun rtags-add-dir-prefix (dirs)
-  "Add the prefix `*rtags-clang-include-dir-prefix*' to any
-  directory in the specified list"
+(defun rtags-scan-include-directories (dir excluded-regexs)
+  "Return a list of subdirectories under the specified root dir,
+excluding any that match any regex in the specified excluded
+regex list."
   (let ((result ()))
-    (dolist (dir dirs)
-      (setq result (cons (concat *rtags-clang-include-dir-prefix* dir)
-                         result)))
+    (dolist (subdir (cons dir (pg/directory-tree dir)))
+      (unless (rtags-include-directory-excluded-p subdir excluded-regexs)
+        (setq result (cons subdir result))))
     result))
 
-(defun rtags-create-compilation-command (dir)
-  "Return the clang++ command string to use to compile the
-  specified directory. Assumes that the directory holds a file
-  `compile_includes' containing a list of project root
-  directories, and add -I directives for all subdirectories
-  within these root directories."
+(defun rtags-load-compile-include-file (dir)
+  "Loads the `compile_includes' file from the specified directory
+and sets up the project's source dirs and include dirs. Return
+true on success. Normally you should not use this function
+directly: use `rtags-create-compilation-database' instead"
+  (interactive "DProject root: ")
   (let ((compile-includes-file (concat (file-name-as-directory dir)
                                        "compile_includes")))
     (cond ((file-exists-p compile-includes-file)
-           (let ((command *rtags-clang-command-prefix*)
-                 (included-projects (rtags-add-dir-prefix
-                                     (pg/read-file-lines
-                                      compile-includes-file))))
-             (dolist (project (cons dir included-projects))
-               (message "Creating compilation command: scanning %s" project)
-               ;; Add the project directory itself
-               (unless (rtags-is-include-directory-excluded project)
-                 (setq command (concat command " -I" project)))
-               ;; Add any subdirectory
-               (dolist (subdir (pg/directory-tree project))
-                 (unless (rtags-is-include-directory-excluded subdir)
-                   (setq command (concat command " -I" subdir)))))
-             (concat command *rtags-clang-command-suffix*)))
+           ;; Parse the file and return 3 lists: src, include, exclude
+           (let ((directives (rtags-load-compile-include-file-content
+                              compile-includes-file)))
+             (setq *rtags-project-source-dirs*  ()
+                   *rtags-project-include-dirs* ())
+             (let ((source-dirs (first directives))
+                   (incl-dirs   (second directives))
+                   (excl-regexs (third directives)))
+               ;; TODO: if no source dirs use dir itself
+               ;; TODO: relative paths
+               ;; Scan src to get all subdirs that do not match the excludes
+               (dolist (path source-dirs)
+                 (message "Scanning source dir: %s" path)
+                 (setq *rtags-project-source-dirs*
+                       (append *rtags-project-source-dirs*
+                               (rtags-scan-include-directories path excl-regexs))))
+               ;; Same with includes
+               (dolist (path incl-dirs)
+                 (message "Scanning include dir: %s" path)
+                 (setq *rtags-project-include-dirs*
+                       (append *rtags-project-include-dirs*
+                               (rtags-scan-include-directories path excl-regexs))))
+               ;; Done
+               (message "Project has %d source dirs and %d include dirs"
+                        (length *rtags-project-source-dirs*)
+                        (length *rtags-project-include-dirs*))))
+           t)
           (t
-           ;; No "compile_includes" file, use default
-           (concat *rtags-clang-command-prefix*
-                   *rtags-clang-command-suffix*)))))
+           (message "No compilation_includes file")
+           nil))))
 
-(defun create-compilation-database (dir)
-  "Regenerates `compile_commands.json' in a specified directory"
+(defun rtags-create-compilation-command ()
+  "Return a string containing the clang compilation command to
+  use for the compilation database, using the content of
+  `*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
+  (assert *rtags-project-source-dirs*)
+  (let ((command *rtags-clang-command-prefix*))
+    (dolist (path *rtags-project-source-dirs*)
+      (setq command (concat command " -I" path)))
+    (dolist (path *rtags-project-include-dirs*)
+      (setq command (concat command " -I" path)))
+    (concat command *rtags-clang-command-suffix*)))
+
+(defun rtags-create-compilation-database (dir)
+  "Regenerates `compile_commands.json' in the specified
+directory"
   (interactive "DProject root: ")
-  (let ((dbfilename (concat (file-name-as-directory dir)
-                            "compile_commands.json"))
-        (compile-command (rtags-create-compilation-command dir))
-        (projdirs (cons dir *rtags-clang-include-projects*)))
-    (with-temp-buffer
-      (insert "[")
-      (newline)
-      (dolist (projdir projdirs)
-        (message "Processing project: %s" projdir)
-        (let ((subdirs (cons projdir (pg/directory-tree projdir))))
-          (dolist (default-directory subdirs)
-            (let ((files (file-expand-wildcards "*.cpp"))
-                  ;; rdm does not like directories starting with "~/"
-                  (dirname (if (pg/string-starts-with default-directory "~/")
-                               (substitute-in-file-name
-                                (concat "$HOME/" (substring default-directory 2)))
-                             default-directory)))
-              (dolist (file files)
-                (insert "  { \"directory\": \"" dirname "\",")
-                (newline)
-                (insert "    \"command\":   \""
-                        compile-command
-                        (file-name-sans-extension file) ".o "
-                        file "\",")
-                (newline)
-                (insert "    \"file\":      \"" file "\" },")
-                (newline))))))
-      (insert "];")
-      (newline)
-      (write-region (buffer-string) nil dbfilename))))
+  (when (rtags-load-compile-include-file dir)
+    (let ((dbfilename (concat (file-name-as-directory dir)
+                              "compile_commands.json"))
+          (compile-command (rtags-create-compilation-command))
+          (num-files 0))
+      (with-temp-buffer
+        (insert "[")
+        (newline)
+        (dolist (default-directory *rtags-project-source-dirs*)
+          (message "Processing directory: %s" default-directory)
+          (let ((files (file-expand-wildcards "*.cpp"))
+                ;; rdm does not like directories starting with "~/"
+                (dirname (if (pg/string-starts-with default-directory "~/")
+                             (substitute-in-file-name
+                              (concat "$HOME/" (substring default-directory 2)))
+                           default-directory)))
+            (dolist (file files)
+              (incf num-files)
+              (insert "  { \"directory\": \"" dirname "\",")
+              (newline)
+              (insert "    \"command\":   \""
+                      compile-command
+                      (file-name-sans-extension file) ".o "
+                      file "\",")
+              (newline)
+              (insert "    \"file\":      \"" file "\" },")
+              (newline))))
+        (insert "];")
+        (newline)
+        (write-region (buffer-string) nil dbfilename))
+      (when (yes-or-no-p
+             (format "Wrote compile_commands.json (%d files). Load it?" num-files))
+        (rtags-call-rc :path t :output nil "-J" dir)
+        ("Done (check rdm's logs).")))))
+
+;; Mode for compile_includes
+
+(defconst rtags-compile-includes-mode-keywords
+  ;; Words and associated face.
+  `((,(regexp-opt '("src" "include" "exclude") 'words)
+     . font-lock-keyword-face)))
+
+(defconst rtags-compile-includes-mode-syntax-table
+  ;; Defines a "comment" as anything that starts with hash tag
+  (let ((synTable (make-syntax-table)))
+    (modify-syntax-entry ?\# "< b" synTable)
+    (modify-syntax-entry ?\n "> b" synTable)
+    synTable))
+
+(define-derived-mode rtags-compile-includes-mode fundamental-mode
+  "compile-includes"
+  "Mode for editing compile_includes files"
+  :syntax-table rtags-compile-includes-mode-syntax-table
+  ;; Syntax highlighting:
+  (setq font-lock-defaults '((rtags-compile-includes-mode-keywords))))
+
+(add-to-list 'auto-mode-alist
+             '("compile_includes" . rtags-compile-includes-mode))
 
 (provide 'init-rtags)

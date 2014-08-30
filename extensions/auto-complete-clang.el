@@ -45,6 +45,13 @@
          (col      (1+ (- point (point-at-bol))))
          (row      (count-lines point (point-min)))
          (cmd      (list clang-executable "-cc1"
+                         ;; TODO:
+                         "-stdlib=libc++"
+                         "-I.../llvm-3-4-2/llvm/Release+Asserts/lib/clang/3.4.2/include" ;; replace ...
+                         "-I/usr/includes"
+                         "-I.../gcc-4-8.1/include/c++/4.8.1/" "-I.../gcc-4-8.1/include/c++/4.8.1/x86_64-unknown-linux" ;; replace ...
+                         "-Irelative" "I." "-I.../rsp" "-I.../bsl" ;; the compilation_includes
+                         ;; END TODO:
                          filename "-fsyntax-only" "-code-completion-at"
                          (format "%s:%s:%s" filename row col))))
 
