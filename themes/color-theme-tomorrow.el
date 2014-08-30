@@ -1,5 +1,6 @@
 ;;;; Inspired by the "Tomorrow" theme from Chris Kempson (MIT license)
-;;;; Note that this is not the original code; I'm only reusing the base colors.
+;;;; Borrowed from https://github.com/purcell/color-theme-sanityinc-tomorrow
+;;;; (modified to fit in a single file)
 
 (defconst tomorrow-colors
   '((night . ((background . "#1d1f21")
@@ -128,6 +129,7 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
+     ;;(linum ((,class (:background ,current-line :foreground ,comment :inherit nil))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))

@@ -65,7 +65,7 @@
 	       ((:url . "http://github.com/defunkt/coffee-mode")
 		(:keywords "coffeescript" "major" "mode"))])
  (company .
-	  [(0 8 2)
+	  [(0 8 3)
 	   ((emacs
 	     (24 1))
 	    (cl-lib
@@ -73,6 +73,11 @@
 	   "Modular text completion framework" tar
 	   ((:keywords "abbrev" "convenience" "matching")
 	    (:url . "http://company-mode.github.io/"))])
+ (crisp .
+	[(1 3 4)
+	 nil "CRiSP/Brief Emacs emulator" single
+	 ((:url . "http://elpa.gnu.org/packages/crisp.html")
+	  (:keywords "emulations" "brief" "crisp"))])
  (csv-mode .
 	   [(1 2)
 	    nil "Major mode for editing comma/char separated values" single
@@ -297,7 +302,7 @@
 	    ((:url . "http://elpa.gnu.org/packages/omn-mode.html")
 	     (:keywords))])
  (org .
-      [(20140818)
+      [(20140825)
        nil "Outline-based notes management and organizer" tar nil])
  (osc .
       [(0 1)
