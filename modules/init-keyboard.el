@@ -1,20 +1,20 @@
 ;;;; Key bindings
 ;;;
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; Meta-g         Goto line
-;;; Ctrl-z         Undo
-;;; Meta-backspace Delete word
-;;; Ctrl-esc       Delete other windows
-;;; Ctrl-`         Kill current buffer (= Ctrl-x k)
-;;; Shift-enter    Return + tab
-;;; F10            Speedbar
-;;; Super-arrow    Move between windows (= Ctrl-x o)
-;;; Meta-ctrl-l    Switch to last buffer
-;;; Ctrl +/-       Zoom
-;;; Ctrl-x g       Magit status
-;;; -------------- -------------------------------------------------------
+;;; ----------------- ----------------------------------------------------
+;;; Key               Definition
+;;; -----------------    -------------------------------------------------
+;;; Meta-g            Goto line
+;;; Ctrl-z            Undo
+;;; Meta-backspace    Delete word
+;;; Ctrl-esc          Delete other windows
+;;; Ctrl-`            Kill current buffer (= Ctrl-x k)
+;;; Shift-enter       Return + tab
+;;; F10               Speedbar
+;;; Meta-Shift-arrow  Move between windows (= Ctrl-x o)
+;;; Meta-ctrl-l       Switch to last buffer
+;;; Ctrl +/-          Zoom
+;;; Ctrl-x g          Magit status
+;;; ----------------- ---------------------------------------------------
 
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -34,13 +34,12 @@
 (global-set-key [(shift return)] 'newline-and-indent)
 (global-set-key [f10] 'speedbar)
 
-;;; Meta-Super-arrow = move the focus between visible buffers
+;;; Meta-Shif-arrow = move the focus between visible buffers
 (require 'windmove)
-(windmove-default-keybindings 'meta) ;; will be overridden
-(global-set-key (kbd "<M-s-left>")  'windmove-left)
-(global-set-key (kbd "<M-s-right>") 'windmove-right)
-(global-set-key (kbd "<M-s-up>")    'windmove-up)
-(global-set-key (kbd "<M-s-down>")  'windmove-down)
+(global-set-key [(meta shift left)] 'windmove-left)
+(global-set-key [(meta shift right)] 'windmove-right)
+(global-set-key [(meta shift up)] 'windmove-up)
+(global-set-key [(meta shift down)] 'windmove-down)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()

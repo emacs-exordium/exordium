@@ -10,6 +10,7 @@ you are looking for a good generic Emacs configuration to start with, you might
 want to check these ones:
 * Prelude: https://github.com/bbatsov/prelude
 * Steve Purcell's: https://github.com/purcell/emacs.d
+* Awesome Emacs: https://github.com/emacs-tw/awesome-emacs
 
 ## Content
 
@@ -71,54 +72,59 @@ directory which can be individually enabled or disabled.
   (load "~/.emacs.d/init_local.el"))
 ```
 
-If a file `init_local.el` exists, it will be loaded at the end; you can use this
-as a mechanism to load machine-specific extensions.
+If a file `init_local.el` exists, it will be loaded at the end; you can use
+this as a mechanism to load machine-specific extensions.
 
 ## Keymap
 
 ### Global
 
-Keybinding         | Description
--------------------|------------------------------------------------------------
-<kbd>ESC</kbd>     | Quit command; equivalent to <bkd>C-g</kbd>.
-<kbd>C-z</kbd>     | Undo! (`undo`).
-<kbd>C-\`</kbd>    | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
-<kbd>C-ESC</kbd>   | `delete-other-windows` (just keep the current window).
-<kbd>C-c C-f</kbd> | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
-<kbd>M-g</kbd>     | `goto-line` (prompts for a line number).
-<kbd>C-+</kbd>     | Increase font size (`text-scale-increase`).
-<kbd>C--</kbd>     | Decrease font size (`text-scale-decrease`).
-<kbd>M-C-l</kbd>   | Switch back and forth between the 2 top buffers (from XEmacs).
-<kbd>M-ARROW</kbd> | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
-<kbd>C-c h</kbd>   | Open anything (with Helm).
+Keybinding           | Description
+---------------------|---------------------------------------------------------
+<kbd>ESC</kbd>       | Quit command; equivalent to <bkd>C-g</kbd>.
+<kbd>C-z</kbd>       | Undo! (`undo`).
+<kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
+<kbd>C-ESC</kbd>     | `delete-other-windows` (just keep the current window).
+<kbd>C-c C-f</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
+<kbd>M-g</kbd>       | `goto-line` (prompts for a line number).
+<kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
+<kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
+<kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
+<kbd>M-S-ARROW</kbd> | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
 
 Editing any file:
 
-Keybinding         | Description
--------------------|------------------------------------------------------------
-<kbd>S-ENTER</kbd> | Return and indent.
-<kbd>M-BCKSP</kbd> | `backward-kill-word`.
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>S-ENTER</kbd>  | Return and indent.
+<kbd>M-BCKSP</kbd>  | `backward-kill-word`.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
-<kbd>C-\\</kbd>    | Delete spaces after cursor (`delete-horizontal-space-forward`).
-<kbd>C-c C-d</kbd> | Duplicate line.
+<kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
+<kbd>C-c C-d</kbd>  | Duplicate line.
 
 Git:
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-x g</bkd>   | Open git status mode (`magit-status`).
+
+Helm (work in progress):
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-c h</kbd>   | Open anything.
 
 ### C++
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-TAB</bkd>   | Alternate between header file and source file.
 <kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
 
 BDE style (see https://github.com/bloomberg/bde):
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-&gt;</kbd>  | Insert text after cursor to the right (for return, lock etc.).
 <kbd>C-c =</bkd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
@@ -228,7 +234,7 @@ soon as you save it or otherwise touch it.
 ### Controlling rdm
 
 Command            | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 `rc -w`            | List projects.
 `rc -w proj`       | Switch to project "proj" (a regex).
 `rc -W proj`       | Unload project "proj".
@@ -240,7 +246,7 @@ Command            | Description
 In Emacs:
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-x r p</kbd> | Switch project.
 <kbd>C-x r e</kbd> | Reparse file, e.g. recompile.
 
@@ -251,7 +257,7 @@ To kill rdm, run function `rtags-quit-rdm`.
 Now comes the good part. Navigating keys:
 
 Keybinding                           | Description
--------------------------------------|------------------------------------------
+-------------------------------------|-----------------------------------------
 <kbd>F3</kbd>, <kbd>C-x r .</kbd>    | Jump to symbol definition.
 <kbd>F4</kbd>, <kbd>C-x r ,</kbd>    | Find references to symbol.
 <kbd>C-x r &gt;</kbd>                | Find symbol (prompts for symbol name).
@@ -263,15 +269,15 @@ Keybinding                           | Description
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
-Keybinding                         | Description
------------------------------------|--------------------------------------------
-<kbd>M-[</kbd>, <kbd>C-x r [</kbd> | Go back to previous location.
-<kbd>M-]</kbd>, <kbd>C-x r ]</kbd> | Go forward to next location.
+Keybinding                             | Description
+---------------------------------------|---------------------------------------
+<kbd>M-LEFT</kbd>, <kbd>C-x r [</kbd>  | Go back to previous location.
+<kbd>M-RIGHT</kbd>, <kbd>C-x r ]</kbd> | Go forward to next location.
 
 Refactoring:
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-x r R</kbd> | Rename symbol.
 
 Useful functions:
@@ -288,7 +294,7 @@ error to jump to it).
 ![Rtags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
 
 Keybinding         | Description
--------------------|------------------------------------------------------------
+-------------------|-----------------------------------------------------------
 <kbd>C-x r D</kbd> | Run `rtags-diagnostics`.
 <kbd>C-x r q</kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
 

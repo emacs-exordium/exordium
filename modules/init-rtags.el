@@ -17,7 +17,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;;
 ;;; Whenever rtags jumps somewhere it pushes a location onto its stack. Jump
-;;; back and forward in this stack with M-[ and M-] (or default
+;;; back and forward in this stack with M-left and M-right (or default
 ;;; C-x r [ and R-x r ] )
 ;;;
 ;;; Functions:
@@ -171,8 +171,8 @@
 (define-key c-mode-base-map (kbd "<f3>") (function rtags-find-symbol-at-point))
 (define-key c-mode-base-map (kbd "<f4>") (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
-(define-key c-mode-base-map "\M-[" (function rtags-location-stack-back))
-(define-key c-mode-base-map "\M-]" (function rtags-location-stack-forward))
+(define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
+(define-key c-mode-base-map [(meta right)] (function rtags-location-stack-forward))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Start rdm as a subprocess, with output in a buffer
