@@ -14,11 +14,29 @@ want to check these links:
 
 ## Content
 
-* C++, including a working CEDET and a Rtags, a LLVM/Clang-based indexing.
-* JavaScript.
-* Clojure.
-* Markdown / Org / Ido / Magit / Autocomplete / Etc.
-* A few themes and Powerline.
+Programming:
+
+* C++: a working [CEDET](http://cedet.sourceforge.net)
+* C++: [RTags](https://github.com/Andersbakken/rtags), a LLVM/Clang-based code
+  indexer.
+* C++: style for [BDE](https://github.com/bloomberg/bde).
+* JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
+* Clojure: [Cider](https://github.com/clojure-emacs/cider) and
+  [Lein](http://leiningen.org).
+* [Auto Complete](https://github.com/auto-complete/auto-complete) with
+  <kbd>ESC</kbd> to abort.
+* [YASnippet](https://github.com/capitaomorte/yasnippet), a template system.
+* [Magit](http://magit.github.io)
+
+Other:
+
+* Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode)
+* Org: [org-mode](http://orgmode.org)
+* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in)
+* [Windmove](http://www.emacswiki.org/emacs/WindMove) using Shift-Meta-arrows
+* A few themes such as
+  [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
+  [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
 
 ## Modules
 
