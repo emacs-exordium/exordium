@@ -7,14 +7,14 @@ work with Emacs 24 running on Linux and OS X, including in -nw mode.
 I mostly care about adding IDE-level features to Emacs for the programming
 languages I use every day: C++, JavaScript, Python, Ruby and various Lisps. If
 you are looking for a good generic Emacs configuration to start with, you might
-want to check these ones:
+want to check these links:
 * Prelude: https://github.com/bbatsov/prelude
 * Steve Purcell's: https://github.com/purcell/emacs.d
 * Awesome Emacs: https://github.com/emacs-tw/awesome-emacs
 
 ## Content
 
-* C++, including a working CEDET and an experimental LLVM/Clang-based indexing.
+* C++, including a working CEDET and a Rtags, a LLVM/Clang-based indexing.
 * JavaScript.
 * Clojure.
 * Markdown / Org / Ido / Magit / Autocomplete / Etc.
@@ -135,7 +135,7 @@ Keybinding         | Description
 ### Start rdm
 
 Rtags (see https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
-which provides a deamon called "rdm" to maintain an in-memory index, and a
+which provides a deamon called "rdm" that maintain an in-memory index, and a
 command-line client called "rc". Rtag uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
 
@@ -202,12 +202,13 @@ you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
 The command uses a file `compile_includes` in the project root dir, which
-specifies how to compile your project and in particular where are all the
-source files and all the include files. For example:
+specifies how to generate `compilation_database.json` for your project. It is a
+simple text file indicating where are all the source files and all the include
+files. For example:
 
 ```
-  # Compile_includes files for project foo
-  # Pattern to exclude in -I directives and for looking for sources:
+  # 'compile_includes' file for project foo
+  # Patterns to exclude in -I directives and while looking for sources:
   exclude /test$
   exclude /doc$
   exclude /group$
@@ -237,7 +238,8 @@ Once you have created the `compile_includes` file, run the command M-x
 `rtags-create-compilation-database`. It will:
 
 * Prompt for the project root dir
-* Scan all source dirs and include dirs
+* Read the `compile_includes` file
+* Scan all source dirs and include dirs according to what the file says
 * Create `compilation_database.json` (Note: it overwrites it without asking)
 * Ask if you want to reload it (if rdm is running).
 
@@ -265,12 +267,12 @@ Keybinding                           | Description
 -------------------------------------|-----------------------------------------
 <kbd>F3</kbd>, <kbd>C-c r .</kbd>    | Jump to symbol definition.
 <kbd>F4</kbd>, <kbd>C-c r ,</kbd>    | Find references to symbol.
-<kbd>C-x c &gt;</kbd>                | Find symbol (prompts for symbol name).
-<kbd>C-x c &lt;</kbd>                | Find references (prompts for symbol name).
-<kbd>C-x c v</kbd>                   | Find all implementations of virtual function.
+<kbd>C-c c &gt;</kbd>                | Find symbol (prompts for symbol name).
+<kbd>C-c c &lt;</kbd>                | Find references (prompts for symbol name).
+<kbd>C-c c v</kbd>                   | Find all implementations of virtual function.
 <kbd>M-C-g</kbd>, <kbd>C-c r I</kbd> | Imenu-like find symbol in file.
-<kbd>C-x c T</kbd>                   | Display tag list.
-<kbd>C-x c ;</kbd>                   | `rtags-find-file` using partial name.
+<kbd>C-c c T</kbd>                   | Display tag list.
+<kbd>C-c c ;</kbd>                   | `rtags-find-file` using partial name.
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
