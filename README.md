@@ -140,7 +140,7 @@ Keybinding         | Description
 <kbd>C-TAB</bkd>   | Alternate between header file and source file.
 <kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
 
-BDE style (see https://github.com/bloomberg/bde):
+[BDE](https://github.com/bloomberg/bde) style:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
@@ -152,7 +152,7 @@ Keybinding         | Description
 
 ### Start rdm
 
-Rtags (see https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
+[Rtags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
 which provides a deamon called "rdm" that maintain an in-memory index, and a
 command-line client called "rc". Rtag uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
@@ -199,10 +199,9 @@ project: /path/to/project
 ```
 
 Then you need to tell rdm how to compile your project, by creating a
-compilation database in a file named `compile_commands.json` (see
-http://clang.llvm.org/docs/JSONCompilationDatabase.html). The compilation
-database contains one entry for each file to compile, like the following
-(simplified for clarity):
+[compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html)
+in a file named `compile_commands.json`. The compilation database contains one
+entry for each file to compile, like the following (simplified for clarity):
 
 ```javascript
 { "directory": "/home/phil/workspaces/foo/",
