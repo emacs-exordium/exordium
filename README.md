@@ -8,15 +8,15 @@ I mostly care about adding IDE-level features to Emacs for the programming
 languages I use every day: C++, JavaScript, Python, Ruby and various Lisps. If
 you are looking for a good generic Emacs configuration to start with, you might
 want to check these links:
-* Prelude: https://github.com/bbatsov/prelude
-* Steve Purcell's: https://github.com/purcell/emacs.d
-* Awesome Emacs: https://github.com/emacs-tw/awesome-emacs
+* [Emacs Prelude](https://github.com/bbatsov/prelude);
+* [Steve Purcell's config](https://github.com/purcell/emacs.d);
+* [Awesome Emacs](https://github.com/emacs-tw/awesome-emacs).
 
 ## Content
 
 Programming:
 
-* C++: a working [CEDET](http://cedet.sourceforge.net)
+* C++: a working [CEDET](http://cedet.sourceforge.net).
 * C++: [RTags](https://github.com/Andersbakken/rtags), a LLVM/Clang-based code
   indexer.
 * C++: style for [BDE](https://github.com/bloomberg/bde).
@@ -26,14 +26,14 @@ Programming:
 * [Auto Complete](https://github.com/auto-complete/auto-complete) with
   <kbd>ESC</kbd> to abort.
 * [YASnippet](https://github.com/capitaomorte/yasnippet), a template system.
-* [Magit](http://magit.github.io)
+* [Magit](http://magit.github.io).
 
 Other:
 
-* Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode)
-* Org: [org-mode](http://orgmode.org)
-* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in)
-* [Windmove](http://www.emacswiki.org/emacs/WindMove) using Shift-Meta-arrows
+* Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode).
+* Org: [org-mode](http://orgmode.org).
+* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in).
+* [Windmove](http://www.emacswiki.org/emacs/WindMove) using Shift-Meta-arrows.
 * A few themes such as
   [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
