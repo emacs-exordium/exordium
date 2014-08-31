@@ -40,7 +40,7 @@
 ;;; =====
 ;;; Rtags uses the following files:
 ;;; `~/.rtags' (created automatically)
-;;;     Index files which are reloaded when `rdm' restarts.
+;;;     Where rdm stores its index files. They are reloaded when it restarts.
 ;;; `~/.rdmrc' (optional)
 ;;;     Config file for rdm (see rdm.cpp) containing default command line args.
 ;;; `compile_commands.json' (optional, located in project root dir)
@@ -238,6 +238,11 @@ without reparsing)"
   "Compilation command suffix to use for creating compilation
   databases. Override this variable for you local environment.")
 
+(defvar *rtags-compile-includes-base-dir*
+  nil
+  "Base directory to use if `compile_include' contains relative
+  paths. Use nil for absolute paths.")
+
 ;; Do not set these variables in your .emacs, they are generated:
 
 (defvar *rtags-project-source-dirs* ()
@@ -251,7 +256,7 @@ without reparsing)"
   to generate -I directives that the clang compilation command
   needs.")
 
-(defun rtags-load-compile-include-file-content (compile-includes-file)
+(defun rtags-load-compile-includes-file-content (compile-includes-file)
   "Read and parse the specified compile-includes file, and return
 a list of 3 sublists:
 - The list of src directives
@@ -300,7 +305,7 @@ regex list."
         (setq result (cons subdir result))))
     result))
 
-(defun rtags-load-compile-include-file (dir)
+(defun rtags-load-compile-includes-file (dir)
   "Loads the `compile_includes' file from the specified directory
 and sets up the project's source dirs and include dirs. Return
 true on success. Normally you should not use this function
@@ -310,23 +315,23 @@ directly: use `rtags-create-compilation-database' instead"
                                        "compile_includes")))
     (cond ((file-exists-p compile-includes-file)
            ;; Parse the file and return 3 lists: src, include, exclude
-           (let ((directives (rtags-load-compile-include-file-content
+           (let ((directives (rtags-load-compile-includes-file-content
                               compile-includes-file)))
              (setq *rtags-project-source-dirs*  ()
                    *rtags-project-include-dirs* ())
              (let ((source-dirs (first directives))
                    (incl-dirs   (second directives))
                    (excl-regexs (third directives)))
-               ;; TODO: if no source dirs use dir itself
-               ;; TODO: relative paths
                ;; Scan src to get all subdirs that do not match the excludes
                (dolist (path source-dirs)
+                 (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
                  (message "Scanning source dir: %s" path)
                  (setq *rtags-project-source-dirs*
                        (append *rtags-project-source-dirs*
                                (rtags-scan-include-directories path excl-regexs))))
                ;; Same with includes
                (dolist (path incl-dirs)
+                 (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
                  (message "Scanning include dir: %s" path)
                  (setq *rtags-project-include-dirs*
                        (append *rtags-project-include-dirs*
@@ -356,7 +361,7 @@ directly: use `rtags-create-compilation-database' instead"
   "Regenerates `compile_commands.json' in the specified
 directory"
   (interactive "DProject root: ")
-  (when (rtags-load-compile-include-file dir)
+  (when (rtags-load-compile-includes-file dir)
     (let ((dbfilename (concat (file-name-as-directory dir)
                               "compile_commands.json"))
           (compile-command (rtags-create-compilation-command))
@@ -364,6 +369,7 @@ directory"
       (with-temp-buffer
         (insert "[")
         (newline)
+        ;; Note: dynamic bunding of default-directory
         (dolist (default-directory *rtags-project-source-dirs*)
           (message "Processing directory: %s" default-directory)
           (let ((files (file-expand-wildcards "*.cpp"))
@@ -389,7 +395,7 @@ directory"
       (when (yes-or-no-p
              (format "Wrote compile_commands.json (%d files). Load it?" num-files))
         (rtags-call-rc :path t :output nil "-J" dir)
-        ("Done (check rdm's logs).")))))
+        (message "Done (check rdm's logs)")))))
 
 ;; Mode for compile_includes
 
