@@ -1,32 +1,41 @@
 ;;;; Rtags - see `https://github.com/Andersbakken/rtags'
 ;;;
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; F3
-;;; C-x r .        Find symbol at point
-;;; F4
-;;; C-x r ,        Find references at point
-;;; C-x r >        Find symbol (prompts for symbol name)
-;;; C-x r <        Find references (prompts for symbol name)
-;;; C-x r R        Rename symbol
-;;; M-C-g
-;;; C-x r I        Ido-based select a symbol in the current file
-;;; C-x r v        Find virtuals at point
-;;; C-x r q        Show diagnostics buffer (without reparsing)
-;;; -------------- -------------------------------------------------------
+;;; Note: we use C-c r as prefix for rtags keys in order to get more choices.
+;;; ------- -------- ----------------------------------------------------------
+;;; Fast    Default  Function
+;;; Key     Key
+;;; ------- -------- ----------------------------------------------------------
+;;; F3      C-c r .  `rtags-find-symbol-at-point'
+;;; F4      C-c r ,  `rtags-find-references-at-point'
+;;;         C-c r >  `rtags-find-symbol' (prompts for symbol name)
+;;;         C-c r <  `rtags-find-references' (prompts for symbol name)
+;;;         C-c r R  `rtags-rename-symbol'
+;;; M-C-g   C-c r I  `rtags-imenu' Ido-based select a symbol in current file
+;;;         C-c r v  `rtags-find-virtuals-at-point' list all impl. of function
+;;;         C-c r ;  `rtags-find-file' find file in project using partial name
 ;;;
-;;; Whenever rtags jumps somewhere it pushes a location onto its stack. Jump
-;;; back and forward in this stack with M-left and M-right (or default
-;;; C-x r [ and R-x r ] )
+;;; M-left  C-c r [  `rtags-location-stack-back' go back to previous location
+;;; M-right C-c r ]  `rtags-location-stack-forward' the opposite
 ;;;
-;;; Functions:
-;;; `rtags-find-file': jump to file by name (full or partial)
-;;; `rtags-print-cursorinfo': print debugging info about symbol at point
-;;; `rtags-print-dependencies': show all include files (recursively)
-;;; `rtags-diagnostics': starts an async process to receive warnings or errors
-;;;     from clang; integrates with flymake to put highlighting on code with
-;;;     warnings and errors.
+;;;                  `rtags-start-rdm' in a subprocess.
+;;;                  `rtags-quit-rdm' kill rdm subprocess.
+;;;         C-c r l  `rtags-show-rdm-buffer' show rdm log buffer.
+;;;                  `rtags-set-current-project' switch between projects
+;;;         C-c r e  `rtags-reparse-file' force recompile current buffer.
+;;;
+;;;         C-c r D  `rtags-diagnostics' start/show diagnostics buffer
+;;;                  `rtags-stop-diagnostics' stop the diagnostic subprocess
+;;;         C-c r d  `rtags-show-diagnostics-buffer' (without reparsing)
+;;;                  `rtags-next-diag' goes to the next problem.
+;;;                  `rtags-clear-diagnostics' clears any error or warning overlay.
+;;;                  `rtags-stop-diagnostics' stops the process.
+;;;
+;;;         C-c r U  `rtags-print-cursorinfo' show what we know about symbol
+;;;         C-c r P  `rtags-print-dependencies' show all includes
+;;;         C-c r T  `rtags-taglist' show all tags in a window on left side
+;;;
+;;;                  `rtags-create-compilation-database' see doc below
+;;; ------- -------- ----------------------------------------------------------
 ;;;
 ;;; Building rtags
 ;;; ==============
@@ -43,106 +52,24 @@
 ;;;     Where rdm stores its index files. They are reloaded when it restarts.
 ;;; `~/.rdmrc' (optional)
 ;;;     Config file for rdm (see rdm.cpp) containing default command line args.
-;;; `compile_commands.json' (optional, located in project root dir)
-;;;     Compilation database for a given project, containing for each file the
-;;;     clang command to build it. Not needed if you use the compiler wrapper
-;;;     scripts.
 ;;; `.rtags-config' (optional, located in project root dir)
 ;;;     Project configuration file. Not needed if there is a .git or .svn at
 ;;;     the project root.
-;;;
-;;; In addition, this module uses an optional file `compile_includes' located
-;;; at project root, containing a list of include root directories to use for
-;;; the clang command (one directory per line).
+;;; `compile_commands.json' (optional, located in project root dir)
+;;;     Compilation database for a given project, containing for each file the
+;;;     clang command to build it. Not needed if you use the compiler wrapper
+;;;     scripts. Use `rtags-create-compilation-database' to generate it.
+;;; `compile_includes' (optional, located in project root dir)
+;;;     Directives to create a compilation database with
+;;;     `rtags-create-compilation-database'.
 ;;;
 ;;; Running rdm
 ;;; ===========
-;;; First, run `rdm' in a separate window or in the background. Use -L to
-;;; specify a log file. Use --help for the list of options. You can stop it
-;;; gracefully with "rc -q".
+;;; If you don't want to run rdm as an Emacs subprocess, run `rdm' in a
+;;; separate window or in the background. Use -L to specify a log file. Use
+;;; --help for the list of options. You can stop it gracefully with "rc -q".
 ;;;
-;;; There are 2 ways to create an index:
-;;;
-;;; 1. Building the project using the compiler wrapper scripts.
-;;;    The wrapper will tell rdm to parse and index each compilation unit
-;;;    before it gets compiled.
-;;;    Plus: the easiest way; all you need to do is to build.
-;;;    Minus: you need to build before you can use the latest index, and any
-;;;    unused header won't be indexed.
-;;;
-;;; 2. Create a compilation database JSON file in the project root dir.
-;;;    See `http://clang.llvm.org/docs/JSONCompilationDatabase.html'.
-;;;    use "rc -J" to reload it.
-;;;
-;;; The rest of this documentation assumes we use a compilation database with
-;;; multiple projects. Note that there is only one index, so any project can
-;;; use the symbols of another one (e.g. no need to reindex common libraries
-;;; multiple times).
-;;;
-;;; Setting up a new project
-;;; ========================
-;;; If the project root dir does not contain a .git or .svn repo, create a file
-;;; `.rtags-config' in the root dir with the specified content:
-;;; project: /path/to/project
-;;;
-;;; The next step is to create the compilation database
-;;; `compile_commands.json', which tells rdm how to compile each individual
-;;; file in your project. Each entry in the file looks like this (simplified
-;;; for clarity):
-;;;
-;;; { "directory": "/home/phil/workspaces/foo/",
-;;;   "command":   "/usr/bin/clang++ -Irelative
-;;;                 -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
-;;;                 -I/home/phil/workspaces/bde/groups/bsl/bslma
-;;;                 -I/home/phil/workspaces/bde/groups/bsl/bsls
-;;;                 -c -o bar.o bar.cpp",
-;;;   "file":      "bar.cpp" },
-;;;
-;;; You can generate this file with this command:
-;;; M-x `create-compilation-database'.
-;;;
-;;; This command will first prompt for a directory (use the project's root
-;;; directory). It will then scan recursively for any directory in your project
-;;; as well as any external include directory indicated as a dependency in a
-;;; file `compile_includes', if such file exists. It will then generate the
-;;; compilation database file.
-;;;
-;;; If the file `compile_includes' exists, it must contain directories to scan
-;;; for include files, with one path per line. For example:
-;;;
-;;; bde/groups/bsl
-;;; bde/groups/bdl
-;;;
-;;; Note that these directories come in addition to the project's own directory
-;;; tree (you should only use it for external dependencies). Also note that
-;;; `create-compilation-database' will recursively scan any directory in this
-;;; file. You can specify subdirectories to exclude by setting this variable in
-;;; your `init-local.el':
-;;;
-;;; (setq *rtags-clang-exclude-directories*
-;;;       '("/group" "/doc" "/package" "/test"))
-;;;
-;;; If you want the paths in `compile_includes' to be relative, you can set a
-;;; prefix to be added to each path in your `init-local.el' like so:
-;;;
-;;; (setq *rtags-clang-include-dir-prefix* "/home/phil/workspaces/")
-;;;
-;;; To control the clang++ command that is put into the compilation database,
-;;; you can also set a few variables in your `init_local.el':
-;;;
-;;; (setq *rtags-clang-command-prefix* "/usr/bin/clang++ -Irelative ")
-;;; (setq *rtags-clang-command-suffix* " -c -o ")
-;;;
-;;; Once the compilation database file is ready, tell rdm to reload it with "rc
-;;; -J". Watch for errors in rdm's logs. It may crash a few times on a file and
-;;; finally give up with that file.
-;;;
-;;; View the list of projects in the index with "rc -w". Switch to another
-;;; project with "rc -w <proj>".
-;;;
-;;; Using `rc' to control the index
-;;; ===============================
-;;; (use --help to see all options)
+;;; You can control rdm with the rc client (use --help to see all options):
 ;;; $ rc -w
 ;;;     List the loaded projects and show the active one.
 ;;; $ rc -w proj
@@ -157,6 +84,93 @@
 ;;;     Say wether this component is indexed or not.
 ;;; $ rc -q
 ;;;     Shutdown rdm.
+;;;
+;;; There are 2 ways to create an index:
+;;;
+;;; 1. Building the project using the compiler wrapper scripts.
+;;;    The wrapper will tell rdm to parse and index each compilation unit
+;;;    before it gets compiled.
+;;;    Advantage: the easiest way; all you need to do is to build.
+;;;    Inconvenient: you need to build before you can use the latest index,
+;;;    and any unused header won't be indexed.
+;;;
+;;; 2. Create a compilation database JSON file in the project root dir.
+;;;    See `http://clang.llvm.org/docs/JSONCompilationDatabase.html'.
+;;;    use "rc -J" to reload it.
+;;;
+;;; The rest of this documentation assumes we use a compilation database with
+;;; one or multiple projects.
+;;;
+;;; Running rdm in Emacs
+;;; ====================
+;;; M-x `rtags-start-rdm'. A buffer will be created with rdm logs; you can show
+;;; it with "C-c r l".
+;;; M-x `rtags-quit-rdm' to kill it.
+;;;
+;;; Setting up a new project
+;;; ========================
+;;; 1. If the project root dir does not contain a .git or .svn repo, create a
+;;; file `.rtags-config' in the root dir with the specified content: project:
+;;; /path/to/project
+;;;
+;;; 2. The next step is to create the compilation database
+;;; `compile_commands.json', which tells rdm how to compile each individual
+;;; file in your project. Each entry in the file looks like this (simplified
+;;; for clarity):
+;;;
+;;;   { "directory": "/home/phil/workspaces/foo/",
+;;;     "command":   "/usr/bin/clang++ -Irelative
+;;;                   -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
+;;;                   -I/home/phil/workspaces/bde/groups/bsl/bslma
+;;;                   -I/home/phil/workspaces/bde/groups/bsl/bsls
+;;;                   -c -o bar.o bar.cpp",
+;;;     "file":      "bar.cpp" },
+;;;
+;;; First, create a file `compile_includes' in the project root dir, which
+;;; specifies how to compile your project and in particular where are all the
+;;; source files and all the include files. For example:
+;;;
+;;;   # Compile_includes files for project foo
+;;;   # Pattern to exclude in -I directives and for looking for sources:
+;;;   exclude /test$
+;;;   exclude /doc$
+;;;   exclude /group$
+;;;   exclude /package$
+;;;
+;;;   # Where are the source files (there could be multiple directories).
+;;;   # We will scan recursively any subdirectories that do not match any
+;;;   # 'exclude' regex.
+;;;   src .
+;;;
+;;;   # What to put in -I directives (in addition to the source files above).
+;;;   # We will scan recursively any subdirectories that do not match any
+;;;   # 'exclude' regex.
+;;;   include /Users/phil/Code/cpp/include/bsl
+;;;   include /Users/phil/Code/cpp/include/bdl
+;;;
+;;; In addition, the creation of a compilation database uses these variables:
+;;; * `*rtags-compile-includes-base-dir*': set this to your workspace path
+;;;   if you want to use relative paths in `compile_includes' (by default any
+;;;   relative path in this file is relative to the project root dir).
+;;; * `*rtags-clang-command-prefix*': default is "/usr/bin/clang++ -Irelative"
+;;;   (Note that rtags ignores the clang++ command because it uses libclang).
+;;; * `*rtags-clang-command-suffix*': default is "-c -o".
+;;;
+;;; Once you have created the `compile_includes' file, run the command
+;;; M-x `rtags-create-compilation-database'. It will:
+;;; - Prompt for the project root dir
+;;; - Scan all source dirs and include dirs
+;;; - Create `compilation_database.json' (it overwrites without asking)
+;;; - Ask if you want to reload it (if rdm is running).
+;;;
+;;; Diagnostics mode
+;;; ================
+;;; "C-c r D" or M-x `rtags-diagnostics' starts a subprocess that highlight
+;;; compilation errors and warnings in the code (using flymake). Click on a
+;;; highlighted region to view the error message. Use "C-c r d" (lowercase d)
+;;; to display the diagnostics buffer containing the error messages without
+;;; forcing a reparsing of the current file.
+;;; M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
 (require 'init-prolog)
 (require 'rtags)
@@ -164,8 +178,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Key bindings
 
-;; Default keys from rtags (with default prefix)
-(rtags-enable-standard-keybindings c-mode-base-map)
+;; Enable default keys from rtags with prefix "Ctrl-C r"".
+;; The default prefix is "Ctrl-x r" but almost all keys are bound;
+;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
+(rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
 ;; Alias keys for common operations
 (define-key c-mode-base-map (kbd "<f3>") (function rtags-find-symbol-at-point))
@@ -186,6 +202,15 @@ buffer"
     (rtags-rdm-mode)
     (let ((process (start-process "rdm" buffer "rdm")))
       (message "Started rdm - PID %d" (process-id process)))))
+
+(defun rtags-show-rdm-buffer ()
+  "Show the rdm log buffer"
+  (interactive)
+  (let ((buffer-name "*RTags rdm*"))
+    (if (get-buffer buffer-name)
+        (display-buffer buffer-name)
+      (message "Rtags rdm is not running (use M-x rtags-start-rdm)"))))
+(define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
 
 ;; Mode for rdm log output
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
@@ -220,8 +245,8 @@ without reparsing)"
   (let ((buffer-name "*RTags Diagnostics*"))
     (if (get-buffer buffer-name)
         (display-buffer buffer-name)
-      (message "Rtags diagnostic is not running"))))
-(define-key c-mode-base-map [(control x)(r)(q)] 'rtags-show-diagnostics-buffer)
+      (message "Rtags diagnostics is not running (use C-c r D)"))))
+(define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Create a compilation database
@@ -392,10 +417,13 @@ directory"
         (insert "];")
         (newline)
         (write-region (buffer-string) nil dbfilename))
-      (when (yes-or-no-p
-             (format "Wrote compile_commands.json (%d files). Load it?" num-files))
-        (rtags-call-rc :path t :output nil "-J" dir)
-        (message "Done (check rdm's logs)")))))
+      (if (get-buffer "*RTags rdm*")
+          (when (yes-or-no-p
+                 (format "Wrote compile_commands.json (%d files). Load it?"
+                         num-files))
+            (rtags-call-rc :path t :output nil "-J" dir)
+            (message "Done (check rdm's logs)"))
+        (message "Wrote compile_commands.json (%d files)" num-files)))))
 
 ;; Mode for compile_includes
 

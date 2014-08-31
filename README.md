@@ -152,13 +152,29 @@ but you can make it log to a file instead. There are many options; use `--help`
 to see the list.  You can also create a file `~/.rdmrc` containing the default
 command line arguments.
 
+Alternatively you can run rdm as an Emacs subprocess: M-x `rtags-start-rdm`,
+with logs going into a buffer. Stop it with M-x `rtags-quit-rdm`.
+
+### Controlling rdm
+
+Command            | Description
+-------------------|-----------------------------------------------------------
+`rc -w`            | List projects.
+`rc -w proj`       | Switch to project "proj" (a regex).
+`rc -W proj`       | Unload project "proj".
+`rc -J`            | Reload the compilation DB from the current directory.
+`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
+`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
+`rc -q`            | Shutdown rdm.
+
 Note that rdm may crash while trying to index a file. If it does, it will retry
 a few times and then give up with the file it cannot parse.
 
-### Set up your project
+### Setting up your project
 
-If the project root directory does not contain a .git or .svn repo, create a
-file `.rtags-config` in the root directory with the specified content:
+If the project root directory does not contain a `.git` or `.svn` repo, you
+need to create a file `.rtags-config` in the root directory with the specified
+content:
 
 ```
 project: /path/to/project
@@ -181,45 +197,51 @@ database contains one entry for each file to compile, like the following
 ```
 
 You can generate this compilation database with the command M-x
-`create-compilation-database`. But before you do, it needs a little help:
+`rtags-create-compilation-database`. But before you do, it needs a little help:
 you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
-First, if your project depends on external includes, you may want to create a
-file `init_includes` in the project root directory, containing the paths for
-the included libraries that your project depends on (one path per line). For
-example:
+The command uses a file `compile_includes` in the project root dir, which
+specifies how to compile your project and in particular where are all the
+source files and all the include files. For example:
 
 ```
-bde/groups/bdl
-bde/groups/bsl
+  # Compile_includes files for project foo
+  # Pattern to exclude in -I directives and for looking for sources:
+  exclude /test$
+  exclude /doc$
+  exclude /group$
+  exclude /package$
+
+  # Where are the source files (there could be multiple directories).
+  # We will scan recursively any subdirectories that do not match any
+  # 'exclude' regex.
+  src .
+
+  # What to put in -I directives (in addition to the source files above).
+  # We will scan recursively any subdirectories that do not match any
+  # 'exclude' regex.
+  include /Users/phil/Code/cpp/include/bsl
+  include /Users/phil/Code/cpp/include/bdl
 ```
 
-Next you may want to set a few variables in your `init_local.el`:
+In addition, the creation of a compilation database uses these variables:
 
-```lisp
-(when (featurep 'init-rtags)
-  ;; Prefix for any path in init_includes, if you want to use relative paths
-  ;; (default value is "")
-  (setq *rtags-clang-include-dir-prefix* "/home/phil/workspaces/"))
-  ;; List of regex to exclude from the include paths
-  (setq *rtags-clang-exclude-directories*
-        '("00deps" "/group$" "/doc$" "/package$" "/test$"))
-  ;; Compilation command prefix (that is the default value):
-  (setq *rtags-clang-command-prefix* "/usr/bin/clang++ -Irelative ")
-  ;; Compilation command suffix (that is the default value):
-  (setq *rtags-clang-command-suffix* " -c -o ")
-```
+Variable                            | Description
+------------------------------------|------------------------------------------
+`*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` (by default any relative path in this file is relative to the project root dir).
+`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (Note that rtags ignores the clang++ command because it uses libclang).
+`*rtags-clang-command-suffix*`      | Default is "-c -o".
 
-The function `create-compilation-database` will prompt for a project directory
-name, and then it will scan recursively any .cpp file in your project to create
-an entry for that file in the compilation database. The compile command will
-use include directives for any directory in your project as well as any
-directory mentionned in `compile_includes` if any such file is present. Note
-that it will recursively add an include directive for any subdirectory. Also
-note that the compilation database file is silently overriden if it exists.
+Once you have created the `compile_includes` file, run the command M-x
+`rtags-create-compilation-database`. It will:
 
-Once the compilation database is ready, load it with `rc`:
+* Prompt for the project root dir
+* Scan all source dirs and include dirs
+* Create `compilation_database.json` (Note: it overwrites it without asking)
+* Ask if you want to reload it (if rdm is running).
+
+You can reload the compilation database manually with `rc`:
 
 ```bash
 $ cd /where/your/compilation/db/is
@@ -227,77 +249,74 @@ $ rc -J
 ```
 
 Check the output of rdm for any compilation errors and adjust your compilation
-database accordingly. Rerun `rc -J` to reload the compilation database.
+database accordingly.
 
 The rdm deamon should automatically re-compile any file you edit in Emacs as
 soon as you save it or otherwise touch it.
 
-### Controlling rdm
-
-Command            | Description
--------------------|-----------------------------------------------------------
-`rc -w`            | List projects.
-`rc -w proj`       | Switch to project "proj" (a regex).
-`rc -W proj`       | Unload project "proj".
-`rc -J`            | Reload the compilation DB from the current directory.
-`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
-`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
-`rc -q`            | Shutdown rdm.
-
-In Emacs:
-
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-x r p</kbd> | Switch project.
-<kbd>C-x r e</kbd> | Reparse file, e.g. recompile.
-
-To kill rdm, run function `rtags-quit-rdm`.
-
 ### Using the index
 
-Now comes the good part. Navigating keys:
+While Rtags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
+<kbd>C-c r</kbd> instead because it it less crowded. It also adds a few keys.
+
+Navigating keys:
 
 Keybinding                           | Description
 -------------------------------------|-----------------------------------------
-<kbd>F3</kbd>, <kbd>C-x r .</kbd>    | Jump to symbol definition.
-<kbd>F4</kbd>, <kbd>C-x r ,</kbd>    | Find references to symbol.
-<kbd>C-x r &gt;</kbd>                | Find symbol (prompts for symbol name).
-<kbd>C-x r &lt;</kbd>                | Find references (prompts for symbol name).
-<kbd>C-x r v</kbd>                   | Find virtual functions.
-<kbd>M-C-g</kbd>, <kbd>C-x r I</kbd> | Imenu-like select symbol in file.
-<kbd>C-x r T</kbd>                   | Display tag list.
-<kbd>C-x r ;</kbd>                   | `rtags-find-file` using partial name.
+<kbd>F3</kbd>, <kbd>C-c r .</kbd>    | Jump to symbol definition.
+<kbd>F4</kbd>, <kbd>C-c r ,</kbd>    | Find references to symbol.
+<kbd>C-x c &gt;</kbd>                | Find symbol (prompts for symbol name).
+<kbd>C-x c &lt;</kbd>                | Find references (prompts for symbol name).
+<kbd>C-x c v</kbd>                   | Find all implementations of virtual function.
+<kbd>M-C-g</kbd>, <kbd>C-c r I</kbd> | Imenu-like find symbol in file.
+<kbd>C-x c T</kbd>                   | Display tag list.
+<kbd>C-x c ;</kbd>                   | `rtags-find-file` using partial name.
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
 Keybinding                             | Description
 ---------------------------------------|---------------------------------------
-<kbd>M-LEFT</kbd>, <kbd>C-x r [</kbd>  | Go back to previous location.
-<kbd>M-RIGHT</kbd>, <kbd>C-x r ]</kbd> | Go forward to next location.
+<kbd>M-LEFT</kbd>, <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>M-RIGHT</kbd>, <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-x r R</kbd> | Rename symbol.
+<kbd>C-c r R</kbd> | Rename symbol.
 
-Useful functions:
-* `rtags-print-cursorinfo`: print debugging info about symbol at point.
-* `rtags-print-dependencies`: show all include files (recursively).
+Control:
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-c r p</kbd> | Switch project.
+<kbd>C-c r e</kbd> | Reparse file, e.g. recompile.
+
+Debugging utilities:
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-c r l</kbd> | Show the rdm log buffer.
+<kbd>C-c r U</kbd> | Show what rdm knows about a symbol.
+<kbd>C-c r P</kbd> | Show all includes for the current file.
+<kbd>C-c r T</kbd> | Show the tag list for the current file.
 
 ### Using flymake
 
-The function `rtags-diagnostics`: starts an async process to receive warnings
-and errors from rdm. They are displayed into diagnostics buffer which works
-with flymake to put highlighting on code with warnings and errors (click on an
-error to jump to it).
+The function `rtags-diagnostics` bound to <kbd>C-c D</kbd> starts an async
+process to receive compilation warnings and errors from rdm. They are displayed
+into diagnostics buffer which works with flymake to put highlighting on code
+with warnings and errors. You can:
+
+* Click on the highlighted symbol in your code to view the error message
+* Click on the error line in the diagnostics buffer to jump to the error location.
 
 ![Rtags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-x r D</kbd> | Run `rtags-diagnostics`.
-<kbd>C-x r q</kbd> | Show the diagnostics buffer (<kbd>ESC</kbd> to remove it).
+<kbd>C-c r D</kbd> | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
+<kbd>C-c r d</kbd> | Show the diagnostics buffer without force reparsing (<kbd>ESC</kbd> to remove it).
 
 Other functions:
 * `rtags-next-diag` goes to the next problem.
@@ -310,7 +329,8 @@ Stay tuned. Close but no cigar :'(
 
 ## Header file autocomplete
 
-Note: this is a temporary solution until autocomplete uses Clang as a source.
+TODO work in progress. This is a temporary solution until autocomplete uses
+rdm as a source.
 
 This module sets up autocomplete for `#include` header files in C++ mode. It
 reuses the file `compile_includes` mentioned above.
