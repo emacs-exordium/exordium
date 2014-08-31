@@ -1,15 +1,27 @@
 #+TITLE: Emacs configuration todo list
 
 * In Progress
-** DONE keys: meta arrow and meta shift arrow
-** IN-PROGRESS smarter compile_includes file
-   - [ ] Relative paths
-   - [ ] No src
-   - [ ] Documentation
-** DONE rtags-start-rdm
-** DONE create-compilation-database: number of files + reload it
 ** TODO clang autocomplete to use the compilation DB
 ** TODO rtags autocomplete: almost there but no cigar :'(
+*** The AC way:
+(require 'rtags-ac)
+(setq rtags-completions-enabled t)
+(add-hook 'c++-mode-hook
+          (lambda ()
+            ;; adds rtags in front of ac-sources
+            (add-to-list 'ac-sources 'ac-source-rtags)))
+
+*** The Company way:
+;; https://github.com/Andersbakken/rtags/issues/218
+;; (require 'rtags)
+(require 'rtags-ac)
+(rtags-enable-standard-keybindings c-mode-base-map)
+(require 'company-rtags)
+(add-to-list 'company-backends 'company-rtags)
+(setq company-rtags-begin-after-member-access t)
+(setq rtags-completions-enabled t)
+;; NO: (rtags-diagnostics)
+
 ** TODO sr-speedbar
 ** TODO helm + projectile
 * C++

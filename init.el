@@ -82,6 +82,7 @@
 ;; (require 'init-cedet.el)
 (require 'init-rtags)
 
+;; TODO: temporary
 ;; (require 'auto-complete-clang)
 ;; (setq clang-completion-suppress-error 't)
 ;; (define-key c-mode-base-map (kbd "M-.") 'ac-complete-clang)

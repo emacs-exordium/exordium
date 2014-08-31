@@ -9,10 +9,12 @@
 ;;; F4      C-c r ,  `rtags-find-references-at-point'
 ;;;         C-c r >  `rtags-find-symbol' (prompts for symbol name)
 ;;;         C-c r <  `rtags-find-references' (prompts for symbol name)
-;;;         C-c r R  `rtags-rename-symbol'
 ;;; M-C-g   C-c r I  `rtags-imenu' Ido-based select a symbol in current file
 ;;;         C-c r v  `rtags-find-virtuals-at-point' list all impl. of function
 ;;;         C-c r ;  `rtags-find-file' find file in project using partial name
+;;;
+;;;         C-c r R  `rtags-rename-symbol'
+;;;         C-c r F  `rtags-fixit' fix the error using clang "did you mean".
 ;;;
 ;;; M-left  C-c r [  `rtags-location-stack-back' go back to previous location
 ;;; M-right C-c r ]  `rtags-location-stack-forward' the opposite
