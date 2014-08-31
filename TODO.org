@@ -1,16 +1,16 @@
 #+TITLE: Emacs configuration todo list
 
 * In Progress
-** TODO keys: meta arrow and meta shift arrow
-** TODO smarter compile_includes file
-    # comment
-    +exclude "/test$"
-    /no/subdirs
-    /use/subdirs/**
-** TODO rtags-start-rdm
-** TODO create-compilation-database: number of files + reload it
+** DONE keys: meta arrow and meta shift arrow
+** IN-PROGRESS smarter compile_includes file
+   - [ ] Relative paths
+   - [ ] No src
+   - [ ] Documentation
+** DONE rtags-start-rdm
+** DONE create-compilation-database: number of files + reload it
 ** TODO clang autocomplete to use the compilation DB
 ** TODO rtags autocomplete: almost there but no cigar :'(
+** TODO sr-speedbar
 ** TODO helm + projectile
 * C++
 ** TODO Rtags https://github.com/Andersbakken/rtags

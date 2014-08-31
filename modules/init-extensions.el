@@ -3,6 +3,7 @@
 ;;; This file loads minor extensions:
 ;;;
 ;;; cua ............: use normal copy-paste keys when non-ambiguous
+;;; expand region...: smart selection using just 1 key
 ;;; autopairs ......: autocomplete parentheses, braces and quotes
 ;;; fci mode .......: 80 column ruler (fill column indicator)
 ;;; fic mode .......: color TODOs
@@ -11,6 +12,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
+;;; Ctrl-=         Expand region
 ;;; Ctrl-|         Toggle fci mode on and off
 
 
@@ -21,6 +23,12 @@
 ;; Add shift or double the Ctrl-* to switch back to Emacs keys.
 ;; C-Ret for rectangular regions.
 (cua-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Expand region
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autopairs

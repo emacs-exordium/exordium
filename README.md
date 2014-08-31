@@ -98,6 +98,7 @@ Keybinding          | Description
 --------------------|----------------------------------------------------------
 <kbd>S-ENTER</kbd>  | Return and indent.
 <kbd>M-BCKSP</kbd>  | `backward-kill-word`.
+<kbd>C-=</kbd>      | Expand region.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
 <kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-c C-d</kbd>  | Duplicate line.
