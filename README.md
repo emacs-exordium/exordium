@@ -358,3 +358,13 @@ display the list of include directories it uses with M-x
 
 Note that currently the setting is not saved and will be lost any time you
 restart Emacs.
+
+## Configuration profiling
+
+M-x `emacs-init-time` shows the time Emacs took to start. You can profile the
+configuration using this command (this example is for OS X):
+
+```bash
+$ Applications/Emacs.app/Contents/MacOS/Emacs -Q -l ~/.emacs.d/extensions/profile-dotemacs.el -f profile-dotemacs
+
+```
