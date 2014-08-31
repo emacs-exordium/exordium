@@ -33,7 +33,10 @@ Other:
 * Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode).
 * Org: [org-mode](http://orgmode.org).
 * [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in).
-* [Windmove](http://www.emacswiki.org/emacs/WindMove) using Shift-Meta-arrows.
+* [Windmove](http://www.emacswiki.org/emacs/WindMove): move between windows
+  with Shift-Meta-arrows.
+* [Expand Region](https://github.com/magnars/expand-region.el): increase
+  selected region by semantic units.
 * A few themes such as
   [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
