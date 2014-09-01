@@ -23,8 +23,7 @@ Programming:
 * JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
-* [Auto Complete](https://github.com/auto-complete/auto-complete) with
-  <kbd>ESC</kbd> to abort.
+* [Auto Complete](https://github.com/auto-complete/auto-complete).
 * [YASnippet](https://github.com/capitaomorte/yasnippet), a template system.
 * [Magit](http://magit.github.io).
 
@@ -37,6 +36,7 @@ Other:
   with Shift-Meta-arrows.
 * [Expand Region](https://github.com/magnars/expand-region.el): increase
   selected region by semantic units.
+* [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator).
 * A few themes such as
   [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
@@ -102,7 +102,7 @@ this as a mechanism to load machine-specific extensions.
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command; equivalent to <bkd>C-g</kbd>.
+<kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-ESC</kbd>     | `delete-other-windows` (just keep the current window).
@@ -147,15 +147,15 @@ Keybinding         | Description
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-&gt;</kbd>  | Insert text after cursor to the right (for return, lock etc.).
+<kbd>C-&gt;</kbd>  | Right-align the text after cursor (for // return, // lock etc.).
 <kbd>C-c =</bkd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
-## Using Rtags
+## Using RTags
 
 ### Start rdm
 
-[Rtags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
+[RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
 which provides a deamon called "rdm" that maintain an in-memory index, and a
 command-line client called "rc". Rtag uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
@@ -166,12 +166,12 @@ To use it, first start the deamon:
 $ rdm
 ```
 
-This will start the deamon on the foreground, using a number of threads that is
-function of the number of CPUs on the local machine. It starts by reading the
-saved project indices in `~/.rtags` if any. By default it logs to the console
-but you can make it log to a file instead. There are many options; use `--help`
-to see the list.  You can also create a file `~/.rdmrc` containing the default
-command line arguments.
+This will start the deamon on the foreground, using a number of concurrent "rp"
+jobs that is function of the number of CPUs on the local machine. It starts by
+reading the saved project indices in `~/.rtags` if any. By default it logs to
+the console but you can make it log to a file instead. There are many options;
+use `--help` to see the list.  You can also create a file `~/.rdmrc` containing
+the default command line arguments.
 
 Alternatively you can run rdm as an Emacs subprocess: M-x `rtags-start-rdm`,
 with logs going into a buffer. Stop it with M-x `rtags-quit-rdm`.
@@ -188,8 +188,8 @@ Command            | Description
 `rc -T sourcefile.cpp` | Say whether this file is indexed or not.
 `rc -q`            | Shutdown rdm.
 
-Note that rdm may crash while trying to index a file. If it does, it will retry
-a few times and then give up with the file it cannot parse.
+Note that a job may crash while trying to index a file. If it does, rdm will
+retry a few times and then give up with the file it cannot parse.
 
 ### Setting up your project
 
@@ -251,7 +251,7 @@ In addition, the creation of a compilation database uses these variables:
 Variable                            | Description
 ------------------------------------|------------------------------------------
 `*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` (by default any relative path in this file is relative to the project root dir).
-`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (Note that rtags ignores the clang++ command because it uses libclang).
+`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (Note that RTags ignores the clang++ command because it uses libclang).
 `*rtags-clang-command-suffix*`      | Default is "-c -o".
 
 Once you have created the `compile_includes` file, run the command M-x
@@ -278,7 +278,7 @@ soon as you save it or otherwise touch it.
 
 ### Using the index
 
-While Rtags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
+While RTags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
 <kbd>C-c r</kbd> instead because it it less crowded. It also adds a few keys.
 
 Navigating keys:
@@ -333,7 +333,7 @@ with warnings and errors. You can:
 * Click on the highlighted symbol in your code to view the error message
 * Click on the error line in the diagnostics buffer to jump to the error location.
 
-![Rtags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
+![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
@@ -358,7 +358,7 @@ rdm as a source.
 This module sets up autocomplete for `#include` header files in C++ mode. It
 reuses the file `compile_includes` mentioned above.
 
-It is currently a bit redundant from Rtags. You need to define the following
+It is currently a bit redundant from RTags. You need to define the following
 variables in `init_local.el`:
 
 ```lisp
