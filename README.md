@@ -352,7 +352,7 @@ Keybinding         | Description
 
 ### Using flymake
 
-The function `rtags-diagnostics` bound to <kbd>C-c D</kbd> starts an async
+The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
 process to receive compilation warnings and errors from rdm. They are displayed
 into diagnostics buffer which works with flymake to put highlighting on code
 with warnings and errors. You can:
@@ -365,7 +365,7 @@ with warnings and errors. You can:
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd> | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
-<kbd>C-c r d</kbd> | Show the diagnostics buffer without force reparsing (<kbd>ESC</kbd> to remove it).
+<kbd>C-c r d</kbd> | Show the diagnostics buffer without force reparsing (<kbd>ESC</kbd> to dismiss it).
 <kbd>C-c r F</kbd> | Fix the error using Clang's "did you mean" (try it with "inft x;")
 <kbd>C-c r Q</kbd> | `rtags-stop-diagnostics` stop the async process.
 
