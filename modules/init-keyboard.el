@@ -1,24 +1,23 @@
-;;;; Key bindings
-;;;
-;;;; Keyboard preferences
+;;;; Keyboard preferences: remaps existing functions to new keys
 ;;;
 ;;; ----------------- ---------------------------------------------------------
 ;;; Key               Definition
 ;;; ----------------- ---------------------------------------------------------
 ;;; ESC               Quit (= Ctrl-G)
-;;; Meta-g            Goto line
-;;; Ctrl-z            Undo
-;;; Meta-backspace    Delete word
-;;; Ctrl-esc          Delete other windows
-;;; Ctrl-`            Kill current buffer (= Ctrl-x k)
+;;; M-g               Goto line
+;;; C-z               Undo
+;;; M-BACKSPACE       Delete word
+;;; C-ESC             Delete other windows
+;;; C-`               Kill current buffer (= C-x k)
 ;;;
-;;; Return/shift      Return and Return + indent, depending on init-prefs
+;;; RETURN            Return or Return + indent, depending on init-prefs
+;;; S-RETURN          The opposite
 ;;;
-;;; Meta-Shift-arrow  Move between windows (= Ctrl-x o)
-;;; Meta-ctrl-l       Switch to last buffer
-;;; Ctrl +/-          Zoom
+;;; M-S-ARROW         Move between windows (= Ctrl-x o)
+;;; M-C-l             Switch to last buffer
+;;; C- +/-            Zoom
 ;;;
-;;; Ctrl-x g          Magit status
+;;; C-x g             Magit status
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 

@@ -135,11 +135,15 @@ Editing any file:
 Keybinding          | Description
 --------------------|----------------------------------------------------------
 <kbd>RETURN</kbd>   | Return and indent by defaut; use <kbd>S-RETURN</kbd> for just return.
-<kbd>M-BCKSP</kbd>  | `backward-kill-word`.
+<kbd>M-BCKSP</kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
+<kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
+<kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
+<kbd>M-\\</kbd>     | Delete all spaces around cursor.
+<kbd>C-c C-d</kbd>  | Duplicate line.
 <kbd>C-=</kbd>      | Expand region.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
-<kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
-<kbd>C-c C-d</kbd>  | Duplicate line.
+<kbd>C-c C-s</kbd>  | Push point onto position stack.
+<kbd>C-c C-b</kbd>  | Pop point from position stack.
 
 Git:
 

@@ -3,16 +3,18 @@
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
-;;; Ctrl-%         Goto matching paren
+;;; C-%            `goto-matching-paren'
 ;;;
-;;; Ctrl-c Ctrl-s  Push point ("save")
-;;; Ctrl-c Ctrl-b  Pop point ("back")
+;;; C-c C-s        Push point onto position stack ("s = save")
+;;; C-c C-b        Pop point from position stack ("b = back")
 ;;;
-;;; (unbound)      Insert date
-;;; (unbound)      Insert time
+;;; (unbound)      `insert-current-time'
+;;; (unbound)      `insert-current-date-time'
 ;;;
-;;; Ctrl-+         Duplicate line
-;;; Ctrl-\         Delete spaces forward (Meta-\ to delete all spaces)
+;;; C-c C-d        `duplicate-line'
+;;; C-\            `delete-horizontal-space-forward'
+;;; C-BACKSPACE    `delete-horizontal-space-backward'
+;;;                (Emacs also has Meta-\ to delete all spaces)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -114,9 +116,6 @@ Uses `current-date-time-format' for the formatting the date/time."
   (insert (format-time-string current-time-format (current-time)))
   (insert "\n"))
 
-;; (global-set-key [(control c)(control d)] 'insert-current-date-time)
-;; (global-set-key [(control c)(control t)] 'insert-current-time)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Editing
@@ -161,5 +160,12 @@ Uses `current-date-time-format' for the formatting the date/time."
   (delete-region (point) (progn (skip-chars-forward " \t") (point))))
 
 (global-set-key [(control \\)] 'delete-horizontal-space-forward)
+
+(defun delete-horizontal-space-backward ()
+  "Delete all spaces and tabs before point."
+  (interactive "*")
+  (delete-region (point) (progn (skip-chars-backward " \t") (point))))
+
+(global-set-key [(control backspace)] 'delete-horizontal-space-backward)
 
 (provide 'init-util)
