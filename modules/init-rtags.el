@@ -26,7 +26,7 @@
 ;;;         C-c r e  `rtags-reparse-file' force recompile current buffer.
 ;;;
 ;;;         C-c r D  `rtags-diagnostics' start/show diagnostics buffer
-;;;                  `rtags-stop-diagnostics' stop the diagnostic subprocess
+;;;         C-c r Q  `rtags-stop-diagnostics' stop the diagnostic subprocess
 ;;;         C-c r d  `rtags-show-diagnostics-buffer' (without reparsing)
 ;;;                  `rtags-next-diag' goes to the next problem.
 ;;;                  `rtags-clear-diagnostics' clears any error or warning overlay.
@@ -191,6 +191,7 @@
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
 (define-key c-mode-base-map [(meta right)] (function rtags-location-stack-forward))
+(define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Start rdm as a subprocess, with output in a buffer

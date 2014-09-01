@@ -367,11 +367,11 @@ Keybinding         | Description
 <kbd>C-c r D</kbd> | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
 <kbd>C-c r d</kbd> | Show the diagnostics buffer without force reparsing (<kbd>ESC</kbd> to remove it).
 <kbd>C-c r F</kbd> | Fix the error using Clang's "did you mean" (try it with "inft x;")
+<kbd>C-c r Q</kbd> | `rtags-stop-diagnostics` stop the async process.
 
 Other functions:
 * `rtags-next-diag` goes to the next problem.
 * `rtags-clear-diagnostics` clears any error or warning overlay.
-* `rtags-stop-diagnostics` stops the process.
 
 ### Autocomplete
 
