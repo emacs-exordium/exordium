@@ -134,7 +134,7 @@ Editing any file:
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>S-ENTER</kbd>  | Return and indent.
+<kbd>RETURN</kbd>   | Return and indent by defaut; use <kbd>S-RETURN</kbd> for just return.
 <kbd>M-BCKSP</kbd>  | `backward-kill-word`.
 <kbd>C-=</kbd>      | Expand region.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
