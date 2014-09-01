@@ -1,4 +1,6 @@
 init_local.el
+init-local.el
+init-local-prefs.el
 cider-history
 semanticdb
 # CEDET's SRecode stores template files in Emacs install dir??

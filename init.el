@@ -45,8 +45,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Load Modules
 
-(require 'init-prolog)      ; utility functions; load this first
+(require 'init-prolog)      ; utility functions - load this first
 (require 'init-environment) ; environment variables
+
+;;; Local preferences
+(require 'init-prefs)       ; defines variables that init_local_prefs can override
+(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+  (load "~/.emacs.d/init-local-prefs.el"))
+
+;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
 (require 'init-user-prefs)  ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
@@ -96,7 +103,10 @@
   (require 'init-clojure))
 
 ;;; Local extensions
+(when (file-exists-p "~/.emacs.d/init-local.el")
+  (load "~/.emacs.d/init-local.el"))
 (when (file-exists-p "~/.emacs.d/init_local.el")
+  (warn "Note: init_local.el is deprecated; use init-local.el instead")
   (load "~/.emacs.d/init_local.el"))
 
 ;;; End of file
