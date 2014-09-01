@@ -106,9 +106,9 @@ Two files can be added to customize the configuration for the local machine
 (they are ignored in git):
 
 * If a file `~/.emacs.d/init-local-prefs.el` exists, it is loaded at the
-  beginning. It is used to override the default values of the preferences
-  variables that are defined in `~/.emacs.d/modules/init-prefs.el` (see that
-  module for details).
+  beginning. It is used to override the default values of fonts, window size
+  etc. The preferences variables that may be overriden are defined in
+  `~/.emacs.d/modules/init-prefs.el` (see that module for details).
 * If a file `~/.emacs.d/init_local.el` exists, it will be loaded at the end;
   you can use this as a mechanism to load machine-specific extensions.
 
@@ -163,7 +163,7 @@ Keybinding         | Description
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-&gt;</kbd>  | Right-align the text after cursor (for // return, // lock etc.).
+<kbd>C-&gt;</kbd>  | Right-align text after cursor (for // return, // lock etc.).
 <kbd>C-c =</bkd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
@@ -173,7 +173,7 @@ Keybinding         | Description
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
 which provides a deamon called "rdm" that maintain an in-memory index, and a
-command-line client called "rc". Rtag uses a single index for all symbols, but
+command-line client called "rc". RTags uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
 
 To use it, first start the deamon:
@@ -196,9 +196,9 @@ with logs going into a buffer. Stop it with M-x `rtags-quit-rdm`.
 
 Command            | Description
 -------------------|-----------------------------------------------------------
-`rc -w`            | List projects.
+`rc -w`            | List projects in the index.
 `rc -w proj`       | Switch to project "proj" (a regex).
-`rc -W proj`       | Unload project "proj".
+`rc -W proj`       | Unload and delete project "proj".
 `rc -J`            | Reload the compilation DB from the current directory.
 `rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
 `rc -T sourcefile.cpp` | Say whether this file is indexed or not.
@@ -240,7 +240,13 @@ the `-I` directives that are necessary for your project.
 The command uses a file `compile_includes` in the project root dir, which
 specifies how to generate `compilation_database.json` for your project. It is a
 simple text file indicating where are all the source files and all the include
-files. For example:
+files. The "src" directives indicate where to find the source files to put in
+the index (each of them will have its own entry in the compilation
+database). The "include" directives indicate additional "-I" includes in the
+clang command line. Both are recursive: any path will be scanned for source
+files or subdirectories; however the "exclude" directives indicate what
+patterns (regex) to exclude when scanning the "src" and "include" paths. Note
+that paths are either absolute or relative to the project root. For example:
 
 ```
   # 'compile_includes' file for project foo
@@ -266,18 +272,18 @@ In addition, the creation of a compilation database uses these variables:
 
 Variable                            | Description
 ------------------------------------|------------------------------------------
-`*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` (by default any relative path in this file is relative to the project root dir).
-`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (Note that RTags ignores the clang++ command because it uses libclang).
+`*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` that are not relative to the project's root directory (the default).
+`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
 `*rtags-clang-command-suffix*`      | Default is "-c -o".
 
 Once you have created the `compile_includes` file, run the command M-x
 `rtags-create-compilation-database`. It will:
 
-* Prompt for the project root dir
-* Read the `compile_includes` file
-* Scan all source dirs and include dirs according to what the file says
-* Create `compilation_database.json` (Note: it overwrites it without asking)
-* Ask if you want to reload it (if rdm is running).
+* Prompt for the project root dir;
+* Read the `compile_includes` file;
+* Scan all source dirs and include dirs according to what the file says;
+* Create `compilation_database.json` (note: it overwrites it without asking);
+* Ask if you want to reload it (if rdm is running as an Emacs subprocess).
 
 You can reload the compilation database manually with `rc`:
 
@@ -307,8 +313,8 @@ Keybinding                           | Description
 <kbd>C-c c &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c c v</kbd>                   | Find all implementations of virtual function.
 <kbd>M-C-g</kbd>, <kbd>C-c r I</kbd> | Imenu-like find symbol in file.
-<kbd>C-c c T</kbd>                   | Display tag list.
-<kbd>C-c c ;</kbd>                   | `rtags-find-file` using partial name.
+<kbd>C-c c T</kbd>                   | Display tag list in a window on the left side.
+<kbd>C-c c ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
@@ -368,7 +374,7 @@ Stay tuned. Close but no cigar :'(
 
 ## Header file autocomplete
 
-TODO work in progress. This is a temporary solution until autocomplete uses
+**TODO work in progress**. This is a temporary solution until autocomplete uses
 rdm as a source.
 
 This module sets up autocomplete for `#include` header files in C++ mode. It
