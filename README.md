@@ -96,8 +96,8 @@ directory which can be individually enabled or disabled.
 (require 'init-clojure)
 
 ;;; Local extensions
-(when (file-exists-p "~/.emacs.d/init_local.el")
-  (load "~/.emacs.d/init_local.el"))
+(when (file-exists-p "~/.emacs.d/init-local.el")
+  (load "~/.emacs.d/init-local.el"))
 ```
 
 ## Machine-local preferences
