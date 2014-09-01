@@ -1,20 +1,26 @@
 ;;;; Key bindings
 ;;;
-;;; ----------------- ----------------------------------------------------
+;;;; Keyboard preferences
+;;;
+;;; ----------------- ---------------------------------------------------------
 ;;; Key               Definition
-;;; -----------------    -------------------------------------------------
+;;; ----------------- ---------------------------------------------------------
+;;; ESC               Quit (= Ctrl-G)
 ;;; Meta-g            Goto line
 ;;; Ctrl-z            Undo
 ;;; Meta-backspace    Delete word
 ;;; Ctrl-esc          Delete other windows
 ;;; Ctrl-`            Kill current buffer (= Ctrl-x k)
-;;; Shift-enter       Return + tab
-;;; F10               Speedbar
+;;;
+;;; Return/shift      Return and Return + indent, depending on init-prefs
+;;;
 ;;; Meta-Shift-arrow  Move between windows (= Ctrl-x o)
 ;;; Meta-ctrl-l       Switch to last buffer
 ;;; Ctrl +/-          Zoom
+;;;
 ;;; Ctrl-x g          Magit status
-;;; ----------------- ---------------------------------------------------
+;;; F10               Speedbar
+;;; ----------------- ---------------------------------------------------------
 
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -31,8 +37,13 @@
 (define-key global-map [(meta backspace)] 'backward-kill-word)
 (global-set-key [(control escape)] 'delete-other-windows)
 (global-set-key [(control ?`)] 'kill-this-buffer)
-(global-set-key [(shift return)] 'newline-and-indent)
-(global-set-key [f10] 'speedbar)
+
+;;; The return key
+(cond (*init-enable-newline-and-indent*
+       (global-set-key "\C-m" 'newline-and-indent)
+       (global-set-key [(shift return)] 'newline))
+      (t
+       (global-set-key [(shift return)] 'newline-and-indent)))
 
 ;;; Meta-Shif-arrow = move the focus between visible buffers
 (require 'windmove)
@@ -54,5 +65,8 @@
 
 ;;; Ctrl-x g = magit-status
 (define-key global-map [(control x)(g)] 'magit-status)
+
+;;; Speed bar
+(global-set-key [f10] 'speedbar)
 
 (provide 'init-keyboard)

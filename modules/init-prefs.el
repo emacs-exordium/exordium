@@ -12,7 +12,7 @@
     ("Monaco"    . 120)
     ("Monospace" . 120)
     ("Mono"      . 120))
-  "List preferred fonts/sizes to use, in decreasing order of
+  "List of preferred fonts/sizes to use, in decreasing order of
   preference. We will use the first one that is available on the
   local machine. It is a list of pairs (font-name
   . font-size). Note that you can get the list of available font
@@ -21,10 +21,16 @@
 (defvar *init-preferred-frame-width* 100
   "Default frame width (number of columns)")
 
+;; Note: a weird bug in OS X makes the title bar black if height is too big
 (defvar *init-preferred-frame-height* 65
   "Default frame height (a number of lines)")
 
 (defvar *init-enable-electric-pair-mode* t
-  "Enable or disable electric-pair-mode")
+  "Enables or disables electric-pair-mode")
+
+(defvar *init-enable-newline-and-indent* t
+  "If t, binds the return key to newline-and-indent, and
+  shift-return for just newline.
+  If nil, do the opposite")
 
 (provide 'init-prefs)

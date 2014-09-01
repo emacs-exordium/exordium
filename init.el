@@ -48,7 +48,7 @@
 (require 'init-prolog)      ; utility functions - load this first
 (require 'init-environment) ; environment variables
 
-;;; Local preferences
+;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that init-local-prefs can override
 (when (file-exists-p "~/.emacs.d/init-local-prefs.el")
   (load "~/.emacs.d/init-local-prefs.el"))

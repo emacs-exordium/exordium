@@ -53,7 +53,7 @@ directory which can be individually enabled or disabled.
 (require 'init-prolog)      ; must be loaded first
 (require 'init-environment) ; environment variables
 
-;;; Local preferences
+;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that init-local-prefs can override
 (when (file-exists-p "~/.emacs.d/init-local-prefs.el")
   (load "~/.emacs.d/init-local-prefs.el"))
@@ -81,7 +81,8 @@ directory which can be individually enabled or disabled.
   (require 'init-powerline))
 
 ;;; OS-specific things
-(require 'init-osx)
+(when *environment-osx*
+  (require 'init-osx))
 
 ;;; C++
 (require 'init-cpp)
