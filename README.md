@@ -52,8 +52,15 @@ directory which can be individually enabled or disabled.
 
 (require 'init-prolog)      ; must be loaded first
 (require 'init-environment) ; environment variables
+
+;;; Local preferences
+(require 'init-prefs)       ; defines variables that init-local-prefs can override
+(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+  (load "~/.emacs.d/init-local-prefs.el"))
+
+;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-user-prefs)  ; backup files, trailing spaces...
+(require 'init-behavior)    ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
 (require 'init-extensions)  ; minor modes like CUA, 80 col, etc.
@@ -93,8 +100,17 @@ directory which can be individually enabled or disabled.
   (load "~/.emacs.d/init_local.el"))
 ```
 
-If a file `init_local.el` exists, it will be loaded at the end; you can use
-this as a mechanism to load machine-specific extensions.
+## Machine-local preferences
+
+Two files can be added to customize the configuration for the local machine
+(they are ignored in git):
+
+* If a file `~/.emacs.d/init-local-prefs.el` exists, it is loaded at the
+  beginning. It is used to override the default values of the preferences
+  variables that are defined in `~/.emacs.d/modules/init-prefs.el` (see that
+  module for details).
+* If a file `~/.emacs.d/init_local.el` exists, it will be loaded at the end;
+  you can use this as a mechanism to load machine-specific extensions.
 
 ## Keymap
 

@@ -49,13 +49,13 @@
 (require 'init-environment) ; environment variables
 
 ;;; Local preferences
-(require 'init-prefs)       ; defines variables that init_local_prefs can override
+(require 'init-prefs)       ; defines variables that init-local-prefs can override
 (when (file-exists-p "~/.emacs.d/init-local-prefs.el")
   (load "~/.emacs.d/init-local-prefs.el"))
 
 ;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-user-prefs)  ; backup files, trailing spaces...
+(require 'init-behavior)    ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
 (require 'init-extensions)  ; minor modes like CUA, 80 col etc.
