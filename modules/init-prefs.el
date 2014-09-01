@@ -18,4 +18,7 @@
 (defvar *init-preferred-frame-height* 65
   "Default frame height (a number of lines)")
 
+(defvar *init-enable-electric-pair-mode* t
+  "Enable or disable electric-pair-mode")
+
 (provide 'init-prefs)

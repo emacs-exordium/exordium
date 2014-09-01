@@ -35,33 +35,6 @@
   (setq default-frame-alist `((width  . ,*init-preferred-frame-width*)
                               (height . ,*init-preferred-frame-height*))))
 
-;; (when *environment-osx*
-;;  (set-face-attribute 'default nil
-;;                      :family "Consolas" :height 120 :weight 'normal)
-;;  (setq default-frame-alist '((width . 100)
-;;                              (height . 65))))
-
-;; (when *environment-bloomberg*
-;;   (setq default-frame-alist
-;;         (append `(;;(font . ,(choose-frame-font))
-;;                   (font . "Monospace 13")
-;;                   ;;(font . "-*-verdana-medium-r-*-*-12-*-*-*-*-*-*-*")
-;;                   ;;(font . "-*-consolas-medium-r-*-*-*-*-*-*-*-*-*-*")
-;;                   ;;(font . "-*-courier-*-r-*-*-14-*-*-*-*-*-*-*")
-;;                   (width . 120)
-;;                   (height . 65)
-;;                   (vertical-scroll-bars . right)
-;;                   (internal-border-width . 0)
-;;                   ;;(border-width . 0)
-;;                   (horizontal-scroll-bars . t))
-;;                 default-frame-alist)))
-
-;; (when (and *environment-linux* (not *environment-bloomberg*))
-;;   (set-face-attribute 'default nil
-;;                       :family "Mono" :height 120 :weight 'normal)
-;;   (setq default-frame-alist '((width . 110)
-;;                               (height . 65))))
-
 ;;; Remove the toolbar
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
