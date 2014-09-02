@@ -186,7 +186,10 @@
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
 ;; Alias keys for common operations
-(define-key c-mode-base-map (kbd "<f3>") (function rtags-find-symbol-at-point))
+(define-key c-mode-base-map (kbd "<f3>") (lambda ()
+                                           (interactive)
+                                           (rtags-find-symbol-at-point)
+                                           (recenter-top-bottom)))
 (define-key c-mode-base-map (kbd "<f4>") (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
