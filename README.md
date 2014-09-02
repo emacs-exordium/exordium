@@ -314,12 +314,12 @@ Keybinding                           | Description
 -------------------------------------|-----------------------------------------
 <kbd>F3</kbd>, <kbd>C-c r .</kbd>    | Jump to symbol definition.
 <kbd>F4</kbd>, <kbd>C-c r ,</kbd>    | Find references to symbol.
-<kbd>C-c c &gt;</kbd>                | Find symbol (prompts for symbol name).
-<kbd>C-c c &lt;</kbd>                | Find references (prompts for symbol name).
-<kbd>C-c c v</kbd>                   | Find all implementations of virtual function.
+<kbd>C-c r &gt;</kbd>                | Find symbol (prompts for symbol name).
+<kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
+<kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
 <kbd>M-C-g</kbd>, <kbd>C-c r I</kbd> | Imenu-like find symbol in file.
-<kbd>C-c c T</kbd>                   | Display tag list in a window on the left side.
-<kbd>C-c c ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
+<kbd>C-c r T</kbd>                   | Display tag list in a window on the left side.
+<kbd>C-c r ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
