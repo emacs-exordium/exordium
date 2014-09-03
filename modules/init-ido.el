@@ -32,6 +32,6 @@
    (ido-completing-read "Recentf open: "
                         (mapcar 'abbreviate-file-name recentf-list)
                         nil t)))
-(define-key global-map [(control c)(control f)] 'ido-find-recentf)
+(define-key global-map [(control x)(control r)] 'ido-find-recentf)
 
 (provide 'init-ido)
