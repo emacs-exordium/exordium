@@ -150,6 +150,11 @@
 ;;;   include /Users/phil/Code/cpp/include/bsl
 ;;;   include /Users/phil/Code/cpp/include/bdl
 ;;;
+;;;   # If any file name pattern must be excluded from the "src" files, use
+;;;   # the "excludesrc" directive. For example this will exclude all test
+;;;   # drivers:
+;;;   excludesrc \.t\.cpp$
+;;;
 ;;; In addition, the creation of a compilation database uses these variables:
 ;;; * `*rtags-compile-includes-base-dir*': set this to your workspace path
 ;;;   if you want to use relative paths in `compile_includes' (by default any
@@ -287,17 +292,23 @@ without reparsing)"
   to generate -I directives that the clang compilation command
   needs.")
 
+(defvar *rtags-project-exclude-files* ()
+  "List of regex to exclude while searching for .cpp files for
+  the current project.")
+
 (defun rtags-load-compile-includes-file-content (compile-includes-file)
   "Read and parse the specified compile-includes file, and return
 a list of 3 sublists:
-- The list of src directives
-- The list of include directives
-- The list of exclude directive."
-  (let ((line-number  1)
-        (value        nil)
-        (src-list     ())
-        (include-list ())
-        (exclude-list ()))
+- The list of src directives,
+- The list of include directives,
+- The list of exclude directives,
+- The list of excludesrc directives."
+  (let ((line-number      1)
+        (value            nil)
+        (src-list         ())
+        (include-list     ())
+        (exclude-list     ())
+        (exclude-src-list ()))
     (dolist (record (pg/read-file-lines compile-includes-file))
       (incf line-number)
       (setq value (second (split-string record " ")))
@@ -310,19 +321,22 @@ a list of 3 sublists:
             ((pg/string-starts-with record "include")
              (when value
                (setq include-list (cons value include-list))))
+            ((pg/string-starts-with record "excludesrc")
+             (when value
+               (setq exclude-src-list (cons value exclude-src-list))))
             ((pg/string-starts-with record "exclude")
              (when value
                (setq exclude-list (cons value exclude-list))))
             (t
              (error "Syntax error line %d: %s" line-number record))))
-    (list src-list include-list exclude-list)))
+    (list src-list include-list exclude-list exclude-src-list)))
 
-(defun rtags-include-directory-excluded-p (dir excluded-regexs)
-  "Return non-nil if the specified directory matches any regex in
+(defun rtags-is-excluded-p (path excluded-regexs)
+  "Return non-nil if the specified path matches any regex in
 the list of excluded regexs"
   (catch 'return
     (dolist (excluded excluded-regexs)
-      (when (string-match excluded dir)
+      (when (string-match excluded path)
         (throw 'return t)))
     (throw 'return nil)))
 
@@ -332,7 +346,7 @@ excluding any that match any regex in the specified excluded
 regex list."
   (let ((result ()))
     (dolist (subdir (cons dir (pg/directory-tree dir)))
-      (unless (rtags-include-directory-excluded-p subdir excluded-regexs)
+      (unless (rtags-is-excluded-p subdir excluded-regexs)
         (setq result (cons subdir result))))
     result))
 
@@ -348,11 +362,14 @@ directly: use `rtags-create-compilation-database' instead"
            ;; Parse the file and return 3 lists: src, include, exclude
            (let ((directives (rtags-load-compile-includes-file-content
                               compile-includes-file)))
-             (setq *rtags-project-source-dirs*  ()
-                   *rtags-project-include-dirs* ())
+             (setq *rtags-project-source-dirs*   ()
+                   *rtags-project-include-dirs*  ()
+                   *rtags-project-exclude-files* ())
              (let ((source-dirs (first directives))
                    (incl-dirs   (second directives))
                    (excl-regexs (third directives)))
+               ;; Set the source exclude patterns
+               (setq *rtags-project-exclude-files* (fourth directives))
                ;; Scan src to get all subdirs that do not match the excludes
                (dolist (path source-dirs)
                  (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
@@ -410,16 +427,17 @@ directory"
                               (concat "$HOME/" (substring default-directory 2)))
                            default-directory)))
             (dolist (file files)
-              (incf num-files)
-              (insert "  { \"directory\": \"" dirname "\",")
-              (newline)
-              (insert "    \"command\":   \""
-                      compile-command
-                      (file-name-sans-extension file) ".o "
-                      file "\",")
-              (newline)
-              (insert "    \"file\":      \"" file "\" },")
-              (newline))))
+              (unless (rtags-is-excluded-p file *rtags-project-exclude-files*)
+                (incf num-files)
+                (insert "  { \"directory\": \"" dirname "\",")
+                (newline)
+                (insert "    \"command\":   \""
+                        compile-command
+                        (file-name-sans-extension file) ".o "
+                        file "\",")
+                (newline)
+                (insert "    \"file\":      \"" file "\" },")
+                (newline)))))
         (insert "];")
         (newline)
         (write-region (buffer-string) nil dbfilename))
@@ -435,7 +453,7 @@ directory"
 
 (defconst rtags-compile-includes-mode-keywords
   ;; Words and associated face.
-  `((,(regexp-opt '("src" "include" "exclude") 'words)
+  `((,(regexp-opt '("src" "include" "exclude" "excludesrc") 'words)
      . font-lock-keyword-face)))
 
 (defconst rtags-compile-includes-mode-syntax-table

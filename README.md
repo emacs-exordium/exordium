@@ -250,8 +250,12 @@ the index (each of them will have its own entry in the compilation
 database). The "include" directives indicate additional "-I" includes in the
 clang command line. Both are recursive: any path will be scanned for source
 files or subdirectories; however the "exclude" directives indicate what
-patterns (regex) to exclude when scanning the "src" and "include" paths. Note
-that paths are either absolute or relative to the project root. For example:
+patterns (regex) to exclude when scanning the "src" and "include"
+paths. Finally the "excludesrc" directive is used to specify patterns (regex)
+of source files names to exclude.
+
+Note that all directives except "src" are optional. Also note that paths are
+either absolute or relative to the project root. Here is an example:
 
 ```
   # 'compile_includes' file for project foo
@@ -271,6 +275,11 @@ that paths are either absolute or relative to the project root. For example:
   # 'exclude' regex.
   include /Users/phil/Code/cpp/include/bsl
   include /Users/phil/Code/cpp/include/bdl
+
+  # If any file name pattern must be excluded from the "src" files, use
+  # the "excludesrc" directive. For example this will exclude all test
+  # drivers:
+  excludesrc \.t\.cpp$
 ```
 
 In addition, the creation of a compilation database uses these variables:
