@@ -109,4 +109,10 @@
   (warn "Note: init_local.el is deprecated; use init-local.el instead")
   (load "~/.emacs.d/init_local.el"))
 
+;;; Greetings
+(setq initial-scratch-message
+      (format ";; Happy hacking %s!
+
+" *environment-current-user*))
+
 ;;; End of file

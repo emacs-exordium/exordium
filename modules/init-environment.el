@@ -16,4 +16,8 @@
                                        (getenv "MBIG_NUMBER"))
   "Non-nil if we are at Bloomberg")
 
+(defconst *environment-current-user*
+  (getenv
+   (if (equal system-type 'windows-nt) "USERNAME" "USER")))
+
 (provide 'init-environment)
