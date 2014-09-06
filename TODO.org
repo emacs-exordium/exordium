@@ -5,7 +5,6 @@
 ** TODO sr-speedbar
 ** TODO helm + projectile
 * C++
-** TODO clang autocomplete to use the compilation DB
 ** TODO Rtags https://github.com/Andersbakken/rtags
     - [ ] Enable support for autocomplete
     - [ ] Display compilation errors/warnings with flymake
