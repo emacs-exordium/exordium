@@ -22,7 +22,8 @@
 ;;; ----------------- ---------------------------------------------------------
 
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(when *init-keyboard-escape*
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
 (fset 'yes-or-no-p 'y-or-n-p)

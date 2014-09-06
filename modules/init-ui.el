@@ -27,7 +27,8 @@
                             :height preferred-size
                             :weight 'normal)))))
 
-(init-set-font)
+(when *init-preferred-fonts*
+  (init-set-font))
 
 ;;; Frame size
 (when (and *init-preferred-frame-width*

@@ -28,9 +28,17 @@
 (defvar *init-enable-electric-pair-mode* t
   "Enables or disables electric-pair-mode")
 
+;;; Keyboard
+
 (defvar *init-enable-newline-and-indent* t
   "If t, binds the return key to newline-and-indent, and
   shift-return for just newline.
   If nil, do the opposite")
+
+(defvar *init-enable-cua-mode* t
+  "Enables/disables CUA mode globally")
+
+(defvar *init-keyboard-escape* t
+  "Enables/disables ESC key for keyboard quit")
 
 (provide 'init-prefs)

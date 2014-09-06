@@ -22,7 +22,8 @@
 ;; C-x, C-c, C-v to cut, copy and paste when mark is active.
 ;; Add shift or double the Ctrl-* to switch back to Emacs keys.
 ;; C-Ret for rectangular regions.
-(cua-mode t)
+(when *init-enable-cua-mode*
+  (cua-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Expand region
