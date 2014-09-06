@@ -7,3 +7,5 @@ semanticdb
 # Don't commit the generated file for now.
 srecode-map.el
 ac-comphist.dat
+auto-save-list
+bookmarks

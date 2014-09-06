@@ -1,35 +1,11 @@
 #+TITLE: Emacs configuration todo list
 
-* In Progress
-** Small things
-*** DONE org stages
-*** DONE greetings
-*** DONE more flags for init (font CUA etc.)
-*** DONE rtags F3 recenters only if symbol found
-** TODO clang autocomplete to use the compilation DB
-** TODO rtags autocomplete: almost there but no cigar :'(
-*** The AC way:
-(require 'rtags-ac)
-(setq rtags-completions-enabled t)
-(add-hook 'c++-mode-hook
-          (lambda ()
-            ;; adds rtags in front of ac-sources
-            (add-to-list 'ac-sources 'ac-source-rtags)))
-
-*** The Company way:
-;; https://github.com/Andersbakken/rtags/issues/218
-;; (require 'rtags)
-(require 'rtags-ac)
-(rtags-enable-standard-keybindings c-mode-base-map)
-(require 'company-rtags)
-(add-to-list 'company-backends 'company-rtags)
-(setq company-rtags-begin-after-member-access t)
-(setq rtags-completions-enabled t)
-;; NO: (rtags-diagnostics)
-
+* Next Items
+** TODO make rtags autocomplete work!
 ** TODO sr-speedbar
 ** TODO helm + projectile
 * C++
+** TODO clang autocomplete to use the compilation DB
 ** TODO Rtags https://github.com/Andersbakken/rtags
     - [ ] Enable support for autocomplete
     - [ ] Display compilation errors/warnings with flymake
