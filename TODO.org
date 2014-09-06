@@ -4,8 +4,8 @@
 ** Small things
 *** DONE org stages
 *** DONE greetings
-*** TODO more flags for init (font CUA etc.)
-*** TODO recenter if symbol found
+*** DONE more flags for init (font CUA etc.)
+*** DONE rtags F3 recenters only if symbol found
 ** TODO clang autocomplete to use the compilation DB
 ** TODO rtags autocomplete: almost there but no cigar :'(
 *** The AC way:
