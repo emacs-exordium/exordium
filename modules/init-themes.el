@@ -32,8 +32,8 @@
 (with-tomorrow-colors
  'night
  (setq org-todo-keyword-faces
-       `(("IN-PROGRESS" . (:foreground ,yellow :weight bold :box t))
-         ("WAITING"     . (:foreground ,orange :weight bold :box t)))))
+       `(("WORK" . (:foreground ,yellow :weight bold :box t))
+         ("WAIT" . (:foreground ,orange :weight bold :box t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Linum extension

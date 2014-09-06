@@ -1,7 +1,7 @@
 ;;;; Org mode
 
 (setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+      '((sequence "TODO" "WORK" "WAIT" "DONE")))
 (setq org-startup-truncated nil)
 
 (provide 'init-org)

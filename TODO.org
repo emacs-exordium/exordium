@@ -2,10 +2,10 @@
 
 * In Progress
 ** Small things
-*** TODO org stages
-*** TODO recenter if symbol found
-*** TODO greetings
+*** DONE org stages
+*** DONE greetings
 *** TODO more flags for init (font CUA etc.)
+*** TODO recenter if symbol found
 ** TODO clang autocomplete to use the compilation DB
 ** TODO rtags autocomplete: almost there but no cigar :'(
 *** The AC way:
