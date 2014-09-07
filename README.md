@@ -145,6 +145,13 @@ Keybinding          | Description
 <kbd>C-c C-s</kbd>  | Push point onto position stack.
 <kbd>C-c C-b</kbd>  | Pop point from position stack.
 
+Auto-complete:
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>M-/</bkd>     | Force trigger auto-complete.
+<kbd>ESC</kbd>     | Abort auto-complete.
+
 Git:
 
 Keybinding         | Description

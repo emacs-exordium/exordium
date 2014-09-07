@@ -474,19 +474,160 @@ directory"
              '("compile_includes" . rtags-compile-includes-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TODO: patch for rtags-ac, to be removed when merged
+
+(defcustom rtags-completions-hook nil
+  "Run after completions have been parsed"
+  :group 'rtags
+  :type 'hook)
+
+(defun rtags-ac-completions-hook ()
+  (ac-complete-rtags))
+
+(add-hook 'rtags-completions-hook 'rtags-ac-completions-hook)
+
+(defun rtags-ac-candidates ()
+  ;; locstr is fullpath_srcfile:row#:col#
+  (let* ((locstr (or (and rtags-last-completions
+                          (car rtags-last-completions))
+                     ""))
+         (locinfo (rtags-parse-location locstr))
+         (complpt (rtags-calculate-completion-point))
+         filefull file row col)
+
+    (when locinfo
+      (setq filefull (car locinfo)
+            row (caddr locinfo)
+            col (cadddr locinfo)
+            file (file-name-nondirectory filefull)))
+
+    ;; if last completion was in this src file @ last completion pos
+    ;; build a list of completion strings; example format:
+    ;; #("word" 'rtags-ac-full "void word(int x)" 'rtags-ac-type "FunctionDecl")
+    (if (and (string= (buffer-name (current-buffer)) file)
+             complpt
+             (cdr-safe rtags-last-completion-position) ; check if last compl is valid
+             (= complpt (cdr rtags-last-completion-position)))
+        (mapcar #'(lambda (elem)
+                    (propertize (car elem)
+                                'rtags-ac-full (cadr elem)
+                                'rtags-ac-type (caddr elem)))
+                (cadr rtags-last-completions))
+      ;; else forcefully update completions if the compl pos has changed
+      ;; checking compl pos helps keep the process buffer from getting slammed
+      (rtags-update-completions (not (= (or complpt -1)
+                                        (or (cdr-safe rtags-last-completion-position) -1))))
+      ;; return nil as `ac-update-greedy' expects us to return a list or nil
+      (rtags-update-completions t)
+      nil)))
+
+(defun rtags-parse-xml ()
+  (if (fboundp 'libxml-parse-xml-region)
+      (libxml-parse-xml-region (point-min) (point-max))
+    (car (xml-parse-region (point-min) (point-max)))))
+
+(defun rtags-parse-diagnostics ()
+  (let ((doc (rtags-parse-xml)) body)
+    (when doc
+      ;;(message "GOT XML %s" output)
+      (cond ((eq (car doc) 'checkstyle)
+             (setq body (cddr doc))
+             (while body
+	       (with-current-buffer "*RTags Diagnostics*"
+		 (setq buffer-read-only nil)
+		 (rtags-parse-overlay-node (car body))
+		 (setq buffer-read-only t)
+		 (setq body (cdr body)))))
+            ((eq (car doc) 'completions)
+             (when rtags-completions-enabled
+               ;; (message "Got completions [%s]" body)
+               (setq body (car (cddr doc)))
+               (setq rtags-last-completions
+                     (cons (cdar (cadr doc)) ;; location attribute
+                           (list (eval (read body)))))
+	       ;; run hook where last completion request took place
+	       (with-current-buffer (car rtags-last-completion-position)
+		(run-hooks 'rtags-completions-hook))))
+            ((eq (car doc) 'progress)
+             (setq body (cadr doc))
+             (while body
+               (cond ((eq (caar body) 'index)
+                      ;; (message "Got index [%s]" (cdar body))
+                      (setq rtags-last-index (string-to-number (cdar body))))
+                     ((eq (caar body) 'total)
+                      (setq rtags-last-total (string-to-number (cdar body))))
+                     (t (message "Unexpected element %s" (caar body))))
+               (setq body (cdr body))))
+            ;;             (message "RTags: %s/%s (%s%%)" index total)))
+             (t (message "Unexpected root element %s" (car doc))))
+      (run-hooks 'rtags-diagnostics-hook))))
+
+(defun rtags-post-command-hook ()
+  (interactive)
+  (when rtags-enabled
+    (rtags-update-current-project)
+    (rtags-update-current-error)
+    (rtags-close-taglist)
+    (rtags-restart-tracking-timer)
+    ;;(rtags-update-completions-timer)
+    ))
+
+(defun rtags-trim-whitespace ()
+  "Trim initial whitespace from the *RTags Raw* buffer (so libxml parsing doesn't fail)"
+  (goto-char (point-min))
+  (if (search-forward-regexp "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'" (point-max) t)
+      (replace-match "" t t)))
+
+(defun rtags-diagnostics-process-filter (process output)
+  ;; Collect the xml diagnostics into "*RTags Raw*" until a closing tag is found
+  (with-current-buffer (get-buffer-create "*RTags Raw*")
+    (goto-char (point-max))
+    (let ((matchrx rtags-diagnostics-process-regx)
+	  endpos)
+      (insert output)
+      ;; only try to process xml diagnostics if we detect an end condition
+      (when (string-match (rx (or "</" "[es]>")) output)
+	(goto-char (point-min))
+	(while (search-forward-regexp matchrx (point-max) t)
+	  (setq endpos (match-end 0))
+	  ;; narrow to one xml result (incase multiple results come in together)
+	  (narrow-to-region (point-min) endpos)
+	  ;; trim any whitespace from the beginning of the region
+	  ;; otherwise `libxml-parse-xml-region' might fail
+	  (rtags-trim-whitespace)
+	  ;; now try to parse the xml
+	  (rtags-parse-diagnostics)
+	  ;; this region is done - remove it and continue processing
+	  (delete-region (point-min) (point-max))
+	  (widen))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RTags auto-complete
+
+(defun rtags-ac-init ()
+  (unless rtags-diagnostics-process
+    (rtags-diagnostics)))
+
+(ac-define-source my-rtags
+  '((init . rtags-ac-init)
+    (prefix . rtags-ac-prefix)
+    (candidates . rtags-ac-candidates)
+    (action . rtags-ac-action)
+    (document . rtags-ac-document)
+    (requires . 0)
+    (symbol . "r")))
 
 (defun rtags-enable-auto-complete ()
   "Enables auto-complete with RTags. Note that RTags becomes the
 only source for auto-complete in all C and C++ buffers. Also note
 that RTags Diagostics must be turned on."
   (interactive)
-  (require 'auto-complete)
   (require 'rtags-ac)
-  (require 'popup)
   (setq rtags-completions-enabled t)
   (add-hook 'c++-mode-hook
             (lambda ()
-              (setq ac-sources '(ac-source-rtags)))))
+              (setq ac-sources '(ac-source-my-rtags)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'init-rtags)
