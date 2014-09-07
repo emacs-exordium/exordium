@@ -75,7 +75,7 @@
     (set-face-background 'highlight nil)
   ;; Using Emacs with GUI:
   (require 'init-themes)
-  (unless *environment-bloomberg*
+  (when *init-enable-powerline*
     (require 'init-powerline)))
 
 ;;; OS-specific things

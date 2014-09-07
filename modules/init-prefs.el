@@ -7,6 +7,9 @@
 ;;; (setq *init-preferred-frame-width*  110
 ;;;       *init-preferred-frame-height* 75)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UI
+
 (defvar *init-preferred-fonts*
   '(("Consolas"  . 120)
     ("Monaco"    . 120)
@@ -15,8 +18,9 @@
   "List of preferred fonts/sizes to use, in decreasing order of
   preference. We will use the first one that is available on the
   local machine. It is a list of pairs (font-name
-  . font-size). Note that you can get the list of available font
-  names by evaluating (font-family-list)")
+  . font-size). If nil, we don't set any font. Note that you can
+  get the list of available font names by
+  evaluating (font-family-list)")
 
 (defvar *init-preferred-frame-width* 100
   "Default frame width (number of columns)")
@@ -25,9 +29,19 @@
 (defvar *init-preferred-frame-height* 65
   "Default frame height (a number of lines)")
 
-(defvar *init-enable-electric-pair-mode* t
-  "Enables or disables electric-pair-mode")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Extensions
 
+(defvar *init-enable-electric-pair-mode* t
+  "Enables electric-pair-mode")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Theme
+
+(defvar *init-enable-powerline* t
+  "Enables Powerline")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Keyboard
 
 (defvar *init-enable-newline-and-indent* t
@@ -36,14 +50,15 @@
   If nil, do the opposite")
 
 (defvar *init-enable-cua-mode* t
-  "Enables/disables CUA mode globally")
+  "Enables CUA mode globally")
 
 (defvar *init-keyboard-escape* t
-  "Enables/disables ESC key for keyboard quit")
+  "Enables ESC key for keyboard quit")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; RTags
 
 (defvar *init-rtags-auto-complete* t
-  "Enables/disables RTags as source for auto-complete")
+  "Enables RTags as the source for auto-complete")
 
 (provide 'init-prefs)
