@@ -473,4 +473,20 @@ directory"
 (add-to-list 'auto-mode-alist
              '("compile_includes" . rtags-compile-includes-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; RTags auto-complete
+
+(defun rtags-enable-auto-complete ()
+  "Enables auto-complete with RTags. Note that RTags becomes the
+only source for auto-complete in all C and C++ buffers. Also note
+that RTags Diagostics must be turned on."
+  (interactive)
+  (require 'auto-complete)
+  (require 'rtags-ac)
+  (require 'popup)
+  (setq rtags-completions-enabled t)
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq ac-sources '(ac-source-rtags)))))
+
 (provide 'init-rtags)

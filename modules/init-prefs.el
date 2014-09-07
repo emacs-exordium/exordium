@@ -41,4 +41,9 @@
 (defvar *init-keyboard-escape* t
   "Enables/disables ESC key for keyboard quit")
 
+;;; RTags
+
+(defvar *init-rtags-auto-complete* t
+  "Enables/disables RTags as source for auto-complete")
+
 (provide 'init-prefs)

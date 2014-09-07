@@ -384,7 +384,19 @@ Other functions:
 
 ### Autocomplete
 
-Stay tuned. Close but no cigar :'(
+**This is experimental for now**.
+
+Set the variable `*init-rtags-auto-complete*` to true in your
+`init-local-prefs.el` to turn on RTags as the source for auto-complete in C/C++
+mode. It will work when you activate the diagnostics mode with <kbd>C-c r
+D</kbd>. Note that this variable makes RTags be the *only* source for
+auto-complete in C/C++ mode, e.g. all other classic sources such as names in
+open buffers are disabled. The reasoning being that surely Clang must be more
+accurate.
+
+One issue is that auto-complete triggers rdm very often. Also, since
+auto-complete is linked to the diagnostics mode, it ends up displaying errors
+in the code you are typing all the time, which is distracting.
 
 ## Header file autocomplete
 
