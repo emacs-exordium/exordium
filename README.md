@@ -391,7 +391,7 @@ Other functions:
 
 ### Autocomplete
 
-**This is experimental for now**.
+*This is a work in progress.*
 
 Set the variable `*init-rtags-auto-complete*` to true in your
 `init-local-prefs.el` to turn on RTags as the source for auto-complete in C/C++
@@ -401,39 +401,33 @@ auto-complete in C/C++ mode, e.g. all other classic sources such as names in
 open buffers are disabled. The reasoning being that surely Clang must be more
 accurate.
 
-One issue is that auto-complete triggers rdm very often. Also, since
-auto-complete is linked to the diagnostics mode, it ends up displaying errors
-in the code you are typing all the time, which is distracting.
+**Issues:** auto-complete triggers rdm very often. Also, since auto-complete is
+linked to the diagnostics mode, it ends up displaying errors in the code you
+are typing all the time, which may be distracting because the RTags
+error/warning/quick-fix faces are intentionally very loud.
 
 ## Header file autocomplete
 
-**TODO work in progress**. This is a temporary solution until autocomplete uses
-rdm as a source.
+*This is a work in progress.*
 
 This module sets up autocomplete for `#include` header files in C++ mode. It
-reuses the file `compile_includes` mentioned above.
+reuses the file `compile_includes` mentioned above. It is independent of RTags
+Diagnostics (e.g. you don't need to run diagnostics).
 
-It is currently a bit redundant from RTags. You need to define the following
-variables in `init_local.el`:
+Header auto-complete currently reuses the same variables that store the
+content of `compile_includes`. These variables are loaded with either:
 
-```lisp
-(when (featurep 'init-header-autocomplete)
-  ;; Prefix for any path in init_includes, if you want to use relative paths
-  ;; (default value is "")
-  (setq *header-ac-include-dir-prefix* "/home/phil/workspaces/")
-  ;; List of regex to exclude from the include paths
-  (setq *header-ac-exclude-directories*
-        '("/group$" "/doc$" "/package$" "/test$")))
-```
+* M-x `rtags-create-compilation-database`,
+* Or M-x `rtags-load-compile-includes-file` which is faster and is in fact
+  called by the former (it just reloads `compile_includes`).
 
-Then set up the autocomplete for your project with the command M-x
-`set-header-autocomplete`. It should work for any subdirectory within your
-project or within any path mentionned in the compile includes file. You can
-display the list of include directories it uses with M-x
-`show-header-autocomplete`.
+After calling one of these functions, header auto--complete should work for any
+C++ file you open in your project.
 
-Note that currently the setting is not saved and will be lost any time you
-restart Emacs.
+**Issues:** these variables are nil when Emacs starts. Also, they are not
+updated if you switch the RTags project: you would need to re-run
+`rtags-load-compile-includes-file` again. (This should be fixed once we have a
+real concept of project).
 
 ## Configuration profiling
 

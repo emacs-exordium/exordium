@@ -85,12 +85,12 @@
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-(require 'init-header-autocomplete)
 (require 'init-yasnippet)
-;; (require 'init-cedet.el)
-(require 'init-rtags)
 
-;; TODO: still experimental
+;; (require 'init-cedet.el)
+
+(require 'init-rtags)
+(require 'init-header-autocomplete)
 (when *init-rtags-auto-complete*
   (rtags-enable-auto-complete))
 

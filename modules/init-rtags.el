@@ -373,14 +373,14 @@ directly: use `rtags-create-compilation-database' instead"
                ;; Scan src to get all subdirs that do not match the excludes
                (dolist (path source-dirs)
                  (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
-                 (message "Scanning source dir: %s" path)
+                 (message "Scanning source dir: %s ..." path)
                  (setq *rtags-project-source-dirs*
                        (append *rtags-project-source-dirs*
                                (rtags-scan-include-directories path excl-regexs))))
                ;; Same with includes
                (dolist (path incl-dirs)
                  (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
-                 (message "Scanning include dir: %s" path)
+                 (message "Scanning include dir: %s ..." path)
                  (setq *rtags-project-include-dirs*
                        (append *rtags-project-include-dirs*
                                (rtags-scan-include-directories path excl-regexs))))
@@ -419,7 +419,7 @@ directory"
         (newline)
         ;; Note: dynamic bunding of default-directory
         (dolist (default-directory *rtags-project-source-dirs*)
-          (message "Processing directory: %s" default-directory)
+          (message "Processing directory: %s ..." default-directory)
           (let ((files (file-expand-wildcards "*.cpp"))
                 ;; rdm does not like directories starting with "~/"
                 (dirname (if (pg/string-starts-with default-directory "~/")
