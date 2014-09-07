@@ -110,7 +110,7 @@ Two files can be added to customize the configuration for the local machine
   beginning. It is used to override the default values of fonts, window size
   etc. The preferences variables that may be overriden are defined in
   `~/.emacs.d/modules/init-prefs.el` (see that module for details).
-* If a file `~/.emacs.d/init_local.el` exists, it will be loaded at the end;
+* If a file `~/.emacs.d/init-local.el` exists, it will be loaded at the end;
   you can use this as a mechanism to load machine-specific extensions.
 
 ## Keymap
