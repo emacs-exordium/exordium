@@ -149,7 +149,7 @@ Auto-complete:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>M-/</bkd>     | Force trigger auto-complete.
+<kbd>C-.</bkd>     | Force trigger auto-complete.
 <kbd>ESC</kbd>     | Abort auto-complete.
 
 Git:
