@@ -1,11 +1,12 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** TODO make rtags autocomplete work!
+** DONE make RTags autocomplete work!
+** TODO make header auto-complete better
 ** TODO sr-speedbar
 ** TODO helm + projectile
 * C++
-** TODO Rtags https://github.com/Andersbakken/rtags
+** TODO RTags https://github.com/Andersbakken/rtags
     - [ ] Enable support for autocomplete
     - [ ] Display compilation errors/warnings with flymake
     - [ ] Port number

@@ -65,9 +65,12 @@
 ;;; Highlight symbol
 
 (require 'highlight-symbol)
-;; (dolist (hook '(prog-mode-hook html-mode-hook))
-;;   (add-hook hook 'highlight-symbol-mode)
-;;   (add-hook hook 'highlight-symbol-nav-mode))
+
+(highlight-symbol-nav-mode)
+
+(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+(add-hook 'org-mode-hook (lambda () (highlight-symbol-mode)))
+(setq highlight-symbol-on-navigation-p t)
 
 ;; Don't show this mode in the modeline
 (eval-after-load 'highlight-symbol
