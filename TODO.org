@@ -1,20 +1,21 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** DONE make RTags autocomplete work!
+** TODO upgrade packages and remove my patch
+** TODO remove packages from git (load them if needed)
+** TODO try Projectile
 ** TODO make header auto-complete better
-** TODO sr-speedbar
-** TODO helm + projectile
+   Either this will come from Projectile, or
+   It can be easily done with per-directory variables:
+   https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
+   (with an impact on performance)
+** TODO sr-speedbar or https://github.com/sabof/project-explorer
 * C++
-** TODO RTags https://github.com/Andersbakken/rtags
-    - [ ] Enable support for autocomplete
-    - [ ] Display compilation errors/warnings with flymake
-    - [ ] Port number
-    - [ ] Build on OS X
-** TODO Irony http://clang.llvm.org/docs/ExternalClangExamples.html
-** TODO autocomplete-clang https://github.com/brianjcj/auto-complete-clang
-** TODO Malinka http://blog.refu.co/?tag=clang
-** TODO Eclim: https://github.com/senny/emacs-eclim
+** other options for IDE
+*** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+*** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
+*** Malinka http://blog.refu.co/?tag=clang
+*** Eclim: https://github.com/senny/emacs-eclim
 ** TODO snippets
     - [ ] New files
     - [ ] Etc
@@ -25,7 +26,7 @@
 * Themes
     - [X] Make linum face boring (not sure the fancy version works)
     - [X] Make org mode more readable
-    - [ ] *FIX LINUM ON LINUX!!!*
+    - [X] *FIX LINUM ON LINUX!!!*
     - [ ] Function key to cycle between themes
     - [ ] Primitive types for C++
     - [ ] High-constrast version of solarized
