@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
-;; Use M-x `package-list-package' to load and display the list of packges,
+;; Use M-x `package-list-package' to load and display the list of packages,
 ;; then press I to mark for installation and X to execute (it's like dired).
 
 ;; Initialize the package system
