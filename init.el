@@ -13,18 +13,46 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Packages from Melpa and Marmelade
+;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
 ;; Use M-x `package-list-package' to load and display the list of packges,
 ;; then press I to mark for installation and X to execute (it's like dired).
 
+;; Initialize the package system
 (require 'package)
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;; Load the packages we need if they are not installed already
+(let ((required-packages '(diminish
+                           highlight-symbol
+                           magit
+                           git-timemachine
+                           expand-region
+                           auto-complete
+                           company
+                           rtags
+                           auto-complete-c-headers
+                           yasnippet
+                           js2-mode
+                           ac-js2
+                           iedit
+                           cider
+                           clojure-mode
+                           paredit
+                           rainbow-delimiters
+                           helm
+                           ido-ubiquitous))
+      (has-refreshed nil))
+  (dolist (p required-packages)
+    (unless (package-installed-p p)
+      (unless has-refreshed
+        (message "Refreshing package database...")
+        (package-refresh-contents)
+        (setq has-refreshed t)
+        (message "Done."))
+      (package-install p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Path for "require"
