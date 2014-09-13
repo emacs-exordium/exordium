@@ -1,5 +1,6 @@
 # Local modules specific to this machine
 init_local.el
+init-local.el
 init-local-prolog.el
 init-local-prefs.el
 
