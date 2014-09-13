@@ -10,6 +10,7 @@
 ;;; - Open .h files in C++ mode by default
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
+(require 'cc-mode)
 
 ;;; Open a header file in C++ mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -20,6 +21,7 @@
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight dead code between #if 0 and #endif
@@ -80,8 +82,30 @@
           (t (message "This is not a C/C++ file")))))
 
 ;;; Ctrl-Tab to switch between .h and .cpp
-(global-set-key [(control tab)] 'cpp-switch-h-cpp)
+(define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Insert redundant include guards
+
+(defun cpp-insert-redundant-include-guard ()
+  "If the current line is a #include, inserts a redundant include
+guard around it"
+  (interactive)
+  (let ((current-line (thing-at-point 'line)))
+    (cond ((string-match "^#include <[_\.a-z]+>$" current-line)
+           (let ((file-name (substring current-line 10 -2)))
+             (when (pg/string-ends-with file-name ".h")
+               (setq file-name (substring file-name 0 -2)))
+             (save-excursion
+               (beginning-of-line)
+               (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
+               (forward-line 1)
+               (insert "#endif\n"))))
+          (t
+           (message "Not on a #include line")))))
+
+(define-key c-mode-base-map [(control c)(i)] 'cpp-insert-redundant-include-guard)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Font lock changes

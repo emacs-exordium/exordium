@@ -1,7 +1,8 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** TODO remove packages from git (load them if needed)
+** DONE remove packages from git (load them if needed)
+** TODO fix duplicate key
 ** TODO try Projectile
 ** TODO BDE style: redundant include guards
 ** TODO BDE style: align function parameters

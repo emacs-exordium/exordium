@@ -121,7 +121,8 @@
 ;; (require 'init-cedet.el)
 
 (require 'init-rtags)
-(require 'init-header-autocomplete)
+(when *init-header-auto-complete*
+  (require 'init-header-autocomplete))
 (when *init-rtags-auto-complete*
   (rtags-enable-auto-complete))
 

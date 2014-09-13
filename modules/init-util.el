@@ -11,7 +11,7 @@
 ;;; (unbound)      `insert-current-time'
 ;;; (unbound)      `insert-current-date-time'
 ;;;
-;;; C-c C-d        `duplicate-line'
+;;; C-c d          `duplicate-line'
 ;;; C-\            `delete-horizontal-space-forward'
 ;;; C-BACKSPACE    `delete-horizontal-space-backward'
 ;;;                (Emacs also has Meta-\ to delete all spaces)
@@ -152,7 +152,7 @@ Uses `current-date-time-format' for the formatting the date/time."
   ;; put the point in the lowest line and return
   (next-line arg))
 
-(global-set-key [(control c)(control d)] 'duplicate-line)
+(global-set-key [(control c)(d)] 'duplicate-line)
 
 (defun delete-horizontal-space-forward ()
   "Delete all spaces and tabs after point."

@@ -139,7 +139,7 @@ Keybinding          | Description
 <kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
 <kbd>M-\\</kbd>     | Delete all spaces around cursor.
-<kbd>C-c C-d</kbd>  | Duplicate line.
+<kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
 <kbd>C-c C-s</kbd>  | Push point onto position stack.

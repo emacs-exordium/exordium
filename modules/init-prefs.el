@@ -56,9 +56,12 @@
   "Enables ESC key for keyboard quit")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; RTags
+;;; C++ and RTags
 
-(defvar *init-rtags-auto-complete* t
+(defvar *init-header-auto-complete* nil
+  "Enables auto-complete for header files (non-RTags)")
+
+(defvar *init-rtags-auto-complete* nil
   "Enables RTags as the source for auto-complete")
 
 (provide 'init-prefs)
