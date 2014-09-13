@@ -11,6 +11,9 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
+;; Use this file for HTTP proxy settings if needed, for packages.
+(when (file-exists-p "~/.emacs.d/init-local-prolog.el")
+  (load "~/.emacs.d/init-local-prolog.el"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages from Melpa
