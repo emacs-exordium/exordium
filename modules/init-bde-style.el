@@ -362,6 +362,8 @@ guard around it"
        (let ((i 0))
          (dolist (arg arguments)
            ;; Copy the argument line
+           (when (and (> i 0) (not (pg/string-starts-with arg "\n")))
+             (newline))
            (insert arg)
            (incf i)
            (unless (= i (length arguments))
@@ -380,7 +382,11 @@ guard around it"
                  pointers (cdr pointers)
                  default-values (cdr default-values))
            (end-of-line)))
-       (buffer-string)))))
+       (buffer-string)))
+    ;; Reindent
+    (push-mark)
+    (backward-list)
+    (indent-region (region-beginning) (region-end))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
