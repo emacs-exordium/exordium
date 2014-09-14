@@ -132,22 +132,22 @@ current cursor position."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert class header
 
-;;; Note: left-char and right-char pnly exist in emacs 24, so we use
+;;; Note: left-char and right-char only exist in emacs 24, so we use
 ;;; backward-char and forward-char instead.
 (defun bde-insert-class-header (header-char)
   (let ((erase-hint t))
-    (flet ((delete-header-char (n)
-             (save-excursion
-               (previous-line 1)
-               (end-of-line)
-               (backward-delete-char n)
-               (next-line 2)
-               (end-of-line)
-               (backward-delete-char n)))
-           (center-header ()
-             (save-excursion
-               (previous-line 1)
-               (center-line 3))))
+    (cl-flet ((delete-header-char (n)
+                (save-excursion
+                  (previous-line 1)
+                  (end-of-line)
+                  (backward-delete-char n)
+                  (next-line 2)
+                  (end-of-line)
+                  (backward-delete-char n)))
+              (center-header ()
+                (save-excursion
+                  (previous-line 1)
+                  (center-line 3))))
       ;; Get started
       (dotimes (i 3)
         (insert "// ")
@@ -259,7 +259,42 @@ guard around it"
           (t
            (message "Not on a #include line")))))
 
-(define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard)
+(defun bde-insert-redundant-include-guard-region ()
+  "If a region of #include lines is selected, sort them and add
+any missing redundant include guards. If no region is selected
+and the current line is a #include, insert a redundant include
+guard around it"
+  (interactive)
+  (cond ((use-region-p)
+         (kill-region (region-beginning) (region-end))
+         (insert
+          (with-temp-buffer
+            (yank)
+            ;; Remove any existing include guard and blank line
+            (beginning-of-buffer)
+            (let ((more-lines t))
+              (while more-lines
+                (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
+                          (pg/string-starts-with (thing-at-point 'line) "#endif"))
+                  (kill-whole-line))
+                (delete-blank-lines)
+                (setq more-lines (= 0 (forward-line 1)))))
+            ;; Sort the buffer, because we want our include sorted
+            (mark-whole-buffer)
+            (sort-lines nil (region-beginning) (region-end))
+            ;; Add the include guards, line by line
+            (beginning-of-buffer)
+            (let ((more-lines t))
+              (while more-lines
+                (insert "\n") ; insert a blank line between 2 includes
+                (bde-insert-redundant-include-guard)
+                (forward-line 2) ; move to after #endif
+                (setq more-lines (= 0 (forward-line 1)))))
+            (buffer-string))))
+        (t
+         (bde-insert-redundant-include-guard))))
+
+(define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
