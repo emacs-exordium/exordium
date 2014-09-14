@@ -9,11 +9,42 @@
 ;;; C-c -          `bde-insert-declare-class-header'
 ;;; C->            `bde-aligh-right-after-point': align text after cursor
 ;;;                to the right (for // RETURN or // LOCK)
+;;; C-c i          `bde-insert-redundant-include-guard'
+;;; C-c a          `bde-align-functions-arguments'
 ;;;
-;;; TODO
-;;; - Enums are not correct
-;;; - Add a function to align function arguments (with * and &)
-
+;;; Aligh right after point:
+;;; Before:
+;;;     return x; <cursor> // RETURN
+;;; After:
+;;;     return x;                                     // RETURN
+;;;
+;;; Insert redundant include guard (cursor must be on the line):
+;;; Before:
+;;;     #include <bsl_iostream.h>
+;;; After:
+;;;     #ifndef INCLUDED_BSL_IOSTREAM
+;;;     #include <bsl_iostream.h>
+;;;     #endif
+;;;
+;;; Align function arguments (cursor must be inside argument list):
+;;; Before:
+;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
+;;;             const BloombergLP::bslstl::StringRef& lastName,
+;;;             const bsl::vector<int>& accounts,
+;;;             int id,
+;;;             BloombergLP::bslma::Allocator *basicAllocator = 0);
+;;; After:
+;;;    Customer(const BloombergLP::bslstl::StringRef&  firstName,
+;;;             const BloombergLP::bslstl::StringRef&  lastName,
+;;;             const bsl::vector<int>&                accounts,
+;;;             int                                    id,
+;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
+;;; Note that you need to have the & and * at the right places. It will fail
+;;; with things like:
+;;;    int* foo                         // * not before foo
+;;;    int * foo                        // spaces between * and foo
+;;;    const Foo &foo                   // & not right after type
+;;;    bslma::Allocator *allocator=0    // no spaces before = and 0
 
 (require 'cl)
 
@@ -206,6 +237,116 @@ backspace, delete, left or right."
 
 ;;; Ctrl-> to right-aligh the text after point
 (global-set-key [(control >)] 'bde-aligh-right-after-point)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Insert redundant include guards
+
+(defun bde-insert-redundant-include-guard ()
+  "If the current line is a #include, inserts a redundant include
+guard around it"
+  (interactive)
+  (let ((current-line (thing-at-point 'line)))
+    (cond ((string-match "^#include <[_\.a-z]+>$" current-line)
+           (let ((file-name (substring current-line 10 -2)))
+             (when (pg/string-ends-with file-name ".h")
+               (setq file-name (substring file-name 0 -2)))
+             (save-excursion
+               (beginning-of-line)
+               (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
+               (forward-line 1)
+               (insert "#endif\n"))))
+          (t
+           (message "Not on a #include line")))))
+
+(define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Align function arguments
+
+(defun bde-calculate-type-length (words)
+  "Calculate the length of the type in a function argument
+  represented by a list of words like (int foo)"
+  (cond ((or (equal (car words) "(const")
+             (equal (car words) "const"))
+         (+ (length "const") (length (cadr words)) 1))
+        (t
+         (if (pg/string-starts-with (car words) "(")
+             (1- (length (car words)))
+           (length (car words))))))
+
+(defun bde-default-value-p (words)
+  "Check if the function arguments represented by a list of words
+  like (int *foo = 0) includes a default value"
+  (equal (nth (- (length words) 2) words) "="))
+
+(defun bde-pointer-p (words)
+  "Check if the function argument represented by a list of words
+  like (int *foo = 0) is a pointer"
+  (let ((variable-name (if (bde-default-value-p words)
+                           (nth (- (length words) 3) words)
+                         (car (last words)))))
+    (pg/string-starts-with variable-name "*")))
+
+(defun bde-align-functions-arguments ()
+  "Assuming the cursor is within a function's argument list,
+  align them"
+  (interactive)
+  ;; Get a list of the arguments. Note that the parentheses are included
+  (let ((arguments (split-string (thing-at-point 'list) ","))
+        (type-lengths ())
+        (max-type-length 0)
+        (pointers ())
+        (has-pointer nil)
+        (default-values ()))
+    ;; Parse each argument to get the length of its type, and keep track of the
+    ;; longuest type, the pointers and the default values
+    (dolist (arg arguments)
+      (let* ((words (split-string arg))
+             (len (bde-calculate-type-length words))
+             (is-pointer (bde-pointer-p words))
+             (is-default-value (bde-default-value-p words)))
+        (assert (>= (length words) 2))
+        (setq type-lengths (cons len type-lengths)
+              max-type-length (max len max-type-length)
+              pointers (cons is-pointer pointers)
+              has-pointer (or has-pointer is-pointer)
+              default-values (cons is-default-value default-values))))
+    (setq type-lengths (reverse type-lengths)
+          pointers (reverse pointers)
+          default-values (reverse default-values))
+    ;; Cut the argument list and edit it into a temporary buffer
+    (backward-up-list)
+    (push-mark)
+    (forward-list)
+    (kill-region (region-beginning) (region-end))
+    (insert
+     (with-temp-buffer
+       (let ((i 0))
+         (dolist (arg arguments)
+           ;; Copy the argument line
+           (insert arg)
+           (incf i)
+           (unless (= i (length arguments))
+             (insert ","))
+           ;; Adjust the spaces in this line (we're at end of line)
+           (forward-whitespace -1)
+           (when (car default-values)
+             (forward-whitespace -2))
+           (delete-horizontal-space)
+           (insert
+            (make-string (+ (- max-type-length (car type-lengths))
+                            (if (and has-pointer (not (car pointers))) 1 0)
+                            1) ; at least one space
+                         ?\s))
+           (setq type-lengths (cdr type-lengths)
+                 pointers (cdr pointers)
+                 default-values (cdr default-values))
+           (end-of-line)))
+       (buffer-string)))))
+
+(define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
 
 ;;; End of file

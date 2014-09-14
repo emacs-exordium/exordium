@@ -177,6 +177,7 @@ Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-&gt;</kbd>  | Right-align text after cursor (for // return, // lock etc.).
 <kbd>C-c i</kbd>   | Insert redundant #include guard.
+<kbd>C-c a</kbd>   | Align function arguments.
 <kbd>C-c =</bkd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 

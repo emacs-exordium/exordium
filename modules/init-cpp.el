@@ -86,28 +86,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Insert redundant include guards
-
-(defun cpp-insert-redundant-include-guard ()
-  "If the current line is a #include, inserts a redundant include
-guard around it"
-  (interactive)
-  (let ((current-line (thing-at-point 'line)))
-    (cond ((string-match "^#include <[_\.a-z]+>$" current-line)
-           (let ((file-name (substring current-line 10 -2)))
-             (when (pg/string-ends-with file-name ".h")
-               (setq file-name (substring file-name 0 -2)))
-             (save-excursion
-               (beginning-of-line)
-               (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
-               (forward-line 1)
-               (insert "#endif\n"))))
-          (t
-           (message "Not on a #include line")))))
-
-(define-key c-mode-base-map [(control c)(i)] 'cpp-insert-redundant-include-guard)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Font lock changes
 
 ;;; Display TODO: and FIXME: and TBD: in red
