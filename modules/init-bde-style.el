@@ -165,14 +165,12 @@ current cursor position."
                 (insert-char c 1)
                 (save-excursion
                   (previous-line 1)
-                  (when erase-hint
-                    (end-of-line)
-                    (insert " "))
+                  (end-of-line)
+                  (when erase-hint (insert " "))
                   (insert-char header-char 1)
                   (next-line 2)
-                  (when erase-hint
-                    (end-of-line)
-                    (insert " "))
+                  (end-of-line)
+                  (when erase-hint (insert " "))
                   (insert-char header-char 1))
                 (unless (= c 32)
                   (center-header)))
