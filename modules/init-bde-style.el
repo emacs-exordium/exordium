@@ -325,6 +325,15 @@ guard around it"
                          (car (last words)))))
     (pg/string-starts-with variable-name "*")))
 
+(defun bde-max-column-in-region ()
+  "Return the largest column in region"
+  (let ((m 0))
+    (while (< (point) (region-end))
+      (end-of-line)
+      (setq m (max m (current-column)))
+      (forward-line))
+    m))
+
 (defun bde-align-functions-arguments ()
   "Assuming the cursor is within a function's argument list,
   align them"
@@ -337,7 +346,7 @@ guard around it"
         (has-pointer nil)
         (default-values ()))
     ;; Parse each argument to get the length of its type, and keep track of the
-    ;; longuest type, the pointers and the default values
+    ;; longest type, the pointers and the default values
     (dolist (arg arguments)
       (let* ((words (split-string arg))
              (len (bde-calculate-type-length words))
@@ -386,7 +395,17 @@ guard around it"
     ;; Reindent
     (push-mark)
     (backward-list)
-    (indent-region (region-beginning) (region-end))))
+    (indent-region (region-beginning) (region-end))
+    ;; If one line goes beyond the dreadful 79th column, try to fix it
+    (save-excursion
+      (when (> (bde-max-column-in-region) 79)
+        (backward-list)
+        (forward-char)
+        (newline)
+        (backward-char 2)
+        (push-mark)
+        (forward-list)
+        (indent-region (region-beginning) (region-end))))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
