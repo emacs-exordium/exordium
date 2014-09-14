@@ -19,11 +19,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CUA
 
-;; C-x, C-c, C-v to cut, copy and paste when mark is active.
-;; Add shift or double the Ctrl-* to switch back to Emacs keys.
-;; C-Ret for rectangular regions.
-(when *init-enable-cua-mode*
-  (cua-mode t))
+;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
+;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
+;; It also has a nice feature: C-ret for selecting rectangular regions.
+;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
+(if *init-enable-cua-mode*
+    (cua-mode t)
+  (cua-selection-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Expand region

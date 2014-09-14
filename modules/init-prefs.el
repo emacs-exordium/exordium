@@ -49,8 +49,9 @@
   shift-return for just newline.
   If nil, do the opposite")
 
-(defvar *init-enable-cua-mode* t
-  "Enables CUA mode globally")
+(defvar *init-enable-cua-mode* nil
+  "Enables CUA mode globally. If disabled, only the rectangular
+  region feature is enabled")
 
 (defvar *init-keyboard-escape* t
   "Enables ESC key for keyboard quit")
