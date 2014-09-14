@@ -255,6 +255,7 @@ guard around it"
                (beginning-of-line)
                (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
                (forward-line 1)
+               (when (> (current-column) 0) (insert "\n"))
                (insert "#endif\n"))))
           (t
            (message "Not on a #include line")))))
@@ -279,7 +280,7 @@ guard around it"
                   (kill-whole-line))
                 (delete-blank-lines)
                 (setq more-lines (= 0 (forward-line 1)))))
-            ;; Sort the buffer, because we want our include sorted
+            ;; Sort the buffer, because we want our includes sorted
             (mark-whole-buffer)
             (sort-lines nil (region-beginning) (region-end))
             ;; Add the include guards, line by line
