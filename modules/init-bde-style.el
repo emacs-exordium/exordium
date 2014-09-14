@@ -317,13 +317,16 @@ guard around it"
   like (int *foo = 0) includes a default value"
   (equal (nth (- (length words) 2) words) "="))
 
-(defun bde-pointer-p (words)
-  "Check if the function argument represented by a list of words
-  like (int *foo = 0) is a pointer"
-  (let ((variable-name (if (bde-default-value-p words)
-                           (nth (- (length words) 3) words)
-                         (car (last words)))))
-    (pg/string-starts-with variable-name "*")))
+(defun bde-num-stars (words)
+  "Return the number of * in a function argument represented by a
+  list of words"
+  (let ((n 0))
+    (dolist (w words)
+      (cond ((pg/string-starts-with w "**")
+             (setq n (+ n 2)))
+            ((pg/string-starts-with w "*")
+             (setq n (1+ n)))))
+    n))
 
 (defun bde-max-column-in-region ()
   "Return the largest column in region"
@@ -340,26 +343,27 @@ guard around it"
   (interactive)
   ;; Get a list of the arguments. Note that the parentheses are included
   (let ((arguments (split-string (thing-at-point 'list) ","))
-        (type-lengths ())
+        (type-lengths ())       ; list of arg type lengths
         (max-type-length 0)
-        (pointers ())
-        (has-pointer nil)
-        (default-values ()))
-    ;; Parse each argument to get the length of its type, and keep track of the
-    ;; longest type, the pointers and the default values
+        (stars ())              ; list of arg number of *
+        (max-stars 0)
+        (default-values ()))    ; list of T or NIL (arg has default value)
+    ;; Parse each argument into a list of words (spliting using spaces).
+    ;; Get the length of its type and keep track of the longest type.
+    ;; Get the number of * and check if it has a default value (e.g. "= 0")
     (dolist (arg arguments)
       (let* ((words (split-string arg))
              (len (bde-calculate-type-length words))
-             (is-pointer (bde-pointer-p words))
+             (num-stars (bde-num-stars words))
              (is-default-value (bde-default-value-p words)))
         (assert (>= (length words) 2))
         (setq type-lengths (cons len type-lengths)
               max-type-length (max len max-type-length)
-              pointers (cons is-pointer pointers)
-              has-pointer (or has-pointer is-pointer)
+              stars (cons num-stars stars)
+              max-stars (max num-stars max-stars)
               default-values (cons is-default-value default-values))))
     (setq type-lengths (reverse type-lengths)
-          pointers (reverse pointers)
+          stars (reverse stars)
           default-values (reverse default-values))
     ;; Cut the argument list and edit it into a temporary buffer
     (backward-up-list)
@@ -370,25 +374,25 @@ guard around it"
      (with-temp-buffer
        (let ((i 0))
          (dolist (arg arguments)
-           ;; Copy the argument line
+           ;; Paste the argument line
            (when (and (> i 0) (not (pg/string-starts-with arg "\n")))
              (newline))
            (insert arg)
            (incf i)
            (unless (= i (length arguments))
              (insert ","))
-           ;; Adjust the spaces in this line (we're at end of line)
+           ;; Adjust the spaces in this line (note: we're at end of line)
            (forward-whitespace -1)
            (when (car default-values)
              (forward-whitespace -2))
            (delete-horizontal-space)
            (insert
             (make-string (+ (- max-type-length (car type-lengths))
-                            (if (and has-pointer (not (car pointers))) 1 0)
+                            (- max-stars (car stars))
                             1) ; at least one space
                          ?\s))
            (setq type-lengths (cdr type-lengths)
-                 pointers (cdr pointers)
+                 stars (cdr stars)
                  default-values (cdr default-values))
            (end-of-line)))
        (buffer-string)))
@@ -396,7 +400,8 @@ guard around it"
     (push-mark)
     (backward-list)
     (indent-region (region-beginning) (region-end))
-    ;; If one line goes beyond the dreadful 79th column, try to fix it
+    ;; If one line goes beyond the dreadful 79th column, insert a new line
+    ;; before the first arg and reindent
     (save-excursion
       (when (> (bde-max-column-in-region) 79)
         (backward-list)
