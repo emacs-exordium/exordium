@@ -44,18 +44,24 @@ dirs. Input is a string and output is a list of strings."
   "Predicate checking whether string ends with the given tail."
   (string= tail (substring string (- (length tail)))))
 
-;; (defun string/ends-with (string suffix)
-;;   "Return t if STRING ends with SUFFIX."
-;;   (and (string-match (rx-to-string `(: ,suffix eos) t)
-;;                      string)
-;;        t))
-
 (defun pg/string-starts-with (string prefix)
   "Return t if STRING starts with prefix."
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
 
+(defun pg/string-trim-end (str)
+  "Return a new string with tailing whitespace removed"
+  (replace-regexp-in-string (rx (* (any " \t\n")) eos)
+                            ""
+                            str))
+
+(defun pg/string-trim (str)
+  "Return a new string with leading and tailing whitespace removed"
+  (replace-regexp-in-string (rx (or (: bos (* (any " \t\n")))
+                                    (: (* (any " \t\n")) eos)))
+                            ""
+                            str))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Others

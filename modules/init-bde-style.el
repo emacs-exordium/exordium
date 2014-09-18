@@ -276,8 +276,10 @@ guard around it"
                 (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
                           (pg/string-starts-with (thing-at-point 'line) "#endif"))
                   (kill-whole-line))
-                (delete-blank-lines)
                 (setq more-lines (= 0 (forward-line 1)))))
+            ;; Delete all blank lines
+            (beginning-of-buffer)
+            (flush-lines "^$")
             ;; Sort the buffer, because we want our includes sorted
             (mark-whole-buffer)
             (sort-lines nil (region-beginning) (region-end))
@@ -299,33 +301,6 @@ guard around it"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Align function arguments
 
-(defun bde-calculate-type-length (words)
-  "Calculate the length of the type in a function argument
-  represented by a list of words like (int foo)"
-  (cond ((or (equal (car words) "(const")
-             (equal (car words) "const"))
-         (+ (length "const") (length (cadr words)) 1))
-        (t
-         (if (pg/string-starts-with (car words) "(")
-             (1- (length (car words)))
-           (length (car words))))))
-
-(defun bde-default-value-p (words)
-  "Check if the function arguments represented by a list of words
-  like (int *foo = 0) includes a default value"
-  (equal (nth (- (length words) 2) words) "="))
-
-(defun bde-num-stars (words)
-  "Return the number of * in a function argument represented by a
-  list of words"
-  (let ((n 0))
-    (dolist (w words)
-      (cond ((pg/string-starts-with w "**")
-             (setq n (+ n 2)))
-            ((pg/string-starts-with w "*")
-             (setq n (1+ n)))))
-    n))
-
 (defun bde-max-column-in-region ()
   "Return the largest column in region"
   (let ((m 0))
@@ -335,34 +310,58 @@ guard around it"
       (forward-line))
     m))
 
+(defun bde-parse-argument (argument)
+  "Parse the argument line (which may include the external
+  parentheses, but should not include comas), and return a list of:
+  - the type expression which may be empty,
+  - the name of the variable with any * or ** concatenated,
+  - the number of * (0, 1 or 2)
+  - the default value expression or nil.
+  For example 'int* p = 0' will return ('int' '*p' '= 0').
+  All these strings are trimmed."
+  (when (pg/string-starts-with argument "(")
+    (setq argument (substring argument 1)))
+  (when (pg/string-ends-with argument ")")
+    (setq argument (substring argument 0 (1- (length argument)))))
+  (let* ((assign-pos    (string-match "=" argument))
+         (assign        (when assign-pos
+                          (pg/string-trim (substring argument assign-pos))))
+         (before-assign (if assign-pos
+                            (substring argument 0 assign-pos)
+                          argument))
+         (var-pos       (string-match "[_a-z]+[0-9]*$"
+                                      (pg/string-trim-end before-assign)))
+         (var           (pg/string-trim (substring before-assign var-pos)))
+         (before-var    (substring argument 0 var-pos))
+         (star-pos      (string-match "\\*[\\s-]*" before-var))
+         (star2-pos     (string-match "\\*\\*[\\s-]*" before-var))
+         (type          (pg/string-trim
+                         (substring before-var 0 (or star-pos var-pos)))))
+    (list type
+          (cond (star2-pos (concat "**" var))
+                (star-pos  (concat "*" var))
+                (t         var))
+          (cond (star2-pos 2)
+                (star-pos  1)
+                (t         0))
+          assign)))
+
 (defun bde-align-functions-arguments ()
   "Assuming the cursor is within a function's argument list,
   align them"
   (interactive)
-  ;; Get a list of the arguments. Note that the parentheses are included
-  (let ((arguments (split-string (thing-at-point 'list) ","))
-        (type-lengths ())       ; list of arg type lengths
+  ;; Get a list of the arguments. Note that the externam parentheses are included
+  (let ((args (split-string (thing-at-point 'list) ","))
+        (parsed-args ())
         (max-type-length 0)
-        (stars ())              ; list of arg number of *
-        (max-stars 0)
-        (default-values ()))    ; list of T or NIL (arg has default value)
-    ;; Parse each argument into a list of words (spliting using spaces).
-    ;; Get the length of its type and keep track of the longest type.
-    ;; Get the number of * and check if it has a default value (e.g. "= 0")
-    (dolist (arg arguments)
-      (let* ((words (split-string arg))
-             (len (bde-calculate-type-length words))
-             (num-stars (bde-num-stars words))
-             (is-default-value (bde-default-value-p words)))
-        (assert (>= (length words) 2))
-        (setq type-lengths (cons len type-lengths)
-              max-type-length (max len max-type-length)
-              stars (cons num-stars stars)
-              max-stars (max num-stars max-stars)
-              default-values (cons is-default-value default-values))))
-    (setq type-lengths (reverse type-lengths)
-          stars (reverse stars)
-          default-values (reverse default-values))
+        (max-stars 0))
+    ;; Parse each argument and get the max type length
+    (dolist (arg args)
+      (let ((parsed-arg (bde-parse-argument arg)))
+        (setq parsed-args (cons parsed-arg parsed-args)
+              max-type-length (max max-type-length (length (car parsed-arg)))
+              max-stars (max max-stars (caddr parsed-arg)))))
+    (setq parsed-args (reverse parsed-args))
     ;; Cut the argument list and edit it into a temporary buffer
     (backward-up-list)
     (push-mark)
@@ -370,45 +369,52 @@ guard around it"
     (kill-region (region-beginning) (region-end))
     (insert
      (with-temp-buffer
-       (let ((i 0))
-         (dolist (arg arguments)
-           ;; Paste the argument line
-           (when (and (> i 0) (not (pg/string-starts-with arg "\n")))
+       (insert "(")
+       (let ((i 1)
+             (parsed-arg nil))
+         (dolist (parsed-arg parsed-args)
+           (let ((type      (car parsed-arg))
+                 (var       (cadr parsed-arg))
+                 (num-stars (caddr parsed-arg))
+                 (assign    (cadddr parsed-arg)))
+             (when (> (length type) 0)
+               (insert type)
+               (insert (make-string (+ (- max-type-length (length type))
+                                       (- max-stars num-stars)
+                                       1) ; at least one space
+                                    ?\s)))
+             (insert var)
+             (when assign
+               (insert " " assign)))
+           (unless (>= i (length parsed-args))
+             (insert ",")
              (newline))
-           (insert arg)
-           (incf i)
-           (unless (= i (length arguments))
-             (insert ","))
-           ;; Adjust the spaces in this line (note: we're at end of line)
-           (forward-whitespace -1)
-           (when (car default-values)
-             (forward-whitespace -2))
-           (delete-horizontal-space)
-           (insert
-            (make-string (+ (- max-type-length (car type-lengths))
-                            (- max-stars (car stars))
-                            1) ; at least one space
-                         ?\s))
-           (setq type-lengths (cdr type-lengths)
-                 stars (cdr stars)
-                 default-values (cdr default-values))
-           (end-of-line)))
+           (incf i)))
+       (insert ")")
        (buffer-string)))
     ;; Reindent
     (push-mark)
     (backward-list)
     (indent-region (region-beginning) (region-end))
-    ;; If one line goes beyond the dreadful 79th column, insert a new line
-    ;; before the first arg and reindent
+    ;; If some lines exceed the dreadful 79th column, insert a new line before
+    ;; the first line and reindent, with longest line to the right edge
     (save-excursion
-      (when (> (bde-max-column-in-region) 79)
-        (backward-list)
-        (forward-char)
-        (newline)
-        (backward-char 2)
-        (push-mark)
-        (forward-list)
-        (indent-region (region-beginning) (region-end))))))
+      (let ((start-col (1+ (current-column)))
+            (max-col (bde-max-column-in-region)))
+        (when (> max-col 79)
+          (backward-list)
+          (forward-char)
+          (newline)
+          (backward-char 2)
+          (push-mark)
+          (forward-list)
+          (let ((longest-length (- max-col start-col)))
+            (if (<= longest-length 79)
+                (indent-region (region-beginning) (region-end)
+                               (- 79 longest-length))
+              ;; We cannot indent correctly, some lines are too long
+              (indent-region (region-beginning) (region-end))
+              (message "John Lakos cries :'("))))))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
