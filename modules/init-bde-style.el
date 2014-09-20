@@ -245,7 +245,7 @@ backspace, delete, left or right."
 guard around it"
   (interactive)
   (let ((current-line (thing-at-point 'line)))
-    (cond ((string-match "^#include <[_\.a-z]+>$" current-line)
+    (cond ((string-match "^#include <[_\.a-z0-9]+>$" current-line)
            (let ((file-name (substring current-line 10 -2)))
              (when (pg/string-ends-with file-name ".h")
                (setq file-name (substring file-name 0 -2)))
@@ -329,8 +329,9 @@ guard around it"
          (before-assign (if assign-pos
                             (substring argument 0 assign-pos)
                           argument))
-         (var-pos       (string-match "[_a-z]+[0-9]*$"
-                                      (pg/string-trim-end before-assign)))
+         (var-pos       (or (string-match "[_a-z]+[0-9]*$"
+                                          (pg/string-trim-end before-assign))
+                            0))
          (var           (pg/string-trim (substring before-assign var-pos)))
          (before-var    (substring argument 0 var-pos))
          (star-pos      (string-match "\\*[\\s-]*" before-var))
