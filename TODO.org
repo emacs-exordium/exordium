@@ -1,13 +1,9 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** DONE remove packages from git (load them if needed)
-** DONE fix duplicate key
-** TODO fix F3
-** TODO try Projectile
-** DONE BDE style: redundant include guards
-** DONE BDE style: align function parameters
-** TODO BDE style: fix bug in C-c =
+** TODO fix F3 / recenter
+** TODO smart align function
+** TODO install Projectile
 ** TODO make header auto-complete better
    Either this will come from Projectile, or
    It can be easily done with per-directory variables:

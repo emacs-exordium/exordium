@@ -39,12 +39,6 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
-;;; Note that you need to have the & and * at the right places. It will fail
-;;; with things like:
-;;;    int* foo                         // * not before foo
-;;;    int * foo                        // spaces between * and foo
-;;;    const Foo &foo                   // & not right after type
-;;;    bslma::Allocator *allocator=0    // no spaces before = and 0
 
 (require 'cl)
 
@@ -52,7 +46,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Indentation
 
-(defun bde-in-member-documentation ()
+(defun bde-in-member-documentation-p ()
   "Check if we are looking at a line that is the end of a chain
 of comments following a line that ends in a semi-colon,
 immediately inside a class or namespace scope."
@@ -74,7 +68,7 @@ immediately inside a class or namespace scope."
 (defun bde-comment-offset (element)
   "Return a symbol for the correct indentation level at the
 current cursor position."
-  (if (bde-in-member-documentation)
+  (if (bde-in-member-documentation-p)
       '+
     nil))
 
@@ -89,6 +83,10 @@ current cursor position."
 ;;;   --  c-basic-offset times −2
 ;;;   *   c-basic-offset times 0.5
 ;;;   /   c-basic-offset times −0.5
+;;; Note: to debug the indentation of a particular line, type 'C-c C-s'. It
+;;; will display what syntactic components affect the offset calculations for
+;;; that line. More details in M-x info, then CC mode, then Interactive
+;;; Customization.
 
 (c-add-style
  "bde"
@@ -120,6 +118,10 @@ current cursor position."
 
 ;;; Enable auto indent
 (setq-default c-tab-always-indent t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Tabs
 
 ;;; Use M-i to go to the next 4-character tab position
 (setq tab-stop-list
