@@ -1,9 +1,10 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** TODO fix F3 / recenter
+** TODO improve indent for comments
 ** TODO smart align function
 ** TODO install Projectile
+** TODO fix F3 / recenter
 ** TODO make header auto-complete better
    Either this will come from Projectile, or
    It can be easily done with per-directory variables:

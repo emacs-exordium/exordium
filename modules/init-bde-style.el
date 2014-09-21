@@ -45,12 +45,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Indentation
+;;;
+;;; This section define a C style named "bde" using c-add-style.  The offset
+;;; specifications in the specification (c-offset-alist) can be any of the
+;;; following:
+;;;
+;;; - An integer -> specifies a relative offset. All relative offsets will be
+;;;   added together and used to calculate the indentation relative to an
+;;;   anchor position earlier in the buffer.
+;;; - One of the symbols +, -, ++, --, *, or /
+;;;   +   = c-basic-offset times 1
+;;;   -   = c-basic-offset times −1
+;;;   ++  = c-basic-offset times 2
+;;;   --  = c-basic-offset times −2
+;;;   *   = c-basic-offset times 0.5
+;;;   /   = c-basic-offset times −0.5
+;;;
+;;; Note: to debug the indentation of a particular line, type 'C-c C-s'. It
+;;; will display the variable 'c-syntaxtic-context' which is a list of the
+;;; syntactic components affect the offset calculations for that line, with the
+;;; character position in the buffer for each of them. More details in M-x
+;;; info, then CC mode, then Interactive Customization.
 
-(defun bde-in-member-documentation-p ()
-  "Check if we are looking at a line that is the end of a chain
-of comments following a line that ends in a semi-colon,
-immediately inside a class or namespace scope."
-  (case (caar c-syntactic-context)
+(defun bde-comment-offset (element)
+  "Return a symbol for the correct indentation level at the
+current cursor position if the cursor is within a class definition:
+- + if in non-data member comment
+- column number of the first comment line if in data member comment."
+    (case (caar c-syntactic-context)
     ((inclass innamespace)
      (save-excursion
        (loop
@@ -59,34 +81,15 @@ immediately inside a class or namespace scope."
                (return nil))
               ((re-search-forward "^ *//" (point-at-eol) t)
                (next-line -1))
-              ((re-search-forward "; *$" (point-at-eol) t)
-               (return t))
+              ((re-search-forward "; *//" (point-at-eol) t)
+               ;; in beginning of data member comment block
+               (return (- (current-column) 2 c-basic-offset)))
+              ((re-search-forward "[};] *$" (point-at-eol) t)
+               ;; in beginning of function member comment block
+               (return '+))
               (t
                (return nil))))))
     (t nil)))
-
-(defun bde-comment-offset (element)
-  "Return a symbol for the correct indentation level at the
-current cursor position."
-  (if (bde-in-member-documentation-p)
-      '+
-    nil))
-
-;;; The offset specifications in c-offset-alist can be any of the following:
-;;; - An integer -> specifies a relative offset. All relative offsets will be
-;;;   added together and used to calculate the indentation relative to an
-;;;   anchor position earlier in the buffer.
-;;; - One of the symbols +, -, ++, --, *, or /
-;;;   +   c-basic-offset times 1
-;;;   -   c-basic-offset times −1
-;;;   ++  c-basic-offset times 2
-;;;   --  c-basic-offset times −2
-;;;   *   c-basic-offset times 0.5
-;;;   /   c-basic-offset times −0.5
-;;; Note: to debug the indentation of a particular line, type 'C-c C-s'. It
-;;; will display what syntactic components affect the offset calculations for
-;;; that line. More details in M-x info, then CC mode, then Interactive
-;;; Customization.
 
 (c-add-style
  "bde"
