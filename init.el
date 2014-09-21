@@ -46,7 +46,9 @@
                            paredit
                            rainbow-delimiters
                            helm
-                           ido-ubiquitous))
+                           ido-ubiquitous
+                           projectile
+                           helm-projectile))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -95,7 +97,8 @@
 ;;; Usability
 (require 'init-ido)
 (require 'init-autocomplete)
-(require 'init-helm)
+(when *init-helm-projectile*
+  (require 'init-helm-projectile))
 
 ;;; Major modes
 (require 'init-markdown)
@@ -116,9 +119,12 @@
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-(require 'init-yasnippet)
 
-;; (require 'init-cedet.el)
+(when *init-yasnippet*
+  (require 'init-yasnippet))
+
+(when *init-cedet*
+  (require 'init-cedet.el))
 
 (require 'init-rtags)
 (when *init-header-auto-complete*

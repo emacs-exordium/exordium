@@ -57,12 +57,24 @@
   "Enables ESC key for keyboard quit")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; C++ and RTags
+;;; C++, CEDET and RTags
 
 (defvar *init-header-auto-complete* nil
   "Enables auto-complete for header files (non-RTags)")
 
 (defvar *init-rtags-auto-complete* nil
   "Enables RTags as the source for auto-complete")
+
+(defvar *init-cedet* nil
+  "Enables CEDET")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Others
+
+(defvar *init-yasnippet* t
+  "Enables YASnippet")
+
+(defvar *init-helm-projectile* t
+  "Enables Helm and Projectile")
 
 (provide 'init-prefs)
