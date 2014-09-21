@@ -164,13 +164,16 @@ Keybinding         | Description
 ### Projectile
 
 Projectile allows for defining "projects" e.g. collections of files. Once a
-project is define it provides many keys to find a file by partial name, grep in
-all files etc. The main usage is to jump to a file using partial name, without
-having to remember in which directory it is.
+project is defined it provides many keys to find files, grep in all files
+etc. The main usage is to jump to a file using a partial name without having
+to remember in which directory it is.
 
 A `.git` repo defines the root directory of a project. However it is better to
 define a `.projectile` at the root of your project, because it allows for
-filtering out the files you don't care about, such as binaries, scripts etc. For example, suppose you have a workspace directory containing among other things the BDE library and a project "bar"; you could create `.projectile` file like this:
+filtering out the files you don't care about, such as binaries, scripts
+etc. For example, suppose you have a workspace directory containing among other
+things the BDE library and a project "bar"; you could create `.projectile` file
+like this:
 
 ```
 +/bde/groups
