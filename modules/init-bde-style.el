@@ -68,27 +68,52 @@
 ;;; info, then CC mode, then Interactive Customization.
 
 (defun bde-comment-offset (element)
-  "Return a symbol for the correct indentation level at the
+  "Custom line-up function for BDE comments.
+Return a symbol for the correct indentation level at the
 current cursor position if the cursor is within a class definition:
-- + if in non-data member comment
-- column number of the first comment line if in data member comment."
-    (case (caar c-syntactic-context)
+1. + for method comments:
+        int foo() const = 0;
+            // tab = here
+        int bar() { return 0; }
+            // tab = here
+2. column number of beginning of comment for data member comments:
+        int d_data;     // my comment
+                        // tab = here
+        int d_someLongVariableName;
+                        // my comment
+                        // tab = here
+3. nil otherwise."
+  (case (caar c-syntactic-context)
     ((inclass innamespace)
      (save-excursion
-       (loop
-        (beginning-of-line)
-        (cond ((= (point) (point-min))
-               (return nil))
-              ((re-search-forward "^ *//" (point-at-eol) t)
-               (next-line -1))
-              ((re-search-forward "; *//" (point-at-eol) t)
-               ;; in beginning of data member comment block
-               (return (- (current-column) 2 c-basic-offset)))
-              ((re-search-forward "[};] *$" (point-at-eol) t)
-               ;; in beginning of function member comment block
-               (return '+))
-              (t
-               (return nil))))))
+       (let ((class-offset         ; extra offset for inner structs
+              (c-langelem-col (car c-syntactic-context) t))
+             (comment-column nil)) ; column number of last //
+         (loop
+          (beginning-of-line)
+          (cond ((= (point) (point-min))
+                 (return nil))
+                ((re-search-forward "^ *//" (point-at-eol) t)
+                 ;; looking at a comment line
+                 (setq comment-column (- (current-column) 2))
+                 (next-line -1))
+                ((re-search-forward ") *\\(const\\)? *\\(= *0\\)? *; *$"
+                                    (point-at-eol) t)
+                 ;; looking at end of method declaration
+                 (return '+))
+                ((re-search-forward "} *$" (point-at-eol) t)
+                 ;; looking at end of inline method definition
+                 (return '+))
+                ((re-search-forward "; *//" (point-at-eol) t)
+                 ;; looking at beginning of data member comment block
+                 (return (- (current-column) 2 class-offset c-basic-offset)))
+                ((and comment-column
+                      (re-search-forward "[_A-Za-z0-9]+; *$"
+                                         (point-at-eol) t))
+                 ;; looking at end of (long?) data member declaration
+                 (return (- comment-column class-offset c-basic-offset)))
+                (t
+                 (return nil)))))))
     (t nil)))
 
 (c-add-style

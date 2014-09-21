@@ -1,7 +1,7 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** TODO improve indent for comments
+** DONE improve indent for comments
 ** TODO smart align function
 ** TODO install Projectile
 ** TODO fix F3 / recenter
