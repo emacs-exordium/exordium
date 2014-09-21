@@ -47,8 +47,7 @@
 ;;; Indentation
 ;;;
 ;;; This section define a C style named "bde" using c-add-style.  The offset
-;;; specifications in the specification (c-offset-alist) can be any of the
-;;; following:
+;;; in the specification (c-offset-alist) can be any of the following:
 ;;;
 ;;; - An integer -> specifies a relative offset. All relative offsets will be
 ;;;   added together and used to calculate the indentation relative to an
@@ -62,26 +61,27 @@
 ;;;   /   = c-basic-offset times −0.5
 ;;;
 ;;; Note: to debug the indentation of a particular line, type 'C-c C-s'. It
-;;; will display the variable 'c-syntaxtic-context' which is a list of the
+;;; will display the variable 'c-syntactic-context' which is a list of the
 ;;; syntactic components affect the offset calculations for that line, with the
 ;;; character position in the buffer for each of them. More details in M-x
 ;;; info, then CC mode, then Interactive Customization.
+;;; See cc-align.el for examples of line-up functions.
 
 (defun bde-comment-offset (element)
   "Custom line-up function for BDE comments.
 Return a symbol for the correct indentation level at the
-current cursor position if the cursor is within a class definition:
+current cursor position, if the cursor is within a class definition:
 1. + for method comments:
         int foo() const = 0;
-            // tab = here
+            // tab goes here
         int bar() { return 0; }
-            // tab = here
+            // tab goes here
 2. column number of beginning of comment for data member comments:
-        int d_data;     // my comment
-                        // tab = here
+        int d_data;     // my comment at whatever column I want
+                        // tab goes here
         int d_someLongVariableName;
-                        // my comment
-                        // tab = here
+                        // my comment at whatever column I want
+                        // tab goes here
 3. nil otherwise."
   (case (caar c-syntactic-context)
     ((inclass innamespace)
@@ -445,7 +445,7 @@ guard around it"
                                (- 79 longest-length))
               ;; We cannot indent correctly, some lines are too long
               (indent-region (region-beginning) (region-end))
-              (message "John Lakos cries :'("))))))))
+              (message "Longest line is %d chars" longest-length))))))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
