@@ -2,8 +2,8 @@
 
 * Next Items
 ** DONE improve indent for comments
+** DONE install Projectile
 ** TODO smart align function
-** TODO install Projectile
 ** TODO fix F3 / recenter
 ** TODO make header auto-complete better
    Either this will come from Projectile, or

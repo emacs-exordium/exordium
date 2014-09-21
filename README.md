@@ -32,6 +32,9 @@ Other:
 * Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode).
 * Org: [org-mode](http://orgmode.org).
 * [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in).
+* [Helm](http://tuhdo.github.io/helm-intro.html) an equivalent of IDO.
+* [Projectile](http://batsov.com/projectile) a project-based file management
+  tool.
 * [Windmove](http://www.emacswiki.org/emacs/WindMove): move between windows
   with Shift-Meta-arrows.
 * [Expand Region](https://github.com/magnars/expand-region.el): increase
@@ -158,11 +161,44 @@ Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-x g</bkd>   | Open git status mode (`magit-status`).
 
-Helm (work in progress):
+### Projectile
+
+Projectile allows for defining "projects" e.g. collections of files. Once a
+project is define it provides many keys to find a file by partial name, grep in
+all files etc. The main usage is to jump to a file using partial name, without
+having to remember in which directory it is.
+
+A `.git` repo defines the root directory of a project. However it is better to
+define a `.projectile` at the root of your project, because it allows for
+filtering out the files you don't care about, such as binaries, scripts etc. For example, suppose you have a workspace directory containing among other things the BDE library and a project "bar"; you could create `.projectile` file like this:
+
+```
++/bde/groups
++/bar
+-.*
+-*.md
+-*.cap
+-*.mem
+-*.dep
+-*.opts
+-*.defs
+```
+
+This specifies the directories to index and then the files name patterns to
+exclude. Refer to the [Projectile](https://github.com/bbatsov/projectile)
+documentation for details.
+
+After creating this file, restart Emacs in the same directory for Projectile to
+find it. You should only need to do this one time for each project, after that
+it is cached. Didn't find a better way yet.
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-c h</kbd>   | Open anything.
+<knd>C-c p p</kbd> | Switch project with IDO.
+<kbd>C-c p f</kbd> | Find file with IDO / Projectile.
+<kbd>C-c h</bkd>   | Find file with Helm / Projectile.
+
+See Projectile doc for other keys.
 
 ### C++
 
