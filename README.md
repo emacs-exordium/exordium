@@ -194,7 +194,7 @@ it is cached. Didn't find a better way yet.
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<knd>C-c p p</kbd> | Switch project with IDO.
+<kbd>C-c p p</kbd> | Switch project with IDO.
 <kbd>C-c p f</kbd> | Find file with IDO / Projectile.
 <kbd>C-c h</bkd>   | Find file with Helm / Projectile.
 
