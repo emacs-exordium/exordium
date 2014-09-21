@@ -71,7 +71,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Others
 
-(defvar *init-yasnippet* t
+(defvar *init-yasnippet* nil
   "Enables YASnippet")
 
 (defvar *init-helm-projectile* t
