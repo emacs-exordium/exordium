@@ -41,13 +41,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 80-column ruler bound to Ctrl-|
+;;; Note: if it causes Emacs to crash on images, set the variable
+;;; fci-always-use-textual-rule to t (it will use a character instead).
 
-(require 'fill-column-indicator)
-(setq fci-rule-use-dashes t)
-(setq fci-dash-pattern 0.5)
-(setq fci-rule-width 1)
-(setq fci-rule-color "dim gray")
-(define-key global-map [(control |)] 'fci-mode)
+(when *init-fci-mode*
+  (require 'fill-column-indicator)
+  (when *init-fci-use-dashes*
+    (setq fci-rule-use-dashes t)
+    (setq fci-dash-pattern 0.5))
+  (setq fci-rule-width 1)
+  (setq fci-rule-color "dim gray")
+  (define-key global-map [(control |)] 'fci-mode)
+  (when (eq *init-fci-mode* :always)
+    (define-globalized-minor-mode global-fci-mode fci-mode
+      (lambda () (fci-mode 1)))
+    (global-fci-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Loud face for TODOs in elisp comments

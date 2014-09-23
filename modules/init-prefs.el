@@ -35,6 +35,16 @@
 (defvar *init-enable-electric-pair-mode* t
   "Enables electric-pair-mode")
 
+(defvar *init-fci-mode* :ondemand
+  "Controls fill-column-indicator.
+:ondemand off by default (you need to hit C-| to toggle it)
+:always means it is always on
+nil means it is disabled.")
+
+(defvar *init-fci-use-dashes* t
+  "If t, use dashes for fill-column-indicator.
+If nil, use a plain line.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme
 
