@@ -48,7 +48,8 @@
                            helm
                            ido-ubiquitous
                            projectile
-                           helm-projectile))
+                           helm-projectile
+                           cmake-mode))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
