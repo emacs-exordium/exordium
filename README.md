@@ -236,7 +236,7 @@ Keybinding          | Description
 <kbd>C-c h</kbd>    | Helm: find file in any project
 <kbd>C-c p p</kbd>  | IDO: switch project
 <kbd>C-c p f</kbd>  | IDO: find file in current project
-<kbd>C-c p g</kdb> or <kbd>C-c p s g</kbd> | Search in project with grep
+<kbd>C-c p g</kbd> or <kbd>C-c p s g</kbd> | Search in project with grep
 <kbd>C-c p s a</kbd> | Search in project with ack
 <kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
 
