@@ -49,6 +49,7 @@
                            ido-ubiquitous
                            projectile
                            helm-projectile
+                           ack-and-a-half
                            cmake-mode
                            markdown-mode
                            fill-column-indicator))

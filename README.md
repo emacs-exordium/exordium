@@ -165,11 +165,15 @@ Keybinding         | Description
 
 Projectile allows for defining "projects" e.g. collections of files. Once a
 project is defined it provides many keys to find files, grep in all files
-etc. The main usage is to jump to a file using a partial name without having
-to remember in which directory it is.
+etc. Projectile maintains a index of files for each project it knows about;
+this list is created by scanning the project root directory. The main usage is
+to jump to a file using a partial name without having to remember in which
+directory it is, but it also supports grep/ack and replace in
+project. Projectile works with Helm or IDO, so you can use either one with
+different keys.
 
-A `.git` repo defines the root directory of a project. However it is better to
-define a `.projectile` at the root of your project, because it allows for
+A `.git` repo defines the root directory of a project. Alternatively you can
+create a file `.projectile` at the root of your project: it allows for
 filtering out the files you don't care about, such as binaries, scripts
 etc. For example, suppose you have a workspace directory containing among other
 things the BDE library and a project "bar"; you could create `.projectile` file
@@ -187,27 +191,62 @@ like this:
 -*.defs
 ```
 
-This specifies the directories to index and then the files name patterns to
-exclude. Refer to the [Projectile](https://github.com/bbatsov/projectile)
-documentation for details.
+The plus sign is used to ignore everything except specific directories;
+alternatively the minus sign is used to indicate what directories to ignore,
+starting at the root of the project. The minus sign can also ignore file
+patterns. If both directories to keep and ignore are specified, the directories
+to keep first apply, restricting what files are considered. The paths and
+patterns to ignore are then applied to that set. Refer to the
+[Projectile](https://github.com/bbatsov/projectile) documentation for details.
 
-After creating this file, restart Emacs in the same directory for Projectile to
-find it. You should only need to do this one time for each project, after that
-it is cached. Didn't find a better way yet.
+Now you need to teach Projectile where your projects are. You can do that by:
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-c p p</kbd> | Switch project with IDO.
-<kbd>C-c p f</kbd> | Find file with IDO / Projectile.
-<kbd>C-c h</bkd>   | Find file with Helm / Projectile.
+1\. Simply opening the project's root dir in dired, and then pretending to
+  search a file with Helm (<kbd>C-c h</kbd>), or switching project with IDO
+  (<kbd>C-c p p</kbd>). The top of the Helm buffer should show the list of
+  projects including yours.
 
-See Projectile doc for other keys.
+2\. Sometimes method 1 works for the current session, but then Projectile
+  forgets your projects as soon as you restart Emacs. In this case try to
+  restart Emacs in the project's root directory for Projectile to find it. You
+  should only need to do this one time for each project, after that it is
+  cached.
+
+3\. Or if really this does not work, edit the file where Projectile saves the
+  list of projects. This file is `~/.emacs.d/projectile-bookmarks.eld`. Since
+  it is constantly written by Emacs itself, you need to exit emacs and restart
+  it with `emacs -Q` (so that Projectile does not run). Edit the file, save and
+  restart Emacs normally. Here is my bookmark file:
+
+```
+("/bb/mbig7/mbig2387/workspaces/rsp/" "/bb/mbig7/mbig2387/workspaces/si-core/" "/home12/pgrenet/.emacs.d/" "/bb/mbig7/mbig2387/workspaces/bsl-internal/" "/bb/mbig7/mbig2387/workspaces/bde-core/")
+```
+
+To open a file with Projectile using Helm, type <kbd>C-c h</kbd>. This will
+display the Helm buffer, displaying initially just the list of projects at the
+top. Choose your project with the arrow keys and press enter; Helm will now
+display all indexed files in the project. Start typing a partial name to narrow
+the selection until you find what you were looking for.
+
+<kbd>C-c p C-h</kbd> displays the list of keys for Projectile. Below are the
+most important ones.
+
+Keybinding          | Description
+--------------------|-----------------------------------------------------------
+<kbd>C-c h</kbd>    | Helm: find file in any project
+<kbd>C-c p p</kbd>  | IDO: switch project
+<kbd>C-c p f</kbd>  | IDO: find file in current project
+<kbd>C-c p g</kdb> or <kbd>C-c p s g</kbd> | Search in project with grep
+<kbd>C-c p s a</kbd> | Search in project with ack
+<kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
+
+See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
 
 ### C++
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-TAB</bkd>   | Alternate between header file and source file.
+<kbd>C-TAB</kbd>   | Alternate between header file and source file.
 <kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
 
 [BDE](https://github.com/bloomberg/bde) style:
@@ -217,7 +256,7 @@ Keybinding         | Description
 <kbd>C-&gt;</kbd>  | Right-align text after cursor (for // return, // lock etc.).
 <kbd>C-c i</kbd>   | Insert redundant #include guard.
 <kbd>C-c a</kbd>   | Align function arguments.
-<kbd>C-c =</bkd>   | Insert class definition header.
+<kbd>C-c =</kbd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
 ## Using RTags

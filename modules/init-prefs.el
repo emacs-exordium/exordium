@@ -84,7 +84,7 @@ If nil, use a plain line.")
 (defvar *init-yasnippet* nil
   "Enables YASnippet")
 
-(defvar *init-helm-projectile* nil
+(defvar *init-helm-projectile* t
   "Enables Helm and Projectile")
 
 (provide 'init-prefs)

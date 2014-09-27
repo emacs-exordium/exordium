@@ -14,6 +14,9 @@
 (projectile-global-mode)
 (global-set-key [(control c)(h)] 'helm-projectile)
 
+(global-set-key [(control c)(p)(g)] 'projectile-grep)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Do not show these files in helm buffer
 ;; (add-to-list helm-boring-file-regexp-list
 ;;       '("\\.tsk$" "\\.log$"))
