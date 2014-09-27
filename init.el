@@ -49,7 +49,9 @@
                            ido-ubiquitous
                            projectile
                            helm-projectile
-                           cmake-mode))
+                           cmake-mode
+                           markdown-mode
+                           fill-column-indicator))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
