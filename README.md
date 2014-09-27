@@ -165,19 +165,19 @@ Keybinding         | Description
 
 Projectile allows for defining "projects" e.g. collections of files. Once a
 project is defined it provides many keys to find files, grep in all files
-etc. Projectile maintains a index of files for each project it knows about;
+etc. Projectile maintains an index of files for each project it knows about;
 this list is created by scanning the project root directory. The main usage is
 to jump to a file using a partial name without having to remember in which
 directory it is, but it also supports grep/ack and replace in
 project. Projectile works with Helm or IDO, so you can use either one with
 different keys.
 
-A `.git` repo defines the root directory of a project. Alternatively you can
-create a file `.projectile` at the root of your project: it allows for
-filtering out the files you don't care about, such as binaries, scripts
-etc. For example, suppose you have a workspace directory containing among other
-things the BDE library and a project "bar"; you could create `.projectile` file
-like this:
+A `.git` repo or a `.projectile` file defines the root directory of a
+project. Even if you have a git repo, you can create a `.projectile` file at
+the root of your project: it allows for filtering out the files you don't care
+about, such as binaries, scripts etc. For example, suppose you have a workspace
+directory containing among other things the BDE library and a project "bar";
+you could create `.projectile` file like this:
 
 ```
 +/bde/groups
@@ -212,11 +212,12 @@ Now you need to teach Projectile where your projects are. You can do that by:
   should only need to do this one time for each project, after that it is
   cached.
 
-3\. Or if really this does not work, edit the file where Projectile saves the
-  list of projects. This file is `~/.emacs.d/projectile-bookmarks.eld`. Since
-  it is constantly written by Emacs itself, you need to exit emacs and restart
-  it with `emacs -Q` (so that Projectile does not run). Edit the file, save and
-  restart Emacs normally. Here is my bookmark file:
+3\. The brute force method which is guaranteed to work is to edit the file
+  where Projectile saves the list of projects. This file is
+  `~/.emacs.d/projectile-bookmarks.eld`. Since it is constantly written by
+  Emacs itself, you need to exit emacs and restart it with `emacs -Q` (so that
+  Projectile does not run). Edit the file, save and restart Emacs
+  normally. Here is my bookmark file:
 
 ```
 ("/bb/mbig7/mbig2387/workspaces/rsp/" "/bb/mbig7/mbig2387/workspaces/si-core/" "/home12/pgrenet/.emacs.d/" "/bb/mbig7/mbig2387/workspaces/bsl-internal/" "/bb/mbig7/mbig2387/workspaces/bde-core/")
