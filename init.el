@@ -32,6 +32,8 @@
                            highlight-symbol
                            magit
                            git-timemachine
+                           git-gutter
+                           git-gutter-fringe
                            expand-region
                            auto-complete
                            company
@@ -103,6 +105,7 @@
 (require 'init-autocomplete)
 (when *init-helm-projectile*
   (require 'init-helm-projectile))
+(require 'init-git)
 
 ;;; Major modes
 (require 'init-markdown)

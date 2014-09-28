@@ -87,4 +87,7 @@ If nil, use a plain line.")
 (defvar *init-helm-projectile* t
   "Enables Helm and Projectile")
 
+(defvar *init-git-gutter* t
+  "Enables git gutter fringe")
+
 (provide 'init-prefs)

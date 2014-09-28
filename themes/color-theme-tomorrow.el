@@ -352,6 +352,12 @@ names to which it refers are bound."
      (magit-log-head-label-tags ((,class (:foreground ,aqua :box nil :weight bold))))
      (magit-section-title ((,class (:inherit diff-hunk-header))))
 
+     ;; Git gutter fringe
+     ;; Note: this uses linum color, but green/red/yellow are another option.
+     (git-gutter-fr:added ((,class (:foreground ,comment))))
+     (git-gutter-fr:deleted ((,class (:foreground ,comment))))
+     (git-gutter-fr:modified ((,class (:foreground ,comment))))
+
      ;; Compilation (most faces politely inherit from 'success, 'error, 'warning etc.)
      (compilation-column-number ((,class (:foreground ,yellow))))
      (compilation-line-number ((,class (:foreground ,yellow))))

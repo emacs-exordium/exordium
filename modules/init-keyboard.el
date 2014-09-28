@@ -17,7 +17,6 @@
 ;;; M-C-l             Switch to last buffer
 ;;; C- +/-            Zoom
 ;;;
-;;; C-x g             Magit status
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 
@@ -62,9 +61,6 @@
 ;;; Ctrl +/- to zoom in/out
 (define-key global-map [(control +)] 'text-scale-increase)
 (define-key global-map [(control -)] 'text-scale-decrease)
-
-;;; Ctrl-x g = magit-status
-(define-key global-map [(control x)(g)] 'magit-status)
 
 ;;; Speed bar
 (global-set-key [f10] 'speedbar)
