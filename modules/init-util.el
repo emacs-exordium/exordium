@@ -12,10 +12,13 @@
 ;;; (unbound)      `insert-current-date-time'
 ;;;
 ;;; C-c d          `duplicate-line'
+;;;
 ;;; C-\            `delete-horizontal-space-forward'
 ;;; C-BACKSPACE    `delete-horizontal-space-backward'
 ;;;                (Emacs also has Meta-\ to delete all spaces)
-
+;;;
+;;; M-d            `delete-word'
+;;; M-BACKSPACE    `backward-delete-word'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Match parentheses
@@ -48,7 +51,6 @@
         (t                    (self-insert-command (or arg 1)))))
 
 (global-set-key [(control %)] 'goto-match-paren-or-up)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Position stack
@@ -89,7 +91,6 @@
 (global-set-key [(control c)(control s)] 'postack-push)
 (global-set-key [(control c)(control b)] 'postack-pop)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert date/time
 ;;; Ctrl-C Ctrl-D = date
@@ -116,14 +117,8 @@ Uses `current-date-time-format' for the formatting the date/time."
   (insert (format-time-string current-time-format (current-time)))
   (insert "\n"))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Editing
-
-(defun copy-all ()
-  "Copy entire buffer to clipboard"
-  (interactive)
-  (clipboard-kill-ring-save (point-min) (point-max)))
+;;; Duplicate lines
 
 (defun duplicate-line (arg)
   "Duplicate current line, leaving point in lower line."
@@ -154,6 +149,9 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 (global-set-key [(control c)(d)] 'duplicate-line)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Deleting Spaces
+
 (defun delete-horizontal-space-forward ()
   "Delete all spaces and tabs after point."
   (interactive "*")
@@ -167,5 +165,30 @@ Uses `current-date-time-format' for the formatting the date/time."
   (delete-region (point) (progn (skip-chars-backward " \t") (point))))
 
 (global-set-key [(control backspace)] 'delete-horizontal-space-backward)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Deleting Words
+;;;
+;;; These functions replace delete-word and backward-kill-word: they do NOT put
+;;; the deleted word onto the clipboard. Otherwise this gets annoying:
+;;; - copy some expression
+;;; - Delete an argument in a funcall using M-d or M-backspace
+;;; - try to yank the the expression to replace the argument...
+
+(defun delete-word (arg)
+  "Delete characters forward until encountering the end of a word.
+With argument, do this that many times."
+  (interactive "p")
+  (delete-region (point) (progn (forward-word arg) (point))))
+
+(define-key global-map [(meta d)] 'delete-word)
+
+(defun backward-delete-word (arg)
+  "Delete characters backward until encountering the end of a word.
+With argument, do this that many times."
+  (interactive "p")
+  (delete-word (- arg)))
+
+(define-key global-map [(meta backspace)] 'backward-delete-word)
 
 (provide 'init-util)
