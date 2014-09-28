@@ -1,8 +1,8 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** TODO replace the extensions that are in elpa
-** TODO make projectile actually work
+** DONE replace the extensions that are in elpa
+** DONE make projectile actually work
 ** TODO align to right
 ** TODO fix F3 / recenter
 ** TODO make header auto-complete better

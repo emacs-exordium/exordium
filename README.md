@@ -278,14 +278,18 @@ $ rdm
 This will start the deamon on the foreground, using a number of concurrent "rp"
 jobs that is function of the number of CPUs on the local machine. It starts by
 reading the saved project indices in `~/.rtags` if any. By default it logs to
-the console but you can make it log to a file instead. There are many options;
-use `--help` to see the list.  You can also create a file `~/.rdmrc` containing
-the default command line arguments.
+the console but you can make it log to a file instead with `-L file` or make it
+silent with `-S`. There are many options; use `--help` to see the list.  You
+can also create a file `~/.rdmrc` containing the default command line
+arguments.
 
 Alternatively you can run rdm as an Emacs subprocess: M-x `rtags-start-rdm`,
 with logs going into a buffer. Stop it with M-x `rtags-quit-rdm`.
 
 ### Controlling rdm
+
+rdm stores project indices into a directory `~/.rtags` and reloads them as
+needed. rc and rdm communicate with each other using a socket file `~/.rdm`.
 
 Command            | Description
 -------------------|-----------------------------------------------------------

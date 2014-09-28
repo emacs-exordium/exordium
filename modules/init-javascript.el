@@ -5,7 +5,7 @@
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (add-hook 'js2-mode-hook 'ac-js2-mode)
 
-;;; s2-mode comes with some useful utility functions for working with js files
+;;; js2-mode comes with some useful utility functions for working with js files
 ;;; more efficiently. For example, ac-js2-jump-to-definition quickly jumps to
 ;;; the definition of one variable/function that is defined in the same file,
 ;;; js2-mark-defun selects the current function,â¦ You can use the command
