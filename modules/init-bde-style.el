@@ -13,8 +13,8 @@
 ;;; C-c a          `bde-align-functions-arguments'
 ;;;
 ;;; Aligh right after point:
-;;; Before:
-;;;     return x; <cursor> // RETURN
+;;; Before (cursor anywhere after semi-colon):
+;;;     return x; // RETURN
 ;;; After:
 ;;;     return x;                                     // RETURN
 ;;;
@@ -39,9 +39,11 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
+;;;
+;;; Align function call arguments (cursor must be inside the argument list)
+;;; TODO: work in progress
 
 (require 'cl)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Indentation
@@ -147,7 +149,6 @@ current cursor position, if the cursor is within a class definition:
 ;;; Enable auto indent
 (setq-default c-tab-always-indent t)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tabs
 
@@ -157,7 +158,6 @@ current cursor position, if the cursor is within a class definition:
 
 ;; Allow tab in Makefile
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert class header
@@ -236,11 +236,10 @@ backspace, delete, left or right."
 (global-set-key [(control c)(=)] 'bde-insert-define-class-header)
 (global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BDE's right style comments such as // RETURN or // LOCK
 
-(defun bde-aligh-right-after-point ()
+(defun bde-aligh-right ()
   "Set the right amount of spaces around the point so the text
   after point is right-aligned (for things such as // RETURN). It
   works even if point is in a C++ comment."
@@ -264,8 +263,7 @@ backspace, delete, left or right."
       (message "Sorry, not enough space..."))))
 
 ;;; Ctrl-> to right-aligh the text after point
-(global-set-key [(control >)] 'bde-aligh-right-after-point)
-
+(global-set-key [(control >)] 'bde-aligh-right)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert redundant include guards
@@ -327,7 +325,6 @@ guard around it"
 
 (define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Align function arguments
 
@@ -378,10 +375,10 @@ guard around it"
           assign)))
 
 (defun bde-align-functions-arguments ()
-  "Assuming the cursor is within a function's argument list,
-  align them"
+  "Assuming the cursor is within the argument list of a function
+declaration or definition, align the type and variable names"
   (interactive)
-  ;; Get a list of the arguments. Note that the externam parentheses are included
+  ;; Get a list of the arguments. Note that the external parentheses are included
   (let ((args (split-string (thing-at-point 'list) ","))
         (parsed-args ())
         (max-type-length 0)
@@ -449,6 +446,67 @@ guard around it"
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
+(defun bde-align-funcall ()
+  "Assuming the cursor is within the list of arguments of a
+  function call, align the arguments. It puts one argument per
+  line and aligns to the right"
+  (interactive)
+  ;; Get a list of the arguments. Note that the external parentheses are included
+  (let ((arglist (thing-at-point 'list)))
+    (when (pg/string-starts-with arglist "(")
+      (setq arglist (substring arglist 1)))
+    (when (pg/string-ends-with arglist ")")
+      (setq arglist (substring arglist 0 (1- (length arglist)))))
+    (let ((args (split-string arglist ","))
+          (parsed-args ()))
+      (dolist (arg args)
+        (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
+                                              (substring arg 1)
+                                            arg))))
+          (setq parsed-args (cons parsed-arg parsed-args))))
+      (setq parsed-args (reverse parsed-args))
+      ;; Cut the argument list and edit it into a temporary buffer
+      (backward-up-list)
+      (push-mark)
+      (forward-list)
+      (kill-region (region-beginning) (region-end))
+      (insert
+       (with-temp-buffer
+         (insert "(")
+         (let ((i 1))
+           (dolist (arg parsed-args)
+             (insert arg)
+             (unless (>= i (length parsed-args))
+               (insert ",")
+               (newline))
+             (incf i)))
+         (insert ")")
+         (buffer-string)))
+      ;; Reindent
+      (push-mark)
+      (backward-list)
+      (indent-region (region-beginning) (region-end))
+      ;; If some lines exceed the dreadful 79th column, insert a new line before
+      ;; the first line and reindent, with longest line to the right edge
+      (save-excursion
+        (let ((start-col (1+ (current-column)))
+              (max-col (bde-max-column-in-region)))
+          (when (> max-col 79)
+            (backward-list)
+            (forward-char)
+            (newline)
+            (backward-char 2)
+            (push-mark)
+            (forward-list)
+            (let ((longest-length (- max-col start-col)))
+              (if (<= longest-length 79)
+                  (indent-region (region-beginning) (region-end)
+                                 (- 79 longest-length))
+                ;; We cannot indent correctly, some lines are too long
+                (indent-region (region-beginning) (region-end))
+                (message "Longest line is %d chars" longest-length)))))))))
+
+(define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
 
 ;;; End of file
 (provide 'init-bde-style)
