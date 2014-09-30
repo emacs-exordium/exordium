@@ -52,11 +52,12 @@
 
 ;;; Display column number and line numbers
 (column-number-mode 1)
-(if (boundp 'global-linum-mode)
+(if (and (boundp 'global-linum-mode) *init-display-line-numbers*)
     (global-linum-mode t))
 
 ;;; Highlight cursor
-(global-hl-line-mode 1)
+(when *init-line-mode*
+  (global-hl-line-mode 1))
 
 ;;; Smooth scrolling
 (setq scroll-step 1)

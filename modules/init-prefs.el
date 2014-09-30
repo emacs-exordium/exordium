@@ -29,6 +29,12 @@
 (defvar *init-preferred-frame-height* 65
   "Default frame height (a number of lines)")
 
+(defvar *init-display-line-numbers* t
+  "Enables display of the column number")
+
+(defvar *init-line-mode* t
+  "Highlights the current line")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Extensions
 
