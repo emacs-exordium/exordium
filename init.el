@@ -143,8 +143,7 @@
 (require 'init-javascript)
 
 ;;; Lisp
-(unless *environment-bloomberg*
-  ;; Save a little bit of time
+(when *init-clojure*
   (require 'init-clojure))
 
 ;;; Local extensions

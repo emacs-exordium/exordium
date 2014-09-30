@@ -15,7 +15,7 @@
 ;;; Env PATH
 (defun set-exec-path-for-lein ()
   (let ((path-from-shell
-         (shell-command-to-string "$SHELL -i -c 'echo $PATH'")))
+         (shell-command-to-string "$SHELL -i -c -n 'echo $PATH'")))
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-for-lein)

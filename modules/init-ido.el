@@ -1,4 +1,9 @@
 ;;;; IDO mode for everything (files and buffers)
+;;;
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; C-c C-r        Open recent file with IDO
 
 (require 'ido)
 (ido-mode 'both)
@@ -19,6 +24,8 @@
                            "\\*Help\\*"
                            "\\*Messages\\*"
                            "\\*Completions\\*"))
+
+(setq ido-enable-flex-matching t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Open recent files with IDO.

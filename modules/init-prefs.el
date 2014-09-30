@@ -90,4 +90,7 @@ If nil, use a plain line.")
 (defvar *init-git-gutter* t
   "Enables git gutter fringe")
 
+(defvar *init-clojure* nil
+  "Enables clojure")
+
 (provide 'init-prefs)
