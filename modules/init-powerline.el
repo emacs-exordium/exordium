@@ -1,14 +1,29 @@
 ;;;; Powerline
 
 (require 'powerline)
-(require 'color-theme-tomorrow)
+;;(require 'color-theme-tomorrow)
 
-(with-tomorrow-colors
- 'night
- (defface powerline-active3 `((t (:background ,purple
-                                  :foreground ,background)))
-  "Powerline face 1."
-  :group 'powerline))
+(cond ((eq *init-theme* 'monokai)
+       (with-monokai-colors
+        'default
+        (defface powerline-active3 `((t (:background ,violet
+                                         :foreground ,monokai-bg)))
+          "Powerline face 1."
+          :group 'powerline)))
+      (t
+       (with-tomorrow-colors
+        'night
+        (defface powerline-active3 `((t (:background ,purple
+                                         :foreground ,background)))
+          "Powerline face 1."
+          :group 'powerline))))
+
+;; (with-tomorrow-colors
+;;  'night
+;;  (defface powerline-active3 `((t (:background ,purple
+;;                                   :foreground ,background)))
+;;   "Powerline face 1."
+;;   :group 'powerline))
 
 (defun my-powerline-theme ()
   "Setup the default mode-line."

@@ -1,6 +1,4 @@
 ;;;; Inspired by the "Tomorrow" theme from Chris Kempson (MIT license)
-;;;; Borrowed from https://github.com/purcell/color-theme-sanityinc-tomorrow
-;;;; (modified to fit in a single file)
 
 (defconst tomorrow-colors
   '((night . ((background . "#1d1f21")
@@ -131,7 +129,7 @@ names to which it refers are bound."
      (fringe ((,class (:background ,current-line))))
      ;;(linum ((,class (:background ,current-line :foreground ,comment :inherit nil))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
-     (hl-line ((,class (:background ,current-line))))
+     (hl-line ((,class (:background ,current-line :inherit nil))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
      (highlight ((,class (:background ,green :foreground ,background)))) ;+:foreground
@@ -443,6 +441,22 @@ names to which it refers are bound."
      (rng-error-face ((,class (:underline ,red))))
      )))
 
+(defmacro define-tomorrow-theme (mode)
+  "Define a theme for the tomorrow variant `MODE'."
+  (let ((name (intern (format "tomorrow-%s" (symbol-name mode))))
+        (doc (format "tomorrow-%s" mode)))
+    `(progn
+       (deftheme ,name ,doc)
+       (with-tomorrow-colors
+        ',mode
+        (apply 'custom-theme-set-faces ',name (tomorrow-face-specs))
+        ;; (custom-theme-set-variables
+        ;;  ',name
+        ;;  `(fci-rule-color ,current-line)
+        ;;  `(ansi-color-names-vector (vector ,foreground ,red ,green ,yellow ,blue ,purple ,aqua ,background))
+        ;;  '(ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold])))
+        )
+       (provide-theme ',name))))
 
 (defun set-colors-tomorrow-day ()
   "Sets the colors to the tomorrow day theme"

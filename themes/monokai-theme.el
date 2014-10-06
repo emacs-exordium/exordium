@@ -1,5 +1,7 @@
 ;;;; Inspired by the "Monokai" theme from Kelvin Smith <oneKelvinSmith@gmail.com>
 
+(deftheme monokai "A frutty theme")
+
 (defconst monokai-colors
   '((default . (
                 ;; Accented colors
@@ -187,7 +189,7 @@ names to which it refers are bound."
      (font-lock-string-face
        ((,class (:foreground ,yellow))))
      (font-lock-type-face
-       ((,class (:foreground ,blue :italic t))))
+       ((,class (:foreground ,blue :italic nil))))
      (font-lock-variable-name-face
        ((,class (:foreground ,monokai-fg))))
      (font-lock-warning-face
@@ -588,7 +590,7 @@ names to which it refers are bound."
 
      ;; linum-mode
      (linum
-      ((,class (:foreground ,monokai-comments :background ,monokai-bg))))
+      ((,class (:foreground ,gray-hc :background ,monokai-bg))))
 
      ;; magit
      (magit-section-title
@@ -827,11 +829,25 @@ names to which it refers are bound."
 
      )))
 
-(defun set-colors-monokai-default ()
-  "Sets the colors to the monokai theme"
-  (interactive)
+;; (defun set-colors-monokai-default ()
+;;   "Sets the colors to the monokai theme"
+;;   (interactive)
+;;   (with-monokai-colors
+;;    'default
+;;    (apply 'custom-set-faces (monokai-face-specs))))
+
+(defun create-monokai-theme ()
   (with-monokai-colors
    'default
-   (apply 'custom-set-faces (monokai-face-specs))))
+   (apply 'custom-theme-set-faces 'monokai (monokai-face-specs))))
 
-(provide 'color-theme-monokai)
+;;;###autoload
+(when (and (boundp 'custom-theme-load-path) load-file-name)
+  (add-to-list 'custom-theme-load-path
+               (file-name-as-directory (file-name-directory load-file-name))))
+
+(message "load file name = %s" load-file-name)
+(create-monokai-theme)
+
+(provide-theme 'monokai)
+;;(provide 'color-theme-monokai)

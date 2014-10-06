@@ -1,8 +1,10 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** DONE replace the extensions that are in elpa
-** DONE make projectile actually work
+** DONE monokai theme
+** DONE make themes real themes
+** TODO solarized real theme
+** TODO init: namespace
 ** TODO align to right
 ** TODO fix F3 / recenter
 ** TODO make header auto-complete better

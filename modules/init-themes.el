@@ -21,16 +21,25 @@
 
 ;; Defaults
 
-(set-colors-tomorrow-night)
+;;(set-colors-tomorrow-night)
+
+(load-theme *init-theme* t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Org mode
+;;; Org mode extra statuses
 
-(with-tomorrow-colors
- 'night
- (setq org-todo-keyword-faces
-       `(("WORK" . (:foreground ,yellow :weight bold :box t))
-         ("WAIT" . (:foreground ,orange :weight bold :box t)))))
+(cond ((eq *init-theme* 'monokai)
+       (with-monokai-colors
+        'default
+        (setq org-todo-keyword-faces
+              `(("WORK" . (:foreground ,yellow :weight bold :box nil))
+                ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
+      (t
+       (with-tomorrow-colors
+        'night
+        (setq org-todo-keyword-faces
+              `(("WORK" . (:foreground ,yellow :weight bold :box t))
+                ("WAIT" . (:foreground ,orange :weight bold :box t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Linum extension
@@ -44,6 +53,7 @@
 ;;; Utilities
 
 (defun what-face (pos)
+  "Display the face at point"
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))

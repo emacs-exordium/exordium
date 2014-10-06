@@ -35,6 +35,14 @@
 (defvar *init-line-mode* t
   "Highlights the current line")
 
+(defvar *init-theme* 'tomorrow-night
+  "Theme to load on startup. Use nil to not load any theme,
+  otherwise use one of the following:
+  tomorrow-day, tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
+  tomorrow-night-eighties,
+  monokai.
+  TODO: solarized-light, solarized-dark")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Extensions
 

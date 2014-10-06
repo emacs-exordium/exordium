@@ -6,7 +6,7 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
-(let ((min-version "24.0"))
+(let ((min-version "24.1"))
   (when (version< emacs-version min-version)
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
@@ -79,8 +79,7 @@
 (add-directory-tree-to-load-path "~/.emacs.d/extensions/")
 (add-directory-tree-to-load-path "~/.emacs.d/themes/")
 
-(setq custom-theme-directory "~/emacs.d/themes/")
-
+(setq custom-theme-directory "~/.emacs.d/themes/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Load Modules
@@ -112,9 +111,9 @@
 (require 'init-org)
 
 ;;; Themes
-(if *environment-nw*
-    (set-face-background 'highlight nil)
-  ;; Using Emacs with GUI:
+(when *environment-nw*
+  (set-face-background 'highlight nil))
+(when (and (not *environment-nw*) *init-theme*)
   (require 'init-themes)
   (when *init-enable-powerline*
     (require 'init-powerline)))
@@ -149,14 +148,9 @@
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init-local.el")
   (load "~/.emacs.d/init-local.el"))
-(when (file-exists-p "~/.emacs.d/init_local.el")
-  (warn "Note: init_local.el is deprecated; use init-local.el instead")
-  (load "~/.emacs.d/init_local.el"))
 
 ;;; Greetings
 (setq initial-scratch-message
       (format ";; Happy hacking %s!
 
 " *environment-current-user*))
-
-;;; End of file
