@@ -1,11 +1,13 @@
 ;;;; Themes
 ;;;
-;;; Usage: M-x set-colors-XXX
+;;; Usage:
+;;; New way: M-x load-theme <tab>  or (load-theme 'tomorrow-night t)
+;;; Old way: M-x set-colors-XXX    or (set-colors-tomorrow-night)
 ;;;
 ;;; --------- ------------------------------------ -----------------------------
 ;;; Theme     Dark                                 Light
 ;;; --------- ------------------------------------ -----------------------------
-;;; Tomorrow  `set-colors-tomorrow-night'         `set-colors-tomorrow-day'
+;;; Tomorrow  `set-colors-tomorrow-night'          `set-colors-tomorrow-day'
 ;;;           `set-colors-tomorrow-night-bright'
 ;;;           `set-colors-tomorrow-night-eighties'
 ;;;           `set-colors-tomorrow-night-blue'
@@ -16,13 +18,11 @@
 ;;; --------- ------------------------------------ -----------------------------
 
 (require 'color-theme-tomorrow)
-;;(require 'color-theme-solarized)
 ;;(require 'color-theme-monokai)
 
 ;; Defaults
 
 ;;(set-colors-tomorrow-night)
-
 (load-theme *init-theme* t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,7 +47,6 @@
 (load "~/.emacs.d/themes/hilinum-mode.el")
 (require 'hlinum)
 (hlinum-activate)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utilities
