@@ -40,8 +40,8 @@
   otherwise use one of the following:
   tomorrow-day, tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
   tomorrow-night-eighties,
-  monokai.
-  TODO: solarized-light, solarized-dark")
+  monokai,
+  solarized-light, solarized-dark")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Extensions

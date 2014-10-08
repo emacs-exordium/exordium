@@ -558,6 +558,17 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
              (ansi-color-names-vector . [,base02 ,red ,green ,yellow ,blue
                                          ,magenta ,cyan ,base00]))))))))
 
+(defmacro define-solarized-theme (mode)
+  "Define a theme for the tomorrow variant `MODE'."
+  (let ((name (intern (format "solarized-%s" (symbol-name mode))))
+        (doc (format "solarized-%s" mode)))
+    `(progn
+       (deftheme ,name ,doc)
+       (let* ((defs (solarized-color-definitions ',mode))
+              (spec (first defs)))
+         (apply 'custom-theme-set-faces ',name spec))
+       (provide-theme ',name))))
+
 (defun set-colors-solarized (mode)
   (let* ((defs (solarized-color-definitions mode))
          (spec (first defs)))

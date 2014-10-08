@@ -1,7 +1,7 @@
 ;;;; Powerline
+;;; TODO: add solarized
 
 (require 'powerline)
-;;(require 'color-theme-tomorrow)
 
 (cond ((eq *init-theme* 'monokai)
        (with-monokai-colors

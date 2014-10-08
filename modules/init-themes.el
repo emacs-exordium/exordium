@@ -17,16 +17,11 @@
 ;;; Solarized `set-colors-solarized-dark'          `set-colors-solarized-light'
 ;;; --------- ------------------------------------ -----------------------------
 
-(require 'color-theme-tomorrow)
-;;(require 'color-theme-monokai)
-
-;; Defaults
-
-;;(set-colors-tomorrow-night)
 (load-theme *init-theme* t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Org mode extra statuses
+;; TODO: add solarized
 
 (cond ((eq *init-theme* 'monokai)
        (with-monokai-colors
