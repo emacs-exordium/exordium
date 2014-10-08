@@ -14,6 +14,7 @@
 ;;;
 ;;; M-S-ARROW         Move between windows (= Ctrl-x o)
 ;;; M-C-l             Switch to last buffer
+;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
 ;;; C- +/-            Zoom
 ;;;
 ;;; F10               Speedbar
@@ -55,6 +56,9 @@
   (interactive)
   (switch-to-buffer (other-buffer)))
 (define-key global-map [(meta control l)] 'switch-to-other-buffer)
+
+;;; C-x C-b = ibuffer (better than list-buffers)
+(define-key global-map [(control x)(control b)] 'ibuffer)
 
 ;;; Ctrl +/- to zoom in/out
 (define-key global-map [(control +)] 'text-scale-increase)
