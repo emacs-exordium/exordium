@@ -63,8 +63,8 @@
 (setq scroll-step 1)
 (setq scroll-margin 0
       scroll-conservatively 100000
-      scroll-up-aggressively 0
-      scroll-down-aggressively 0
+      scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01
       scroll-preserve-screen-position t)
 
 ;;; Scrollbar on the right
