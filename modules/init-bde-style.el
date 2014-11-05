@@ -451,12 +451,13 @@ declaration or definition, align the type and variable names"
   function call, align the arguments. It puts one argument per
   line and aligns to the right"
   (interactive)
-  ;; Get a list of the arguments. Note that the external parentheses are included
+  ;; Get the argument string (remove the external parentheses)
   (let ((arglist (thing-at-point 'list)))
     (when (pg/string-starts-with arglist "(")
       (setq arglist (substring arglist 1)))
     (when (pg/string-ends-with arglist ")")
       (setq arglist (substring arglist 0 (1- (length arglist)))))
+    ;; Extract the list of arguments
     (let ((args (split-string arglist ","))
           (parsed-args ()))
       (dolist (arg args)
@@ -469,7 +470,7 @@ declaration or definition, align the type and variable names"
       (backward-up-list)
       (push-mark)
       (forward-list)
-      (kill-region (region-beginning) (region-end))
+      (delete-region (region-beginning) (region-end))
       (insert
        (with-temp-buffer
          (insert "(")
