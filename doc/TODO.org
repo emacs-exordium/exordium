@@ -1,18 +1,31 @@
 #+TITLE: Emacs configuration todo list
 
 * Next Items
-** DONE monokai theme
-** DONE make themes real themes
-** TODO solarized real theme
-** TODO init: namespace
-** TODO align to right
-** TODO fix F3 / recenter
-** TODO make header auto-complete better
+** Code cleanup
+*** TODO use the init: namespace
+*** TODO find a solution for suggested key bindings, like rtags does.
+*** TODO document code organization
+** Usability
+*** TODO replace electric pairs by something better
+*** TODO key for flyspell?
+*** TODO improve usability of autocomplete
+** BDE
+*** TODO align class data members (should be similar as function args)
+*** TODO align function args should align default values
+*** TODO mark occurrences on demand rather than time based
+** Rtags
+*** TODO fix F3 / recenter
+*** TODO consider using M-. / M-, instead of F3 / F4 (since we don't care about tags)
+*** TODO shrink the diagnostics window to content size
+*** TODO make header auto-complete better
    Either this will come from Projectile, or
    It can be easily done with per-directory variables:
    https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
    (with an impact on performance)
-** TODO sr-speedbar or https://github.com/sabof/project-explorer
+** Extensions
+*** TODO sr-speedbar or https://github.com/sabof/project-explorer
+** Themes
+*** TODO solarized should be a real theme
 * C++
 ** other options for IDE
 *** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
@@ -22,10 +35,6 @@
 ** TODO snippets
     - [ ] New files
     - [ ] Etc
-* Modules
-    - [X] Highlight symbol at point
-    - [ ] Speedbar in current frame http://www.emacswiki.org/emacs/SrSpeedbar
-    - [ ] Flycheck?
 * Themes
     - [X] Make linum face boring (not sure the fancy version works)
     - [X] Make org mode more readable

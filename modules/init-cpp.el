@@ -22,6 +22,9 @@
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
 
+;;; Turn on FCI automatically
+(add-hook 'python-mode-hook 'fci-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight dead code between #if 0 and #endif

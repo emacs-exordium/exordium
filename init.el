@@ -141,6 +141,9 @@
 ;;; JS
 (require 'init-javascript)
 
+;;; Python
+(require 'init-python)
+
 ;;; Lisp
 (when *init-clojure*
   (require 'init-clojure))
