@@ -44,6 +44,12 @@
        (global-set-key [(shift return)] 'newline-and-indent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Electric pair
+
+(when *init-enable-electric-pair-mode*
+  (electric-pair-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winmove
 
 ;;; Meta-Shift-arrow = move the focus between visible buffers
@@ -52,7 +58,6 @@
 (global-set-key [(meta shift right)] 'windmove-right)
 (global-set-key [(meta shift up)] 'windmove-up)
 (global-set-key [(meta shift down)] 'windmove-down)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Buffers

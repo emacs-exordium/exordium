@@ -2,11 +2,13 @@
 
 * Next Items
 ** Code cleanup
-*** TODO use a namespace for internal functions
+*** WAIT use a namespace for internal functions?
 *** TODO find a solution for suggested key bindings, like rtags does.
-*** TODO document code organization
+*** TODO preferences should be per modules and not global (and should use defcustom)
+*** DONE document code organization
 ** Usability
-*** TODO replace electric pairs by something better
+*** WAIT replace electric pairs by something better?
+*** TODO position stack should use rtags stack (or add key to push onto rtags stack)
 *** TODO key for flyspell?
 *** TODO improve usability of autocomplete
 ** BDE
@@ -14,8 +16,8 @@
 *** TODO align function args should align default values
 *** TODO mark occurrences on demand rather than time based
 ** Rtags
-*** TODO fix F3 / recenter
-*** TODO consider using M-. / M-, instead of F3 / F4 (since we don't care about tags)
+*** WORK fix F3 / recenter
+*** DONE consider using M-. / M-, instead of F3 / F4 (since we don't care about tags)
 *** TODO shrink the diagnostics window to content size
 *** TODO make header auto-complete better
    Either this will come from Projectile, or

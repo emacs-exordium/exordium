@@ -57,8 +57,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Position stack
-;;; Ctrl-C M = push position
-;;; Ctrl-C P = pop (go back to previous position)
 
 (defvar postack-stack '() "The position stack")
 
@@ -96,8 +94,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert date/time
-;;; Ctrl-C Ctrl-D = date
-;;; Ctrl-C Ctrl-T = time
 
 (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
   "Format of date to insert with `insert-current-date-time' func
@@ -193,12 +189,6 @@ With argument, do this that many times."
   (delete-word (- arg)))
 
 (define-key global-map [(meta backspace)] 'backward-delete-word)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Autopairs
-
-(when *init-enable-electric-pair-mode*
-  (electric-pair-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 80-column ruler bound to Ctrl-|

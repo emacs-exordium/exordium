@@ -1,42 +1,47 @@
 ;;;; Rtags - see `https://github.com/Andersbakken/rtags'
 ;;;
 ;;; Note: we use C-c r as prefix for rtags keys in order to get more choices.
-;;; ------- -------- ----------------------------------------------------------
-;;; Fast    Default  Function
-;;; Key     Key
-;;; ------- -------- ----------------------------------------------------------
-;;; F3      C-c r .  `rtags-find-symbol-at-point'
-;;; F4      C-c r ,  `rtags-find-references-at-point'
-;;;         C-c r >  `rtags-find-symbol' (prompts for symbol name)
-;;;         C-c r <  `rtags-find-references' (prompts for symbol name)
-;;; M-C-g   C-c r I  `rtags-imenu' Ido-based select a symbol in current file
-;;;         C-c r v  `rtags-find-virtuals-at-point' list all impl. of function
-;;;         C-c r ;  `rtags-find-file' find file in project using partial name
+;;; --------- -----------------------------------------------------------------
+;;; Keys      Function
+;;; --------- -----------------------------------------------------------------
+;;; C-c r .  `rtags-find-symbol-at-point'
+;;; M-.
+;;; C-c r ,  `rtags-find-references-at-point'
+;;; M-,
 ;;;
-;;;         C-c r R  `rtags-rename-symbol'
-;;;         C-c r F  `rtags-fixit' fix the error using clang "did you mean".
+;;; C-c r >  `rtags-find-symbol' (prompts for symbol name)
+;;; C-c r <  `rtags-find-references' (prompts for symbol name)
+;;; C-c r I  `rtags-imenu' Ido-based select a symbol in current file
+;;; M-C-g
+;;; C-c r v  `rtags-find-virtuals-at-point' list all impl. of function
+;;; C-c r ;  `rtags-find-file' find file in project using partial name
 ;;;
-;;; M-left  C-c r [  `rtags-location-stack-back' go back to previous location
-;;; M-right C-c r ]  `rtags-location-stack-forward' the opposite
+;;; C-c r R  `rtags-rename-symbol'
+;;; C-c r F  `rtags-fixit' fix the error using clang "did you mean".
 ;;;
-;;;                  `rtags-start-rdm' in a subprocess.
-;;;                  `rtags-quit-rdm' kill rdm subprocess.
-;;;         C-c r l  `rtags-show-rdm-buffer' show rdm log buffer.
-;;;                  `rtags-set-current-project' switch between projects
-;;;         C-c r e  `rtags-reparse-file' force recompile current buffer.
+;;; C-c r [  `rtags-location-stack-back' go back to previous location
+;;; M-left
+;;; C-c r ]  `rtags-location-stack-forward' the opposite
+;;; M-right
 ;;;
-;;;         C-c r D  `rtags-diagnostics' start/show diagnostics buffer
-;;;         C-c r Q  `rtags-stop-diagnostics' stop the diagnostic subprocess
-;;;         C-c r d  `rtags-show-diagnostics-buffer' (without reparsing)
-;;;                  `rtags-next-diag' goes to the next problem.
-;;;                  `rtags-clear-diagnostics' clears any error or warning overlay.
-;;;                  `rtags-stop-diagnostics' stops the process.
+;;;          `rtags-start-rdm' in a subprocess.
+;;;          `rtags-quit-rdm' kill rdm subprocess.
+;;; C-c r l  `rtags-show-rdm-buffer' show rdm log buffer.
+;;;          `rtags-set-current-project' switch between projects
+;;; C-c r e  `rtags-reparse-file' force recompile current buffer.
 ;;;
-;;;         C-c r U  `rtags-print-cursorinfo' show what we know about symbol
-;;;         C-c r P  `rtags-print-dependencies' show all includes
-;;;         C-c r T  `rtags-taglist' show all tags in a window on left side
+;;; C-c r D  `rtags-diagnostics' start/show diagnostics buffer
+;;; C-c r Q  `rtags-stop-diagnostics' stop the diagnostic subprocess
+;;; C-c r d  `rtags-show-diagnostics-buffer' (without reparsing)
+;;;          `rtags-next-diag' goes to the next problem.
+;;;          `rtags-clear-diagnostics' clears any error or warning overlay.
+;;;          `rtags-stop-diagnostics' stops the process.
 ;;;
-;;;                  `rtags-create-compilation-database' see doc below
+;;; C-c r U  `rtags-print-cursorinfo' show what we know about symbol
+;;; C-c r P  `rtags-print-dependencies' show all includes
+;;; C-c r T  `rtags-taglist' show all tags in a window on left side
+;;;
+;;;          `rtags-create-compilation-database' see doc below
 ;;; ------- -------- ----------------------------------------------------------
 ;;;
 ;;; Building rtags
@@ -191,11 +196,12 @@
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
 ;; Alias keys for common operations
-(define-key c-mode-base-map (kbd "<f3>") (lambda ()
-                                           (interactive)
-                                           (when (rtags-find-symbol-at-point)
-                                             (recenter-top-bottom))))
-(define-key c-mode-base-map (kbd "<f4>") (function rtags-find-references-at-point))
+(define-key c-mode-base-map "\M-."
+  (lambda ()
+    (interactive)
+    (rtags-find-symbol-at-point)
+    (recenter-top-bottom)))
+(define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
 (define-key c-mode-base-map [(meta right)] (function rtags-location-stack-forward))

@@ -53,11 +53,12 @@ the configuration without risk of conflicts during git pull).
 * [init-behavior.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-behavior.el):
   basic behavior: delete trailing spaces upon save, no backup files, prefer spaces over tabs.
 * [init-keyboard.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-keyboard.el):
-  non-mode specific key bindings. Includes things like winmove, CUA, ibuffer,
-  zoom.
+  minor modes and custom non-mode-specific keys. Includes things like
+  auto-pairs (automatically close parentheses), winmove, CUA, zoom, and keys to
+  navigate between buffers.
 * [init-util.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-util.el):
-  utility functions and keys for matching parentheses, duplicating a line,
-  deleting words, displaying the 80 column ruler (FCI), expanding the region.
+  utility functions and keys like goto matching parenthese, duplicate a line,
+  delete words, display an 80 column ruler (FCI), expand the region.
 
 ### Usability
 

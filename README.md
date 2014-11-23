@@ -411,12 +411,12 @@ soon as you save it or otherwise touch it.
 While RTags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
 <kbd>C-c r</kbd> instead because it it less crowded. It also adds a few keys.
 
-Navigating keys:
+Navigation keys:
 
 Keybinding                           | Description
 -------------------------------------|-----------------------------------------
-<kbd>F3</kbd>, <kbd>C-c r .</kbd>    | Jump to symbol definition.
-<kbd>F4</kbd>, <kbd>C-c r ,</kbd>    | Find references to symbol.
+<kbd>M-.</kbd>, <kbd>C-c r .</kbd>   | Jump to symbol definition.
+<kbd>M-,</kbd>, <kbd>C-c r ,</kbd>   | Find references to symbol.
 <kbd>C-c r &gt;</kbd>                | Find symbol (prompts for symbol name).
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
