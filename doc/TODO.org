@@ -2,7 +2,7 @@
 
 * Next Items
 ** Code cleanup
-*** TODO use the init: namespace
+*** TODO use a namespace for internal functions
 *** TODO find a solution for suggested key bindings, like rtags does.
 *** TODO document code organization
 ** Usability
