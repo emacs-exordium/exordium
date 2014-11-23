@@ -4,9 +4,16 @@
 
 The source code is in these directories:
 
-* modules: contains the configuration's modules, which all start with "init-".
-* elpa: packages loaded from melpa.
-* extensions: third party packages not present in melpa, included in source code.
+* Main directory: *init.el* and the optional files *init-local-prolog.el*,
+  *init-local.el* and *init-local-prefs.el*.
+* *modules*: the configuration's modules, which all start with "init-".
+* *themes*: the configuration's visual themes.
+* *elpa*: packages loaded from melpa.
+* *extensions*: third party packages not present in melpa, included in source
+  code.
+* *snippets*: snippet files for YASnippets.
+
+Note: *vendor* should be removed (code should move to *extensions*).
 
 ## init.el
 
@@ -15,3 +22,71 @@ the entry point. It includes all other files using the ```require```
 feature. Any "required" module file must be ending with a ```provide```
 statement. The name of the file and the symbol in ```provide``` and
 ```require``` must all be identical, otherwise Emacs can't find it.
+
+If a file *init-local.el* is present, it is loaded at the end of the
+configuration. If a file *init-local-prolog.el* is present, it is loaded first,
+before any required module.
+
+If a file *init-local-prefs.el* is present, it is loaded to override the
+default configuration preferences in *modules/init-prefs.el*.
+
+## Modules
+
+### Prolog and preferences
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prolog.el)
+  defines utility functions used by other modules: things like file loading,
+  string manipulation etc.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-environment.el)
+  defines environment global variables, such as "are we on OSX".
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el)
+  defines preferences variables for all modules. It can be edited to change a
+  preference, or alternatively you can create a file *init-local-prefs.el* (in
+  the main directory) to override the variables in *init-prefs.el*.
+
+### Look and feel
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-ui.el):
+  basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar, cursor,
+  font lock, etc.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-behavior.el):
+  basic behavior: delete trailing spaces upon save, no backup files, prefer spaces over tabs.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-keyboard.el):
+  non-mode specific key bindings. Includes things like winmove, CUA, ibuffer,
+  zoom.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-util.el):
+  utility functions and keys for matching parentheses, duplicating a line,
+  deleting words, displaying the 80 column ruler (FCI), expanding the region.
+
+### Usability
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-ido.el):
+  configures IDO and find recent files.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-helm-projectile.el):
+  configures Helm and Projectile.
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-git.el):
+  everything git-related.
+
+### Modes
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-markdown.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-helm-org.el)
+
+### OS X
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-osx.el)
+
+### C++
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-cpp.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-bde-style.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-yasnippet.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-cedet.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-rtags.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-header-autocomplete.el)
+
+### Other languages
+
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-javascript.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-python.el)
+* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-clojure.el)

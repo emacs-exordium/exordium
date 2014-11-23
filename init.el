@@ -97,7 +97,6 @@
 (require 'init-behavior)    ; backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
-(require 'init-extensions)  ; minor modes like CUA, 80 col etc.
 
 ;;; Usability
 (require 'init-ido)
@@ -145,6 +144,7 @@
 (require 'init-python)
 
 ;;; Lisp
+(require 'init-elisp)
 (when *init-clojure*
   (require 'init-clojure))
 

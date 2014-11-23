@@ -19,6 +19,9 @@
 ;;;
 ;;; M-d            `delete-word'
 ;;; M-BACKSPACE    `backward-delete-word'
+;;;
+;;; Ctrl-=         Expand region
+;;; Ctrl-|         Toggle fci mode on and off (80 column ruler)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Match parentheses
@@ -190,5 +193,44 @@ With argument, do this that many times."
   (delete-word (- arg)))
 
 (define-key global-map [(meta backspace)] 'backward-delete-word)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Autopairs
+
+(when *init-enable-electric-pair-mode*
+  (electric-pair-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 80-column ruler bound to Ctrl-|
+;;; Note: if it causes Emacs to crash on images, set the variable
+;;; fci-always-use-textual-rule to t (it will use a character instead).
+
+(when *init-fci-mode*
+  (require 'fill-column-indicator)
+  (when *init-fci-use-dashes*
+    (setq fci-rule-use-dashes t)
+    (setq fci-dash-pattern 0.5))
+  (setq fci-rule-width 1)
+  (setq fci-rule-color "dim gray")
+  (define-key global-map [(control |)] 'fci-mode)
+  (when (eq *init-fci-mode* :always)
+    (define-globalized-minor-mode global-fci-mode fci-mode
+      (lambda () (fci-mode 1)))
+    (global-fci-mode 1)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Highlight symbol
+
+(require 'highlight-symbol)
+
+(highlight-symbol-nav-mode)
+
+(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+(setq highlight-symbol-on-navigation-p t)
+
+;; Don't show this mode in the modeline
+(eval-after-load 'highlight-symbol
+  '(diminish 'highlight-symbol-mode))
 
 (provide 'init-util)

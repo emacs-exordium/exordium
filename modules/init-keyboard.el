@@ -43,12 +43,19 @@
       (t
        (global-set-key [(shift return)] 'newline-and-indent)))
 
-;;; Meta-Shif-arrow = move the focus between visible buffers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Winmove
+
+;;; Meta-Shift-arrow = move the focus between visible buffers
 (require 'windmove)
 (global-set-key [(meta shift left)] 'windmove-left)
 (global-set-key [(meta shift right)] 'windmove-right)
 (global-set-key [(meta shift up)] 'windmove-up)
 (global-set-key [(meta shift down)] 'windmove-down)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Buffers
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
@@ -60,11 +67,32 @@
 ;;; C-x C-b = ibuffer (better than list-buffers)
 (define-key global-map [(control x)(control b)] 'ibuffer)
 
-;;; Ctrl +/- to zoom in/out
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Zoom
+
 (define-key global-map [(control +)] 'text-scale-increase)
 (define-key global-map [(control -)] 'text-scale-decrease)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Speed bar
+
 (global-set-key [f10] 'speedbar)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CUA
+;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
+;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
+;;; It also has a nice feature: C-ret for selecting rectangular regions.
+;;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
+
+(if *init-enable-cua-mode*
+    (cua-mode t)
+  (cua-selection-mode t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Expand region
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 (provide 'init-keyboard)
