@@ -23,7 +23,7 @@
 (diminish 'abbrev-mode)
 
 ;;; Turn on FCI automatically
-(add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'c++-mode-hook 'fci-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
