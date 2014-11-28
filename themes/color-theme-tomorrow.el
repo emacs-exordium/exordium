@@ -403,7 +403,7 @@ names to which it refers are bound."
      (org-scheduled-previously ((,class (:foreground ,orange))))
      (org-scheduled-today ((,class (:foreground ,green))))
      (org-special-keyword ((,class (:foreground ,orange))))
-     (org-table ((,class (:foreground ,purple))))
+     (org-table ((,class (:foreground ,foreground))))
      (org-todo ((,class (:foreground ,red :weight bold :box t))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
