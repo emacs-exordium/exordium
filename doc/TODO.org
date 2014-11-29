@@ -1,4 +1,5 @@
 #+TITLE: Emacs configuration todo list
+#+STARTUP: hidestars
 
 * Next Items
 ** Code cleanup
