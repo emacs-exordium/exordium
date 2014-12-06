@@ -2,6 +2,11 @@
 #+STARTUP: hidestars
 
 * Next Items
+** Install BB mac
+*** TODO MacPort: coreutils, zsh, htop
+*** TODO Emacs
+*** TODO llvm, cmake,ruby
+*** TODO SourceTree
 ** Code cleanup
 *** WAIT use a namespace for internal functions?
 *** TODO find a solution for suggested key bindings, like rtags does.
