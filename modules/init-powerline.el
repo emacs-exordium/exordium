@@ -3,6 +3,11 @@
 
 (require 'powerline)
 
+;;; Fix the grapphical bug with Emacs24.4 on OSX
+;;; See https://github.com/milkypostman/powerline/issues/54
+(when *environment-osx*
+  (setq ns-use-srgb-colorspace nil))
+
 (cond ((eq *init-theme* 'monokai)
        (with-monokai-colors
         'default
