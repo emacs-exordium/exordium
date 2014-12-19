@@ -54,6 +54,7 @@
                            ack-and-a-half
                            cmake-mode
                            markdown-mode
+                           enh-ruby-mode
                            fill-column-indicator))
       (has-refreshed nil))
   (dolist (p required-packages)
@@ -142,6 +143,9 @@
 
 ;;; Python
 (require 'init-python)
+
+;;; Ruby
+(require 'init-ruby)
 
 ;;; Lisp
 (require 'init-elisp)
