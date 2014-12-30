@@ -55,7 +55,8 @@
                            cmake-mode
                            markdown-mode
                            enh-ruby-mode
-                           fill-column-indicator))
+                           fill-column-indicator
+                           exec-path-from-shell))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -105,6 +106,9 @@
 (when *init-helm-projectile*
   (require 'init-helm-projectile))
 (require 'init-git)
+
+;;; Shell mode
+(require 'init-shell)
 
 ;;; Major modes
 (require 'init-markdown)
