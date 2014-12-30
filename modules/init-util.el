@@ -117,6 +117,14 @@ Uses `current-date-time-format' for the formatting the date/time."
   (insert "\n"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Copy the whole buffer without changing the current position
+
+(defun copy-all ()
+  "Copy the entire buffer to the clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Duplicate lines
 
 (defun duplicate-line (arg)
