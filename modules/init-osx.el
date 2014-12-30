@@ -14,4 +14,7 @@
 ;; Give focus to emacs window at startup
 (x-focus-frame nil)
 
+;; Make $PATH available in shell mode
+(exec-path-from-shell-initialize)
+
 (provide 'init-osx)
