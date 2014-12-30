@@ -106,6 +106,7 @@
 (when *init-helm-projectile*
   (require 'init-helm-projectile))
 (require 'init-git)
+(require 'goto-last-change)
 
 ;;; Shell mode
 (require 'init-shell)
