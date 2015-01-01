@@ -137,34 +137,36 @@ Uses `current-date-time-format' for the formatting the date/time."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Duplicate lines
 
-(defun duplicate-line (arg)
-  "Duplicate current line, leaving point in lower line."
+(defun duplicate-line-or-region (arg)
+  "Duplicate current line or region, leaving point in lower line."
   (interactive "*p")
-  ;; save the point for undo
+  ;; Save the point for undo
   (setq buffer-undo-list (cons (point) buffer-undo-list))
-  ;; local variables for start and end of line
-  (let ((bol (save-excursion (beginning-of-line) (point)))
-        eol)
+  (let ((bol (if mark-active (region-beginning)
+               (save-excursion (beginning-of-line) (point))))
+        eol
+        (num-lines (if mark-active
+                       (count-lines (region-beginning) (region-end))
+                     1)))
     (save-excursion
-      ;; don't use forward-line for this, because you would have
-      ;; to check whether you are at the end of the buffer
-      (end-of-line)
-      (setq eol (point))
-      ;; store the line and disable the recording of undo information
+      (if mark-active
+          (setq eol (region-end))
+        (end-of-line)
+        (setq eol (point)))
+      ;; Disable the recording of undo information
       (let ((line (buffer-substring bol eol))
-            (buffer-undo-list t)
-            (count arg))
-        ;; insert the line arg times
-        (while (> count 0)
-          (newline)         ;; because there is no newline in 'line'
-          (insert line)
-          (setq count (1- count))))
-      ;; create the undo information
-      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list))))
-  ;; put the point in the lowest line and return
-  (next-line arg))
+            (buffer-undo-list t))
+        ;; Insert the line arg times
+        (dotimes (i (if (> arg 0) arg 1))
+          (unless (pg/string-ends-with line "\n")
+            (newline))
+          (insert line)))
+      ;; Create the undo information
+      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
+    ;; Move the point to the lowest line
+    (next-line (* arg num-lines))))
 
-(global-set-key [(control c)(d)] 'duplicate-line)
+(global-set-key [(control c)(d)] 'duplicate-line-or-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Deleting Spaces
