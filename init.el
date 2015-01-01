@@ -56,7 +56,8 @@
                            markdown-mode
                            enh-ruby-mode
                            fill-column-indicator
-                           exec-path-from-shell))
+                           exec-path-from-shell
+                           goto-chg))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -106,7 +107,6 @@
 (when *init-helm-projectile*
   (require 'init-helm-projectile))
 (require 'init-git)
-(require 'goto-last-change)
 
 ;;; Shell mode
 (require 'init-shell)

@@ -29,7 +29,7 @@ Programming:
 
 Other:
 
-* Markdown: [markdown-mode](http://www.emacswiki.org/emacs/MarkdownMode).
+* Markdown: [markdown-mode](http://jblevins.org/projects/markdown-mode/).
 * Org: [org-mode](http://orgmode.org).
 * [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in).
 * [Helm](http://tuhdo.github.io/helm-intro.html) an equivalent of IDO.
@@ -145,7 +145,14 @@ Keybinding          | Description
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region.
 <kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
-<kbd>C-c C-s</kbd>  | Push point onto position stack.
+
+Navigation:
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-x C-\\</kbd> | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
+<kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (just add shift).
+<kbd>C-c C-s</kbd>  | Push point onto position stack (e.g. bookmarks).
 <kbd>C-c C-b</kbd>  | Pop point from position stack.
 
 Auto-complete:

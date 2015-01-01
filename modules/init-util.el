@@ -8,6 +8,9 @@
 ;;; C-c C-s        Push point onto position stack ("s = save")
 ;;; C-c C-b        Pop point from position stack ("b = back")
 ;;;
+;;; C-x C-\        Goto to last change (then second most recent edit, etc.)
+;;; C-x C-|        Add shift to reverse the direction
+;;;
 ;;; (unbound)      `insert-current-time'
 ;;; (unbound)      `insert-current-date-time'
 ;;;
@@ -56,7 +59,7 @@
 (global-set-key [(control %)] 'goto-match-paren-or-up)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Position stack
+;;; Bookmark position stack
 
 (defvar postack-stack '() "The position stack")
 
@@ -91,6 +94,13 @@
 
 (global-set-key [(control c)(control s)] 'postack-push)
 (global-set-key [(control c)(control b)] 'postack-pop)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Goto last change
+
+(require 'goto-chg)
+(define-key global-map [(control x)(control \\)] 'goto-last-change)
+(define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Insert date/time
