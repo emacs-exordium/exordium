@@ -166,8 +166,7 @@ Git:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-x g</bkd>   | Open git status mode (`magit-status`).
-<kbd>C-c g</kbd>   | Toggle git gutter fringe.
+<kbd>C-c g</bkd>   | Open git status mode (`magit-status`).
 
 ### Projectile
 
