@@ -57,7 +57,8 @@
                            enh-ruby-mode
                            fill-column-indicator
                            exec-path-from-shell
-                           goto-chg))
+                           goto-chg
+                           project-explorer))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)

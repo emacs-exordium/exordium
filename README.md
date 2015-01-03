@@ -39,7 +39,10 @@ Other:
   with Shift-Meta-arrows.
 * [Expand Region](https://github.com/magnars/expand-region.el): increase
   selected region by semantic units.
-* [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator).
+* [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator):
+  80 character column marker.
+* [Project Explorer](https://github.com/sabof/project-explorer): directory
+  tree.
 * A few themes such as
   [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
@@ -155,6 +158,12 @@ Keybinding          | Description
 <kbd>C-c C-s</kbd>  | Push point onto position stack (e.g. bookmarks).
 <kbd>C-c C-b</kbd>  | Pop point from position stack.
 
+Project Explorer:
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c e</kbd>    | Open project explorer on the left side. <kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open file. <kbd>w</kbd> Show path and copy it to clipboard.
+
 Auto-complete:
 
 Keybinding         | Description
@@ -168,7 +177,7 @@ Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-c g</bkd>   | Open git status mode (`magit-status`).
 
-### Projectile
+### Helm / Projectile
 
 Projectile allows for defining "projects" e.g. collections of files. Once a
 project is defined it provides many keys to find files, grep in all files

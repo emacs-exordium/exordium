@@ -79,9 +79,9 @@
 (define-key global-map [(control -)] 'text-scale-decrease)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Speed bar
+;;; Project explorer
 
-(global-set-key [f10] 'speedbar)
+(define-key global-map [(control c)(e)] 'project-explorer-open)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CUA
