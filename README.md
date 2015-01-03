@@ -3,10 +3,10 @@
 Something you probably don't care about. This is my portable Emacs
 configuration, synchronized between all my machines.  It is only intended to
 work with Emacs 24 running on Linux and OS X, including in -nw mode. Here is
-[what it looks like](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/gallery.md).
+[what it looks like](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/gallery.md).
 
 I mostly care about adding IDE-level features to Emacs for the programming
-languages I use every day: C++, JavaScript, Python, Ruby and various Lisps. If
+languages I use: C++, JavaScript, Python, Ruby and various Lisps. If
 you are looking for a good generic Emacs configuration to start with, you might
 want to check these links:
 * [Emacs Prelude](https://github.com/bbatsov/prelude);
