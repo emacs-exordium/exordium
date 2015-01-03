@@ -97,7 +97,8 @@
 
 ;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-behavior)    ; backup files, trailing spaces...
+(require 'init-linum)       ; line numbers
+(require 'init-behavior)    ; save behavior: backup files, trailing spaces...
 (require 'init-keyboard)    ; key bindings
 (require 'init-util)        ; utilities like match paren, bookmarks...
 

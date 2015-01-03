@@ -50,10 +50,8 @@
 (when (fboundp 'blink-cursor-mode)
   (blink-cursor-mode -1))
 
-;;; Display column number and line numbers
+;;; Display column number in the modebar
 (column-number-mode 1)
-(if (and (boundp 'global-linum-mode) *init-display-line-numbers*)
-    (global-linum-mode t))
 
 ;;; Highlight cursor
 (when *init-line-mode*
