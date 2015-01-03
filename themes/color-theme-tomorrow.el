@@ -127,8 +127,10 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
-     ;;(linum ((,class (:background ,current-line :foreground ,comment :inherit nil))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
+     (linum ((,class (:inherit nil :background ,current-line :foreground ,foreground
+                      :slant normal :weight normal :underline nil :height 1
+                      ))))
      (hl-line ((,class (:background ,current-line :inherit nil))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))

@@ -477,8 +477,6 @@ with warnings and errors. You can:
 * Click on the highlighted symbol in your code to view the error message
 * Click on the error line in the diagnostics buffer to jump to the error location.
 
-![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
-
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd> | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
