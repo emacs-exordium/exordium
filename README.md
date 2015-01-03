@@ -2,7 +2,8 @@
 
 Something you probably don't care about. This is my portable Emacs
 configuration, synchronized between all my machines.  It is only intended to
-work with Emacs 24 running on Linux and OS X, including in -nw mode.
+work with Emacs 24 running on Linux and OS X, including in -nw mode. Here is
+[what it looks like](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/gallery.md).
 
 I mostly care about adding IDE-level features to Emacs for the programming
 languages I use every day: C++, JavaScript, Python, Ruby and various Lisps. If
