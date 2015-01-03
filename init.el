@@ -136,9 +136,6 @@
 (when *init-yasnippet*
   (require 'init-yasnippet))
 
-(when *init-cedet*
-  (require 'init-cedet.el))
-
 (require 'init-rtags)
 (when *init-header-auto-complete*
   (require 'init-header-autocomplete))

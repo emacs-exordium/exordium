@@ -16,7 +16,6 @@ want to check these links:
 
 Programming:
 
-* C++: a working [CEDET](http://cedet.sourceforge.net).
 * C++: [RTags](https://github.com/Andersbakken/rtags), a LLVM/Clang-based code
   indexer.
 * C++: style for [BDE](https://github.com/bloomberg/bde).
@@ -95,7 +94,6 @@ directory which can be individually enabled or disabled.
 (require 'init-bde-style)
 (require 'init-header-autocomplete)
 (require 'init-yasnippet)
-;; (require 'init-cedet.el)
 (require 'init-rtags)
 
 ;;; Other programming languages

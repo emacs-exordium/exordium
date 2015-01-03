@@ -1,2 +1,0 @@
-dnl Test configure for Emacs
-AC_INIT(emacs, 1.0.0)
