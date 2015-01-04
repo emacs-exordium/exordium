@@ -7,10 +7,12 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-c =          `bde-insert-define-class-header'
 ;;; C-c -          `bde-insert-declare-class-header'
-;;; C->            `bde-aligh-right-after-point': align text after cursor
-;;;                to the right (for // RETURN or // LOCK)
+;;; C->            `bde-aligh-right-after-point': align text after point
+;;;                to the right. If line ends with a comment such as // RETURN
+;;;                or // LOCK, align the comment.
 ;;; C-c i          `bde-insert-redundant-include-guard'
 ;;; C-c a          `bde-align-functions-arguments'
+;;; C-c f          `bde-align-funcall'
 ;;;
 ;;; Aligh right after point:
 ;;; Before (cursor anywhere after semi-colon):
@@ -18,7 +20,8 @@
 ;;; After:
 ;;;     return x;                                     // RETURN
 ;;;
-;;; Insert redundant include guard (cursor must be on the line):
+;;; Insert redundant include guard (cursor must be on the line, or region with
+;;; one or more includes must be selected):
 ;;; Before:
 ;;;     #include <bsl_iostream.h>
 ;;; After:
@@ -26,7 +29,7 @@
 ;;;     #include <bsl_iostream.h>
 ;;;     #endif
 ;;;
-;;; Align function arguments (cursor must be inside argument list):
+;;; Align function arguments (cursor must be inside the argument list):
 ;;; Before:
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
@@ -39,9 +42,17 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
+;;; TODO: apparently default values should be aligned too.
 ;;;
-;;; Align function call arguments (cursor must be inside the argument list)
-;;; TODO: work in progress
+;;; Align function call arguments (cursor must be inside the argument list):
+;;; Before:
+;;;    bslma::ManagedPtr<BufferedMessage> message(
+;;;       groupInfo->bufferedMessages()[0], &d_bufferedMessagePool);
+;;; After:
+;;;    bslma::ManagedPtr<BufferedMessage> message(
+;;;                                           groupInfo->bufferedMessages()[0],
+;;;                                           &d_bufferedMessagePool);
+;;; TODO: does not work well with comments.
 
 (require 'cl)
 
@@ -218,12 +229,37 @@ current cursor position, if the cursor is within a class definition:
                 (return nil)))
          (setq erase-hint nil))))))
 
+(defun bde-guess-class-name ()
+  "Return the name of the class or struct that is defined
+immediately after the cursor (skipping any previous spaces and
+newlines). Return nil if there isn't any struct or class defined."
+  (save-excursion
+    (beginning-of-line)
+    (when (forward-word)
+      (backward-word)
+      (when (re-search-forward "^\\(class\\|struct\\) " (point-at-eol) t)
+        (concat (match-string 1) " " (current-word))))))
+
 (defun bde-insert-define-class-header ()
   "Mini-mode for creating a BDE-style class definition
 header (e.g. ===). Exit the mode with enter, or anything that is
 not a character, backspace, delete, left or right."
   (interactive)
-  (bde-insert-class-header ?=))
+  (let ((class-name (bde-guess-class-name)))
+    (cond (class-name
+           (cl-flet ((insert-bar (n)
+                       (insert "// ")
+                       (dotimes (i n)
+                         (insert "="))
+                       (insert "\n")))
+             (insert-bar (string-width class-name))
+             (insert "// " class-name "\n")
+             (insert-bar (string-width class-name))
+             (previous-line 3)
+             (center-line 3)
+             ))
+          (t
+           (bde-insert-class-header ?=)))))
 
 (defun bde-insert-declare-class-header ()
   "Mini-mode for creating a BDE-style class implementation header (e.g. ---).
