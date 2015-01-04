@@ -9,24 +9,25 @@
 *** DONE document code organization
 ** Usability
 *** WAIT replace electric pairs by something better?
-*** TODO position stack should use rtags stack (or add key to push onto rtags stack)
+*** TODO better bookmarks
+    Position stack should use rtags stack (or add key to push onto rtags stack)
 *** TODO key for flyspell?
 *** TODO improve usability of autocomplete
+*** TODO mark occurrences on demand rather than time based
 ** BDE
 *** TODO align class data members (should be similar as function args)
 *** TODO align function args should align default values
-*** TODO mark occurrences on demand rather than time based
 ** Rtags
-*** WORK fix F3 / recenter
-*** DONE consider using M-. / M-, instead of F3 / F4 (since we don't care about tags)
+*** TODO make compile_includes path-relative (use environment variables)
+*** WORK fix M-. recenter
 *** TODO shrink the diagnostics window to content size
-*** TODO make header auto-complete better
+*** TODO fix autocomplete for header files
    Either this will come from Projectile, or
    It can be easily done with per-directory variables:
    https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
    (with an impact on performance)
 ** Extensions
-*** TODO sr-speedbar or https://github.com/sabof/project-explorer
+*** DONE directory tree: sr-speedbar or https://github.com/sabof/project-explorer
 ** Themes
 *** TODO solarized should be a real theme
 * C++
@@ -35,16 +36,6 @@
 *** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
 *** Malinka http://blog.refu.co/?tag=clang
 *** Eclim: https://github.com/senny/emacs-eclim
-** TODO snippets
-    - [ ] New files
-    - [ ] Etc
-* Themes
-    - [X] Make linum face boring (not sure the fancy version works)
-    - [X] Make org mode more readable
-    - [X] *FIX LINUM ON LINUX!!!*
-    - [ ] Function key to cycle between themes
-    - [ ] Primitive types for C++
-    - [ ] High-constrast version of solarized
 * Other languages
 ** DONE JavaScript js2
 ** TODO JavaScript chrome integration

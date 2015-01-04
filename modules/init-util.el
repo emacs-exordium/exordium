@@ -5,8 +5,8 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-%            `goto-matching-paren'
 ;;;
-;;; C-c C-s        Push point onto position stack ("s = save")
-;;; C-c C-b        Pop point from position stack ("b = back")
+;;; C-c s          Push point onto position stack ("s = save")
+;;; C-c b          Pop point from position stack ("b = back")
 ;;;
 ;;; C-x C-\        Goto to last change (then second most recent edit, etc.)
 ;;; C-x C-|        Add shift to reverse the direction
@@ -92,8 +92,8 @@
           (t
            (message "Invalid position in stack")))))
 
-(global-set-key [(control c)(control s)] 'postack-push)
-(global-set-key [(control c)(control b)] 'postack-pop)
+(global-set-key [(control c)(s)] 'postack-push)
+(global-set-key [(control c)(b)] 'postack-pop)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Goto last change
