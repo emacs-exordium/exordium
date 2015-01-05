@@ -271,6 +271,7 @@ Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-c a</kbd>   | Align function arguments (in signature).
 <kbd>C-c f</kbd>   | Align function arguments (in function call).
+<kbd>C-c m</kbd>   | Align class members (region must be selected).
 <kbd>C-&gt;</kbd>  | Right-align end-of-line comment or text after cursor.
 <kbd>C-c i</kbd>   | Insert redundant #include guard.
 <kbd>C-c =</kbd>   | Insert class definition header.

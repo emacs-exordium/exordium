@@ -13,6 +13,7 @@
 ;;; C-c i          `bde-insert-redundant-include-guard'
 ;;; C-c a          `bde-align-functions-arguments'
 ;;; C-c f          `bde-align-funcall'
+;;; C-c m          `bde-align-class-members'
 ;;;
 ;;; Aligh right after point:
 ;;; Before (cursor anywhere after semi-colon):
@@ -52,7 +53,23 @@
 ;;;    bslma::ManagedPtr<BufferedMessage> message(
 ;;;                                           groupInfo->bufferedMessages()[0],
 ;;;                                           &d_bufferedMessagePool);
-;;; TODO: does not work well with comments.
+;;; TODO: currently does not work well with comments.
+;;;
+;;; Align class members (region must be selected):
+;;; Before:
+;;;    bslma::Allocator *d_allocator_p; // held not owned
+;;;    bool d_started;
+;;;    bdet_TimeInterval d_idleCheckInterval; // Delay between 2 checks for
+;;;         // idle sessions. Default is 0, meaning this feature is not used.
+;;; After:
+;;;    bslma::Allocator *d_allocator_p;    // held not owned
+;;;
+;;;    bool              d_started;
+;;;
+;;;    bdet_TimeInterval d_idleCheckInterval;
+;;;                                        // Delay between 2 checks for
+;;;                                        // idle sessions. Default is 0,
+;;;                                        // meaning this feature is not used.
 
 (require 'cl)
 
@@ -256,8 +273,7 @@ not a character, backspace, delete, left or right."
              (insert "// " class-name "\n")
              (insert-bar (string-width class-name))
              (previous-line 3)
-             (center-line 3)
-             ))
+             (center-line 3)))
           (t
            (bde-insert-class-header ?=)))))
 
@@ -362,7 +378,7 @@ guard around it"
 (define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Align function arguments
+;;; Align stuff
 
 (defun bde-max-column-in-region ()
   "Return the largest column in region"
@@ -372,6 +388,8 @@ guard around it"
       (setq m (max m (current-column)))
       (forward-line))
     m))
+
+;;; Align arguments in a function declaration
 
 (defun bde-parse-argument (argument)
   "Parse the argument line (which may include the external
@@ -482,6 +500,8 @@ declaration or definition, align the type and variable names"
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
+;;; Align arguments in a function call
+
 (defun bde-align-funcall ()
   "Assuming the cursor is within the list of arguments of a
   function call, align the arguments. It puts one argument per
@@ -544,6 +564,137 @@ declaration or definition, align the type and variable names"
                 (message "Longest line is %d chars" longest-length)))))))))
 
 (define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
+
+;;; Align members in a class
+
+(defun bde-members-list (text)
+  "Return a list of members found in text, with each member being
+a list (type variable num-stars comment), where num-stars is the
+number of * before the variable name, and comment may not be
+present. For example:
+    int             d_count;       // counter
+    bsl::Allocator *d_allocator_p; // held not owned
+will return:
+    (('int' 'd_count' 0 ' counter')
+     ('bsl::Allocator' '*d_allocator_p' 1 ' held not owned))
+There can be more than one comment string in a sublist if comments
+include semicolons."
+  (cl-flet ((trim (s)
+              ;; Returns a trimed 's' or nil if 's' becomes empty
+              (let ((trimmed (pg/string-trim s)))
+                (if (string= "" trimmed) nil (list trimmed)))))
+    ;; Split the text around semicolons, and trim all elements.
+    ;; An element will be like 'int d_count' or
+    ;; '// counter\n    bsl::Allocator *d_allocator_p'.
+    (let ((elements (mapcan #'trim (split-string text ";")))
+          (members ()))
+      (dolist (element elements)
+        ;; Guess the variable, the type, and the number of *.
+        (let* ((var-pos    (or (string-match "[_a-z]+[0-9]*\\'" element) 0))
+               (var        (substring element var-pos))
+               (before-var (substring element 0 var-pos))
+               (star-pos   (string-match "\\*[\\s-]*" before-var))
+               (star2-pos  (string-match "\\*\\*[\\s-]*" before-var))
+               (type       (pg/string-trim
+                            (substring before-var 0 (or star-pos var-pos))))
+               (comment    nil))
+          (when (and members ; e.g. not the first element
+                     (pg/string-starts-with element "//"))
+            ;; If the element starts with //, there is a comment that belongs
+            ;; to the previous element. Also the type must be re-guessed to
+            ;; remove any line starting with //
+            (let ((type-lines (mapcan #'trim (split-string type "\n"))))
+              (setq type (mapconcat #'(lambda (s)
+                                        (if (pg/string-starts-with s "//") "" s))
+                                    type-lines
+                                    "")
+                    comment (mapconcat #'(lambda (s)
+                                           (if (pg/string-starts-with s "//")
+                                               (substring s 2)
+                                             ""))
+                                       (mapcan #'trim (split-string element "\n"))
+                                       ""))))
+          ;; Add the comment to the previous element.
+          (when comment
+            (nconc (car members) (list comment)))
+          ;; We may have an empty type if this is the last comment in the
+          ;; region. If we have a type, add a new member.
+          (unless (string= type "")
+            (setq members (cons (list type
+                                      (cond (star2-pos (concat "**" var))
+                                            (star-pos  (concat "*" var))
+                                            (t         var))
+                                      (cond (star2-pos 2)
+                                            (star-pos  1)
+                                            (t         0)))
+                                members)))))
+      ;; Result
+      (reverse members))))
+
+(defun bde-align-class-members ()
+  "Assuming a region is selected containing class members, align
+these members according to the BDE style. Note that all comments
+start at column 40."
+  (interactive)
+  (cond ((use-region-p)
+         ;; Parse the region and get a list of members.
+         ;; Each member is a list (type variable num-stars comments).
+         ;; There are 0 to many comments.
+         (let ((members (bde-members-list
+                         (buffer-substring (region-beginning) (region-end))))
+               (max-type-length 0)
+               (max-stars 0))
+           ;; Get the max type length and the max number of *
+           (dolist (member members)
+             (let ((type      (car member))
+                   (num-stars (caddr member)))
+               (setq max-type-length (max max-type-length (length type))
+                     max-stars (max max-stars num-stars))))
+           ;; Cur and reformat the region
+           (delete-region (region-beginning) (region-end))
+           (insert
+            (with-temp-buffer
+              (dolist (member members)
+                (let ((type      (car member))
+                      (var       (cadr member))
+                      (num-stars (caddr member))
+                      (comments  (cdddr member)))
+                  ;; Insert type and variable
+                  (insert "    ")
+                  (insert type)
+                  (insert (make-string (+ (- max-type-length (length type))
+                                          (- max-stars num-stars)
+                                          1) ; at least one space
+                                       ?\s))
+                  (insert var)
+                  (insert ";")
+                  (when comments
+                    ;; Insert comments on a new line if the current column > 40
+                    (when (>= (current-column) 40)
+                      (newline))
+                    (insert (make-string (- 40 (current-column)) ?\s))
+                    (insert "//")
+                    (dolist (comment comments)
+                      (insert comment)))
+                  ;; One blank line between two members
+                  (newline 2)))
+              (buffer-string)))
+           ;; Fix the comments for the 79th column, e.g. fill-paragraph on each
+           (dolist (member (reverse members))
+             ;; Move back, skipping empty lines
+             (while (= (point-at-bol) (point-at-eol))
+               (previous-line))
+             (let ((comments (cdddr member)))
+               (when comments
+                 (end-of-line)
+                 (c-fill-paragraph)))
+             ;; Move back until we find empty line
+             (while (not (= (point-at-bol) (point-at-eol)))
+               (previous-line)))))
+        (t
+         (message "No region"))))
+
+(define-key c-mode-base-map [(control c)(m)] 'bde-align-class-members)
 
 ;;; End of file
 (provide 'init-bde-style)
