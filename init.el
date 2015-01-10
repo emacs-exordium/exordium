@@ -116,6 +116,7 @@
 ;;; Major modes
 (require 'init-markdown)
 (require 'init-org)
+(require 'init-xml)
 
 ;;; Themes
 (when *environment-nw*

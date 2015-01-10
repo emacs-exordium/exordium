@@ -395,6 +395,7 @@ names to which it refers are bound."
      (org-document-info-keyword ((,class (:foreground ,green))))
      (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
      (org-done ((,class (:foreground ,green :weight bold :box t))))
+     (org-checkbox ((,class (:foreground ,yellow :weight bold))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
      (org-formula ((,class (:foreground ,red))))
