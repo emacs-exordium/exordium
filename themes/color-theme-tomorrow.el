@@ -228,9 +228,13 @@ names to which it refers are bound."
      (flymake-errline ((,class (:underline ,red :background ,background))))
 
      ;; Rtags
-     (rtags-errline ((,class (:background ,red :foreground ,background))))
-     (rtags-warnline ((,class (:background ,orange :foreground ,background))))
-     (rtags-fixitline ((,class (:background ,green :foreground ,background))))
+     ;; Loud:
+     ;;(rtags-errline ((,class (:background ,red :foreground ,background))))
+     ;;(rtags-warnline ((,class (:background ,orange :foreground ,background))))
+     ;;(rtags-fixitline ((,class (:background ,green :foreground ,background))))
+     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
+     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
+     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
 
      ;; Clojure errors
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
