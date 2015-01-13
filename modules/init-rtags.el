@@ -201,6 +201,7 @@
     (interactive)
     (rtags-find-symbol-at-point)
     (recenter-top-bottom)))
+
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 (define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
@@ -227,6 +228,7 @@ buffer"
     (if (get-buffer buffer-name)
         (display-buffer buffer-name)
       (message "Rtags rdm is not running (use M-x rtags-start-rdm)"))))
+
 (define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
 
 ;; Mode for rdm log output
@@ -257,12 +259,19 @@ buffer"
 
 (defun rtags-show-diagnostics-buffer ()
   "Show the diagnostics buffer (same as `rtags-diagnostics' but
-without reparsing)"
+without reparsing) in a dedicated window"
   (interactive)
-  (let ((buffer-name "*RTags Diagnostics*"))
-    (if (get-buffer buffer-name)
-        (display-buffer buffer-name)
-      (message "Rtags diagnostics is not running (use C-c r D)"))))
+  (let ((buffer-name "*RTags Diagnostics*")
+        (num-diagnostics-lines 6))
+    (cond ((get-buffer buffer-name)
+           (display-buffer buffer-name)
+           (other-window 1)
+           (shrink-window (- (window-height) num-diagnostics-lines))
+           (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
+           (other-window -1))
+          (t
+           (message "Rtags diagnostics is not running (use C-c r D)")))))
+
 (define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

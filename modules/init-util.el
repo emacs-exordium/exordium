@@ -228,7 +228,6 @@ With argument, do this that many times."
       (lambda () (fci-mode 1)))
     (global-fci-mode 1)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlight symbol
 
@@ -242,5 +241,20 @@ With argument, do this that many times."
 ;; Don't show this mode in the modeline
 (eval-after-load 'highlight-symbol
   '(diminish 'highlight-symbol-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun toggle-window-dedicated ()
+  "Toggles whether teh current active window is dedicated or not"
+  (interactive)
+  (let ((window (get-buffer-window (current-buffer))))
+    (message (if (set-window-dedicated-p window
+                                         (not (window-dedicated-p window)))
+                 "Window '%s' is dedicated"
+               "Window '%s' is normal")
+             (current-buffer))))
+
+;;; Note: apparently there is no Pause key on an Apple keyboard...
+(define-key global-map [pause] 'toggle-window-dedicated)
 
 (provide 'init-util)
