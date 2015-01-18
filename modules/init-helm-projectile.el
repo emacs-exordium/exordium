@@ -4,8 +4,9 @@
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
-;;; C-c h          Open file with helm/projectile
-;;; C-c p f        Open file with ido/projectile
+;;; C-c h          Open file with helm/projectile (current project)
+;;; C-c C-h        Same but first select the project
+;;; C-c p s g      Grep in project
 
 (require 'helm)
 (require 'projectile)
@@ -13,18 +14,14 @@
 
 (projectile-global-mode)
 (global-set-key [(control c)(h)] 'helm-projectile)
-
-(global-set-key [(control c)(p)(g)] 'projectile-grep)
+(global-set-key [(control c)(control h)] 'helm-projectile-switch-project)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Do not show these files in helm buffer
-;; (add-to-list helm-boring-file-regexp-list
-;;       '("\\.tsk$" "\\.log$"))
+(add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
+(add-to-list 'helm-boring-file-regexp-list "\\.log\\.")
 
 ;; Use `recentf-list' instead of `file-name-history' in `helm-find-files'.
 ;;(setq helm-ff-file-name-history-use-recentf t)
-
-;;(global-set-key (kbd "C-c h") 'helm-mini)
-;;(global-set-key (kbd "C-c m") 'helm-M-x)
 
 (provide 'init-helm-projectile)

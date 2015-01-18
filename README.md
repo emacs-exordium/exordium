@@ -247,13 +247,14 @@ the selection until you find what you were looking for.
 <kbd>C-c p C-h</kbd> displays the list of keys for Projectile. Below are the
 most important ones.
 
-Keybinding          | Description
---------------------|-----------------------------------------------------------
-<kbd>C-c h</kbd>    | Helm: find file in any project
-<kbd>C-c p p</kbd>  | IDO: switch project
-<kbd>C-c p f</kbd>  | IDO: find file in current project
-<kbd>C-c p g</kbd> or <kbd>C-c p s g</kbd> | Search in project with grep
-<kbd>C-c p s a</kbd> | Search in project with ack
+Keybinding           | Description
+---------------------|-----------------------------------------------------------
+<kbd>C-c h</kbd>     | Helm: find file in current project
+<kbd>C-c C-h</kbd>   | Same but first select project
+<kbd>C-c p p</kbd>   | IDO: switch project
+<kbd>C-c p f</kbd>   | IDO: find file in current project
+<kbd>C-c p s g</kbd> | Grep in current project
+<kbd>C-c p s a</kbd> | Same but using ack
 <kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
 
 See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
