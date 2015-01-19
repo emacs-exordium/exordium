@@ -492,20 +492,25 @@ Other functions:
 
 ### Autocomplete
 
-*This is a work in progress.*
+You can use RTags as source for auto-complete suggestions. Notes:
+* This feature makes RTags be the *only* source for auto-complete in C/C++
+  mode, e.g. all other classic sources such as names in open buffers are
+  disabled. The reasoning being that surely Clang must be more accurate.
+* This feature only works when RTags diagnostics is turned on (<kbd>C-c r
+  D</kbd>).
 
-Set the variable `*init-rtags-auto-complete*` to true in your
-`init-local-prefs.el` to turn on RTags as the source for auto-complete in C/C++
-mode. It will work when you activate the diagnostics mode with <kbd>C-c r
-D</kbd>. Note that this variable makes RTags be the *only* source for
-auto-complete in C/C++ mode, e.g. all other classic sources such as names in
-open buffers are disabled. The reasoning being that surely Clang must be more
-accurate.
+To enable it automatically, set the variable `*init-rtags-auto-complete*` to
+true in your `init-local-prefs.el`. To enable it manually, run the command `M-x
+rtags-enable-auto-complete` *before you open any C++ file* (otherwise the
+default sources for auto-complete are set up).
 
-**Issues:** auto-complete triggers rdm very often. Also, since auto-complete is
-linked to the diagnostics mode, it ends up displaying errors in the code you
-are typing all the time, which may be distracting because the RTags
-error/warning/quick-fix faces are intentionally very loud.
+Possible issues:
+* There might be a graphical glitch in the auto-complete popup if the Emacs
+  window is too small. Just enlarge the window a bit if this happens.
+* There seem to be a bug sometimes where the tab key no longuer works for
+  indentation because it becomes bound to `yas-next-field-or-maybe-expand` and
+  not `c-indent-line-or-region` as it should be. Haven't figured it out yet.
+* It's a tiny bit slow and it may trigger rdm a bit often.
 
 ## Header file autocomplete
 
