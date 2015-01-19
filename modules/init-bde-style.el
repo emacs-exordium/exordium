@@ -576,7 +576,7 @@ present. For example:
     bsl::Allocator *d_allocator_p; // held not owned
 will return:
     (('int' 'd_count' 0 ' counter')
-     ('bsl::Allocator' '*d_allocator_p' 1 ' held not owned))
+     ('bsl::Allocator' '*d_allocator_p' 1 ' held not owned'))
 There can be more than one comment string in a sublist if comments
 include semicolons."
   (cl-flet ((trim (s)
@@ -631,6 +631,20 @@ include semicolons."
       ;; Result
       (reverse members))))
 
+(defun bde-guess-indentation-level ()
+  "Return the number of spaces needed for correct indentation at
+  point"
+  (let ((n 0))
+    (save-excursion
+      ;; There is probably a better way to do that...
+      (newline)
+      (forward-line -1)
+      (indent-according-to-mode)
+      (setq n (current-indentation))
+      (beginning-of-line)
+      (kill-line))
+    n))
+
 (defun bde-align-class-members ()
   "Assuming a region is selected containing class members, align
 these members according to the BDE style. Note that all comments
@@ -643,54 +657,60 @@ start at column 40."
          (let ((members (bde-members-list
                          (buffer-substring (region-beginning) (region-end))))
                (max-type-length 0)
-               (max-stars 0))
+               (max-stars 0)
+               (num-spaces 0))
            ;; Get the max type length and the max number of *
            (dolist (member members)
              (let ((type      (car member))
                    (num-stars (caddr member)))
                (setq max-type-length (max max-type-length (length type))
                      max-stars (max max-stars num-stars))))
-           ;; Cur and reformat the region
-           (delete-region (region-beginning) (region-end))
-           (insert
-            (with-temp-buffer
-              (dolist (member members)
-                (let ((type      (car member))
-                      (var       (cadr member))
-                      (num-stars (caddr member))
-                      (comments  (cdddr member)))
-                  ;; Insert type and variable
-                  (insert "    ")
-                  (insert type)
-                  (insert (make-string (+ (- max-type-length (length type))
-                                          (- max-stars num-stars)
-                                          1) ; at least one space
-                                       ?\s))
-                  (insert var)
-                  (insert ";")
-                  (when comments
-                    ;; Insert comments on a new line if the current column > 40
-                    (when (>= (current-column) 40)
-                      (newline))
-                    (insert (make-string (- 40 (current-column)) ?\s))
-                    (insert "//")
-                    (dolist (comment comments)
-                      (insert comment)))
-                  ;; One blank line between two members
-                  (newline 2)))
-              (buffer-string)))
-           ;; Fix the comments for the 79th column, e.g. fill-paragraph on each
-           (dolist (member (reverse members))
-             ;; Move back, skipping empty lines
-             (while (= (point-at-bol) (point-at-eol))
-               (previous-line))
-             (let ((comments (cdddr member)))
-               (when comments
-                 (end-of-line)
-                 (c-fill-paragraph)))
-             ;; Move back until we find empty line
-             (while (not (= (point-at-bol) (point-at-eol)))
-               (previous-line)))))
+           ;; Cut and reformat the region
+           (save-excursion
+             (delete-region (region-beginning) (region-end))
+             (setq num-spaces (bde-guess-indentation-level))
+             (insert
+              (with-temp-buffer
+                (let ((num-members (length members)))
+                  (dolist (member members)
+                    (let ((type      (car member))
+                          (var       (cadr member))
+                          (num-stars (caddr member))
+                          (comments  (cdddr member)))
+                      ;; Insert type and variable
+                      (insert-char ?\s num-spaces)
+                      (insert type)
+                      (insert (make-string (+ (- max-type-length (length type))
+                                              (- max-stars num-stars)
+                                              1) ; at least one space
+                                           ?\s))
+                      (insert var)
+                      (insert ";")
+                      (when comments
+                        ;; Insert comments on a new line if the current column > 40
+                        (when (>= (current-column) 40)
+                          (newline))
+                        (insert (make-string (- 40 (current-column)) ?\s))
+                        (insert "//")
+                        (dolist (comment comments)
+                          (insert comment)))
+                      ;; One blank line between two members
+                      (decf num-members)
+                      (newline (if (> num-members 0) 2 1))))
+                  (buffer-string))))
+             ;; Fix the comments for the 79th column, e.g. fill-paragraph on each
+             (previous-line)
+             (dolist (member (reverse members))
+               ;; Move back, skipping empty lines
+               (while (= (point-at-bol) (point-at-eol))
+                 (previous-line))
+               (let ((comments (cdddr member)))
+                 (when comments
+                   (end-of-line)
+                   (c-fill-paragraph)))
+               ;; Move back until we find empty line
+               (while (not (= (point-at-bol) (point-at-eol)))
+                 (previous-line))))))
         (t
          (message "No region"))))
 
