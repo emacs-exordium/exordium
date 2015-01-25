@@ -87,12 +87,13 @@
 ;;; CUA
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
 ;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
-;;; It also has a nice feature: C-ret for selecting rectangular regions.
+;;; It also has a nice feature: C-RET for selecting rectangular regions.
 ;;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
 
-(if *init-enable-cua-mode*
-    (cua-mode t)
-  (cua-selection-mode t))
+(cond ((eq *init-enable-cua-mode* :region)
+       (cua-selection-mode t))
+      (*init-enable-cua-mode*
+       (cua-mode t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Expand region

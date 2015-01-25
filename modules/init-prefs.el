@@ -74,8 +74,9 @@ If nil, use a plain line.")
   If nil, do the opposite")
 
 (defvar *init-enable-cua-mode* nil
-  "Enables CUA mode globally. If disabled, only the rectangular
-  region feature is enabled")
+  "IF set to t, enables CUA mode.
+  If set to :region, enables CUA rectagular regions.
+  IF nil, disables CUA completely")
 
 (defvar *init-keyboard-escape* t
   "Enables ESC key for keyboard quit")
