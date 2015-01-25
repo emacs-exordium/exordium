@@ -43,13 +43,13 @@
       (t
        (global-set-key [(shift return)] 'newline-and-indent)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Electric pair
 
 (when *init-enable-electric-pair-mode*
   (electric-pair-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Winmove
 
 ;;; Meta-Shift-arrow = move the focus between visible buffers
@@ -59,7 +59,7 @@
 (global-set-key [(meta shift up)] 'windmove-up)
 (global-set-key [(meta shift down)] 'windmove-down)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Buffers
 
 ;;; Meta-Control-L = switch to last buffer
@@ -72,18 +72,18 @@
 ;;; C-x C-b = ibuffer (better than list-buffers)
 (define-key global-map [(control x)(control b)] 'ibuffer)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Zoom
 
 (define-key global-map [(control +)] 'text-scale-increase)
 (define-key global-map [(control -)] 'text-scale-decrease)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Project explorer
 
 (define-key global-map [(control c)(e)] 'project-explorer-open)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; CUA
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
 ;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
@@ -95,10 +95,11 @@
       (*init-enable-cua-mode*
        (cua-mode t)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Expand region
 
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+
 (provide 'init-keyboard)

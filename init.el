@@ -15,7 +15,7 @@
 (when (file-exists-p "~/.emacs.d/init-local-prolog.el")
   (load "~/.emacs.d/init-local-prolog.el"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
 ;; Use M-x `package-list-package' to load and display the list of packages,
@@ -58,7 +58,8 @@
                            fill-column-indicator
                            exec-path-from-shell
                            goto-chg
-                           project-explorer))
+                           project-explorer
+                           page-break-lines))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -69,7 +70,7 @@
         (message "Done."))
       (package-install p))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Path for "require"
 
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
@@ -85,7 +86,7 @@
 
 (setq custom-theme-directory "~/.emacs.d/themes/")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Load Modules
 
 (require 'init-prolog)      ; utility functions - load this first

@@ -73,7 +73,7 @@
 
 (require 'cl)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Indentation
 ;;;
 ;;; This section define a C style named "bde" using c-add-style.  The offset
@@ -177,7 +177,7 @@ current cursor position, if the cursor is within a class definition:
 ;;; Enable auto indent
 (setq-default c-tab-always-indent t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Tabs
 
 ;;; Use M-i to go to the next 4-character tab position
@@ -187,7 +187,7 @@ current cursor position, if the cursor is within a class definition:
 ;; Allow tab in Makefile
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Insert class header
 
 ;;; Note: left-char and right-char only exist in emacs 24, so we use
@@ -288,7 +288,7 @@ backspace, delete, left or right."
 (global-set-key [(control c)(=)] 'bde-insert-define-class-header)
 (global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; BDE's right style comments such as // RETURN or // LOCK
 
 (defun bde-aligh-right ()
@@ -317,7 +317,7 @@ backspace, delete, left or right."
 ;;; Ctrl-> to right-aligh the text after point
 (global-set-key [(control >)] 'bde-aligh-right)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Insert redundant include guards
 
 (defun bde-insert-redundant-include-guard ()
@@ -377,7 +377,7 @@ guard around it"
 
 (define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Align stuff
 
 (defun bde-max-column-in-region ()
@@ -716,5 +716,5 @@ start at column 40."
 
 (define-key c-mode-base-map [(control c)(m)] 'bde-align-class-members)
 
-;;; End of file
+
 (provide 'init-bde-style)

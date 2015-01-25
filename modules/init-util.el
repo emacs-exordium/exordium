@@ -26,7 +26,7 @@
 ;;; Ctrl-=         Expand region
 ;;; Ctrl-|         Toggle fci mode on and off (80 column ruler)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Match parentheses
 ;;; Ctrl-% = go to match paren
 
@@ -58,7 +58,7 @@
 
 (global-set-key [(control %)] 'goto-match-paren-or-up)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Bookmark position stack
 
 (defvar postack-stack '() "The position stack")
@@ -95,14 +95,14 @@
 (global-set-key [(control c)(s)] 'postack-push)
 (global-set-key [(control c)(b)] 'postack-pop)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Goto last change
 
 (require 'goto-chg)
 (define-key global-map [(control x)(control \\)] 'goto-last-change)
 (define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Insert date/time
 
 (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
@@ -126,7 +126,7 @@ Uses `current-date-time-format' for the formatting the date/time."
   (insert (format-time-string current-time-format (current-time)))
   (insert "\n"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Copy the whole buffer without changing the current position
 
 (defun copy-all ()
@@ -134,7 +134,7 @@ Uses `current-date-time-format' for the formatting the date/time."
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Duplicate lines
 
 (defun duplicate-line-or-region (arg)
@@ -168,7 +168,7 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 (global-set-key [(control c)(d)] 'duplicate-line-or-region)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Deleting Spaces
 
 (defun delete-horizontal-space-forward ()
@@ -185,7 +185,7 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 (global-set-key [(control backspace)] 'delete-horizontal-space-backward)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Deleting Words
 ;;;
 ;;; These functions replace delete-word and backward-kill-word: they do NOT put
@@ -210,7 +210,7 @@ With argument, do this that many times."
 
 (define-key global-map [(meta backspace)] 'backward-delete-word)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; 80-column ruler bound to Ctrl-|
 ;;; Note: if it causes Emacs to crash on images, set the variable
 ;;; fci-always-use-textual-rule to t (it will use a character instead).
@@ -228,7 +228,7 @@ With argument, do this that many times."
       (lambda () (fci-mode 1)))
     (global-fci-mode 1)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Highlight symbol
 
 (require 'highlight-symbol)
@@ -242,7 +242,7 @@ With argument, do this that many times."
 (eval-after-load 'highlight-symbol
   '(diminish 'highlight-symbol-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defun toggle-window-dedicated ()
   "Toggles whether teh current active window is dedicated or not"
@@ -257,4 +257,5 @@ With argument, do this that many times."
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
 (define-key global-map [pause] 'toggle-window-dedicated)
 
+
 (provide 'init-util)

@@ -25,8 +25,7 @@
 ;;; Turn on FCI automatically
 (add-hook 'c++-mode-hook 'fci-mode)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Highlight dead code between #if 0 and #endif
 
 (defun cpp-highlight-dead-code ()
@@ -47,8 +46,7 @@
 ;;; Highlight dead code between "#if 0" and "#endif"
 (add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Switch between .h <--> .cpp
 
 (defconst *cpp-header-switches* '(("h" .   ("cpp" "c"))
@@ -87,8 +85,7 @@
 ;;; Ctrl-Tab to switch between .h and .cpp
 (define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Font lock changes
 
 ;;; Display TODO: and FIXME: and TBD: in red
@@ -98,5 +95,5 @@
    ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
    ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
 
-
+
 (provide 'init-cpp)

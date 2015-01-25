@@ -187,7 +187,7 @@
 (require 'init-prolog)
 (require 'rtags)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Key bindings
 
 ;; Enable default keys from rtags with prefix "Ctrl-C r"".
@@ -208,7 +208,7 @@
 (define-key c-mode-base-map [(meta right)] (function rtags-location-stack-forward))
 (define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Start rdm as a subprocess, with output in a buffer
 
 (defun rtags-start-rdm ()
@@ -254,7 +254,7 @@ buffer"
   ;; Syntax highlighting:
   (setq font-lock-defaults '((rtags-rdm-mode-keywords))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Display the diagnostics buffer without force reparsing
 
 (defun rtags-show-diagnostics-buffer ()
@@ -274,7 +274,7 @@ without reparsing) in a dedicated window"
 
 (define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Create a compilation database
 
 ;; Override these variables in your .emacs as needed:
@@ -488,7 +488,7 @@ directory"
 (add-to-list 'auto-mode-alist
              '("compile_includes" . rtags-compile-includes-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; RTags auto-complete
 
 (defun rtags-ac-init ()
@@ -515,6 +515,5 @@ that RTags Diagostics must be turned on."
             (lambda ()
               (setq ac-sources '(ac-source-my-rtags)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+
 (provide 'init-rtags)

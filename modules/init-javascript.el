@@ -23,7 +23,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Define some RDEL symbols
 
 (setq js2-global-externs
@@ -32,7 +32,7 @@
                              assert
                              activebase)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Font lock changes
 
 ;;; Display TODO: and FIXME: and TBD: in red
@@ -42,4 +42,5 @@
    ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
    ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
 
+
 (provide 'init-javascript)

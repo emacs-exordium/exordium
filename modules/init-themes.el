@@ -19,7 +19,7 @@
 
 (load-theme *init-theme* t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Org mode extra statuses
 ;; TODO: add solarized
 
@@ -36,14 +36,14 @@
               `(("WORK" . (:foreground ,yellow :weight bold :box t))
                 ("WAIT" . (:foreground ,orange :weight bold :box t)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Linum extension
 
 (load "~/.emacs.d/themes/hilinum-mode.el")
 (require 'hlinum)
 (hlinum-activate)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Utilities
 
 (defun what-face (pos)
@@ -53,4 +53,5 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+
 (provide 'init-themes)

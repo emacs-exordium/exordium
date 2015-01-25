@@ -8,7 +8,7 @@
 (require 'ido)
 (ido-mode 'both)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Ignored files and buffers
 
 (setq ido-ignore-files '("\\`#"
@@ -27,7 +27,7 @@
 
 (setq ido-enable-flex-matching t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Open recent files with IDO.
 ;; `abbreviate-file-name' abbreviates home dir to ~/ in the file list
 ;; Custom abbreviations can be added to `directory-abbrev-alist'.
@@ -45,4 +45,5 @@
                         nil t)))
 (define-key global-map [(control x)(control r)] 'ido-find-recentf)
 
+
 (provide 'init-ido)

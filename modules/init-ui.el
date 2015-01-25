@@ -109,4 +109,11 @@
 ;;; Mouse selection
 (setq x-select-enable-clipboard t)
 
+;;; Page breaks:
+;;; To insert a page break: C-q C-l
+;;; To jump to the previous/next page break: C-x [ and C-x ]
+;;; Display page breaks as lines instead of ^L:
+(require 'page-break-lines)
+(global-page-break-lines-mode 1)
+
 (provide 'init-ui)

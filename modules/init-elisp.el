@@ -1,7 +1,5 @@
 ;;;; Configuration for Emacs Lisp
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Loud face for TODOs in elisp comments
 
 (add-hook 'emacs-lisp-mode-hook

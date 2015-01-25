@@ -1,13 +1,9 @@
 ;;;; Configuration for Python
 
-
 ;;; Turn on FCI automatically
 (add-hook 'python-mode-hook 'fci-mode)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Font lock changes
-
 ;;; Display TODO: and FIXME: and TBD: in red
 (font-lock-add-keywords
  'python-mode

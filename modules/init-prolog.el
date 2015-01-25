@@ -4,7 +4,7 @@
 ;;; loaded before any other module.
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Files
 
 (defun pg/directory-tree (dir)
@@ -33,7 +33,7 @@ dirs. Input is a string and output is a list of strings."
     (insert-file-contents file)
     (buffer-string)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Strings
 
 (defun pg/string-without-last (string n)
@@ -63,7 +63,7 @@ dirs. Input is a string and output is a list of strings."
                             ""
                             str))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Others
 
 (defun pg/find-if (predicate list)
@@ -72,5 +72,4 @@ dirs. Input is a string and output is a list of strings."
       (when (funcall predicate elt)
         (throw 'found elt)))))
 
-
-(provide 'init-prolog)
+(provide 'init-prolog)

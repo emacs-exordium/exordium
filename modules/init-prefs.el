@@ -7,7 +7,7 @@
 ;;; (setq *init-preferred-frame-width*  110
 ;;;       *init-preferred-frame-height* 75)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; UI
 
 (defvar *init-preferred-fonts*
@@ -43,7 +43,7 @@
   monokai,
   solarized-light, solarized-dark")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Extensions
 
 (defvar *init-enable-electric-pair-mode* t
@@ -59,13 +59,13 @@ nil means it is disabled.")
   "If t, use dashes for fill-column-indicator.
 If nil, use a plain line.")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Theme
 
 (defvar *init-enable-powerline* t
   "Enables Powerline")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Keyboard
 
 (defvar *init-enable-newline-and-indent* t
@@ -81,7 +81,7 @@ If nil, use a plain line.")
 (defvar *init-keyboard-escape* t
   "Enables ESC key for keyboard quit")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; C++
 
 (defvar *init-header-auto-complete* nil
@@ -90,7 +90,7 @@ If nil, use a plain line.")
 (defvar *init-rtags-auto-complete* nil
   "Enables RTags as the source for auto-complete")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Others
 
 (defvar *init-yasnippet* nil
@@ -105,4 +105,5 @@ If nil, use a plain line.")
 (defvar *init-clojure* nil
   "Enables clojure")
 
+
 (provide 'init-prefs)
