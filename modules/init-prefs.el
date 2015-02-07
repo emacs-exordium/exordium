@@ -93,7 +93,7 @@ If nil, use a plain line.")
 
 ;;; Others
 
-(defvar *init-yasnippet* nil
+(defvar *init-yasnippet* t
   "Enables YASnippet")
 
 (defvar *init-helm-projectile* t

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: BAEL SET CATEGORY
+# key: cat
+# binding: direct-keybinding
+# --
+BAEL_LOG_SET_CATEGORY(k_LOG_CATEGORY);

@@ -278,6 +278,9 @@ Keybinding         | Description
 <kbd>C-c =</kbd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
+YASnippet is only enabled for C++ mode currently. Snippets are stored in
+`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c C-y</kbd>.
+
 ## Using RTags
 
 ### Start rdm
@@ -507,9 +510,6 @@ default sources for auto-complete are set up).
 Possible issues:
 * There might be a graphical glitch in the auto-complete popup if the Emacs
   window is too small. Just enlarge the window a bit if this happens.
-* There seem to be a bug sometimes where the tab key no longuer works for
-  indentation because it becomes bound to `yas-next-field-or-maybe-expand` and
-  not `c-indent-line-or-region` as it should be. Haven't figured it out yet.
 * It's a tiny bit slow and it may trigger rdm a bit often.
 
 ## Header file autocomplete

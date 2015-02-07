@@ -1,22 +1,36 @@
-;;;; Yasnippet
+;;;; Yasnippet - insert code snippets based on keywords, using a trigger key.
 ;;;
-;;; TODO: loading snippets takes a long time when Emacs starts.
-;;; Investigate loading them only on demand, when the first C++ file is open.
-;;; For example, in the hook:
-;;; (let (dir ((list "~/.emacs.d/snippets")
-;;;            yas-installed-snippets-dir)))
-;;;   (yas--load-directory-1 yas-installed-snippets-dir 'c++-mode))
+;;; Put your snippets under ~/.emacs.d/snippets/<mode-name>. They are loaded
+;;; just-in-time in order to avoid long Emacs start-up times. They are only
+;;; enabled for C++ mode.
+;;;
+;;; The trigger key is C-c C-y. By default Yasnippet uses TAB and tries to be
+;;; about what the user wants (indent, insert tabs, auto-complete, or snippet)
+;;; but I think the TAB key is already too busy.
+;;;
+;;; For example: type "info" followed by C-c C-y.
+;;;
+;;; For details about how to write a snippet, see
+;;; https://github.com/capitaomorte/yasnippet/blob/master/README.mdown
 
 (require 'yasnippet)
 ;;(yas-global-mode 1) ; always on
 
-;; Enable YAS only for C++
-(yas-reload-all)
+;;; Directory tree where to find snippets (subdirectories must be mode names).
+;;; The t means JIT loading, which saves time during Emacs startup.
+(yas-load-directory "~/.emacs.d/snippets" t)
+
+;;; Enable YAS only for C++
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (yas-minor-mode)))
 
-;; Don't show this minor mode in the modeline
+;;; Trigger key
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "C-c C-y") 'yas-expand)
+
+;;; Don't show this minor mode in the modeline
 (diminish 'yas-minor-mode)
 
 (provide 'init-yasnippet)
