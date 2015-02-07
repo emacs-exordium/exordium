@@ -284,6 +284,9 @@ YASnippet is only enabled for C++ mode currently. Snippets are stored in
 `~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>. Here are
 [the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
 
+Note that variable `*bde-component-author*` defines the default author for a
+header file template (see `modules/init-yasnippet.el`).
+
 ## Using RTags
 
 ### Start rdm
