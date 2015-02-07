@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UNLOCK
+# key: unlock
+# condition: (string-match "^[ \t]*unlock" (thing-at-point 'line))
+# type: command
+# --
+(end-of-line)
+(save-excursion
+  (insert "guard.release()->unlock();")
+  (end-of-line)
+  (dotimes (i (- 70 (current-column)))
+    (insert " "))
+  (insert "// UNLOCK"))

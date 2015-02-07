@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: LOCK
+# key: lock
+# condition: (string-match "^[ \t]*lock" (thing-at-point 'line))
+# type: command
+# --
+(end-of-line)
+(save-excursion
+  (insert "LockGuard guard(&d_mutex);")
+  (end-of-line)
+  (dotimes (i (- 72 (current-column)))
+    (insert " "))
+  (insert "// LOCK"))

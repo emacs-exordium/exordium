@@ -20,6 +20,8 @@ main            | main function
 now             | `bdetu_SystemTime::now`
 return          | return statement
 sleep           | `bcemt_ThreadUtil::sleep`
+lock            | lock guard
+unlock          | release a lock guard
 
 File templates:
 
