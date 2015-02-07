@@ -8,7 +8,7 @@
 ;;; about what the user wants (indent, insert tabs, auto-complete, or snippet)
 ;;; but I think the TAB key is already too busy.
 ;;;
-;;; For example: type "info" followed by C-c C-y.
+;;; For example: type "info" followed by C-c y.
 ;;;
 ;;; For details about how to write a snippet, see
 ;;; https://github.com/capitaomorte/yasnippet/blob/master/README.mdown
@@ -28,7 +28,7 @@
 ;;; Trigger key
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "C-c C-y") 'yas-expand)
+(define-key yas-minor-mode-map (kbd "C-c y") 'yas-expand)
 
 ;;; Don't show this minor mode in the modeline
 (diminish 'yas-minor-mode)
