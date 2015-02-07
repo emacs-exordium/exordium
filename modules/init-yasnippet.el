@@ -33,4 +33,8 @@
 ;;; Don't show this minor mode in the modeline
 (diminish 'yas-minor-mode)
 
+;;; Variables for file templates
+(defvar *bde-component-author* "Philippe Grenet (pgrenet)"
+  "Default component author string for BDE headers")
+
 (provide 'init-yasnippet)

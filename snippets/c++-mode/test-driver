@@ -1,0 +1,133 @@
+# -*- mode: snippet; require-final-newline: t -*-
+# name: test-driver
+# key: .t.cpp
+# condition: (pg/string-ends-with (buffer-file-name) ".t.cpp")
+# type: command
+# --
+;; Top line
+(let ((file-name (file-name-nondirectory (buffer-file-name))))
+  ;; Top line
+  (insert (format "// %s" file-name))
+  (dotimes (i (- 70 (current-column)))
+    (insert " "))
+  (insert "-*-C++-*-")
+  (newline))
+
+;; Includes
+(insert "#include <" (bde-component-name) ".h>
+
+// DMC (test driver)
+#include <dmcu_testutil.h>
+#include <dmcu_testmacros.h>
+
+// BDE (test driver)
+#include <bsl_iostream.h>
+#include <bslma_testallocator.h>
+#include <bsls_asserttest.h>")
+(newline 2)
+
+;; Body
+(insert "using namespace BloombergLP;
+using namespace bsl;
+
+// ============================================================================
+//                             TEST PLAN
+// ----------------------------------------------------------------------------
+//                             Overview
+//                             --------
+//
+//
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// [ ]
+// ----------------------------------------------------------------------------
+
+static int testStatus = 0;
+static bool             verbose = 0;
+static bool         veryVerbose = 0;
+static bool     veryVeryVerbose = 0;
+bool        veryVeryVeryVerbose = 0;
+
+//=============================================================================
+//                      GLOBAL HELPER FUNCTIONS FOR TESTING
+//-----------------------------------------------------------------------------
+
+
+// ============================================================================
+//                                 MAIN PROGRAM
+// ----------------------------------------------------------------------------
+
+int main(int argc, char *argv[])
+{
+    int            test = argc > 1 ? atoi(argv[1]) : 0;
+                verbose = argc > 2;
+            veryVerbose = argc > 3;
+        veryVeryVerbose = argc > 4;
+    veryVeryVeryVerbose = argc > 5;
+    // Prevent potential compiler unused warning
+    (void)verbose;
+    (void)veryVerbose;
+    (void)veryVeryVerbose;
+    (void)veryVeryVeryVerbose;
+
+    // Initialize default and global memory allocators
+    bslma::TestAllocator ga(\"global\", veryVeryVeryVerbose);
+    bslma::Default::setGlobalAllocator(&ga);
+
+    bslma::TestAllocator da(\"default\", veryVeryVeryVerbose);
+    bslma::Default::setDefaultAllocator(&da);
+
+    bslma::TestAllocator ta(\"test\", veryVeryVeryVerbose);
+
+    bsls::AssertFailureHandlerGuard g(bsls::AssertTest::failTestDriver);
+
+    cout << \"TEST \" << __FILE__ << \" CASE \" << test << endl;
+    switch (test) { case 0:
+    case 1: {
+        // ------------------------------------------------------------------
+        // BREATHING TEST
+        //
+        // Concerns:
+        //
+        // Plan:
+        //
+        // Testing:
+        //   Basic functionality
+        // ------------------------------------------------------------------
+
+        if (verbose) cout << endl << \"BREATHING TEST\" << endl
+                                  << \"==============\" << endl;
+
+        cout << endl << \"Not implemented\" << endl;
+    } break;
+
+    default: {
+        cerr << \"WARNING: CASE '\" << test << \"' NOT FOUND.\" << endl;
+        testStatus = -1;
+    } break;
+    }
+
+    if (testStatus > 0) {
+        cerr << \"Error, non-zero test status = \" << testStatus << \".\" << endl;
+    }
+    return testStatus;
+}")
+
+;; Footer
+(insert "
+
+// ---------------------------------------------------------------------------
+// NOTICE:
+//      Copyright (C) Bloomberg L.P., " (format-time-string "%Y") "
+//      All Rights Reserved.
+//      Property of Bloomberg L.P. (BLP)
+//      This software is made available solely pursuant to the
+//      terms of a BLP license agreement which governs its use.
+// ----------------------------- END-OF-FILE ---------------------------------
+")
+
+;; Cursor
+(beginning-of-buffer)
+(forward-line 20)
+(end-of-line)
+(insert " ")

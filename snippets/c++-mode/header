@@ -1,0 +1,71 @@
+# -*- mode: snippet; require-final-newline: t -*-
+# name: header
+# key: .h
+# condition: (pg/string-ends-with (buffer-file-name) ".h")
+# type: command
+# --
+;; Top line
+(let ((file-name (file-name-nondirectory (buffer-file-name))))
+  ;; Top line
+  (insert (format "// %s" file-name))
+  (dotimes (i (- 70 (current-column)))
+    (insert " "))
+  (insert "-*-C++-*-")
+  (newline))
+
+;; Include guard
+(let ((guard-name (upcase (bde-component-name))))
+  (insert "#ifndef INCLUDED_" guard-name)
+  (newline)
+  (insert "#define INCLUDED_" guard-name)
+  (newline 2))
+
+;; Ident and component comment
+(insert "#ifndef INCLUDED_BDES_IDENT
+#include <bdes_ident.h>
+#endif
+BDES_IDENT(\"$Id$ $CSID$\")
+
+//@PURPOSE:
+//
+//@CLASSES:
+//
+//@AUTHOR: " *bde-component-author* "
+//
+//@DESCRIPTION:
+")
+(newline 2)
+
+;; Namespaces
+(let ((package-name (bde-package-name)))
+  (insert "namespace BloombergLP {
+namespace " package-name " {
+
+
+// ============================================================================
+//                      INLINE AND TEMPLATE FUNCTION IMPLEMENTATIONS
+// ============================================================================
+
+
+}  // close namespace " package-name "
+}  // close namespace BloombergLP")
+  (newline 2))
+
+;; Footer
+(insert "#endif
+
+// ---------------------------------------------------------------------------
+// NOTICE:
+//      Copyright (C) Bloomberg L.P., " (format-time-string "%Y") "
+//      All Rights Reserved.
+//      Property of Bloomberg L.P. (BLP)
+//      This software is made available solely pursuant to the
+//      terms of a BLP license agreement which governs its use.
+// ----------------------------- END-OF-FILE ---------------------------------
+")
+
+;; Cursor position
+(beginning-of-buffer)
+(forward-line 9)
+(end-of-line)
+(insert " ")

@@ -278,8 +278,11 @@ Keybinding         | Description
 <kbd>C-c =</kbd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
+### Snippets
+
 YASnippet is only enabled for C++ mode currently. Snippets are stored in
-`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>.
+`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>. Here are
+[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
 
 ## Using RTags
 

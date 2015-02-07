@@ -74,6 +74,23 @@
 (require 'cl)
 
 
+;;; Utility functions
+
+(defun bde-component-name ()
+  "Return the name of the component for the current buffer"
+  (let ((name (file-name-sans-extension
+               (file-name-nondirectory (buffer-file-name)))))
+    (if (pg/string-ends-with name ".t")
+        (substring name 0 (- (length name) 2))
+      name)))
+
+(defun bde-package-name ()
+  "Return the name of the package for the current buffer"
+  (interactive)
+  (let ((component-name (bde-component-name)))
+    (substring component-name 0 (string-match "_" component-name))))
+
+
 ;;; Indentation
 ;;;
 ;;; This section define a C style named "bde" using c-add-style.  The offset

@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: bind
+# key: bind
+# binding: direct-keybinding
+# --
+bdef_BindUtil::bind(&$0,
+                    this,
+                    bdef_PlaceHolders::_1,
+                    bdef_PlaceHolders::_2,
+                    bdef_PlaceHolders::_3);
