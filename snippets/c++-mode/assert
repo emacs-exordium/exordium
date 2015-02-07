@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: assert
+# key: assert
+# binding: direct-keybinding
+# --
+BSLS_ASSERT_OPT($0);

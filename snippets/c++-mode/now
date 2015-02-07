@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: now
+# key: now
+# binding: direct-keybinding
+# --
+bdet_TimeInterval now = bdetu_SystemTime::now();

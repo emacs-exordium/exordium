@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: sleep
+# key: sleep
+# binding: direct-keybinding
+# --
+bcemt_ThreadUtil::sleep(bdet_TimeInterval(1.0));
