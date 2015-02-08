@@ -32,7 +32,7 @@
 
 ;;; Shortcut keys
 (global-set-key [(meta g)] 'goto-line)
-(define-key global-map [(control z)] 'advertised-undo)
+(define-key global-map [(control z)] 'undo)
 (global-set-key [(control escape)] 'delete-other-windows)
 (global-set-key [(control ?`)] 'kill-this-buffer)
 

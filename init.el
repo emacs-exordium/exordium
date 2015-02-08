@@ -139,10 +139,8 @@
   (require 'init-yasnippet))
 
 (require 'init-rtags)
-(when *init-header-auto-complete*
-  (require 'init-header-autocomplete))
 (when *init-rtags-auto-complete*
-  (rtags-enable-auto-complete))
+  (rtags-auto-complete))
 
 ;;; JS
 (require 'init-javascript)

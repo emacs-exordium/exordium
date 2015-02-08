@@ -186,6 +186,8 @@
 
 (require 'init-prolog)
 (require 'rtags)
+(require 'rtags-ac)
+(require 'auto-complete-c-headers)
 
 
 ;;; Key bindings
@@ -291,8 +293,8 @@ without reparsing) in a dedicated window"
 
 (defvar *rtags-compile-includes-base-dir*
   nil
-  "Base directory to use if `compile_include' contains relative
-  paths. Use nil for absolute paths.")
+  "If non-nil, base directory to use for all relative paths in
+  `compile_include'. Use nil for absolute paths.")
 
 ;; Do not set these variables in your .emacs, they are generated:
 
@@ -313,7 +315,7 @@ without reparsing) in a dedicated window"
 
 (defun rtags-load-compile-includes-file-content (compile-includes-file)
   "Read and parse the specified compile-includes file, and return
-a list of 3 sublists:
+a list of 4 sublists:
 - The list of src directives,
 - The list of include directives,
 - The list of exclude directives,
@@ -387,7 +389,10 @@ directly: use `rtags-create-compilation-database' instead"
                (setq *rtags-project-exclude-files* (fourth directives))
                ;; Scan src to get all subdirs that do not match the excludes
                (dolist (path source-dirs)
-                 (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
+                 (unless (file-name-absolute-p path)
+                   (setq path (expand-file-name path
+                                                (or *rtags-compile-includes-base-dir*
+                                                    dir))))
                  (message "Scanning source dir: %s ..." path)
                  (setq *rtags-project-source-dirs*
                        (append *rtags-project-source-dirs*
@@ -491,29 +496,86 @@ directory"
 
 ;;; RTags auto-complete
 
+;;; AC source for #include
+
+;;; The following function fixes a bug in achead:documentation-for-candidate
+(defun my-documentation-for-candidate (candidate)
+  "Generate documentation for a candidate `candidate'. For now,
+just returns the path and content of the header file which
+`candidate' specifies."
+  (let ((path
+         (assoc-default candidate achead:ac-latest-results-alist 'string=)))
+    (ignore-errors
+      (with-temp-buffer
+        (insert path)
+        (unless (file-directory-p path)
+          (insert "\n--------------------------\n")
+          (insert-file-contents path nil 0 200)) ;; first 200 content bytes
+        (buffer-string)))))
+
+(ac-define-source my-c-headers
+  `((init       . (setq achead:include-cache nil))
+    (candidates . achead:ac-candidates)
+    (prefix     . ,achead:ac-prefix)
+    (document   . my-documentation-for-candidate)
+    (requires   . 0)
+    (symbol     . "h")
+    (action     . ac-start)
+    (limit      . nil)))
+
+;;; AC source for RTags
+
 (defun rtags-ac-init ()
   (unless rtags-diagnostics-process
     (rtags-diagnostics)))
 
 (ac-define-source my-rtags
-  '((init . rtags-ac-init)
-    (prefix . rtags-ac-prefix)
+  '((init       . rtags-ac-init)
+    (prefix     . rtags-ac-prefix)
     (candidates . rtags-ac-candidates)
-    (action . rtags-ac-action)
-    (document . rtags-ac-document)
-    (requires . 0)
-    (symbol . "r")))
+    (action     . rtags-ac-action)
+    (document   . rtags-ac-document)
+    (requires   . 0)
+    (symbol     . "r")))
 
-(defun rtags-enable-auto-complete ()
-  "Enables auto-complete with RTags. Note that RTags becomes the
-only source for auto-complete in all C and C++ buffers. Also note
-that RTags Diagostics must be turned on."
+;;; Functions to enable auto-complete
+
+(defun rtags-auto-complete ()
+  "Enables auto-complete with RTags.
+Note that RTags becomes the only source for auto-complete in all
+C and C++ buffers. Also note that RTags Diagostics must be turned
+on."
   (interactive)
   (require 'rtags-ac)
   (setq rtags-completions-enabled t)
   (add-hook 'c++-mode-hook
             (lambda ()
               (setq ac-sources '(ac-source-my-rtags)))))
+
+(defun rtags-diagnostics-auto-complete ()
+  "Starts diagnostics and auto-complete with RTags and #includes.
+Note that this function replaces all other sources of auto-complete
+ for C++ files. Any previously opened C++ file needs to be reopen
+for this to be effective."
+  (interactive)
+  ;; Require
+  ;; Start RTags diagnostics
+  (unless rtags-diagnostics-process
+    (rtags-diagnostics))
+  ;; Create an auto-complete source for headers using compile_includes
+  (rtags-load-compile-includes-file (projectile-project-root))
+  (dolist (dir *rtags-project-source-dirs*)
+    (add-to-list 'achead:include-directories dir))
+  (dolist (dir *rtags-project-include-dirs*)
+    (add-to-list 'achead:include-directories dir))
+  ;; Turn on RTags auto-complete
+  (setq rtags-completions-enabled t)
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq ac-sources '(ac-source-my-rtags ac-source-my-c-headers)))))
+
+(define-key c-mode-base-map [(control c)(r)(A)]
+  'rtags-diagnostics-auto-complete)
 
 
 (provide 'init-rtags)

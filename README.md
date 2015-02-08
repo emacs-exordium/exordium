@@ -505,41 +505,23 @@ You can use RTags as source for auto-complete suggestions. Notes:
 * This feature makes RTags be the *only* source for auto-complete in C/C++
   mode, e.g. all other classic sources such as names in open buffers are
   disabled. The reasoning being that surely Clang must be more accurate.
-* This feature only works when RTags diagnostics is turned on (<kbd>C-c r
-  D</kbd>).
+* This feature requires RTags diagnostics to be turned on.
 
 To enable it automatically, set the variable `*init-rtags-auto-complete*` to
-true in your `init-local-prefs.el`. To enable it manually, run the command `M-x
-rtags-enable-auto-complete` *before you open any C++ file* (otherwise the
-default sources for auto-complete are set up).
+true in your `init-local-prefs.el`. Note that auto-complete for `#include`
+header files does not work in this case, because it does not know what project
+you are in.
+
+To enable it manually, type <kbd>C-c r A</kbd>. This will take effect for all
+C++ files you open from that point. This key also sets auto-complete for the
+`#include` header files in the current project.
 
 Possible issues:
 * There might be a graphical glitch in the auto-complete popup if the Emacs
   window is too small. Just enlarge the window a bit if this happens.
 * It's a tiny bit slow and it may trigger rdm a bit often.
-
-## Header file autocomplete
-
-*This is a work in progress.*
-
-This module sets up autocomplete for `#include` header files in C++ mode. It
-reuses the file `compile_includes` mentioned above. It is independent of RTags
-Diagnostics (e.g. you don't need to run diagnostics).
-
-Header auto-complete currently reuses the same variables that store the
-content of `compile_includes`. These variables are loaded with either:
-
-* M-x `rtags-create-compilation-database`,
-* Or M-x `rtags-load-compile-includes-file` which is faster and is in fact
-  called by the former (it just reloads `compile_includes`).
-
-After calling one of these functions, header auto--complete should work for any
-C++ file you open in your project.
-
-**Issues:** these variables are nil when Emacs starts. Also, they are not
-updated if you switch the RTags project: you would need to re-run
-`rtags-load-compile-includes-file` again. (This should be fixed once we have a
-real concept of project).
+* Auto-complete for header files does not understand when you are switching
+  project.
 
 ## Configuration profiling
 
