@@ -7,6 +7,7 @@
 ;;; C-c h          Open file with helm/projectile (current project)
 ;;; C-c C-h        Same but first select the project
 ;;; C-c p s g      Grep in project
+;;; C-h b          Describe keybindings using Helm
 
 (require 'helm)
 (require 'projectile)
@@ -23,6 +24,10 @@
 
 ;; Use `recentf-list' instead of `file-name-history' in `helm-find-files'.
 ;;(setq helm-ff-file-name-history-use-recentf t)
+
+
+;;; C-h b = describe keybindings using Helm
+(define-key global-map [(control h)(b)] 'helm-descbinds)
 
 
 (provide 'init-helm-projectile)

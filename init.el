@@ -48,6 +48,7 @@
                            paredit
                            rainbow-delimiters
                            helm
+                           helm-descbinds
                            ido-ubiquitous
                            projectile
                            helm-projectile
