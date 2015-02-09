@@ -228,6 +228,25 @@ With argument, do this that many times."
       (lambda () (fci-mode 1)))
     (global-fci-mode 1)))
 
+(defun goto-long-line (len)
+  "Go to the first line that is at least LEN characters long.
+Use a prefix arg to provide LEN.
+Plain `C-u' (no number) uses `fill-column' as LEN."
+  (interactive "P")
+  (setq len  (or len fill-column))
+  (let ((start-line                 (line-number-at-pos))
+        (len-found                  0)
+        (found                      nil)
+        (inhibit-field-text-motion  t))
+    (while (and (not found) (not (eobp)))
+      (forward-line 1)
+      (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
+    (if found
+        (when (interactive-p)
+          (message "Line %d: %d chars" (line-number-at-pos) len-found))
+      (goto-line start-line)
+      (message "Not found"))))
+
 
 ;;; Highlight symbol
 
