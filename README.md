@@ -172,9 +172,13 @@ Keybinding         | Description
 
 Git:
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-c g</bkd>   | Open git status mode (`magit-status`).
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c g s</bkd>    | Open git status mode (`magit-status`).
+<kbd>C-c g down</bkd> | Goto next hunk in buffer.
+<kbd>C-c g up</bkd>   | Goto previous hunk in buffer.
+<kbd>C-c g d</bkd>    | Diff the current hunk.
+<kbd>C-c g r</bkd>    | Revert the current hunk (ask for confirmation before)
 
 ### Helm / Projectile
 
