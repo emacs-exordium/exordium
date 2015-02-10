@@ -30,6 +30,9 @@
 
 (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
+;;; Don't show "MRev" in the modeline
+(diminish 'magit-auto-revert-mode)
+
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 (when *init-git-gutter*

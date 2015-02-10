@@ -115,5 +115,6 @@
 ;;; Display page breaks as lines instead of ^L:
 (require 'page-break-lines)
 (global-page-break-lines-mode 1)
+(diminish 'page-break-lines-mode)
 
 (provide 'init-ui)
