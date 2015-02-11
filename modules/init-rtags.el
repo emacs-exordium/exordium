@@ -20,9 +20,9 @@
 ;;; C-c r F  `rtags-fixit' fix the error using clang "did you mean".
 ;;;
 ;;; C-c r [  `rtags-location-stack-back' go back to previous location
-;;; M-left
+;;; C-c left
 ;;; C-c r ]  `rtags-location-stack-forward' the opposite
-;;; M-right
+;;; C-c right
 ;;;
 ;;;          `rtags-start-rdm' in a subprocess.
 ;;;          `rtags-quit-rdm' kill rdm subprocess.
@@ -206,8 +206,8 @@
 
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
-(define-key c-mode-base-map [(meta left)] (function rtags-location-stack-back))
-(define-key c-mode-base-map [(meta right)] (function rtags-location-stack-forward))
+(define-key c-mode-base-map [(control c) (left)] (function rtags-location-stack-back))
+(define-key c-mode-base-map [(control c) (right)] (function rtags-location-stack-forward))
 (define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
 
 

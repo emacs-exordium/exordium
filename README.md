@@ -133,7 +133,7 @@ Keybinding           | Description
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
-<kbd>M-S-ARROW</kbd> | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
+<kbd>M-ARROW</kbd>   | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
 
 Editing any file:
 
@@ -455,10 +455,10 @@ Keybinding                           | Description
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
-Keybinding                             | Description
----------------------------------------|---------------------------------------
-<kbd>M-LEFT</kbd>, <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>M-RIGHT</kbd>, <kbd>C-c r ]</kbd> | Go forward to next location.
+Keybinding                               | Description
+-----------------------------------------|---------------------------------------
+<kbd>C-c LEFT</kbd>, <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-c RIGHT</kbd>, <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 

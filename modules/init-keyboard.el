@@ -12,7 +12,7 @@
 ;;; RETURN            Return or Return + indent, depending on init-prefs
 ;;; S-RETURN          The opposite
 ;;;
-;;; M-S-ARROW         Move between windows (= Ctrl-x o)
+;;; M-ARROW           Move between windows (= Ctrl-x o)
 ;;; M-C-l             Switch to last buffer
 ;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
 ;;; C- +/-            Zoom
@@ -54,10 +54,10 @@
 
 ;;; Meta-Shift-arrow = move the focus between visible buffers
 (require 'windmove)
-(global-set-key [(meta shift left)] 'windmove-left)
-(global-set-key [(meta shift right)] 'windmove-right)
-(global-set-key [(meta shift up)] 'windmove-up)
-(global-set-key [(meta shift down)] 'windmove-down)
+(global-set-key [(meta left)] 'windmove-left)
+(global-set-key [(meta right)] 'windmove-right)
+(global-set-key [(meta up)] 'windmove-up)
+(global-set-key [(meta down)] 'windmove-down)
 
 
 ;;; Buffers
