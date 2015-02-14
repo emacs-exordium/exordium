@@ -449,7 +449,7 @@ Keybinding                           | Description
 <kbd>C-c r &gt;</kbd>                | Find symbol (prompts for symbol name).
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
-<kbd>M-C-g</kbd>, <kbd>C-c r I</kbd> | Imenu-like find symbol in file.
+<kbd>M-C-g</kbd>                     | Find symbol in file usign Helm.
 <kbd>C-c r T</kbd>                   | Display tag list in a window on the left side.
 <kbd>C-c r ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 

@@ -142,6 +142,7 @@
 (require 'init-rtags)
 (when *init-rtags-auto-complete*
   (rtags-auto-complete))
+(require 'init-rtags-helm)
 
 ;;; JS
 (require 'init-javascript)
