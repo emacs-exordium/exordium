@@ -20,6 +20,9 @@
   :group 'rtags
   :type 'boolean)
 
+(defun rtags-helm-sort-list (pairs)
+  (sort pairs #'(lambda (p1 p2) (< (cdr p1) (cdr p2)))))
+
 (defun rtags-helm-jump-to-line (line)
   (goto-line line)
   (recenter))
@@ -134,19 +137,19 @@ buffer (classes, functions, variables, enums and other)"
     ;; Display them in Helm
     (helm :sources
           `(((name . "Classes")
-             (candidates . classes)
+             (candidates . ,(rtags-helm-sort-list classes))
              (action . rtags-helm-jump-to-line))
             ((name . "Functions")
-             (candidates . functions)
+             (candidates . ,(rtags-helm-sort-list functions))
              (action . rtags-helm-jump-to-line))
             ((name . ,(if rtags-helm-show-variables "Fields and Variables" "Fields"))
-             (candidates . variables)
+             (candidates . ,(rtags-helm-sort-list variables))
              (action . rtags-helm-jump-to-line))
             ((name . "Enums")
-             (candidates . enums)
+             (candidates . ,(rtags-helm-sort-list enums))
              (action . rtags-helm-jump-to-line))
             ((name . "Macros and Includes")
-             (candidates . macros)
+             (candidates . ,(rtags-helm-sort-list macros))
              (action . rtags-helm-jump-to-line))))))
 
 (define-key c-mode-base-map [(meta control g)] 'rtags-helm-select-taglist)
