@@ -7,7 +7,18 @@
 ;;;                current file using Helm.
 ;;; -------------- -------------------------------------------------------
 
+(require 'rtags)
 (require 'helm)
+
+(defcustom rtags-helm-show-variables nil
+  "Whether `rtags-helm-select-taglist' shows variables and parameters"
+  :group 'rtags
+  :type 'boolean)
+
+(defcustom rtags-helm-show-enums nil
+  "Whether `rtags-helm-select-taglist' shows enums"
+  :group 'rtags
+  :type 'boolean)
 
 (defun rtags-helm-jump-to-line (line)
   (goto-line line)
@@ -63,8 +74,9 @@
                    (propertize (concat "<" file ">") 'face 'font-lock-string-face))))
         (t text)))
 
+;;;###autoload
 (defun rtags-helm-select-taglist ()
-  "Display the symbols of the current file in an Helm
+  "Display the list of symbols of the current file in an Helm
 buffer (classes, functions, variables, enums and other)"
   (interactive)
   (let* ((fn (buffer-file-name))
@@ -94,14 +106,19 @@ buffer (classes, functions, variables, enums and other)"
                          (add-to-list 'classes
                                       (cons (propertize text 'face 'font-lock-type-face)
                                             (string-to-number linenum))))
-                        ((or (string= type "VarDecl")
-                             (string= type "FieldDecl")
-                             (string= type "ParmDecl"))
+                        ((string= type "FieldDecl")
                          (add-to-list 'variables
                                       (cons (rtags-helm-propertize-variable text)
                                             (string-to-number linenum))))
-                        ((or (string= type "EnumDecl")
-                             (string= type "EnumConstantDecl"))
+                        ((and rtags-helm-show-variables
+                              (or (string= type "VarDecl")
+                                  (string= type "ParmDecl")))
+                         (add-to-list 'variables
+                                      (cons (rtags-helm-propertize-variable text)
+                                            (string-to-number linenum))))
+                        ((and rtags-helm-show-enums
+                              (or (string= type "EnumDecl")
+                                  (string= type "EnumConstantDecl")))
                          (add-to-list 'enums
                                       (cons text (string-to-number linenum))))
                         ((or (string= type "macro definition")
@@ -122,7 +139,7 @@ buffer (classes, functions, variables, enums and other)"
             ((name . "Functions")
              (candidates . functions)
              (action . rtags-helm-jump-to-line))
-            ((name . "Variables")
+            ((name . ,(if rtags-helm-show-variables "Fields and Variables" "Fields"))
              (candidates . variables)
              (action . rtags-helm-jump-to-line))
             ((name . "Enums")
