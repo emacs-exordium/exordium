@@ -82,57 +82,87 @@
   "Display the list of symbols of the current file in an Helm
 buffer (classes, functions, variables, enums and other)"
   (interactive)
-  (let* ((fn (buffer-file-name))
-         functions classes variables enums macros other)
+  (let ((fn (buffer-file-name))
+        (incomplete-functions (make-hash-table :test 'equal))
+        current-incomplete
+        functions classes variables enums macros other)
     ;; Fetch taglists. Each list is a list of pairs (text . line-number)
     (with-temp-buffer
-      (rtags-call-rc :path fn :path-filter fn "-F" "--cursor-kind" "--display-name" "--no-context")
+      (rtags-call-rc :path fn :path-filter fn "-F" "--cursor-kind" "--display-name")
       ;;(message "%s" (buffer-string))
       (unless (= (point-min) (point-max))
         (while (not (eobp))
           (let ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol))))
-            (when (string-match "^\\(.*:\\)\\([0-9]+\\)\\(:[0-9]+:\\)\t\\(.*\\)\t\\(.*\\)$" line)
+            (when (string-match "^\\(.*:\\)\\([0-9]+\\)\\(:[0-9]+:\\)\t\\(.*\\)\t\\(.*\\)\t\\(.*\\)$" line)
                 (let ((loc-start (match-string-no-properties 1 line))
                       (linenum (match-string-no-properties 2 line))
                       (loc-end (match-string-no-properties 3 line))
-                      (text (match-string-no-properties 4 line))
-                      (type (match-string-no-properties 5 line)))
+                      (context (match-string-no-properties 4 line))
+                      (text (match-string-no-properties 5 line))
+                      (type (match-string-no-properties 6 line)))
                   (cond ((or (string= type "FunctionDecl")
                              (string= type "CXXMethod")
                              (string= type "CXXConstructor")
                              (string= type "CXXDestructor"))
-                         (add-to-list 'functions
-                                      (cons (rtags-helm-propertize-function text)
-                                            (string-to-number linenum))))
-                        ((or (string= type "ClassDecl")
-                             (string= type "StructDecl"))
-                         (add-to-list 'classes
-                                      (cons (propertize text 'face 'font-lock-type-face)
-                                            (string-to-number linenum))))
-                        ((string= type "FieldDecl")
-                         (add-to-list 'variables
-                                      (cons (rtags-helm-propertize-variable text)
-                                            (string-to-number linenum))))
-                        ((and rtags-helm-show-variables
-                              (or (string= type "VarDecl")
-                                  (string= type "ParmDecl")))
-                         (add-to-list 'variables
-                                      (cons (rtags-helm-propertize-variable text)
-                                            (string-to-number linenum))))
-                        ((and rtags-helm-show-enums
-                              (or (string= type "EnumDecl")
-                                  (string= type "EnumConstantDecl")))
-                         (add-to-list 'enums
-                                      (cons text (string-to-number linenum))))
-                        ((or (string= type "macro definition")
-                             (string= type "include directive")
-                             (string= type "inclusion directive"))
-                         (add-to-list 'macros
-                                      (cons (rtags-helm-propertize-macro text)
-                                            (string-to-number linenum))))
-                        (t
-                         (add-to-list 'other
-                                      (cons text (string-to-number linenum))))))))
+                         (if (or (pg/string-ends-with context ")") ;; FIXME: regex
+                                 (pg/string-ends-with context ") const")
+                                 (pg/string-ends-with context ");")
+                                 (pg/string-ends-with context ") const;"))
+                             (add-to-list 'functions
+                                          (cons context
+                                                (string-to-number linenum)))
+                           (puthash linenum text incomplete-functions)))
+                        ((string= type "ParmDecl")
+                         (let ((fun (gethash linenum incomplete-functions)))
+                           (cond (fun
+                                  ;;(message "fun -> %s ( %s" fun text)
+                                  (setq current-incomplete (cons (concat fun "(" text)
+                                                                 (string-to-number linenum))))
+                                 (current-incomplete
+                                  ;;(message "current -> %s" text)
+                                  (setf (car current-incomplete) (concat (car current-incomplete) ", " text))
+                                  (when (pg/string-ends-with context ")")
+                                    (setf (car current-incomplete) (concat (car current-incomplete) ")"))
+                                    (add-to-list 'functions current-incomplete)
+                                    (setq current-incomplete nil)))))))
+
+                  ;; (cond ((or (string= type "FunctionDecl")
+                  ;;            (string= type "CXXMethod")
+                  ;;            (string= type "CXXConstructor")
+                  ;;            (string= type "CXXDestructor"))
+                  ;;        (add-to-list 'functions
+                  ;;                     (cons (rtags-helm-propertize-function text)
+                  ;;                           (string-to-number linenum))))
+                  ;;       ((or (string= type "ClassDecl")
+                  ;;            (string= type "StructDecl"))
+                  ;;        (add-to-list 'classes
+                  ;;                     (cons (propertize text 'face 'font-lock-type-face)
+                  ;;                           (string-to-number linenum))))
+                  ;;       ((string= type "FieldDecl")
+                  ;;        (add-to-list 'variables
+                  ;;                     (cons (rtags-helm-propertize-variable text)
+                  ;;                           (string-to-number linenum))))
+                  ;;       ((and rtags-helm-show-variables
+                  ;;             (or (string= type "VarDecl")
+                  ;;                 (string= type "ParmDecl")))
+                  ;;        (add-to-list 'variables
+                  ;;                     (cons (rtags-helm-propertize-variable text)
+                  ;;                           (string-to-number linenum))))
+                  ;;       ((and rtags-helm-show-enums
+                  ;;             (or (string= type "EnumDecl")
+                  ;;                 (string= type "EnumConstantDecl")))
+                  ;;        (add-to-list 'enums
+                  ;;                     (cons text (string-to-number linenum))))
+                  ;;       ((or (string= type "macro definition")
+                  ;;            (string= type "include directive")
+                  ;;            (string= type "inclusion directive"))
+                  ;;        (add-to-list 'macros
+                  ;;                     (cons (rtags-helm-propertize-macro text)
+                  ;;                           (string-to-number linenum))))
+                  ;;       (t
+                  ;;        (add-to-list 'other
+                  ;;                     (cons text (string-to-number linenum)))))
+                  )))
           (forward-line))))
     ;; Display them in Helm
     (helm :sources
