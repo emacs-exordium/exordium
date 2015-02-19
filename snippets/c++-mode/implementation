@@ -47,7 +47,7 @@ const char k_LOG_CATEGORY[] = \""
   (newline 2))
 
 ;; Footer
-(insert "#endif
+(insert "
 
 // ----------------------------------------------------------------------------
 // NOTICE:
