@@ -461,13 +461,10 @@ directory"
         (insert "];")
         (newline)
         (write-region (buffer-string) nil dbfilename))
-      (if (get-buffer "*RTags rdm*")
-          (when (yes-or-no-p
-                 (format "Wrote compile_commands.json (%d files). Load it?"
-                         num-files))
-            (rtags-call-rc :path t :output nil "-J" dir)
-            (message "Done (check rdm's logs)"))
-        (message "Wrote compile_commands.json (%d files)" num-files)))))
+      (when (yes-or-no-p
+             (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
+        (rtags-call-rc :path t :output nil "-J" dir)
+        (message "Reloaded (check rdm's logs)")))))
 
 ;; Mode for compile_includes
 
