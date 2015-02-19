@@ -104,10 +104,7 @@ buffer (classes, functions, variables, enums and other)"
                              (string= type "CXXMethod")
                              (string= type "CXXConstructor")
                              (string= type "CXXDestructor"))
-                         (if (or (pg/string-ends-with context ")") ;; FIXME: regex
-                                 (pg/string-ends-with context ") const")
-                                 (pg/string-ends-with context ");")
-                                 (pg/string-ends-with context ") const;"))
+                         (if (string-match "\)\\(\\s-\\)*\\(const\\)?\\(;\\)?$" context)
                              (add-to-list 'functions
                                           (cons context
                                                 (string-to-number linenum)))
