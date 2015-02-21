@@ -100,10 +100,10 @@ the .elc exists."
   (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
     (when (file-directory-p dir)
       (dolist (el (directory-files dir t "\\.el$"))
-	(let ((elc (byte-compile-dest-file el)))
-	  (when (and (file-exists-p elc)
-                 (file-newer-than-file-p el elc))
-	    (byte-compile-file el)))))))
+        (let ((elc (byte-compile-dest-file el)))
+          (when (and (file-exists-p elc)
+                     (file-newer-than-file-p el elc))
+            (byte-compile-file el)))))))
 (recompile-modules)
 
 (require 'init-lib)         ; utility functions - load this first
