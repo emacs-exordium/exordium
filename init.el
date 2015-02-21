@@ -163,7 +163,10 @@
 
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init-local.el")
+  (warn "init-local.el is deprecated, use init-local-after.el")
   (load "~/.emacs.d/init-local.el"))
+(when (file-exists-p "~/.emacs.d/init-local-after.el")
+  (load "~/.emacs.d/init-local-after.el"))
 
 ;;; Greetings
 (setq initial-scratch-message
