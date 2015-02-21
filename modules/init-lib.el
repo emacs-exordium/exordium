@@ -1,4 +1,4 @@
-;;;; Init prolog
+;;;; Init lib
 ;;;
 ;;; This file defines utility functions reused in other modules. It should be
 ;;; loaded before any other module.
@@ -72,4 +72,5 @@ dirs. Input is a string and output is a list of strings."
       (when (funcall predicate elt)
         (throw 'found elt)))))
 
-(provide 'init-prolog)
+
+(provide 'init-lib)

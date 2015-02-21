@@ -184,7 +184,7 @@
 ;;; forcing a reparsing of the current file.
 ;;; M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
-(require 'init-prolog)
+(require 'init-lib)
 (require 'rtags)
 (require 'rtags-ac)
 (require 'auto-complete-c-headers)

@@ -13,7 +13,10 @@
 
 ;; Use this file for HTTP proxy settings if needed, for packages.
 (when (file-exists-p "~/.emacs.d/init-local-prolog.el")
+  (warn "init-local-prolog.el is deprecated, use init-local-before.el")
   (load "~/.emacs.d/init-local-prolog.el"))
+(when (file-exists-p "~/.emacs.d/init-local-before.el")
+  (load "~/.emacs.d/init-local-before.el"))
 
 
 ;;; Packages from Melpa
@@ -90,7 +93,7 @@
 
 ;;; Load Modules
 
-(require 'init-prolog)      ; utility functions - load this first
+(require 'init-lib)         ; utility functions - load this first
 (require 'init-environment) ; environment variables
 
 ;;; Local preferences (fonts, frame size etc.)
