@@ -1,8 +1,8 @@
-;;;; Definition of the variables that init-local-prefs.el can override.
+;;;; Definition of the variables that prefs.el can override.
 ;;;
 ;;; These variables control other init-XXX files, such as init-ui.el.
-;;; You can override them by creating your own file
-;;; ~/.emacs.d/init-local-prefs.el with content like:
+;;; You can override them by creating your own file ~/.emacs.d/prefs.el
+;;; with content like:
 ;;;
 ;;; (setq *init-preferred-frame-width*  110
 ;;;       *init-preferred-frame-height* 75)

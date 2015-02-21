@@ -70,25 +70,25 @@ recompile everything.
 The root file is `init.el`. It looks like this:
 
 ```lisp
-;;; 1. Load init-local-before.el if it exists
-(when (file-exists-p "~/.emacs.d/init-local-before.el")
-  (load "~/.emacs.d/init-local-before.el"))
+;;; 1. Load before-init.el if it exists
+(when (file-exists-p "~/.emacs.d/before-init.el")
+  (load "~/.emacs.d/before-init.el"))
 
 ;;; 2. Define the list of Melpa packages that we need, and load any missing
 ;;; one. Note that they are NOT updated automatically.
 
-;;; 3. Load init-local-prefs.el if it exists.
-(require 'init-prefs)       ; defines variables that init-local-prefs can override
-(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
-  (load "~/.emacs.d/init-local-prefs.el"))
+;;; 3. Local preferences: load prefs.el if it exists.
+(require 'init-prefs)       ; defines variables that prefs.el can override
+(when (file-exists-p "~/.emacs.d/prefs.el")
+  (load "~/.emacs.d/prefs.el"))
 
 ;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
 
 ;;; 5. Load the default theme in ~/.emacs.d/themes.
 
-;;; 6. Load init-local-after.el if it exists
-(when (file-exists-p "~/.emacs.d/init-local-after.el")
-  (load "~/.emacs.d/init-local-after.el"))
+;;; 6. Load after-init.el if it exists
+(when (file-exists-p "~/.emacs.d/after-init.el")
+  (load "~/.emacs.d/after-init.el"))
 ```
 
 Modules can be individually commented out if needed:
@@ -143,11 +143,11 @@ all key bindings.
 3 files can be added in your directory `~/.emacs.d` to customize the
 configuration for the local machine (they are ignored in git):
 
-File name              | Usage
------------------------|-------------------------------------------------------
-`init-local-prefs.el`  | Loaded before any module. Use it to override fonts, window-size etc. See `modules/init-prefs.el` for the variables that can be overriden.
-`init-local-before.el` | Loaded before anything else. Use it to set up the http proxy for instance.
-`init-local-after.el`  | Loaded after everything else. Use it to load machine-specific extensions.
+File name        | Usage
+-----------------|-------------------------------------------------------
+`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
+`before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
+`after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
 
 ## Keymap
 
@@ -543,9 +543,8 @@ You can use RTags as source for auto-complete suggestions. Notes:
 * This feature requires RTags diagnostics to be turned on.
 
 To enable it automatically, set the variable `*init-rtags-auto-complete*` to
-true in your `init-local-prefs.el`. Note that auto-complete for `#include`
-header files does not work in this case, because it does not know what project
-you are in.
+true in your `prefs.el`. Note that auto-complete for `#include` header files
+does not work in this case, because it does not know what project you are in.
 
 To enable it manually, type <kbd>C-c r A</kbd>. This will take effect for all
 C++ files you open from that point. This key also sets auto-complete for the

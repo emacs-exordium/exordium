@@ -13,10 +13,10 @@
 
 ;; Use this file for HTTP proxy settings if needed, for packages.
 (when (file-exists-p "~/.emacs.d/init-local-prolog.el")
-  (warn "init-local-prolog.el is deprecated, use init-local-before.el")
+  (warn "init-local-prolog.el is deprecated, use before-init.el")
   (load "~/.emacs.d/init-local-prolog.el"))
-(when (file-exists-p "~/.emacs.d/init-local-before.el")
-  (load "~/.emacs.d/init-local-before.el"))
+(when (file-exists-p "~/.emacs.d/before-init.el")
+  (load "~/.emacs.d/before-init.el"))
 
 
 ;;; Packages from Melpa
@@ -110,9 +110,12 @@ the .elc exists."
 (require 'init-environment) ; environment variables
 
 ;;; Local preferences (fonts, frame size etc.)
-(require 'init-prefs)       ; defines variables that init-local-prefs can override
+(require 'init-prefs)       ; defines variables that prefs.el can override
 (when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+  (warn "init-local-prefs.el is deprecated, use prefs.el instead")
   (load "~/.emacs.d/init-local-prefs.el"))
+(when (file-exists-p "~/.emacs.d/prefs.el")
+  (load "~/.emacs.d/prefs.el"))
 
 ;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
@@ -176,10 +179,10 @@ the .elc exists."
 
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init-local.el")
-  (warn "init-local.el is deprecated, use init-local-after.el")
+  (warn "init-local.el is deprecated, use after-init.el")
   (load "~/.emacs.d/init-local.el"))
-(when (file-exists-p "~/.emacs.d/init-local-after.el")
-  (load "~/.emacs.d/init-local-after.el"))
+(when (file-exists-p "~/.emacs.d/after-init.el")
+  (load "~/.emacs.d/after-init.el"))
 
 ;;; Greetings
 (setq initial-scratch-message

@@ -4,8 +4,7 @@
 
 The source code is in these directories:
 
-* Main directory: *init.el* and the optional files *init-local-before.el*,
-  *init-local-after.el* and *init-local-prefs.el*.
+* Main directory: *init.el*.
 * *modules*: the configuration's modules, which all start with "init-".
 * *themes*: the configuration's visual themes.
 * *elpa*: packages loaded from melpa.
@@ -23,12 +22,26 @@ feature. Any "required" module file must end with a ```provide```
 statement. The name of the file and the symbol in ```provide``` and
 ```require``` must all be identical, otherwise Emacs can't find it.
 
-If a file *init-local-before.el* is present, it is loaded at the beginning. If
-a file *init-local-after.el* is present, it is loaded at the end.
+If a file *before-init.el* is present, it is loaded at the very beginning. If a
+file *after-init.el* is present, it is loaded at the very end.
 
-If a file *init-local-prefs.el* is present, it is used to override the default
-configuration preferences in *modules/init-prefs.el*. (This allow for tweaking
-the configuration without risk of conflicts during git pull).
+If a file *prefs.el* is present, it is used to override the default
+configuration preferences defined in *modules/init-prefs.el*. This allows for
+tweaking a few things in the configuration without risk of conflicts during git
+pull. For example you can put something like this in your *prefs.el*:
+
+```lisp
+;;; List of font names and sizes, in order of preference. Emacs will pick
+;;; the first one that exists.
+(setq *init-preferred-fonts* '(("Monospace" . 120)
+                               ("Mono" . 120)))
+
+;;; If you don't want to current line to be highlighted:
+(setq *init-line-mode* nil)
+
+;;; Choose another theme:
+(setq *init-theme* 'monokai)
+```
 
 ## Modules
 
