@@ -4,8 +4,8 @@
 
 The source code is in these directories:
 
-* Main directory: *init.el* and the optional files *init-local-prolog.el*,
-  *init-local.el* and *init-local-prefs.el*.
+* Main directory: *init.el* and the optional files *init-local-before.el*,
+  *init-local-after.el* and *init-local-prefs.el*.
 * *modules*: the configuration's modules, which all start with "init-".
 * *themes*: the configuration's visual themes.
 * *elpa*: packages loaded from melpa.
@@ -23,9 +23,8 @@ feature. Any "required" module file must end with a ```provide```
 statement. The name of the file and the symbol in ```provide``` and
 ```require``` must all be identical, otherwise Emacs can't find it.
 
-If a file *init-local.el* is present, it is loaded at the end of the
-configuration. If a file *init-local-prolog.el* is present, it is loaded first,
-before any required module and elpa package.
+If a file *init-local-before.el* is present, it is loaded at the beginning. If
+a file *init-local-after.el* is present, it is loaded at the end.
 
 If a file *init-local-prefs.el* is present, it is used to override the default
 configuration preferences in *modules/init-prefs.el*. (This allow for tweaking
@@ -33,9 +32,9 @@ the configuration without risk of conflicts during git pull).
 
 ## Modules
 
-### Prolog and preferences
+### Lib, environment and preferences
 
-* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prolog.el)
+* [init-lib.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-lib.el)
   defines utility functions used by other modules: things like file loading,
   string manipulation etc.
 * [init-environment.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-environment.el)

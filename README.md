@@ -67,20 +67,35 @@ recompile everything.
 
 ## Modules
 
-The root file is `init.el`. It loads a number of modules in the `modules`
-directory which can be individually enabled or disabled.
+The root file is `init.el`. It looks like this:
+
+```lisp
+;;; 1. Load init-local-before.el if it exists
+(when (file-exists-p "~/.emacs.d/init-local-before.el")
+  (load "~/.emacs.d/init-local-before.el"))
+
+;;; 2. Define the list of Melpa packages that we need, and load any missing
+;;; one. Note that they are NOT updated automatically.
+
+;;; 3. Load init-local-prefs.el if it exists.
+(require 'init-prefs)       ; defines variables that init-local-prefs can override
+(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+  (load "~/.emacs.d/init-local-prefs.el"))
+
+;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
+
+;;; 5. Load the default theme in ~/.emacs.d/themes.
+
+;;; 6. Load init-local-after.el if it exists
+(when (file-exists-p "~/.emacs.d/init-local-after.el")
+  (load "~/.emacs.d/init-local-after.el"))
+```
+
+Modules can be individually commented out if needed:
 
 ```lisp
 ;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
 ;;; or evaluate the require expression with M-C-x.
-
-(require 'init-prolog)      ; must be loaded first
-(require 'init-environment) ; environment variables
-
-;;; Local preferences (fonts, frame size etc.)
-(require 'init-prefs)       ; defines variables that init-local-prefs can override
-(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
-  (load "~/.emacs.d/init-local-prefs.el"))
 
 ;;; Look and feel
 (require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
@@ -92,10 +107,17 @@ directory which can be individually enabled or disabled.
 ;;; Usability
 (require 'init-ido)
 (require 'init-autocomplete)
+(when *init-helm-projectile*
+  (require 'init-helm-projectile))
+(require 'init-git)
+
+;;; Shell mode
+(require 'init-shell)
 
 ;;; Major modes
 (require 'init-markdown)
 (require 'init-org)
+(require 'init-xml)
 
 ;;; Themes
 (if *environment-nw*
@@ -108,33 +130,24 @@ directory which can be individually enabled or disabled.
 (when *environment-osx*
   (require 'init-osx))
 
-;;; C++
-(require 'init-cpp)
-(require 'init-bde-style)
-(require 'init-header-autocomplete)
-(require 'init-yasnippet)
-(require 'init-rtags)
-
-;;; Other programming languages
-(require 'init-javascript)
-(require 'init-clojure)
-
-;;; Local extensions
-(when (file-exists-p "~/.emacs.d/init-local.el")
-  (load "~/.emacs.d/init-local.el"))
+;;; Etc.
 ```
+
+If you are looking for a specific feature or key binding,
+[this page](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/code-organization.md)
+explains the code organization. Each module starts with a commentary including
+all key bindings.
 
 ## Machine-local preferences
 
-Two files can be added to customize the configuration for the local machine
-(they are ignored in git):
+3 files can be added in your directory `~/.emacs.d` to customize the
+configuration for the local machine (they are ignored in git):
 
-* If a file `~/.emacs.d/init-local-prefs.el` exists, it is loaded at the
-  beginning. It is used to override the default values of fonts, window size
-  etc. The preferences variables that may be overriden are defined in
-  `~/.emacs.d/modules/init-prefs.el` (see that module for details).
-* If a file `~/.emacs.d/init-local.el` exists, it will be loaded at the end;
-  you can use this as a mechanism to load machine-specific extensions.
+File name              | Usage
+-----------------------|-------------------------------------------------------
+`init-local-prefs.el`  | Loaded before any module. Use it to override fonts, window-size etc. See `modules/init-prefs.el` for the variables that can be overriden.
+`init-local-before.el` | Loaded before anything else. Use it to set up the http proxy for instance.
+`init-local-after.el`  | Loaded after everything else. Use it to load machine-specific extensions.
 
 ## Keymap
 
