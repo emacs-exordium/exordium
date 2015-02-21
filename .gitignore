@@ -23,3 +23,8 @@ eshell
 ido.last
 recentf
 project-explorer-cache
+
+# Compiled files
+modules/*.elc
+themes/*.elc
+extensions/*.elc

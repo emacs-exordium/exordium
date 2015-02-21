@@ -1,5 +1,12 @@
 ;;;; Small extensions
 ;;;
+;;; Commands:
+;;; * M-x `update-config': pulls the latest config from github and recompiles
+;;;       all non-melpa Elisp files. You need to restart Emacs afterwards.
+;;; * M-x `insert-current-time' at cursor position
+;;; * M-x `insert-current-date-time' at cursor position
+;;;
+;;; Keys:
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
@@ -11,9 +18,6 @@
 ;;; C-x C-\        Goto to last change (then second most recent edit, etc.)
 ;;; C-x C-|        Add shift to reverse the direction
 ;;;
-;;; (unbound)      `insert-current-time'
-;;; (unbound)      `insert-current-date-time'
-;;;
 ;;; C-c d          `duplicate-line'
 ;;;
 ;;; C-\            `delete-horizontal-space-forward'
@@ -24,7 +28,8 @@
 ;;; M-BACKSPACE    `backward-delete-word'
 ;;;
 ;;; Ctrl-=         Expand region
-;;; Ctrl-|         Toggle fci mode on and off (80 column ruler)
+;;; Ctrl-|         Toggle FCI mode on and off ("Fill columm indicator",
+;;;                e.g. the 80 column ruler)
 
 
 ;;; Match parentheses
@@ -264,7 +269,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 
 (defun toggle-window-dedicated ()
-  "Toggles whether teh current active window is dedicated or not"
+  "Toggles whether the current active window is dedicated or not"
   (interactive)
   (let ((window (get-buffer-window (current-buffer))))
     (message (if (set-window-dedicated-p window
@@ -275,6 +280,20 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
 (define-key global-map [pause] 'toggle-window-dedicated)
+
+
+;;; Config management
+
+(defun update-config ()
+  "Updates the configuration. Specifically, pulls from github and
+compiles all non-melpa elisp files. You need to restart Emacs
+afterwards."
+  (interactive)
+  (cd "~/.emacs.d")
+  (shell-command "git pull")
+  (byte-recompile-directory "~/.emacs.d/modules" 0)
+  (byte-recompile-directory "~/.emacs.d/themes" 0)
+  (byte-recompile-directory "~/.emacs.d/extensions" 0))
 
 
 (provide 'init-util)

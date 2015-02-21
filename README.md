@@ -19,7 +19,7 @@ Programming:
 
 * C++: [RTags](https://github.com/Andersbakken/rtags), a LLVM/Clang-based code
   indexer.
-* C++: style for [BDE](https://github.com/bloomberg/bde).
+* C++: formatting keys for the C++ [BDE](https://github.com/bloomberg/bde) style.
 * JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
@@ -31,12 +31,14 @@ Other:
 
 * Markdown: [markdown-mode](http://jblevins.org/projects/markdown-mode/).
 * Org: [org-mode](http://orgmode.org).
-* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) (built-in).
+* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) "Interactively DO
+  things", a built-in package for supercharging Emacs's completion engine when
+  opening files.
 * [Helm](http://tuhdo.github.io/helm-intro.html) an equivalent of IDO.
 * [Projectile](http://batsov.com/projectile) a project-based file management
   tool.
 * [Windmove](http://www.emacswiki.org/emacs/WindMove): move between windows
-  with Shift-Meta-arrows.
+  with Meta-arrows.
 * [Expand Region](https://github.com/magnars/expand-region.el): increase
   selected region by semantic units.
 * [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator):
@@ -46,6 +48,22 @@ Other:
 * A few themes such as
   [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
+
+## Installation
+
+Backup any `.emacs` file or `.emacs.d` directory you may have, then clone this
+repo:
+
+```bash
+$ git clone https://github.com/philippe-grenet/dot.emacs.git ~/.emacs.d
+```
+
+Emacs will download and compile the missing packages from Melpa the first
+time. It does not update them afterwards (you have to do this with M-x
+`package-list-packages`).
+
+To update the config, do M-x `update-config`. This will pull from github and
+recompile everything.
 
 ## Modules
 
@@ -296,7 +314,7 @@ header file template (see `modules/init-yasnippet.el`).
 ### Start rdm
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
-which provides a deamon called "rdm" that maintain an in-memory index, and a
+which provides a deamon called "rdm" that maintains an in-memory index, and a
 command-line client called "rc". RTags uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
 
