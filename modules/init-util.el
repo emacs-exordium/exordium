@@ -293,7 +293,8 @@ afterwards."
   (shell-command "git pull")
   (byte-recompile-directory "~/.emacs.d/modules" 0)
   (byte-recompile-directory "~/.emacs.d/themes" 0)
-  (byte-recompile-directory "~/.emacs.d/extensions" 0))
+  (byte-recompile-directory "~/.emacs.d/extensions" 0)
+  (message "Restart Emacs to make any changes effective"))
 
 
 (provide 'init-util)
