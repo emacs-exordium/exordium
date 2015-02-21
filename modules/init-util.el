@@ -169,7 +169,7 @@ Uses `current-date-time-format' for the formatting the date/time."
       ;; Create the undo information
       (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
     ;; Move the point to the lowest line
-    (next-line (* arg num-lines))))
+    (forward-line (* arg num-lines))))
 
 (global-set-key [(control c)(d)] 'duplicate-line-or-region)
 
@@ -247,7 +247,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
       (forward-line 1)
       (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
     (if found
-        (when (interactive-p)
+        (when (called-interactively-p)
           (message "Line %d: %d chars" (line-number-at-pos) len-found))
       (goto-line start-line)
       (message "Not found"))))

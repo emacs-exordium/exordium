@@ -8,7 +8,7 @@
 ;;; - Copy and paste
 ;;; - Font lock
 
-(require 'cl)
+(with-no-warnings (require 'cl))
 
 ;;; Font
 (defun init-set-font ()

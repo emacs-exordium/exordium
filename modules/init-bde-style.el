@@ -71,7 +71,7 @@
 ;;;                                        // idle sessions. Default is 0,
 ;;;                                        // meaning this feature is not used.
 
-(require 'cl)
+(with-no-warnings (require 'cl))
 
 
 ;;; Utility functions
@@ -143,7 +143,7 @@ current cursor position, if the cursor is within a class definition:
                 ((re-search-forward "^ *//" (point-at-eol) t)
                  ;; looking at a comment line
                  (setq comment-column (- (current-column) 2))
-                 (next-line -1))
+                 (forward-line -1))
                 ((re-search-forward ") *\\(const\\)? *\\(= *0\\)? *; *$"
                                     (point-at-eol) t)
                  ;; looking at end of method declaration
@@ -213,21 +213,21 @@ current cursor position, if the cursor is within a class definition:
   (let ((erase-hint t))
     (cl-flet ((delete-header-char (n)
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (end-of-line)
                   (backward-delete-char n)
-                  (next-line 2)
+                  (forward-line 2)
                   (end-of-line)
                   (backward-delete-char n)))
               (center-header ()
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (center-line 3))))
       ;; Get started
       (dotimes (i 3)
         (insert "// ")
         (newline))
-      (previous-line 2)
+      (forward-line -2)
       (end-of-line)
       (center-header)
       (insert " <class name>")
@@ -239,11 +239,11 @@ current cursor position, if the cursor is within a class definition:
                 (when erase-hint (kill-line))
                 (insert-char c 1)
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (end-of-line)
                   (when erase-hint (insert " "))
                   (insert-char header-char 1)
-                  (next-line 2)
+                  (forward-line 2)
                   (end-of-line)
                   (when erase-hint (insert " "))
                   (insert-char header-char 1))
@@ -289,7 +289,7 @@ not a character, backspace, delete, left or right."
              (insert-bar (string-width class-name))
              (insert "// " class-name "\n")
              (insert-bar (string-width class-name))
-             (previous-line 3)
+             (forward-line -3)
              (center-line 3)))
           (t
            (bde-insert-class-header ?=)))))
@@ -367,7 +367,7 @@ guard around it"
           (with-temp-buffer
             (yank)
             ;; Remove any existing include guard and blank line
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
                 (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
@@ -375,13 +375,13 @@ guard around it"
                   (kill-whole-line))
                 (setq more-lines (= 0 (forward-line 1)))))
             ;; Delete all blank lines
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (flush-lines "^$")
             ;; Sort the buffer, because we want our includes sorted
             (mark-whole-buffer)
             (sort-lines nil (region-beginning) (region-end))
             ;; Add the include guards, line by line
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
                 (insert "\n") ; insert a blank line between 2 includes
@@ -716,18 +716,18 @@ start at column 40."
                       (newline (if (> num-members 0) 2 1))))
                   (buffer-string))))
              ;; Fix the comments for the 79th column, e.g. fill-paragraph on each
-             (previous-line)
+             (forward-line -1)
              (dolist (member (reverse members))
                ;; Move back, skipping empty lines
                (while (= (point-at-bol) (point-at-eol))
-                 (previous-line))
+                 (forward-line -1))
                (let ((comments (cdddr member)))
                  (when comments
                    (end-of-line)
                    (c-fill-paragraph)))
                ;; Move back until we find empty line
                (while (not (= (point-at-bol) (point-at-eol)))
-                 (previous-line))))))
+                 (forward-line -1))))))
         (t
          (message "No region"))))
 
