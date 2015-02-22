@@ -39,7 +39,7 @@ available font names by evaluating (font-family-list)."
   :group 'init
   :type 'integer)
 
-(defcustom *init-display-line-numbers* nil
+(defcustom *init-display-line-numbers* t
   "Whether line numbers are displayed or not"
   :group 'init
   :type 'boolean)
