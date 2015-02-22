@@ -6,101 +6,141 @@
 ;;;
 ;;; (setq *init-preferred-frame-width*  110
 ;;;       *init-preferred-frame-height* 75)
+;;;
+;;; You can also use M-x `customize' and browse group Local -> Init.
+
+(defgroup init nil
+  "Customize your Emacs configuration."
+  :group 'local)
 
 
-;;; UI
+;;; UI -- see init-ui.el
 
-(defvar *init-preferred-fonts*
-  '(("Consolas"  . 120)
-    ("Monaco"    . 120)
-    ("Monospace" . 120)
-    ("Mono"      . 120))
+(defcustom *init-preferred-fonts* '(("Consolas"  . 120)
+                                    ("Monaco"    . 120)
+                                    ("Monospace" . 120)
+                                    ("Mono"      . 120))
   "List of preferred fonts/sizes to use, in decreasing order of
-  preference. We will use the first one that is available on the
-  local machine. It is a list of pairs (font-name
-  . font-size). If nil, we don't set any font. Note that you can
-  get the list of available font names by
-  evaluating (font-family-list)")
+preference. We will use the first one that is available on the
+local machine. It is a list of pairs (font-name . font-size). If
+nil, we don't set any font. Note that you can get the list of
+available font names by evaluating (font-family-list)."
+  :group 'init
+  :type 'sexp)
 
-(defvar *init-preferred-frame-width* 100
-  "Default frame width (number of columns)")
+(defcustom *init-preferred-frame-width* 100
+  "Default frame width (number of columns)."
+  :group 'init
+  :type 'integer)
 
 ;; Note: a weird bug in OS X makes the title bar black if height is too big
-(defvar *init-preferred-frame-height* 65
-  "Default frame height (a number of lines)")
+(defcustom *init-preferred-frame-height* 65
+  "Default frame height (a number of lines)."
+  :group 'init
+  :type 'integer)
 
-(defvar *init-display-line-numbers* t
-  "Enables display of the column number")
+(defcustom *init-display-line-numbers* nil
+  "Whether line numbers are displayed or not"
+  :group 'init
+  :type 'boolean)
 
-(defvar *init-line-mode* t
-  "Highlights the current line")
-
-(defvar *init-theme* 'tomorrow-night
-  "Theme to load on startup. Use nil to not load any theme,
-  otherwise use one of the following:
-  tomorrow-day, tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
-  tomorrow-night-eighties,
-  monokai,
-  solarized-light, solarized-dark")
+(defcustom *init-line-mode* t
+  "Whether the current line is highlighted or not."
+  :group 'init
+  :type 'boolean)
 
 
-;;; Extensions
+;;; Extensions -- see init-extensions.el
 
-(defvar *init-enable-electric-pair-mode* t
-  "Enables electric-pair-mode")
+(defcustom *init-enable-electric-pair-mode* t
+  "Enables electric-pair-mode."
+  :group 'init
+  :type 'symbol)
 
-(defvar *init-fci-mode* :ondemand
-  "Controls fill-column-indicator.
-:ondemand off by default (you need to hit C-| to toggle it)
-:always means it is always on
-nil means it is disabled.")
+(defcustom *init-fci-mode* :ondemand
+  "Controls fill-column-indicator e.g. the 80-character ruler.
+:ondemand off by default (you need to hit C-| to toggle it),
+:always means it is always on,
+nil means it is disabled."
+  :group 'init
+  :type 'symbol)
 
-(defvar *init-fci-use-dashes* t
+(defcustom *init-fci-use-dashes* t
   "If t, use dashes for fill-column-indicator.
-If nil, use a plain line.")
+If nil, use a plain line."
+  :group 'init
+  :type 'boolean)
 
 
-;;; Theme
+;;; Themes -- see themes directory
 
-(defvar *init-enable-powerline* t
-  "Enables Powerline")
+(defcustom *init-theme* 'tomorrow-night
+  "Theme to load on startup. Use nil to not load any theme,
+otherwise use one of the following: tomorrow-day, tomorrow-night,
+tomorrow-night-bright, tomorrow-night-blue,
+tomorrow-night-eighties, monokai, solarized-light,
+solarized-dark."
+  :group 'init
+  :type 'symbol)
+
+(defcustom *init-enable-powerline* t
+  "Enables Powerline"
+  :group 'init
+  :type 'boolean)
 
 
-;;; Keyboard
+;;; Keyboard -- see init-keyboard.el
 
-(defvar *init-enable-newline-and-indent* t
+(defcustom *init-enable-newline-and-indent* t
   "If t, binds the return key to newline-and-indent, and
-  shift-return for just newline.
-  If nil, do the opposite")
+shift-return for just newline.  If nil, do the opposite."
+  :group 'init
+  :type 'boolean)
 
-(defvar *init-enable-cua-mode* nil
+(defcustom *init-enable-cua-mode* nil
   "IF set to t, enables CUA mode.
-  If set to :region, enables CUA rectagular regions.
-  IF nil, disables CUA completely")
+If set to :region, enables CUA rectagular regions.
+IF nil, disables CUA completely."
+  :group 'init
+  :type 'symbol)
 
-(defvar *init-keyboard-escape* t
-  "Enables ESC key for keyboard quit")
-
-
-;;; C++
-
-(defvar *init-rtags-auto-complete* nil
-  "Enables RTags as the source for auto-complete")
+(defcustom *init-keyboard-escape* t
+  "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G."
+  :group 'init
+  :type 'boolean)
 
 
-;;; Others
+;;; Programming
 
-(defvar *init-yasnippet* t
-  "Enables YASnippet")
+;;; See init-rtags.el
+(defcustom *init-rtags-auto-complete* nil
+  "Whether RTags is used as the source for auto-complete in C++ mode."
+  :group 'init
+  :type 'boolean)
 
-(defvar *init-helm-projectile* t
-  "Enables Helm and Projectile")
+;;; See init-yasnippet.el
+(defcustom *init-yasnippet* t
+  "Whether YASnippet is enabled or not."
+  :group 'init
+  :type 'boolean)
 
-(defvar *init-git-gutter* t
-  "Enables git gutter fringe")
+;;; See init-helm-projectile.el
+(defcustom *init-helm-projectile* t
+  "Whether Helm and Projectile are enabled or not."
+  :group 'init
+  :type 'boolean)
 
-(defvar *init-clojure* nil
-  "Enables clojure")
+;;; See init-git.el
+(defcustom *init-git-gutter* t
+  "Whether a git status icon is displayed in the left-side fringe or not."
+  :group 'init
+  :type 'boolean)
+
+;;; See init-clojure.el
+(defcustom *init-clojure* nil
+  "Whether the development environment for Clojure is enabled or not."
+  :group 'init
+  :type 'boolean)
 
 
 (provide 'init-prefs)
