@@ -850,4 +850,4 @@ names to which it refers are bound."
 (create-monokai-theme)
 
 (provide-theme 'monokai)
-;;(provide 'color-theme-monokai)
+(provide 'color-theme-monokai)

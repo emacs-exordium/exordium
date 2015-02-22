@@ -497,4 +497,8 @@ names to which it refers are bound."
    'night-blue
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
+(defun tomorrow-mode-name ()
+  "Return the mode without the tomorrow- prefix"
+  (intern (substring (symbol-name *init-theme*) 9)))
+
 (provide 'color-theme-tomorrow)

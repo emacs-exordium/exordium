@@ -17,31 +17,45 @@
 ;;; Solarized `set-colors-solarized-dark'          `set-colors-solarized-light'
 ;;; --------- ------------------------------------ -----------------------------
 
-(load-theme *init-theme* t)
+(when *init-theme*
+  (load-theme *init-theme* t))
 
 
 ;;; Org mode extra statuses
 ;; TODO: add solarized
 
-(cond ((eq *init-theme* 'monokai)
+(cond ((featurep 'color-theme-monokai)
        (with-monokai-colors
         'default
         (setq org-todo-keyword-faces
               `(("WORK" . (:foreground ,yellow :weight bold :box nil))
                 ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
-      (t
+      ((featurep 'color-theme-tomorrow)
        (with-tomorrow-colors
-        'night
+        (tomorrow-mode-name)
         (setq org-todo-keyword-faces
               `(("WORK" . (:foreground ,yellow :weight bold :box t))
                 ("WAIT" . (:foreground ,orange :weight bold :box t)))))))
 
-
 ;;; Linum extension
-
 (load "~/.emacs.d/themes/hilinum-mode.el")
 (require 'hlinum)
 (hlinum-activate)
+
+;;; Colorize the name of the current project in the modeline.
+(when (featurep 'init-helm-projectile)
+  (eval-after-load "projectile"
+    `(setq projectile-mode-line
+           `(:eval (list " ["
+                         (propertize
+                          (projectile-project-name)
+                          'face `(:foreground
+                                  ,(cond ((featurep 'color-theme-monokai)
+                                          (with-monokai-colors 'default violet))
+                                         ((featurep 'color-theme-tomorrow)
+                                          (with-tomorrow-colors (tomorrow-mode-name) purple))
+                                         (t "#ff0000"))))
+                         "]")))))
 
 
 ;;; Utilities
