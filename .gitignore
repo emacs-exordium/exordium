@@ -1,8 +1,12 @@
 # Local modules specific to this machine
+# Old names:
 init_local.el
-init-local.el
 init-local-prolog.el
 init-local-prefs.el
+# New names:
+before-init.el
+after-init.el
+prefs.el
 
 # Melpa packages
 elpa
