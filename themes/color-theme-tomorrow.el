@@ -236,6 +236,10 @@ names to which it refers are bound."
      (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
      (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
 
+     ;;; Deft
+     (deft-title-face ((,class (:foreground ,green :weight bold))))
+     (deft-time-face ((,class (:foreground ,yellow))))
+
      ;; Clojure errors
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
      (clojure-test-error-face ((,class (:background nil :inherit flymake-errline))))
