@@ -131,14 +131,6 @@ the .elc exists."
   (require 'init-helm-projectile))
 (require 'init-git)
 
-;;; Shell mode
-(require 'init-shell)
-
-;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
-
 ;;; Themes
 (when *environment-nw*
   (set-face-background 'highlight nil))
@@ -146,6 +138,14 @@ the .elc exists."
   (require 'init-themes)
   (when *init-enable-powerline*
     (require 'init-powerline)))
+
+;;; Shell mode
+(require 'init-shell)
+
+;;; Major modes
+(require 'init-markdown)
+(require 'init-org)
+(require 'init-xml)
 
 ;;; OS-specific things
 (when *environment-osx*

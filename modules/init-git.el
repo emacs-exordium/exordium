@@ -1,5 +1,7 @@
 ;;;; All git-related stuff
 ;;;
+;;; All keys are C-c g <one-more-key>:
+;;;
 ;;; ----------------- ---------------------------------------------------------
 ;;; Key               Definition
 ;;; ----------------- ---------------------------------------------------------
@@ -12,7 +14,7 @@
 ;;; Magit
 (require 'magit)
 
-;;; Ctrl-c g = magit-status
+;;; C-c g s = magit-status
 (define-key global-map [(control c)(g)(s)] 'magit-status)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window

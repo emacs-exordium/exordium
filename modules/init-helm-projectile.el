@@ -30,4 +30,13 @@
 (define-key global-map [(control h)(b)] 'helm-descbinds)
 
 
+;;; Colorize the name of the current project in the modeline.
+(eval-after-load "projectile"
+  '(setq projectile-mode-line
+         '(:eval (list " ["
+                       (propertize (projectile-project-name)
+                                   'face '(:foreground "#b294bb"))
+                       "]"))))
+
+
 (provide 'init-helm-projectile)
