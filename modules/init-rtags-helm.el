@@ -7,6 +7,34 @@
 ;;;                current file using Helm.
 ;;; -------------- -------------------------------------------------------
 
+;;; This is an attempt to make this module display the function/methods
+;;; arguments.
+;;;
+;;; I'm not even sure it is a good idea: the list is busy with wrapping lines
+;;; for functions having many parameters, and that defeats the purpose which is
+;;; to show a clean list of functions in order to find one quickly. But if we
+;;; want it, there seem to be 2 problems:
+;;;
+;;; 1. For a function like:
+;;;
+;;; void DmpPublisher::onSubscriptionData(
+;;;                                   const simm::SubscriptionData& data,
+;;;                                   int                           clientId,
+;;;                                   int                           subscriptionId)
+;;;
+;;; ... for the first parameter, rdm returns:
+;;;
+;;;   Users/pgrenet/AeroFS/sre/src/groups/sim/simb/simb_dmppublisher.cpp:477:65:
+;;;   const simm::SubscriptionData& data,	const SubscriptionData &data	ParmDecl
+;;;
+;;; So the only parameter is the line number which is +1 for the function.
+;;;
+;;; 2. There is a bug in my build of rdm (old build, maybe fixed since):
+;;;
+;;;   /Users/pgrenet/AeroFS/sre/src/groups/sim/simb/simb_dmppublisher.cpp:35:34:
+;;;  dmpat::RecordId makeRecordId(int recordId, int clientId)	int recordIParmDecl
+;;;                                                                        ^ BUG!
+
 (require 'rtags)
 (require 'helm)
 
