@@ -40,8 +40,9 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
-;;; Remove the menu bar
-;;(menu-bar-mode -1)
+;;; Only show the menu bar in a graphical window
+;;; (we don't want to loose that top line in a tty)
+(menu-bar-mode (if (null (window-system)) -1 1))
 
 ;;; Remove welcome message
 (setq inhibit-startup-message t)
