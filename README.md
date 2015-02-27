@@ -98,18 +98,25 @@ Modules can be individually commented out if needed:
 ;;; or evaluate the require expression with M-C-x.
 
 ;;; Look and feel
-(require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-behavior)    ; backup files, trailing spaces...
-(require 'init-keyboard)    ; key bindings
-(require 'init-util)        ; utilities like match paren, bookmarks...
-(require 'init-extensions)  ; minor modes like CUA, 80 col, etc.
+(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
+(require 'init-linum)           ; line numbers
 
 ;;; Usability
-(require 'init-ido)
-(require 'init-autocomplete)
-(when *init-helm-projectile*
+(require 'init-util)            ; utilities like match paren, bookmarks...
+(require 'init-ido)             ; supercharged completion engine
+(require 'init-autocomplete)    ; auto-completion
+(when *init-helm-projectile*    ; find files anywhere in project
   (require 'init-helm-projectile))
+
+;;; Magit and git gutter
 (require 'init-git)
+
+;;; Themes
+(if *environment-nw*
+    (set-face-background 'highlight nil)
+  ;; Using Emacs with GUI:
+  (require 'init-themes)
+  (require 'init-powerline))
 
 ;;; Shell mode
 (require 'init-shell)
@@ -118,13 +125,6 @@ Modules can be individually commented out if needed:
 (require 'init-markdown)
 (require 'init-org)
 (require 'init-xml)
-
-;;; Themes
-(if *environment-nw*
-    (set-face-background 'highlight nil)
-  ;; Using Emacs with GUI:
-  (require 'init-themes)
-  (require 'init-powerline))
 
 ;;; OS-specific things
 (when *environment-osx*

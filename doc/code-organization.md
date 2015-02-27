@@ -59,15 +59,12 @@ pull. For example you can put something like this in your *prefs.el*:
 
 ### Look and feel
 
-* [init-ui.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-ui.el):
-  basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar, cursor,
-  font lock, etc.
-* [init-behavior.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-behavior.el):
-  basic behavior: delete trailing spaces upon save, no backup files, prefer spaces over tabs.
-* [init-keyboard.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-keyboard.el):
-  minor modes and custom non-mode-specific keys. Includes things like
-  auto-pairs (automatically close parentheses), winmove, CUA, zoom, and keys to
-  navigate between buffers.
+* [init-ui.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-look-and-feel.el):
+  * Basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar,
+    cursor, font lock, electric stuff etc.
+  * Keybindings: zoom, navigate between buffers etc.
+  * Basic behavior: delete trailing spaces upon save, no backup files, prefer
+    spaces over tabs.
 * [init-util.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-util.el):
   utility functions and keys like goto matching parenthese, duplicate a line,
   delete words, display an 80 column ruler (FCI), expand the region.

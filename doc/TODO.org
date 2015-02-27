@@ -1,43 +1,37 @@
 #+TITLE: Emacs configuration todo list
 #+STARTUP: hidestars
 
-* Next Items
-** Code cleanup
-*** WAIT use a namespace for internal functions?
-*** TODO find a solution for suggested key bindings, like rtags does.
-*** TODO preferences should be per modules and not global (and should use defcustom)
-*** DONE document code organization
-** Usability
-*** WAIT replace electric pairs by something better?
-*** TODO better bookmarks
-    Position stack should use rtags stack (or add key to push onto rtags stack)
-*** TODO key for flyspell?
-*** TODO improve usability of autocomplete
-*** TODO mark occurrences on demand rather than time based
-** BDE
-*** TODO align class data members (should be similar as function args)
-*** TODO align function args should align default values
-** Rtags
-*** TODO make compile_includes path-relative (use environment variables)
-*** WORK fix M-. recenter
-*** TODO shrink the diagnostics window to content size
-*** TODO fix autocomplete for header files
-   Either this will come from Projectile, or
-   It can be easily done with per-directory variables:
-   https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
-   (with an impact on performance)
-** Extensions
-*** DONE directory tree: sr-speedbar or https://github.com/sabof/project-explorer
-** Themes
-*** TODO solarized should be a real theme
-* C++
-** other options for IDE
+* Improvements
+** Combine behavior + keyboard + ui + util into a single file
+** Make git-gutter work with hilinum, and make an option for git-gutter
+** Add a section about bugs in README:
+*** git-gutter-fringe
+*** powerline:
+#+BEGIN_SRC
+(defun powerline ()
+"Enable powerline"
+(interactive)
+(require 'init-powerline)
+(redraw-display))
+#+END_SRC
+** Replace Electric-Pairs with something better
+** Mark occurrences on demand rather than time-based
+* Themes
+** Code should figureout what is the current themes without prefs
+** Make Solarized a real theme
+** Switch-theme function that calls load-theme + powerline-reset
+* RTags
+** Shrink diagnostics window to content size
+** Bury buffer on close window, or key to close window + burry bufer
+** Show number of errors in mode-line
+** Make compile_includes path-relative (use environment variables)
+** Fix M-. recenter
+* Ideas
+** Other Options for IDE
 *** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
 *** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
 *** Malinka http://blog.refu.co/?tag=clang
 *** Eclim: https://github.com/senny/emacs-eclim
-* Other languages
-** DONE JavaScript js2
-** TODO JavaScript chrome integration
-** TODO Ruby
-** TODO Python
+** Other languages
+*** JavaScript chrome integration
+*** Python Jedi

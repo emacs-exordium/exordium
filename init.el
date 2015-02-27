@@ -95,15 +95,22 @@
 (require 'bytecomp)
 (defun recompile-modules ()
   "Recompile modules for which the .elc is older than the .el, if
-the .elc exists."
+the .elc exists. Also discard .elc without corresponding .el"
   (interactive)
   (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
     (when (file-directory-p dir)
+      ;; Recompile
       (dolist (el (directory-files dir t "\\.el$"))
         (let ((elc (byte-compile-dest-file el)))
           (when (and (file-exists-p elc)
                      (file-newer-than-file-p el elc))
-            (byte-compile-file el)))))))
+            (byte-compile-file el))))
+      ;; Discard .elc singletons
+      (dolist (elc (directory-files dir t "\\.elc$"))
+        (let ((el (concat (concat (file-name-sans-extension elc) ".el"))))
+          (unless (file-exists-p el)
+            (warn "Removing singleton .elc file: %s" elc)
+            (delete-file elc)))))))
 (recompile-modules)
 
 (require 'init-lib)         ; utility functions - load this first
@@ -118,17 +125,17 @@ the .elc exists."
   (load "~/.emacs.d/prefs.el"))
 
 ;;; Look and feel
-(require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-linum)       ; line numbers
-(require 'init-behavior)    ; save behavior: backup files, trailing spaces...
-(require 'init-keyboard)    ; key bindings
-(require 'init-util)        ; utilities like match paren, bookmarks...
+(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
+(require 'init-linum)           ; line numbers
 
 ;;; Usability
-(require 'init-ido)
-(require 'init-autocomplete)
-(when *init-helm-projectile*
+(require 'init-util)            ; utilities like match paren, bookmarks...
+(require 'init-ido)             ; supercharged completion engine
+(require 'init-autocomplete)    ; auto-completion
+(when *init-helm-projectile*    ; find files anywhere in project
   (require 'init-helm-projectile))
+
+;;; Magit and git gutter
 (require 'init-git)
 
 ;;; Themes
@@ -154,10 +161,8 @@ the .elc exists."
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-
 (when *init-yasnippet*
   (require 'init-yasnippet))
-
 (require 'init-rtags)
 (when *init-rtags-auto-complete*
   (rtags-auto-complete))
@@ -189,3 +194,4 @@ the .elc exists."
       (format ";; Happy hacking %s!
 
 " *environment-current-user*))
+;;; End of file
