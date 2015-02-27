@@ -52,7 +52,7 @@
                            ido-ubiquitous
                            projectile
                            helm-projectile
-                           ack-and-a-half
+                           ;; ack-and-a-half
                            cmake-mode
                            markdown-mode
                            enh-ruby-mode
@@ -121,12 +121,12 @@
 (require 'init-xml)
 
 ;;; Themes
-(when *environment-nw*
-  (set-face-background 'highlight nil))
-(when (and (not *environment-nw*) *init-theme*)
-  (require 'init-themes)
-  (when *init-enable-powerline*
-    (require 'init-powerline)))
+;;(when *environment-nw*
+;;  (set-face-background 'highlight nil))
+;;(when (and (not *environment-nw*) *init-theme*)
+;;  (require 'init-themes)
+;;  (when *init-enable-powerline*
+;;    (require 'init-powerline)))
 
 ;;; OS-specific things
 (when *environment-osx*
