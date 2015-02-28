@@ -2,27 +2,20 @@
 #+STARTUP: hidestars
 
 * Improvements
-** DONE Combine behavior + keyboard + ui + util into a single file
+** DONE Combine behavior + keyboard + ui into a single file
+** DONE Readme: TOC, customize and bugs
+** WORK Graphene: file explorer + cool keys
 ** TODO Make git-gutter work with hilinum, and make an option for git-gutter
-** WAIT Add a section about bugs in README:
-*** git-gutter-fringe
-*** powerline:
-#+BEGIN_SRC
-(defun powerline ()
-"Enable powerline"
-(interactive)
-(require 'init-powerline)
-(redraw-display))
-#+END_SRC
 ** TODO Replace Electric-Pairs with something better
 ** TODO Mark occurrences on demand rather than time-based
 * Themes
+** WORK Getter fringe in tomorrow themes
 ** DONE Code should figure out what is the current themes without prefs
 ** DONE Make Solarized a real theme
-** WORK Switch-theme function that calls load-theme + powerline-reset
+** TODO Switch-theme function that calls load-theme + powerline-reset
 * RTags
-** TODO Shrink diagnostics window to content size
-** TODO Bury buffer on close window, or key to close window + burry bufer
+** DONE Shrink diagnostics window to content size
+** DONE Bury buffer on close window, or key to close window + burry bufer
 ** TODO Show number of errors in mode-line
 ** TODO Fix M-. recenter
 ** TODO Make compile_includes path-relative (use environment variables)

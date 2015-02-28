@@ -572,12 +572,14 @@ with warnings and errors. You can:
 * Click on the highlighted symbol in your code to view the error message
 * Click on the error line in the diagnostics buffer to jump to the error location.
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-c r D</kbd> | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
-<kbd>C-c r d</kbd> | Show the diagnostics buffer without force reparsing (<kbd>ESC</kbd> to dismiss it).
-<kbd>C-c r F</kbd> | Fix the error using Clang's "did you mean" (try it with "inft x;")
-<kbd>C-c r Q</kbd> | `rtags-stop-diagnostics` stop the async process.
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c r D</kbd>    | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
+<kbd>C-c r d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>C-c r DOWN</kbd> | Goto next problem.
+<kbd>C-c r UP</kbd>   | Goto previous problem.
+<kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")
+<kbd>C-c r Q</kbd>    | `rtags-stop-diagnostics` stop the async process.
 
 Other functions:
 * `rtags-next-diag` goes to the next problem.
