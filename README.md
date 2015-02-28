@@ -196,7 +196,7 @@ File name        | Usage
 ```
 
 There are more options, see
-(https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
+[init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
 
 ## keymap
 
