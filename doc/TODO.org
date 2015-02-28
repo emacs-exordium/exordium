@@ -2,9 +2,9 @@
 #+STARTUP: hidestars
 
 * Improvements
-** Combine behavior + keyboard + ui + util into a single file
-** Make git-gutter work with hilinum, and make an option for git-gutter
-** Add a section about bugs in README:
+** DONE Combine behavior + keyboard + ui + util into a single file
+** TODO Make git-gutter work with hilinum, and make an option for git-gutter
+** WAIT Add a section about bugs in README:
 *** git-gutter-fringe
 *** powerline:
 #+BEGIN_SRC
@@ -14,18 +14,18 @@
 (require 'init-powerline)
 (redraw-display))
 #+END_SRC
-** Replace Electric-Pairs with something better
-** Mark occurrences on demand rather than time-based
+** TODO Replace Electric-Pairs with something better
+** TODO Mark occurrences on demand rather than time-based
 * Themes
-** Code should figureout what is the current themes without prefs
-** Make Solarized a real theme
-** Switch-theme function that calls load-theme + powerline-reset
+** DONE Code should figure out what is the current themes without prefs
+** DONE Make Solarized a real theme
+** WORK Switch-theme function that calls load-theme + powerline-reset
 * RTags
-** Shrink diagnostics window to content size
-** Bury buffer on close window, or key to close window + burry bufer
-** Show number of errors in mode-line
-** Make compile_includes path-relative (use environment variables)
-** Fix M-. recenter
+** TODO Shrink diagnostics window to content size
+** TODO Bury buffer on close window, or key to close window + burry bufer
+** TODO Show number of errors in mode-line
+** TODO Fix M-. recenter
+** TODO Make compile_includes path-relative (use environment variables)
 * Ideas
 ** Other Options for IDE
 *** Irony http://clang.llvm.org/docs/ExternalClangExamples.html

@@ -402,7 +402,8 @@ names to which it refers are bound."
      (org-document-info ((,class (:foreground ,aqua))))
      (org-document-info-keyword ((,class (:foreground ,green))))
      (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
-     (org-done ((,class (:foreground ,green :weight bold :box t))))
+     (org-todo ((,class (:foreground ,red :weight bold :box nil))))
+     (org-done ((,class (:foreground ,green :weight bold :box nil))))
      (org-checkbox ((,class (:foreground ,yellow :weight bold))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
@@ -414,7 +415,6 @@ names to which it refers are bound."
      (org-scheduled-today ((,class (:foreground ,green))))
      (org-special-keyword ((,class (:foreground ,orange))))
      (org-table ((,class (:foreground ,foreground))))
-     (org-todo ((,class (:foreground ,red :weight bold :box t))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
 
@@ -498,7 +498,8 @@ names to which it refers are bound."
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun tomorrow-mode-name ()
-  "Return the mode without the tomorrow- prefix"
+  "Return the mode without the tomorrow- prefix, e.g. day, night
+etc."
   (intern (substring (symbol-name *init-theme*) 9)))
 
 (provide 'color-theme-tomorrow)

@@ -191,7 +191,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Greetings
 (setq initial-scratch-message
-      (format ";; Happy hacking %s!
+      (let ((current-user (split-string (user-full-name) " ")))
+        (format ";; Happy hacking %s!
 
-" *environment-current-user*))
+" (if current-user (car current-user) *environment-current-user*))))
 ;;; End of file

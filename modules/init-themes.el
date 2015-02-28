@@ -1,41 +1,66 @@
-;;;; Themes
+;;;; Custom Themes
+;;;
+;;; These config provides 3 themes:
+;;; - Tomorrow, which comes in several declinasons (night, day, etc.)
+;;; - Monokai (only one flavor)
+;;; - Solarized, which comes with solarized-dark and solarized-light.
 ;;;
 ;;; Usage:
 ;;; New way: M-x load-theme <tab>  or (load-theme 'tomorrow-night t)
 ;;; Old way: M-x set-colors-XXX    or (set-colors-tomorrow-night)
 ;;;
-;;; --------- ------------------------------------ -----------------------------
+;;; --------- ------------------------------------ ----------------------------
 ;;; Theme     Dark                                 Light
-;;; --------- ------------------------------------ -----------------------------
+;;; --------- ------------------------------------ ----------------------------
 ;;; Tomorrow  `set-colors-tomorrow-night'          `set-colors-tomorrow-day'
 ;;;           `set-colors-tomorrow-night-bright'
 ;;;           `set-colors-tomorrow-night-eighties'
 ;;;           `set-colors-tomorrow-night-blue'
-;;; --------- ------------------------------------ -----------------------------
+;;; --------- ------------------------------------ ----------------------------
 ;;; Monokai   `set-colors-monokai-default'
-;;; --------- ------------------------------------ -----------------------------
+;;; --------- ------------------------------------ ----------------------------
 ;;; Solarized `set-colors-solarized-dark'          `set-colors-solarized-light'
-;;; --------- ------------------------------------ -----------------------------
+;;; --------- ------------------------------------ ----------------------------
 
 (when *init-theme*
   (load-theme *init-theme* t))
 
+(defun current-theme ()
+  "Return the current theme, or nil if no custom theme is
+enabled"
+  (car custom-enabled-themes))
+
 
 ;;; Org mode extra statuses
-;; TODO: add solarized
 
-(cond ((featurep 'color-theme-monokai)
+(cond ((featurep 'color-theme-tomorrow)
+       (with-tomorrow-colors
+        (tomorrow-mode-name)
+        (setq org-todo-keyword-faces
+              `(("WORK" . (;:background ,yellow
+                           :foreground ,yellow
+                           :weight bold :box nil))
+                ("WAIT" . (;:background ,orange
+                           :foreground ,orange
+                           :weight bold :box nil))))))
+      ((featurep 'color-theme-monokai)
        (with-monokai-colors
         'default
         (setq org-todo-keyword-faces
               `(("WORK" . (:foreground ,yellow :weight bold :box nil))
                 ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
-      ((featurep 'color-theme-tomorrow)
-       (with-tomorrow-colors
-        (tomorrow-mode-name)
-        (setq org-todo-keyword-faces
-              `(("WORK" . (:foreground ,yellow :weight bold :box t))
-                ("WAIT" . (:foreground ,orange :weight bold :box t)))))))
+      ((featurep 'color-theme-solarized)
+       (setq org-todo-keyword-faces
+             `(("WORK" . (:background ,(second (assoc 'yellow solarized-colors))
+                          :foreground ,(if (eq (current-theme) 'solarized-light)
+                                           (second (assoc 'base3 solarized-colors))
+                                         (second (assoc 'base03 solarized-colors)))
+                          :weight bold :box nil))
+               ("WAIT" . (:background ,(second (assoc 'orange solarized-colors))
+                          :foreground ,(if (eq (current-theme) 'solarized-light)
+                                           (second (assoc 'base3 solarized-colors))
+                                         (second (assoc 'base03 solarized-colors)))
+                          :weight bold :box nil))))))
 
 ;;; Linum extension
 (load "~/.emacs.d/themes/hilinum-mode.el")
@@ -51,14 +76,30 @@
                           (projectile-project-name)
                           'face `(:foreground
                                   ,(cond ((featurep 'color-theme-monokai)
-                                          (with-monokai-colors 'default violet))
+                                          (with-monokai-colors
+                                           'default violet))
                                          ((featurep 'color-theme-tomorrow)
-                                          (with-tomorrow-colors (tomorrow-mode-name) purple))
-                                         (t "#ff0000"))))
+                                          (with-tomorrow-colors
+                                           (tomorrow-mode-name) purple))
+                                         ((featurep 'color-theme-solarized)
+                                          (second (assoc 'violet solarized-colors)))
+                                         (t ;; loud red
+                                          "#ff0000"))))
                          "]")))))
 
 
 ;;; Utilities
+
+;;; FIXME: why isn't this recognized as an interactive function?
+(defun switch-theme (theme)
+  "Prompt for a theme name with auto-complete and loads it"
+  (interactive
+   (list
+    (intern (completing-read "Load theme: "
+                             (mapcar 'symbol-name
+                                     (custom-available-themes))))))
+  (load-theme theme t nil)
+  (powerline-reset))
 
 (defun what-face (pos)
   "Display the face at point"
