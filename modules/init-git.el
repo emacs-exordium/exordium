@@ -6,6 +6,8 @@
 ;;; Key               Definition
 ;;; ----------------- ---------------------------------------------------------
 ;;; C-c g s           Magit status
+;;; C-c g l           Magit log
+;;;
 ;;; C-c g down        Goto next hunk in buffer
 ;;; C-c g up          Goto previous hunk in buffer
 ;;; C-c g d           Diff current hunk
@@ -17,9 +19,19 @@
 ;;; C-c g s = magit-status
 (define-key global-map [(control c)(g)(s)] 'magit-status)
 
+;;; C-c g l = magit log
+(define-key global-map [(control c)(g)(l)] 'magit-log)
+
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
 (defadvice magit-status (around magit-fullscreen activate)
+  (window-configuration-to-register :magit-fullscreen)
+  ad-do-it
+  (delete-other-windows))
+
+;;; Make `magit-log' run alone in the frame, and then restore the old window
+;;; configuration when you quit out of magit.
+(defadvice magit-log (around magit-fullscreen activate)
   (window-configuration-to-register :magit-fullscreen)
   ad-do-it
   (delete-other-windows))

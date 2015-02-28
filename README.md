@@ -255,6 +255,7 @@ Git:
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c g s</bkd>    | Open git status mode (`magit-status`).
+<kbd>C-c g l</bkd>    | Open git log mode (`magit-log`).
 <kbd>C-c g down</bkd> | Goto next hunk in buffer.
 <kbd>C-c g up</bkd>   | Goto previous hunk in buffer.
 <kbd>C-c g d</bkd>    | Diff the current hunk.
