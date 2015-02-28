@@ -1,19 +1,30 @@
 # What is this repo
 
-Something you probably don't care about. This is my portable Emacs
-configuration, synchronized between all my machines.  It is only intended to
-work with Emacs 24 running on Linux and OS X, including in -nw mode. Here is
+A portable Emacs configuration focused on programming with C++, Lisp and and
+scripting languages (JavaScript, Python and Ruby). It is only intended to work
+with Emacs 24 running on Linux and OS X, including in -nw mode. It is called
+"init" (because I lack imagination). Here is
 [what it looks like](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/gallery.md).
 
-I mostly care about adding IDE-level features to Emacs for the programming
-languages I use: C++, JavaScript, Python, Ruby and various Lisps. If
-you are looking for a good generic Emacs configuration to start with, you might
+If you are looking for a good generic Emacs configuration to start with, you might
 want to check these links:
 * [Emacs Prelude](https://github.com/bbatsov/prelude);
 * [Steve Purcell's config](https://github.com/purcell/emacs.d);
 * [Awesome Emacs](https://github.com/emacs-tw/awesome-emacs).
 
-## Content
+**Table Of Contents**
+
+* [Packages](#packages)
+* [Installation](#installation)
+* [Modules](#modules)
+* [Customization](#customization)
+* [Keymap](#keymap)
+* [Helm and Projectile](#helm-and-projectile)
+* [RTags](#rtags)
+* [Bugs](#bugs)
+* [Configuration Profiling](#configuration-profiling)
+
+## Packages
 
 Programming:
 
@@ -138,7 +149,7 @@ If you are looking for a specific feature or key binding,
 explains the code organization. Each module starts with a commentary including
 all key bindings.
 
-## Machine-local preferences
+## Customization
 
 3 files can be added in your directory `~/.emacs.d` to customize the
 configuration for the local machine (they are ignored in git):
@@ -149,7 +160,45 @@ File name        | Usage
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
 `after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
 
-## Keymap
+`modules/init-prefs.el` defines the preferences that can be changed in your
+`prefs.el`. For example, your `prefs.el` could contain:
+
+```lisp
+;; Fonts + size in order of preference. First available one will be picked.
+(setq *init-prefered-fonts* '("Monospace" . 120) ("Mono" . 120))
+
+;; Default Emacs frame size in chars
+(setq *init-preferred-frame-width* 120
+*init-preferred-frame-height* 65)
+
+;; Show line numbers (default t)
+(setq *init-display-line-numbers* t)
+
+;; Highlight current line (default t)
+(setq *init-line-mode* t)
+
+;; Don't set ESC key to C-g (quit/abort)
+(setq *init-keyboard-escape* nil)
+
+;; Disable electric-pair (automatically inserts a closing parenthese,
+;; curly brace, etc.)
+(setq *init-enable-electric-pair-mode* nil)
+
+;; Available themes (default tomorrow-night):
+;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
+;;   tomorrow-night-eighties, tomorrow-day
+;; - solarized-dark, solarized-light
+;; - monokai
+(setq *init-theme* 'solarized-light)
+
+;; Don't use powerline (may cause Emacs to crash on startup sometimes)
+(setq *init-enable-powerline* nil)
+```
+
+There are more options, see
+(https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
+
+## keymap
 
 ### Global
 
@@ -211,7 +260,35 @@ Keybinding            | Description
 <kbd>C-c g d</bkd>    | Diff the current hunk.
 <kbd>C-c g r</bkd>    | Revert the current hunk (ask for confirmation before)
 
-### Helm / Projectile
+### C++
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-TAB</kbd>   | Alternate between header file and source file.
+<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
+
+[BDE](https://github.com/bloomberg/bde) style:
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-c a</kbd>   | Align function arguments (in signature).
+<kbd>C-c f</kbd>   | Align function arguments (in function call).
+<kbd>C-c m</kbd>   | Align class members (region must be selected).
+<kbd>C-&gt;</kbd>  | Right-align end-of-line comment or text after cursor.
+<kbd>C-c i</kbd>   | Insert redundant #include guard.
+<kbd>C-c =</kbd>   | Insert class definition header.
+<kbd>C-c -</kbd>   | Insert class implementation header.
+
+### Snippets
+
+YASnippet is only enabled for C++ mode currently. Snippets are stored in
+`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>. Here are
+[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
+
+Note that variable `*bde-component-author*` defines the default author for a
+header file template (see `modules/init-yasnippet.el`).
+
+## Helm and Projectile
 
 Projectile allows for defining "projects" e.g. collections of files. Once a
 project is defined it provides many keys to find files, grep in all files
@@ -294,35 +371,7 @@ Keybinding           | Description
 
 See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
 
-### C++
-
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-TAB</kbd>   | Alternate between header file and source file.
-<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
-
-[BDE](https://github.com/bloomberg/bde) style:
-
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-c a</kbd>   | Align function arguments (in signature).
-<kbd>C-c f</kbd>   | Align function arguments (in function call).
-<kbd>C-c m</kbd>   | Align class members (region must be selected).
-<kbd>C-&gt;</kbd>  | Right-align end-of-line comment or text after cursor.
-<kbd>C-c i</kbd>   | Insert redundant #include guard.
-<kbd>C-c =</kbd>   | Insert class definition header.
-<kbd>C-c -</kbd>   | Insert class implementation header.
-
-### Snippets
-
-YASnippet is only enabled for C++ mode currently. Snippets are stored in
-`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>. Here are
-[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
-
-Note that variable `*bde-component-author*` defines the default author for a
-header file template (see `modules/init-yasnippet.el`).
-
-## Using RTags
+## RTags
 
 ### Start rdm
 
@@ -556,6 +605,24 @@ Possible issues:
 * It's a tiny bit slow and it may trigger rdm a bit often.
 * Auto-complete for header files does not understand when you are switching
   project.
+
+## Bugs
+
+* Powerline may cause Emacs to crash on startup because of a race condition
+  inside Emacs. One trick to fix it is to make powerline be the last thing you
+  enable in your config. For this, add `(setq *init-enabled-powerline* nil)` in
+  your `pref.el`, and add `(require 'init-powerline)` in your
+  `after-init.el`. If this still does not work, keep Powerline disabled and add
+  this function in your `after-init.el`:
+
+```lisp
+(defun powerline ()
+  "Enable powerline. On some platforms you may have to click somewhere
+to make it display"
+  (interactive)
+  (require 'init-powerline)
+  (redraw-display))
+```
 
 ## Configuration profiling
 
