@@ -260,15 +260,18 @@ buffer"
 ;;; Display the diagnostics buffer without force reparsing
 
 (defun rtags-show-diagnostics-buffer ()
-  "Show the diagnostics buffer (same as `rtags-diagnostics' but
-without reparsing) in a dedicated window"
+  "Show/hide the diagnostics buffer in a dedicated
+window (similar to `rtags-diagnostics' but without reparsing)."
   (interactive)
-  (let ((buffer-name "*RTags Diagnostics*")
-        (num-diagnostics-lines 6))
-    (cond ((get-buffer buffer-name)
+  (let ((buffer-name "*RTags Diagnostics*"))
+    (cond ((get-buffer-window (get-buffer buffer-name))
+           (bury-buffer (get-buffer buffer-name))
+           (delete-window (get-buffer-window (get-buffer buffer-name))))
+          ((get-buffer buffer-name)
            (display-buffer buffer-name)
            (other-window 1)
-           (shrink-window (- (window-height) num-diagnostics-lines))
+           (beginning-of-buffer)
+           (fit-window-to-buffer (get-buffer-window (current-buffer)) 10 2)
            (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
            (other-window -1))
           (t
