@@ -6,11 +6,11 @@ with Emacs 24 running on Linux and OS X, including in -nw mode. It is called
 "init" (because I lack imagination). Here is
 [what it looks like](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/gallery.md).
 
-If you are looking for a good generic Emacs configuration to start with, you might
-want to check these links:
-* [Emacs Prelude](https://github.com/bbatsov/prelude);
-* [Steve Purcell's config](https://github.com/purcell/emacs.d);
-* [Awesome Emacs](https://github.com/emacs-tw/awesome-emacs).
+If you are looking for a good generic Emacs configuration to start with, you
+might want to check these links:
+[Emacs Prelude](https://github.com/bbatsov/prelude),
+[Steve Purcell's config](https://github.com/purcell/emacs.d),
+[Awesome Emacs](https://github.com/emacs-tw/awesome-emacs).
 
 **Table Of Contents**
 
