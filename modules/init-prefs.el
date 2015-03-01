@@ -131,6 +131,19 @@ IF nil, disables CUA completely."
   :type 'boolean)
 
 ;;; See init-git.el
+;;; *init-git-gutter* displays a git diff icon in the left fringe.
+;;; Unfortunately this may cause a random bug in Emacs. As a workaround
+;;; you can either disable *init-git-gutter* or enable
+;;; *init-git-gutter-non-fringe* instead. The latter displays the git diff on
+;;; the left side of the line number. Unfortunately for now it also disables
+;;; highlighting the current line number.
+(defcustom *init-git-gutter-non-fringe* nil
+  "Whether a git status icon is displayed at the very left. Takes
+  precedence over *init-gut-gutter*. Note that this option
+  disables highlighting the current line number"
+  :group 'init
+  :type 'boolean)
+
 (defcustom *init-git-gutter* t
   "Whether a git status icon is displayed in the left-side fringe or not."
   :group 'init

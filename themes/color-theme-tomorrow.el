@@ -129,7 +129,7 @@ names to which it refers are bound."
      (fringe ((,class (:background ,current-line))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
      (linum ((,class (:background ,current-line :foreground ,foreground
-                      :inherit nil :weight normal :slant normal))))
+                      :inherit nil :weight normal :slant normal :underline nil))))
      (hl-line ((,class (:background ,current-line :inherit nil))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))

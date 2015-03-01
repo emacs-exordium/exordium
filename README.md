@@ -627,6 +627,16 @@ to make it display"
   (redraw-display))
 ```
 
+* Sometimes a random bug may occur that displays this error:
+  `fringe-helper-modification-func: Invalid search bound (wrong side of
+  point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
+  git diff icons in the left-side fringe. There are two ways to work around it:
+  either add `(setq *init-git-gutter* nil)` if your `prefs.el` to disable this
+  feature entirely, or add `(setq *init-git-gutter-non-fringe* t)` in your
+  `prefs.el` to display git diffs on the left side of line numbers, e.g. not in
+  the fringe. Note that the latter disables the highighting of the current line
+  number for now.
+
 ## Configuration profiling
 
 M-x `emacs-init-time` shows the time Emacs took to start. You can profile the

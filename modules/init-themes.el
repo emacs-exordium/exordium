@@ -22,6 +22,8 @@
 ;;; Solarized `set-colors-solarized-dark'          `set-colors-solarized-light'
 ;;; --------- ------------------------------------ ----------------------------
 
+(require 'init-prefs)
+
 (when *init-theme*
   (load-theme *init-theme* t))
 
@@ -63,9 +65,10 @@ enabled"
                           :weight bold :box nil))))))
 
 ;;; Linum extension
-(load "~/.emacs.d/themes/hilinum-mode.el")
-(require 'hlinum)
-(hlinum-activate)
+(unless *init-git-gutter-non-fringe*
+  (load "~/.emacs.d/themes/hilinum-mode.el")
+  (require 'hlinum)
+  (hlinum-activate))
 
 ;;; Colorize the name of the current project in the modeline.
 (when (featurep 'init-helm-projectile)
