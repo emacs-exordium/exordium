@@ -59,7 +59,7 @@ pull. For example you can put something like this in your *prefs.el*:
 
 ### Look and feel
 
-* [init-ui.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-look-and-feel.el):
+* [init-look-and-feel.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-look-and-feel.el):
   * Basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar,
     cursor, font lock, electric stuff etc.
   * Keybindings: zoom, navigate between buffers etc.
