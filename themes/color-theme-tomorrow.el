@@ -128,8 +128,7 @@ names to which it refers are bound."
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
-     ;;(linum ((,class (:inherit nil :background ,current-line :foreground ,foreground
-     ;;                 :slant normal :weight normal :underline nil :height 1))))
+     (linum ((,class (:background ,current-line :foreground ,foreground))))
      (hl-line ((,class (:background ,current-line :inherit nil))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
