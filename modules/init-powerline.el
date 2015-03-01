@@ -3,6 +3,13 @@
 (require 'powerline)
 (require 'init-themes)
 
+(defcustom *init-powerline-shows-rtags-diagnostics* t
+  "Whether Powerline shows RTags Diagnostics results. If there
+  are errors, the buffer name is displayed in red instead of the
+  default color."
+  :group 'init
+  :type 'boolean)
+
 ;;; Fix the grapphical bug with Emacs24.4 on OSX
 ;;; See https://github.com/milkypostman/powerline/issues/54
 (when *environment-osx*
@@ -20,7 +27,11 @@
                             :background background :foreground comment)
         (defface powerline-active3
           `((t (:background ,purple :foreground ,background)))
-          "Powerline face 3."
+          "Powerline face 3 (buffer name)"
+          :group 'powerline)
+        (defface powerline-active4
+          `((t (:background ,red :foreground ,background)))
+          "Powerline face 4 (buffer name when errors)"
           :group 'powerline)))
       ((featurep 'color-theme-monokai)
        (with-monokai-colors
@@ -32,7 +43,11 @@
         (set-face-attribute 'powerline-inactive2 nil :background monokai-bg)
         (defface powerline-active3
           `((t (:background ,violet :foreground ,monokai-bg)))
-          "Powerline face 3."
+          "Powerline face 3 (buffer name)"
+          :group 'powerline)
+        (defface powerline-active4
+          `((t (:background ,red :foreground ,monokai-bg)))
+          "Powerline face 3 (buffer name when errors)"
           :group 'powerline)))
       ((featurep 'color-theme-solarized)
        ;; These faces are already defined in themes/powerline.el
@@ -49,7 +64,12 @@
        (defface powerline-active3
          `((t (:background ,(second (assoc 'base02 solarized-colors))
                :foreground ,(second (assoc 'cyan solarized-colors)))))
-         "Powerline face 3."
+         "Powerline face 3 (buffer name)"
+         :group 'powerline)
+       (defface powerline-active4
+         `((t (:background ,(second (assoc 'base02 solarized-colors))
+               :foreground ,(second (assoc 'red solarized-colors)))))
+         "Powerline face 3 (buffer name when errors)"
          :group 'powerline)))
 
 (defun my-powerline-theme ()
@@ -63,7 +83,10 @@
              (mode-line (if active 'mode-line 'mode-line-inactive))
              (face1 (if active 'powerline-active1 'powerline-inactive1))
              (face2 (if active 'powerline-active2 'powerline-inactive2))
-             (face3 'powerline-active3)
+             (face3 (if (and *init-powerline-shows-rtags-diagnostics*
+                             (fboundp 'rtags-diagnostics-has-errors)
+                             (rtags-diagnostics-has-errors))
+                        'powerline-active4 'powerline-active3))
              (separator-left (intern
                               (format "powerline-%s-%s"
                                       powerline-default-separator
@@ -85,6 +108,7 @@
                         (powerline-narrow face1 'l)
                         (powerline-raw " " face1)
                         (funcall separator-left face1 face2)
+                        ;;(powerline-raw '(:eval (my-test)) face2) ; TODO: test
                         (powerline-vc face2 'r)))
              (rhs (list (powerline-raw global-mode-string face2 'r)
                         (funcall separator-right face2 face1)

@@ -315,6 +315,10 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
              ;; info
              (info-xref ((t (,@fmt-undr ,@fg-blue))))
              (info-xref-visited ((t (,@fg-magenta :inherit info-xref))))
+             ;; RTags
+             (rtags-errline ((t (,@bg-red))))
+             (rtags-warnline ((t (,@bg-orange))))
+             (rtags-fixitline ((t (,@bg-green))))
              ;; org
              (org-hide ((t (,@fg-base03))))
              (org-todo ((t (,@fmt-bold ,@fg-base03 ,@bg-red))))

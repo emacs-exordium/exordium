@@ -295,6 +295,17 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 
 (define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
 
+;; Used in powerline:
+(defun rtags-diagnostics-has-errors ()
+  "Return t or nil depending if RTags diagnostics displays errors"
+  (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
+    (if (and diag-buff
+             rtags-diagnostics-process
+             (not (eq (process-status rtags-diagnostics-process) 'exit))
+             (not (eq (process-status rtags-diagnostics-process) 'signal)))
+        (> (buffer-size diag-buff) 0)
+      nil)))
+
 
 ;;; Create a compilation database
 
