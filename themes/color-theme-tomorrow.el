@@ -502,4 +502,16 @@ names to which it refers are bound."
 etc."
   (intern (substring (symbol-name *init-theme*) 9)))
 
+(defun set-tomorrow-extra-org-statuses ()
+  (require 'org)
+  (with-tomorrow-colors
+   (tomorrow-mode-name)
+   (setq org-todo-keyword-faces
+         `(("WORK" . (;:background ,yellow
+                      :foreground ,yellow
+                      :weight bold :box nil))
+           ("WAIT" . (;:background ,orange
+                      :foreground ,orange
+                      :weight bold :box nil))))))
+
 (provide 'color-theme-tomorrow)

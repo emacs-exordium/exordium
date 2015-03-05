@@ -580,5 +580,19 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
   (interactive)
   (set-colors-solarized 'light))
 
+(defun set-solarized-extra-org-statuses ()
+  "Set colors for WORK and WAIT org statuses"
+  (require 'org)
+  (setq org-todo-keyword-faces
+        `(("WORK" . (:background ,(second (assoc 'yellow solarized-colors))
+                     :foreground ,(if (eq (current-theme) 'solarized-light)
+                                      (second (assoc 'base3 solarized-colors))
+                                    (second (assoc 'base03 solarized-colors)))
+                     :weight bold :box nil))
+          ("WAIT" . (:background ,(second (assoc 'orange solarized-colors))
+                     :foreground ,(if (eq (current-theme) 'solarized-light)
+                                      (second (assoc 'base3 solarized-colors))
+                                    (second (assoc 'base03 solarized-colors)))
+                     :weight bold :box nil)))))
 
 (provide 'color-theme-solarized)

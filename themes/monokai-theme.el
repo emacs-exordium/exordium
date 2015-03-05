@@ -858,4 +858,13 @@ names to which it refers are bound."
 (create-monokai-theme)
 
 (provide-theme 'monokai)
+
+(defun set-monokai-extra-org-statuses ()
+  "Set colors for WORK and WAIT org statuses"
+  (with-monokai-colors
+        'default
+        (setq org-todo-keyword-faces
+              `(("WORK" . (:foreground ,yellow :weight bold :box nil))
+                ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
+
 (provide 'color-theme-monokai)

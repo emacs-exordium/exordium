@@ -33,36 +33,17 @@ enabled"
   (car custom-enabled-themes))
 
 
-;;; Org mode extra statuses
+;;; Org mode extra statuses (WORK and WAIT)
 
 (cond ((featurep 'color-theme-tomorrow)
-       (with-tomorrow-colors
-        (tomorrow-mode-name)
-        (setq org-todo-keyword-faces
-              `(("WORK" . (;:background ,yellow
-                           :foreground ,yellow
-                           :weight bold :box nil))
-                ("WAIT" . (;:background ,orange
-                           :foreground ,orange
-                           :weight bold :box nil))))))
+       (when (fboundp 'set-tomorrow-extra-org-statuses)
+         (set-tomorrow-extra-org-statuses)))
       ((featurep 'color-theme-monokai)
-       (with-monokai-colors
-        'default
-        (setq org-todo-keyword-faces
-              `(("WORK" . (:foreground ,yellow :weight bold :box nil))
-                ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
+       (when (fboundp 'set-monokai-extra-org-statuses)
+         (set-monokai-extra-org-statuses)))
       ((featurep 'color-theme-solarized)
-       (setq org-todo-keyword-faces
-             `(("WORK" . (:background ,(second (assoc 'yellow solarized-colors))
-                          :foreground ,(if (eq (current-theme) 'solarized-light)
-                                           (second (assoc 'base3 solarized-colors))
-                                         (second (assoc 'base03 solarized-colors)))
-                          :weight bold :box nil))
-               ("WAIT" . (:background ,(second (assoc 'orange solarized-colors))
-                          :foreground ,(if (eq (current-theme) 'solarized-light)
-                                           (second (assoc 'base3 solarized-colors))
-                                         (second (assoc 'base03 solarized-colors)))
-                          :weight bold :box nil))))))
+       (when (fboundp 'set-solarized-extra-org-statuses)
+         (set-solarized-extra-org-statuses))))
 
 ;;; Linum extension
 (unless *init-git-gutter-non-fringe*

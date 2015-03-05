@@ -294,7 +294,28 @@ afterwards."
   (byte-recompile-directory "~/.emacs.d/modules" 0)
   (byte-recompile-directory "~/.emacs.d/themes" 0)
   (byte-recompile-directory "~/.emacs.d/extensions" 0)
-  (message "Restart Emacs to make any changes effective"))
+  (message (propertize "Restart Emacs to make any changes effective"
+                       'face 'error)))
+
+(defun uncompile-modules ()
+  "Uncompiles all modules and themes. This is handy for development"
+    (interactive)
+  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+    (when (file-directory-p dir)
+      (dolist (elc (directory-files dir t "\\.elc$"))
+        (warn "Removing .elc file: %s" elc)
+        (delete-file elc)))))
+
+(defun force-recompile-modules ()
+  "Recompile all modules and themes"
+  (interactive)
+  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+    (when (file-directory-p dir)
+      (dolist (el (directory-files dir t "\\.el$"))
+        (let ((elc (byte-compile-dest-file el)))
+          (when (file-exists-p elc)
+            (delete-file elc))
+          (byte-compile-file el))))))
 
 
 (provide 'init-util)

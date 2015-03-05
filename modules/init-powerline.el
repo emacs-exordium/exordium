@@ -32,6 +32,10 @@
         (defface powerline-active4
           `((t (:background ,red :foreground ,background)))
           "Powerline face 4 (buffer name when errors)"
+          :group 'powerline)
+        (defface powerline-active5
+          `((t (:background ,green :foreground ,background)))
+          "Powerline face 5 (buffer name sans errors)"
           :group 'powerline)))
       ((featurep 'color-theme-monokai)
        (with-monokai-colors
@@ -47,7 +51,11 @@
           :group 'powerline)
         (defface powerline-active4
           `((t (:background ,red :foreground ,monokai-bg)))
-          "Powerline face 3 (buffer name when errors)"
+          "Powerline face 4 (buffer name when errors)"
+          :group 'powerline)
+        (defface powerline-active5
+          `((t (:background ,green :foreground ,monokai-bg)))
+          "Powerline face 5 (buffer name sans errors)"
           :group 'powerline)))
       ((featurep 'color-theme-solarized)
        ;; These faces are already defined in themes/powerline.el
@@ -69,8 +77,27 @@
        (defface powerline-active4
          `((t (:background ,(second (assoc 'base02 solarized-colors))
                :foreground ,(second (assoc 'red solarized-colors)))))
-         "Powerline face 3 (buffer name when errors)"
+         "Powerline face 4 (buffer name when errors)"
+         :group 'powerline)
+       (defface powerline-active5
+         `((t (:background ,(second (assoc 'base02 solarized-colors))
+               :foreground ,(second (assoc 'green solarized-colors)))))
+         "Powerline face 5 (buffer name sans errors)"
          :group 'powerline)))
+
+(defun my-powerline-theme-buffer-face ()
+  "Return the face to use for the buffer name"
+  (cond ((and (eq major-mode 'c++-mode)
+              (featurep 'rtags)
+              (rtags-has-diagnostics))
+         ;; Green or red
+         (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
+           (if (and diag-buff (> (buffer-size diag-buff) 0))
+               'powerline-active4
+             'powerline-active5)))
+        (t
+         ;; Purple
+         'powerline-active3)))
 
 (defun my-powerline-theme ()
   "Setup the default mode-line."
@@ -83,10 +110,9 @@
              (mode-line (if active 'mode-line 'mode-line-inactive))
              (face1 (if active 'powerline-active1 'powerline-inactive1))
              (face2 (if active 'powerline-active2 'powerline-inactive2))
-             (face3 (if (and *init-powerline-shows-rtags-diagnostics*
-                             (fboundp 'rtags-diagnostics-has-errors)
-                             (rtags-diagnostics-has-errors))
-                        'powerline-active4 'powerline-active3))
+             (face3 (if *init-powerline-shows-rtags-diagnostics*
+                        (my-powerline-theme-buffer-face)
+                      'powerline-active3))
              (separator-left (intern
                               (format "powerline-%s-%s"
                                       powerline-default-separator
