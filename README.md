@@ -1,210 +1,102 @@
 # What is this repo
 
-A portable Emacs configuration focused on programming with C++, Lisp and and
-scripting languages (JavaScript, Python and Ruby). It is only intended to work
-with Emacs 24 running on Linux and OS X, including in -nw mode. It is called
-"init" (because I lack imagination). Here is
-[what it looks like](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/gallery.md).
+A portable Emacs configuration focused on adding IDE-level features for C++ and
+Lisp/Clojure programming. It is only intended to work with Emacs 24 running on
+Linux and OS X, including in -nw mode. It is called "init" (because I lack
+imagination). It is modular and customizable. It is not a starter kit, it is a
+hacker kit.
 
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
 [Emacs Prelude](https://github.com/bbatsov/prelude),
 [Steve Purcell's config](https://github.com/purcell/emacs.d),
+[Spacemacs](https://github.com/syl20bnr/spacemacs),
 [Awesome Emacs](https://github.com/emacs-tw/awesome-emacs).
 
 **Table Of Contents**
 
-* [Packages](#packages)
+* [Features](#features)
 * [Installation](#installation)
-* [Modules](#modules)
-* [Customization](#customization)
 * [Keymap](#keymap)
-* [Helm and Projectile](#helm-and-projectile)
-* [RTags](#rtags)
-* [Bugs](#bugs)
-* [Configuration Profiling](#configuration-profiling)
+* [Projectile](#projectile)
+* [Git](#git)
+* [C++](#c++)
+  * [Utilities](#utilities)
+  * [RTags](#rtags)
+* [Lisp](#lisp)
+* [Customization](#customization)
+* [Troubleshooting](#troubleshooting)
 
-## Packages
+## Features
 
-Programming:
-
-* C++: [RTags](https://github.com/Andersbakken/rtags), a LLVM/Clang-based code
-  indexer.
-* C++: formatting keys for the C++ [BDE](https://github.com/bloomberg/bde) style.
+* Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
+  (turned on by default);
+  [Auto Complete](https://github.com/auto-complete/auto-complete);
+  [Windmove](http://www.emacswiki.org/emacs/WindMove) (move between windows
+  with meta-arrow);
+  [Expand Region](https://github.com/magnars/expand-region.el) (increase
+  selected region by semantic units);
+  [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
+  (80 character column marker);
+  [Project Explorer](https://github.com/sabof/project-explorer) (directory
+  tree); etc.
+* Projects: [Projectile](http://batsov.com/projectile) a project-based file
+  management tool, and [Helm](http://tuhdo.github.io/helm-intro.html) an
+  equivalent of IDO.
+* Git: [magit](http://magit.github.io) (git UI);
+  [git gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
+* C++:
+  * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
+    indexer providing goto definition, find references, refactoring,
+    compilation errors in buffer, auto-complete etc.
+  * Formatting keys and snippets for the
+    [BDE](https://github.com/bloomberg/bde) code style.
 * JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
-* [Auto Complete](https://github.com/auto-complete/auto-complete).
-* [YASnippet](https://github.com/capitaomorte/yasnippet), a template system.
-* [Magit](http://magit.github.io).
-
-Other:
-
-* Markdown: [markdown-mode](http://jblevins.org/projects/markdown-mode/).
-* Org: [org-mode](http://orgmode.org).
-* [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings) "Interactively DO
-  things", a built-in package for supercharging Emacs's completion engine when
-  opening files.
-* [Helm](http://tuhdo.github.io/helm-intro.html) an equivalent of IDO.
-* [Projectile](http://batsov.com/projectile) a project-based file management
-  tool.
-* [Windmove](http://www.emacswiki.org/emacs/WindMove): move between windows
-  with Meta-arrows.
-* [Expand Region](https://github.com/magnars/expand-region.el): increase
-  selected region by semantic units.
-* [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator):
-  80 character column marker.
-* [Project Explorer](https://github.com/sabof/project-explorer): directory
-  tree.
-* A few themes such as
-  [Tomorrow Night](https://github.com/chriskempson/tomorrow-theme) and
+* Eye candy: a few [themes](https://github.com/chriskempson/tomorrow-theme)
+  that do not look like an "angry fruit salad", and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
 
 ## Installation
 
-Backup any `.emacs` file or `.emacs.d` directory you may have, then clone this
-repo:
+Backup any `.emacs` file or `.emacs.d` directory you may have, and then clone
+this repo:
 
 ```bash
 $ git clone https://github.com/philippe-grenet/dot.emacs.git ~/.emacs.d
 ```
 
-Emacs will download and compile the missing packages from Melpa the first
-time. It does not update them afterwards (you have to do this with M-x
-`package-list-packages`).
+The first time you start Emacs it will download and compile the required
+packages, which may take a couple of minutes. Note that packages are not
+updated automatically: you can do it with <kbd>M-x package-list-packages</kbd>,
+then "U".
 
-To update the config, do M-x `update-config`. This will pull from github and
-recompile everything.
+To update the config itself, do <kbd>M-x update-config</kbd>. This command
+pulls from github and recompiles everything.
 
-## Modules
-
-The root file is `init.el`. It looks like this:
-
-```lisp
-;;; 1. Load before-init.el if it exists
-(when (file-exists-p "~/.emacs.d/before-init.el")
-  (load "~/.emacs.d/before-init.el"))
-
-;;; 2. Define the list of Melpa packages that we need, and load any missing
-;;; one. Note that they are NOT updated automatically.
-
-;;; 3. Local preferences: load prefs.el if it exists.
-(require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p "~/.emacs.d/prefs.el")
-  (load "~/.emacs.d/prefs.el"))
-
-;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
-
-;;; 5. Load the default theme in ~/.emacs.d/themes.
-
-;;; 6. Load after-init.el if it exists
-(when (file-exists-p "~/.emacs.d/after-init.el")
-  (load "~/.emacs.d/after-init.el"))
-```
-
-Modules can be individually commented out if needed:
-
-```lisp
-;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
-;;; or evaluate the require expression with M-C-x.
-
-;;; Look and feel
-(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
-(require 'init-linum)           ; line numbers
-
-;;; Usability
-(require 'init-util)            ; utilities like match paren, bookmarks...
-(require 'init-ido)             ; supercharged completion engine
-(require 'init-autocomplete)    ; auto-completion
-(when *init-helm-projectile*    ; find files anywhere in project
-  (require 'init-helm-projectile))
-
-;;; Magit and git gutter
-(require 'init-git)
-
-;;; Themes
-(if *environment-nw*
-    (set-face-background 'highlight nil)
-  ;; Using Emacs with GUI:
-  (require 'init-themes)
-  (require 'init-powerline))
-
-;;; Shell mode
-(require 'init-shell)
-
-;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
-
-;;; OS-specific things
-(when *environment-osx*
-  (require 'init-osx))
-
-;;; Etc.
-```
-
-If you are looking for a specific feature or key binding,
-[this page](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/code-organization.md)
-explains the code organization. Each module starts with a commentary including
-all key bindings.
-
-## Customization
+The main file is `init.el`: it load the modules from the `modules` subdirectory
+and the default theme from the `themes` subdirectory. The `extensions`
+subdirectory is used for third-party plugins that are not available in melpa.
 
 3 files can be added in your directory `~/.emacs.d` to customize the
-configuration for the local machine (they are ignored in git):
+configuration for the local machine (these files are not tracked by git):
 
 File name        | Usage
 -----------------|-------------------------------------------------------
-`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
+`prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
-`after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
+`after-init.el`  | Loaded after everything else. This is where you should add your own features.
 
-`modules/init-prefs.el` defines the preferences that can be changed in your
-`prefs.el`. For example, your `prefs.el` could contain:
+See the [Customization](#customization) section below.
 
-```lisp
-;; Fonts + size in order of preference. First available one will be picked.
-(setq *init-prefered-fonts* '("Monospace" . 120) ("Mono" . 120))
+## Keymap
 
-;; Default Emacs frame size in chars
-(setq *init-preferred-frame-width* 120
-*init-preferred-frame-height* 65)
-
-;; Show line numbers (default t)
-(setq *init-display-line-numbers* t)
-
-;; Highlight current line (default t)
-(setq *init-line-mode* t)
-
-;; Don't set ESC key to C-g (quit/abort)
-(setq *init-keyboard-escape* nil)
-
-;; Disable electric-pair (automatically inserts a closing parenthese,
-;; curly brace, etc.)
-(setq *init-enable-electric-pair-mode* nil)
-
-;; Available themes (default tomorrow-night):
-;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
-;;   tomorrow-night-eighties, tomorrow-day
-;; - solarized-dark, solarized-light
-;; - monokai
-(setq *init-theme* 'solarized-light)
-
-;; Don't use powerline (may cause Emacs to crash on startup sometimes)
-(setq *init-enable-powerline* nil)
-```
-
-There are more options, see
-[init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el).
-
-## keymap
-
-### Global
+General:
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>.
+<kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-ESC</kbd>     | `delete-other-windows` (just keep the current window).
@@ -215,7 +107,7 @@ Keybinding           | Description
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
 <kbd>M-ARROW</kbd>   | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
 
-Editing any file:
+Editing:
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
@@ -225,23 +117,17 @@ Keybinding          | Description
 <kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
 <kbd>M-\\</kbd>     | Delete all spaces around cursor.
 <kbd>C-c d</kbd>    | Duplicate line.
-<kbd>C-=</kbd>      | Expand region.
-<kbd>C-&#124;</kbd> | Toggle 80-column ruler (fill column indicator).
+<kbd>C-=</kbd>      | Expand region by semantic units.
+<kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
 
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>C-x C-\\</kbd> | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
-<kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (e.g. add shift).
-<kbd>C-c s</kbd>    | Push point onto position stack (e.g. bookmarks).
-<kbd>C-c b</kbd>    | Pop point from position stack.
-
-Project Explorer:
-
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open project explorer on the left side. <kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open file. <kbd>w</kbd> Show path and copy it to clipboard.
+Keybinding              | Description
+------------------------|----------------------------------------------------------
+<kbd>C-x C-\\</kbd>     | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
+<kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
+<kbd>C-c s</kbd>        | Push point onto position stack (e.g. bookmarks).
+<kbd>C-c b</kbd>        | Pop point from position stack.
 
 Auto-complete:
 
@@ -250,55 +136,22 @@ Keybinding         | Description
 <kbd>C-.</bkd>     | Force trigger auto-complete.
 <kbd>ESC</kbd>     | Abort auto-complete.
 
-Git:
+## Projectile
 
-Keybinding            | Description
-----------------------|-----------------------------------------------------------
-<kbd>C-c g s</bkd>    | Open git status mode (`magit-status`).
-<kbd>C-c g l</bkd>    | Open git log mode (`magit-log`).
-<kbd>C-c g down</bkd> | Goto next hunk in buffer.
-<kbd>C-c g up</bkd>   | Goto previous hunk in buffer.
-<kbd>C-c g d</bkd>    | Diff the current hunk.
-<kbd>C-c g r</bkd>    | Revert the current hunk (ask for confirmation before)
-
-### C++
-
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-TAB</kbd>   | Alternate between header file and source file.
-<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
-
-[BDE](https://github.com/bloomberg/bde) style:
-
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-c a</kbd>   | Align function arguments (in signature).
-<kbd>C-c f</kbd>   | Align function arguments (in function call).
-<kbd>C-c m</kbd>   | Align class members (region must be selected).
-<kbd>C-&gt;</kbd>  | Right-align end-of-line comment or text after cursor.
-<kbd>C-c i</kbd>   | Insert redundant #include guard.
-<kbd>C-c =</kbd>   | Insert class definition header.
-<kbd>C-c -</kbd>   | Insert class implementation header.
-
-### Snippets
-
-YASnippet is only enabled for C++ mode currently. Snippets are stored in
-`~/.emacs.d/snippets/c++-mode` and the trigger key is <kbd>C-c y</kbd>. Here are
-[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
-
-Note that variable `*bde-component-author*` defines the default author for a
-header file template (see `modules/init-yasnippet.el`).
-
-## Helm and Projectile
-
-Projectile allows for defining "projects" e.g. collections of files. Once a
-project is defined it provides many keys to find files, grep in all files
-etc. Projectile maintains an index of files for each project it knows about;
-this list is created by scanning the project root directory. The main usage is
-to jump to a file using a partial name without having to remember in which
-directory it is, but it also supports grep/ack and replace in
+[Projectile](https://github.com/bbatsov/projectile) adds the notion of
+"projects" to Emacs. It provides many keys to find files within a project, grep
+in all files etc. Projectile maintains an index of files for each project it
+knows about; this list is created by scanning the project root directory. The
+main usage is to jump to a file using a partial name without having to remember
+in which directory it is, but it also supports grep/ack and replace in
 project. Projectile works with Helm or IDO, so you can use either one with
 different keys.
+
+Here is an example: <kbd>C-c h</kbd> shows the list of buffers and files in the
+current project using Helm; to find a file you just need to type a few letters and the
+list shrinks as it performs fuzzy matching:
+
+![Helm](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/helm.png)
 
 A `.git` repo or a `.projectile` file defines the root directory of a
 project. Even if you have a git repo, you can create a `.projectile` file at
@@ -372,9 +225,80 @@ Keybinding           | Description
 
 See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
 
-## RTags
+Projectile is linked with
+[Project Explorer](https://github.com/sabof/project-explorer) which displays
+the project directory structure on the left side.
 
-### Start rdm
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c e</kbd>    | Open project explorer on the left side. <kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open file. <kbd>w</kbd> Show path and copy it to clipboard.
+
+## Git
+
+All git-related keys start with prefix <kbd>C-c g</kbd>. Type <kbd>C-c g
+s</kbd> to run [Magit](http://magit.github.io) status:
+
+![magit](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/magit.png)
+
+The bottom window shows the current git status. Use the <kbd>tab</kbd> key on
+any file to fold or unfold its diff. Use the <kbd>s</kbd> key to stage or
+unstage a file, and the capital <kbd>S</kbd> to stage all of them. Use the
+<kbd>k</kbd> key to revert a file. Type <kbd>c</kbd> twice to commit; it will
+ask for the commit message (<kbd>C-c C-c</kbd> to close the window and
+commit). Finally the <kbd>q</kbd> key quits magit. There are a lot of other
+keys which are described [here](http://daemianmack.com/magit-cheatsheet.html).
+
+The screenshot above also shows
+[git gutter](https://github.com/syohex/emacs-git-gutter) in the top buffer. Git
+gutter displays a git diff of the file in the left-side fringe (you can
+[customize](#customization) it). Git gutter defines a few keys for navigating
+between hunks, diffing and reverting:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c g s</bkd>    | Open git status mode (`magit-status`).
+<kbd>C-c g l</bkd>    | Open git log mode (`magit-log`).
+<kbd>C-c g down</bkd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
+<kbd>C-c g up</bkd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
+<kbd>C-c g d</bkd>    | Diff the current hunk (`git-gutter:popup-diff`).
+<kbd>C-c g r</bkd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
+
+## C++
+
+### Utilities
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-TAB</kbd>   | Alternate between header file and source file.
+<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
+
+Keys for formatting code according to the
+[BDE](https://github.com/bloomberg/bde) style:
+
+Keybinding         | Description
+-------------------|-----------------------------------------------------------
+<kbd>C-c a</kbd>   | Align function arguments (in signature).
+<kbd>C-c f</kbd>   | Align function arguments (in function call).
+<kbd>C-c m</kbd>   | Align class members (region must be selected).
+<kbd>C-&gt;</kbd>  | Right-align end-of-line comment or text after cursor.
+<kbd>C-c i</kbd>   | Insert redundant #include guard.
+<kbd>C-c =</kbd>   | Insert class definition header.
+<kbd>C-c -</kbd>   | Insert class implementation header.
+
+[YASnippet](https://github.com/capitaomorte/yasnippet) is a template system which replaces a keyword by a template after you hit the trigger key. YASnippet is only enabled for C++ mode currently. The trigger key is set to <kbd>C-c y</kbd> because the default TAB key is already way overused between intention and auto-complete. You can easily use a function key if you prefer by adding this in your `after-init.el`:
+
+```lisp
+(define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
+```
+
+Snippets are stored in `~/.emacs.d/snippets/c++-mode`. Here are
+[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
+
+Note that variable `*bde-component-author*` defines the default author for a
+header file template (see `modules/init-yasnippet.el`). You can set it to your
+name in `after-init.el`.
+
+### RTags
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
 which provides a deamon called "rdm" that maintains an in-memory index, and a
@@ -395,10 +319,11 @@ silent with `-S`. There are many options; use `--help` to see the list.  You
 can also create a file `~/.rdmrc` containing the default command line
 arguments.
 
-Alternatively you can run rdm as an Emacs subprocess: M-x `rtags-start-rdm`,
-with logs going into a buffer. Stop it with M-x `rtags-quit-rdm`.
+Alternatively you can run rdm as an Emacs subprocess: <kbd>M-x
+rtags-start-rdm</kbd>, with logs going into a buffer (in color!). Stop it with
+<kbd>M-x rtags-quit-rdm</kbd>.
 
-### Controlling rdm
+#### Controlling rdm
 
 rdm stores project indices into a directory `~/.rtags` and reloads them as
 needed. rc and rdm communicate with each other using a socket file `~/.rdm`.
@@ -416,7 +341,7 @@ Command            | Description
 Note that a job may crash while trying to index a file. If it does, rdm will
 retry a few times and then give up with the file it cannot parse.
 
-### Setting up your project
+#### Setting up your project
 
 If the project root directory does not contain a `.git` or `.svn` repo, you
 need to create a file `.rtags-config` in the root directory with the specified
@@ -516,30 +441,33 @@ database accordingly.
 The rdm deamon should automatically re-compile any file you edit in Emacs as
 soon as you save it or otherwise touch it.
 
-### Using the index
+#### Using the index
 
 While RTags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
-<kbd>C-c r</kbd> instead because it it less crowded. It also adds a few keys.
+<kbd>C-c r</kbd> instead because it it less crowded. It also adds a few keys
+such as <kbd>M-C-g</kbd> to display the list of symbols from the current buffer
+using Helm:
+
+![Rtags Helm](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_helm.png)
 
 Navigation keys:
 
 Keybinding                           | Description
 -------------------------------------|-----------------------------------------
-<kbd>M-.</kbd>, <kbd>C-c r .</kbd>   | Jump to symbol definition.
-<kbd>M-,</kbd>, <kbd>C-c r ,</kbd>   | Find references to symbol.
+<kbd>M-.</kbd> or <kbd>C-c r .</kbd> | Jump to symbol definition.
+<kbd>M-,</kbd> or <kbd>C-c r ,</kbd> | Find references to symbol.
 <kbd>C-c r &gt;</kbd>                | Find symbol (prompts for symbol name).
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
 <kbd>M-C-g</kbd>                     | Find symbol in file usign Helm.
-<kbd>C-c r T</kbd>                   | Display tag list in a window on the left side.
 <kbd>C-c r ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
-Keybinding                          | Description
-------------------------------------|---------------------------------------
-<kbd>C-{</kbd>, <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>C-}</kbd>, <kbd>C-c r ]</kbd>  | Go forward to next location.
+Keybinding                            | Description
+--------------------------------------|---------------------------------------
+<kbd>C-{</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-}</kbd> or <kbd>C-c r ]</kbd>  | Go forward to next location.
 
 Refactoring:
 
@@ -563,32 +491,34 @@ Keybinding         | Description
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.
 
-### Using flymake
+#### Using flymake
 
 The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
 process to receive compilation warnings and errors from rdm. They are displayed
 into diagnostics buffer which works with flymake to put highlighting on code
-with warnings and errors. You can:
+with warnings and errors. By default Powerline displays the name of the buffer
+in green if the project compiles and in red if there are errors:
 
-* Click on the highlighted symbol in your code to view the error message
-* Click on the error line in the diagnostics buffer to jump to the error location.
+![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
+
+Click on the highlighted symbol in your code to view the error message. Click
+on the error line in the diagnostics buffer to jump to the error location.
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd>    | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
 <kbd>C-c r d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
-<kbd>C-c r DOWN</kbd> | Goto next problem.
+<kbd>C-c r DOWN</kbd> | Goto next problem (`rtags-next-diag`).
 <kbd>C-c r UP</kbd>   | Goto previous problem.
 <kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")
 <kbd>C-c r Q</kbd>    | `rtags-stop-diagnostics` stop the async process.
 
-Other functions:
-* `rtags-next-diag` goes to the next problem.
-* `rtags-clear-diagnostics` clears any error or warning overlay.
+Do <kbd>M-x rtags-clear-diagnostics</kbd> to clear all errors or warnings.
 
-### Autocomplete
+#### Autocomplete
 
 You can use RTags as source for auto-complete suggestions. Notes:
+
 * This feature makes RTags be the *only* source for auto-complete in C/C++
   mode, e.g. all other classic sources such as names in open buffers are
   disabled. The reasoning being that surely Clang must be more accurate.
@@ -603,13 +533,146 @@ C++ files you open from that point. This key also sets auto-complete for the
 `#include` header files in the current project.
 
 Possible issues:
+
 * There might be a graphical glitch in the auto-complete popup if the Emacs
   window is too small. Just enlarge the window a bit if this happens.
 * It's a tiny bit slow and it may trigger rdm a bit often.
 * Auto-complete for header files does not understand when you are switching
   project.
 
-## Bugs
+## Lisp
+
+Coming soon: Emacs Lisp, Common Lisp and Clojure.
+
+![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/elisp.png)
+
+## Customization
+
+The main file of the config is `init.el`. It looks like this:
+
+```lisp
+;;; 1. Load before-init.el if it exists
+(when (file-exists-p "~/.emacs.d/before-init.el")
+  (load "~/.emacs.d/before-init.el"))
+
+;;; 2. Define the list of Melpa packages that we need, and load any missing
+;;; one. Note that they are NOT updated automatically.
+
+;;; 3. Local preferences: load prefs.el if it exists.
+(require 'init-prefs)       ; defines variables that prefs.el can override
+(when (file-exists-p "~/.emacs.d/prefs.el")
+  (load "~/.emacs.d/prefs.el"))
+
+;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
+
+;;; 5. Load the default theme in ~/.emacs.d/themes.
+
+;;; 6. Load after-init.el if it exists
+(when (file-exists-p "~/.emacs.d/after-init.el")
+  (load "~/.emacs.d/after-init.el"))
+```
+
+Modules can be individually commented out if needed:
+
+```lisp
+;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
+;;; or evaluate the require expression with M-C-x.
+
+;;; Look and feel
+(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
+(require 'init-linum)           ; line numbers
+
+;;; Usability
+(require 'init-util)            ; utilities like match paren, bookmarks...
+(require 'init-ido)             ; supercharged completion engine
+(require 'init-autocomplete)    ; auto-completion
+(when *init-helm-projectile*    ; find files anywhere in project
+  (require 'init-helm-projectile))
+
+;;; Magit and git gutter
+(require 'init-git)
+
+;;; Themes
+(if *environment-nw*
+    (set-face-background 'highlight nil)
+  ;; Using Emacs with GUI:
+  (require 'init-themes)
+  (require 'init-powerline))
+
+;;; Shell mode
+(require 'init-shell)
+
+;;; Major modes
+(require 'init-markdown)
+(require 'init-org)
+(require 'init-xml)
+
+;;; OS-specific things
+(when *environment-osx*
+  (require 'init-osx))
+
+;;; Etc.
+```
+
+If you are looking for a specific feature or key binding,
+[this page](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/code-organization.md)
+explains the code organization. Each module starts with a commentary including
+all key bindings.
+
+### Local files
+
+3 files can be added in your directory `~/.emacs.d` to customize the
+configuration for the local machine:
+
+File name        | Usage
+-----------------|-------------------------------------------------------
+`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el).
+`before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
+`after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
+
+### Preferences
+
+`modules/init-prefs.el` defines the preferences that can be changed in your
+`prefs.el`. For example, your `prefs.el` could contain:
+
+```lisp
+;; Fonts + size in order of preference. First available one will be picked.
+(setq *init-prefered-fonts* '("Monospace" . 120) ("Mono" . 120))
+
+;; Default Emacs frame size in chars
+(setq *init-preferred-frame-width* 120
+*init-preferred-frame-height* 65)
+
+;; Show line numbers (default t)
+(setq *init-display-line-numbers* t)
+
+;; Highlight current line (default t)
+(setq *init-line-mode* t)
+
+;; Don't set ESC key to C-g (quit/abort)
+(setq *init-keyboard-escape* nil)
+
+;; Disable electric-pair (automatically inserts a closing parenthese,
+;; curly brace, etc.)
+(setq *init-enable-electric-pair-mode* nil)
+
+;; Available themes (default tomorrow-night):
+;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
+;;   tomorrow-night-eighties, tomorrow-day
+;; - solarized-dark, solarized-light
+;; - monokai
+(setq *init-theme* 'solarized-light)
+
+;; Don't use powerline (may cause Emacs to crash on startup sometimes)
+(setq *init-enable-powerline* nil)
+```
+
+There are more options, see
+[init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el).
+
+## Troubleshooting
+
+### Bugs
 
 * Powerline may cause Emacs to crash on startup because of a race condition
   inside Emacs. One trick to fix it is to make powerline be the last thing you
@@ -637,7 +700,7 @@ to make it display"
   the fringe. Note that the latter disables the highighting of the current line
   number for now.
 
-## Configuration profiling
+### Configuration profiling
 
 M-x `emacs-init-time` shows the time Emacs took to start. You can profile the
 configuration using this command (this example is for OS X):

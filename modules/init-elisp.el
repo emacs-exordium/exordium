@@ -7,7 +7,6 @@
 (define-key emacs-lisp-mode-map [(meta control g)] 'helm-imenu)
 
 ;;; Loud face for TODOs in elisp comments
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (font-lock-add-keywords
