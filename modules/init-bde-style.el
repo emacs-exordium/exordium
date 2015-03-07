@@ -163,19 +163,45 @@ current cursor position, if the cursor is within a class definition:
                  (return nil)))))))
     (t nil)))
 
+(defun bde-statement-block-intro-offset (element)
+  "Custom line-up function for first line of a statement block.
+The default identation is is '+' (1 basic offset), unless we are in
+a switch statement, in which case the indentation is set to
+'*' (half basic offset). Example:
+switch(val) {
+  case 100: {
+      return 1;
+  } break;
+  default: {
+      return 0;
+  } break;
+}"
+  (save-excursion
+    (goto-char (c-langelem-pos element))
+    (if (looking-at "\\(case\\|default\\)")
+        '*
+      '+)))
+
+;; See http://cc-mode.sourceforge.net/html-manual/Syntactic-Symbols.html#Syntactic-Symbols
 (c-add-style
  "bde"
  '((c-basic-offset . 4)
    (c-comment-only-line-offset . 0)
+   (fill-column . 79)
+   (c-backslash-column . 78)
+   (c-backslash-max-column . 78)
    (c-offsets-alist
     (comment-intro         . bde-comment-offset)
     (defun-open            . 0)
     (defun-close           . 0)
-    (statement-block-intro . +)
+    (statement-block-intro . bde-statement-block-intro-offset)
     (substatement-open     . 0)
     (substatement-label    . 0)
     (label                 . 0)
     (access-label          . /)
+    (case-label            . *)
+    (statement-case-intro  . *)
+    (statement-case-open   . 0)
     (statement-cont        . +)
     (inline-open           . 0)
     (inline-close          . 0)
@@ -513,7 +539,11 @@ declaration or definition, align the type and variable names"
                                (- 79 longest-length))
               ;; We cannot indent correctly, some lines are too long
               (indent-region (region-beginning) (region-end))
-              (message "Longest line is %d chars" longest-length))))))))
+              (message "Longest line is %d chars" longest-length))))))
+    ;; Leave the cursor after the closing parenthese instead of on the opening
+    ;; one, since most likely we want to add code after the arg list.
+    (when (looking-at "\\s\(")
+      (forward-list 1))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
