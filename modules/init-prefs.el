@@ -14,7 +14,7 @@
   :group 'local)
 
 
-;;; UI -- see init-ui.el
+;;; UI -- see init-look-and-feel.el
 
 (defcustom *init-preferred-fonts* '(("Consolas"  . 120)
                                     ("Monaco"    . 120)
@@ -83,8 +83,21 @@ solarized-dark."
   :group 'init
   :type 'symbol)
 
+(defcustom *init-highlight-linum* t
+  "Whether the current line number is highlighted.
+This does not work with nlinum-mode currently."
+  :group 'init
+  :type 'boolean)
+
 (defcustom *init-enable-powerline* t
   "Enables Powerline"
+  :group 'init
+  :type 'boolean)
+
+(defcustom *init-powerline-shows-rtags-diagnostics* t
+  "Whether Powerline shows RTags Diagnostics results. If there
+are errors, the buffer name is displayed in red instead of the
+default color."
   :group 'init
   :type 'boolean)
 
@@ -131,12 +144,9 @@ IF nil, disables CUA completely."
   :type 'boolean)
 
 ;;; See init-git.el
-;;; *init-git-gutter* displays a git diff icon in the left fringe.
-;;; Unfortunately this may cause a random bug in Emacs. As a workaround
-;;; you can either disable *init-git-gutter* or enable
-;;; *init-git-gutter-non-fringe* instead. The latter displays the git diff on
-;;; the left side of the line number. Unfortunately for now it also disables
-;;; highlighting the current line number.
+;;; *init-git-gutter* displays a git diff icon in the left fringe, while
+;;; *init-git-gutter-non-fringe* displays the diff icon on the left side of the
+;;; *line numbers. The latter takes precedence.
 (defcustom *init-git-gutter-non-fringe* nil
   "Whether a git status icon is displayed at the very left. Takes
   precedence over *init-gut-gutter*. Note that this option

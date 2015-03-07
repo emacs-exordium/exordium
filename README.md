@@ -676,8 +676,8 @@ There are more options, see
   inside Emacs. One trick to fix it is to make powerline be the last thing you
   enable in your config. For this, add `(setq *init-enabled-powerline* nil)` in
   your `pref.el`, and add `(require 'init-powerline)` in your
-  `after-init.el`. If this still does not work, keep Powerline disabled and add
-  this function in your `after-init.el`:
+  `after-init.el`. If this still does not work, keep Powerline disabled and start
+  it manually with this function in your `after-init.el`:
 
 ```lisp
 (defun powerline ()

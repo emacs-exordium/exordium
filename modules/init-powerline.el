@@ -3,13 +3,6 @@
 (require 'powerline)
 (require 'init-themes)
 
-(defcustom *init-powerline-shows-rtags-diagnostics* t
-  "Whether Powerline shows RTags Diagnostics results. If there
-  are errors, the buffer name is displayed in red instead of the
-  default color."
-  :group 'init
-  :type 'boolean)
-
 ;;; Fix the grapphical bug with Emacs24.4 on OSX
 ;;; See https://github.com/milkypostman/powerline/issues/54
 (when *environment-osx*
