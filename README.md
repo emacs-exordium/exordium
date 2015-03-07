@@ -20,7 +20,7 @@ might want to check these links:
 * [Keymap](#keymap)
 * [Projectile](#projectile)
 * [Git](#git)
-* [C++](#c++)
+* C++
   * [Utilities](#utilities)
   * [RTags](#rtags)
 * [Lisp](#lisp)
@@ -366,8 +366,8 @@ entry for each file to compile, like the following (simplified for clarity):
    "file":      "bar.cpp" }
 ```
 
-You can generate this compilation database with the command M-x
-`rtags-create-compilation-database`. But before you do, it needs a little help:
+You can generate this compilation database with the command <kbd>M-x
+rtags-create-compilation-database</kbd>. But before you do, it needs a little help:
 you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
@@ -419,8 +419,8 @@ Variable                            | Description
 `*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
 `*rtags-clang-command-suffix*`      | Default is "-c -o".
 
-Once you have created the `compile_includes` file, run the command M-x
-`rtags-create-compilation-database`. It will:
+Once you have created the `compile_includes` file, run the command <kbd>M-x
+rtags-create-compilation-database</kbd>. It will:
 
 * Prompt for the project root dir;
 * Read the `compile_includes` file;
@@ -543,8 +543,6 @@ Possible issues:
 ## Lisp
 
 Coming soon: Emacs Lisp, Common Lisp and Clojure.
-
-![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/elisp.png)
 
 ## Customization
 
@@ -702,7 +700,7 @@ to make it display"
 
 ### Configuration profiling
 
-M-x `emacs-init-time` shows the time Emacs took to start. You can profile the
+<kbd>M-x emacs-init-time</kbd> shows the time Emacs took to start. You can profile the
 configuration using this command (this example is for OS X):
 
 ```bash
