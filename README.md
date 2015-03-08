@@ -22,6 +22,7 @@ might want to check these links:
 * [Git](#git)
 * C++
   * [Utilities](#utilities)
+  * [Snippets](#snippets)
   * [RTags](#rtags)
 * [Lisp](#lisp)
 * [Customization](#customization)
@@ -68,12 +69,17 @@ $ git clone https://github.com/philippe-grenet/dot.emacs.git ~/.emacs.d
 ```
 
 The first time you start Emacs it will download and compile the required
-packages, which may take a couple of minutes. Note that packages are not
-updated automatically: you can do it with <kbd>M-x package-list-packages</kbd>,
-then "U".
+packages, which may take a couple of minutes.
 
-To update the config itself, do <kbd>M-x update-config</kbd>. This command
-pulls from github and recompiles everything.
+### Updates
+
+To update the config, do <kbd>M-x update-config</kbd>. This command pulls from
+github and recompiles everything. Restart Emacs after that.
+
+Melpa packages are not updated automatically: you can do it with <kbd>M-x
+package-list-packages</kbd>, then "U".
+
+### Files
 
 The main file is `init.el`: it load the modules from the `modules` subdirectory
 and the default theme from the `themes` subdirectory. The `extensions`
@@ -153,6 +159,8 @@ list shrinks as it performs fuzzy matching:
 
 ![Helm](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/helm.png)
 
+### Setting up projects
+
 A `.git` repo or a `.projectile` file defines the root directory of a
 project. Even if you have a git repo, you can create a `.projectile` file at
 the root of your project: it allows for filtering out the files you don't care
@@ -204,6 +212,8 @@ Now you need to teach Projectile where your projects are. You can do that by:
 ("/bb/mbig7/mbig2387/workspaces/rsp/" "/bb/mbig7/mbig2387/workspaces/si-core/" "/home12/pgrenet/.emacs.d/" "/bb/mbig7/mbig2387/workspaces/bsl-internal/" "/bb/mbig7/mbig2387/workspaces/bde-core/")
 ```
 
+### Using Projectile
+
 To open a file with Projectile using Helm, type <kbd>C-c h</kbd>. This will
 display the Helm buffer, displaying initially just the list of projects at the
 top. Choose your project with the arrow keys and press enter; Helm will now
@@ -235,8 +245,8 @@ Keybinding          | Description
 
 ## Git
 
-All git-related keys start with prefix <kbd>C-c g</kbd>. Type <kbd>C-c g
-s</kbd> to run [Magit](http://magit.github.io) status:
+All git-related keys use prefix <kbd>C-c g</kbd> plus one more key. For example
+<kbd>C-c g s</kbd> runs [Magit](http://magit.github.io) status:
 
 ![magit](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/magit.png)
 
@@ -285,7 +295,14 @@ Keybinding         | Description
 <kbd>C-c =</kbd>   | Insert class definition header.
 <kbd>C-c -</kbd>   | Insert class implementation header.
 
-[YASnippet](https://github.com/capitaomorte/yasnippet) is a template system which replaces a keyword by a template after you hit the trigger key. YASnippet is only enabled for C++ mode currently. The trigger key is set to <kbd>C-c y</kbd> because the default TAB key is already way overused between intention and auto-complete. You can easily use a function key if you prefer by adding this in your `after-init.el`:
+### Snippets
+
+[YASnippet](https://github.com/capitaomorte/yasnippet) is a template system
+which replaces a keyword by a template after you hit the trigger key. YASnippet
+is only enabled for C++ mode currently. The trigger key is set to <kbd>C-c
+y</kbd> because the default TAB key is already way overused between intention
+and auto-complete. You can easily use a function key if you prefer by adding
+this in your `after-init.el`:
 
 ```lisp
 (define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
@@ -492,7 +509,7 @@ Keybinding         | Description
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.
 
-#### Using flymake
+#### Using Flymake
 
 The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
 process to receive compilation warnings and errors from rdm. They are displayed
