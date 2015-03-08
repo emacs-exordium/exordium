@@ -40,7 +40,7 @@
 ;;;            (without reparsing)
 ;;; C-c r down `rtags-next-diag' goes to the next problem.
 ;;; C-c r up   `rtags-previous-diag' goes to previous problem.
-;;;            `rtags-clear-diagnostics' clears any error or warning overlay.
+;;; C-c r c    `rtags-clear-diagnostics' clears any error or warning overlay.
 ;;;            `rtags-stop-diagnostics' stops the process.
 ;;;
 ;;; ---------- ----------------------------------------------------------------
@@ -223,6 +223,7 @@
 
 (define-key c-mode-base-map [(control c) (r) (down)] (function rtags-next-diag))
 (define-key c-mode-base-map [(control c) (r) (up)] (function rtags-previous-diag))
+(define-key c-mode-base-map [(control c) (r) (c)] (function rtags-clear-diagnostics))
 
 (define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
 
@@ -445,8 +446,8 @@ directly: use `rtags-create-compilation-database' instead"
 
 (defun rtags-create-compilation-command ()
   "Return a string containing the clang compilation command to
-  use for the compilation database, using the content of
-  `*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
+use for the compilation database, using the content of
+`*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
   (assert *rtags-project-source-dirs*)
   (let ((command *rtags-clang-command-prefix*))
     (dolist (path *rtags-project-source-dirs*)
@@ -455,10 +456,24 @@ directly: use `rtags-create-compilation-database' instead"
       (setq command (concat command " -I" path)))
     (concat command *rtags-clang-command-suffix*)))
 
+(defun rtags-prompt-compilation-database-dir ()
+  "Prompt the user for the directory where to generate the
+compilation database. If we're in a projectile project, propose
+the project root first, and prompt for a dir if the user
+declines."
+  (let ((project-root (and (featurep 'projectile)
+                           (projectile-project-root))))
+    (let ((dir (if (and project-root
+                        (y-or-n-p (format "Create at project root (%s)?" project-root)))
+                   project-root
+                 (read-directory-name "Project root: "))))
+      dir)))
+
 (defun rtags-create-compilation-database (dir)
   "Regenerates `compile_commands.json' in the specified
 directory"
-  (interactive "DProject root: ")
+  (interactive (list (rtags-prompt-compilation-database-dir)))
+  ;;(interactive "DProject root: ")
   (when (rtags-load-compile-includes-file dir)
     (let ((dbfilename (concat (file-name-as-directory dir)
                               "compile_commands.json"))

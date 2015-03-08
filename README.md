@@ -511,9 +511,8 @@ Keybinding            | Description
 <kbd>C-c r DOWN</kbd> | Goto next problem (`rtags-next-diag`).
 <kbd>C-c r UP</kbd>   | Goto previous problem.
 <kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")
+<kbd>C-c r c</kbd>    | Clears all errors and warnings (`rtags-clear-diagnostics`)
 <kbd>C-c r Q</kbd>    | `rtags-stop-diagnostics` stop the async process.
-
-Do <kbd>M-x rtags-clear-diagnostics</kbd> to clear all errors or warnings.
 
 #### Autocomplete
 
