@@ -224,8 +224,8 @@ the selection until you find what you were looking for.
 most important ones.
 
 Keybinding           | Description
----------------------|-----------------------------------------------------------
-<kbd>C-c h</kbd>     | Helm: find file in current project
+---------------------|---------------------------------------------------------
+<kbd>C-c h</kbd> or <kbd>C-c C-f</kbd>  | Helm: find file in current project
 <kbd>C-c C-h</kbd>   | Same but first select project
 <kbd>C-c p p</kbd>   | IDO: switch project
 <kbd>C-c p f</kbd>   | IDO: find file in current project
@@ -262,12 +262,21 @@ The screenshot above also shows
 [git gutter](https://github.com/syohex/emacs-git-gutter) in the top buffer. Git
 gutter displays a git diff of the file in the left-side fringe (you can
 [customize](#customization) it). Git gutter defines a few keys for navigating
-between hunks, diffing and reverting:
+between hunks, diffing and reverting.
+
+Magit keys:
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g s</bkd>    | Open git status mode (`magit-status`).
-<kbd>C-c g l</bkd>    | Open git log mode (`magit-log`).
+<kbd>C-c g s</bkd>    | Open git status (`magit-status`).
+<kbd>C-c g l</bkd>    | Open git log (`magit-log`).
+<kbd>C-c g f</kbd>    | Open git file log (`magit-file-log`).
+<kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
+
+Git gutter keys:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
 <kbd>C-c g down</bkd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
 <kbd>C-c g up</bkd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
 <kbd>C-c g d</bkd>    | Diff the current hunk (`git-gutter:popup-diff`).

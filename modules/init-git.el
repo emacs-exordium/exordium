@@ -7,6 +7,8 @@
 ;;; ----------------- ---------------------------------------------------------
 ;;; C-c g s           Magit status
 ;;; C-c g l           Magit log
+;;; C-c g f           Magit file log
+;;; C-c g b           Toggle Magit blame mode
 ;;;
 ;;; C-c g down        Goto next hunk in buffer
 ;;; C-c g up          Goto previous hunk in buffer
@@ -16,11 +18,11 @@
 ;;; Magit
 (require 'magit)
 
-;;; C-c g s = magit-status
-(define-key global-map [(control c)(g)(s)] 'magit-status)
-
-;;; C-c g l = magit log
-(define-key global-map [(control c)(g)(l)] 'magit-log)
+;;; Keys
+(define-key global-map [(control c)(g)(s)] (function magit-status))
+(define-key global-map [(control c)(g)(l)] (function magit-log))
+(define-key global-map [(control c)(g)(f)] (function magit-file-log))
+(define-key global-map [(control c)(g)(b)] (function magit-blame-mode))
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
