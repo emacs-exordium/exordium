@@ -49,13 +49,33 @@ available font names by evaluating (font-family-list)."
   :group 'init
   :type 'boolean)
 
-
-;;; Extensions -- see init-extensions.el
+;;; Keyboard
+
+(defcustom *init-keyboard-escape* t
+  "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G."
+  :group 'init
+  :type 'boolean)
+
+(defcustom *init-enable-newline-and-indent* t
+  "If t, binds the return key to newline-and-indent, and
+shift-return for just newline.  If nil, do the opposite."
+  :group 'init
+  :type 'boolean)
 
 (defcustom *init-enable-electric-pair-mode* t
   "Enables electric-pair-mode."
   :group 'init
   :type 'symbol)
+
+(defcustom *init-enable-cua-mode* nil
+  "IF set to t, enables CUA mode.
+If set to :region, enables CUA rectagular regions.
+IF nil, disables CUA completely."
+  :group 'init
+  :type 'symbol)
+
+
+;;; Miscellaneous utilities -- see init-util.el
 
 (defcustom *init-fci-mode* :ondemand
   "Controls fill-column-indicator e.g. the 80-character ruler.
@@ -68,6 +88,15 @@ nil means it is disabled."
 (defcustom *init-fci-use-dashes* t
   "If t, use dashes for fill-column-indicator.
 If nil, use a plain line."
+  :group 'init
+  :type 'boolean)
+
+
+;;; Autocomplete -- see init-autocomplete.el
+
+(defcustom *init-auto-complete* t
+  "Whether auto-complete is turned on or off by default. See also
+  `*init-rtags-auto-complete*'."
   :group 'init
   :type 'boolean)
 
@@ -98,27 +127,6 @@ This does not work with nlinum-mode currently."
   "Whether Powerline shows RTags Diagnostics results. If there
 are errors, the buffer name is displayed in red instead of the
 default color."
-  :group 'init
-  :type 'boolean)
-
-
-;;; Keyboard -- see init-keyboard.el
-
-(defcustom *init-enable-newline-and-indent* t
-  "If t, binds the return key to newline-and-indent, and
-shift-return for just newline.  If nil, do the opposite."
-  :group 'init
-  :type 'boolean)
-
-(defcustom *init-enable-cua-mode* nil
-  "IF set to t, enables CUA mode.
-If set to :region, enables CUA rectagular regions.
-IF nil, disables CUA completely."
-  :group 'init
-  :type 'symbol)
-
-(defcustom *init-keyboard-escape* t
-  "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G."
   :group 'init
   :type 'boolean)
 

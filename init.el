@@ -131,7 +131,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Usability
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
-(require 'init-autocomplete)    ; auto-completion
+(when *init-auto-complete*
+  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
 (when *init-helm-projectile*    ; find files anywhere in project
   (require 'init-helm-projectile))
 
