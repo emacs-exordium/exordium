@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: LOCKED
+# key: locked
+# condition: (string-match "^[ \t]*locked" (thing-at-point 'line))
+# type: command
+# --
+(end-of-line)
+(save-excursion
+  (insert "BCEMT_MUTEXASSERT_IS_LOCKED(&d_mutex);")
+  (end-of-line)
+  (dotimes (i (- 70 (current-column)))
+  (insert " "))
+  (insert "// LOCKED"))

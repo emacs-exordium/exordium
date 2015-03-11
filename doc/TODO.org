@@ -2,29 +2,26 @@
 #+STARTUP: hidestars
 
 * Improvements
-** DONE Combine behavior + keyboard + ui into a single file
-** DONE Readme: TOC, customize and bugs
-** WORK Graphene: file explorer + cool keys
-** TODO Make git-gutter work with hilinum, and make an option for git-gutter
-** TODO Replace Electric-Pairs with something better
-** TODO Mark occurrences on demand rather than time-based
+** RTags
+*** TODO diagnostics in regular mode-line
+*** TODO fix goto definition recenter
+*** TODO list-based project config for compilation DB
+** BDE
+*** TODO add include for symbol under point
+*** TODO organize includes (list of groups with precedence)
+** Usability
+*** TODO nlinum
+*** TODO undo-tree
+*** TODO replace Electric-Pairs with something better
+*** TODO mark occurrences on demand rather than time-based
+*** WORK checkout graphene: file explorer + cool keys
 * Themes
-** WORK Getter fringe in tomorrow themes
-** DONE Code should figure out what is the current themes without prefs
-** DONE Make Solarized a real theme
-** TODO Switch-theme function that calls load-theme + powerline-reset
-* RTags
-** DONE Shrink diagnostics window to content size
-** DONE Bury buffer on close window, or key to close window + burry bufer
-** TODO Show number of errors in mode-line
-** TODO Fix M-. recenter
-** TODO Make compile_includes path-relative (use environment variables)
-* Ideas
-** Other Options for IDE
-*** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
-*** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
-*** Malinka http://blog.refu.co/?tag=clang
-*** Eclim: https://github.com/senny/emacs-eclim
-** Other languages
-*** JavaScript chrome integration
-*** Python Jedi
+** TODO zenburn
+* Language
+** TODO inferior process for Ruby/Python/JS
+** TODO Python Jedi
+* Other
+** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
+** Malinka http://blog.refu.co/?tag=clang
+** Eclim: https://github.com/senny/emacs-eclim
