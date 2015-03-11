@@ -77,25 +77,17 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
    column is a different set, one of which will be chosen based on term
    capabilities, etc.")
 
-(defvar which-flet
-  "This variable will store either flet or cl-flet depending on the Emacs
-  version. flet was deprecated in in 24.3")
-(if (or (> emacs-major-version 24)
-        (and (>= emacs-major-version 24) (> emacs-minor-version 2)))
-    (fset 'which-flet 'cl-flet)
-  (fset 'which-flet 'flet))
-
 (defun solarized-color-definitions (mode)
-  (which-flet ((find-color (name)
-           (let ((index (if window-system
-                             (if solarized-degrade
-                                 3
-                               (if solarized-broken-srgb 2 1))
-                           (case (display-color-cells)
-                             (16 4)
-                             (8  5)
-                             (otherwise 3)))))
-             (nth index (assoc name solarized-colors)))))
+  (cl-flet ((find-color (name)
+             (let ((index (if window-system
+                              (if solarized-degrade
+                                  3
+                                (if solarized-broken-srgb 2 1))
+                            (case (display-color-cells)
+                              (16 4)
+                              (8  5)
+                              (otherwise 3)))))
+               (nth index (assoc name solarized-colors)))))
     (let ((base03      (find-color 'base03))
           (base02      (find-color 'base02))
           (base01      (find-color 'base01))
@@ -323,6 +315,10 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
              ;; info
              (info-xref ((t (,@fmt-undr ,@fg-blue))))
              (info-xref-visited ((t (,@fg-magenta :inherit info-xref))))
+             ;; RTags
+             (rtags-errline ((t (,@bg-red))))
+             (rtags-warnline ((t (,@bg-orange))))
+             (rtags-fixitline ((t (,@bg-green))))
              ;; org
              (org-hide ((t (,@fg-base03))))
              (org-todo ((t (,@fmt-bold ,@fg-base03 ,@bg-red))))
@@ -584,5 +580,19 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
   (interactive)
   (set-colors-solarized 'light))
 
+(defun set-solarized-extra-org-statuses ()
+  "Set colors for WORK and WAIT org statuses"
+  (require 'org)
+  (setq org-todo-keyword-faces
+        `(("WORK" . (:background ,(second (assoc 'yellow solarized-colors))
+                     :foreground ,(if (eq (current-theme) 'solarized-light)
+                                      (second (assoc 'base3 solarized-colors))
+                                    (second (assoc 'base03 solarized-colors)))
+                     :weight bold :box nil))
+          ("WAIT" . (:background ,(second (assoc 'orange solarized-colors))
+                     :foreground ,(if (eq (current-theme) 'solarized-light)
+                                      (second (assoc 'base3 solarized-colors))
+                                    (second (assoc 'base03 solarized-colors)))
+                     :weight bold :box nil)))))
 
 (provide 'color-theme-solarized)

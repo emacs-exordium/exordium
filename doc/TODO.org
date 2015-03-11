@@ -1,43 +1,27 @@
 #+TITLE: Emacs configuration todo list
 #+STARTUP: hidestars
 
-* Next Items
-** Code cleanup
-*** WAIT use a namespace for internal functions?
-*** TODO find a solution for suggested key bindings, like rtags does.
-*** TODO preferences should be per modules and not global (and should use defcustom)
-*** DONE document code organization
-** Usability
-*** WAIT replace electric pairs by something better?
-*** TODO better bookmarks
-    Position stack should use rtags stack (or add key to push onto rtags stack)
-*** TODO key for flyspell?
-*** TODO improve usability of autocomplete
-*** TODO mark occurrences on demand rather than time based
+* Improvements
+** RTags
+*** TODO diagnostics in regular mode-line
+*** TODO fix goto definition recenter
+*** TODO list-based project config for compilation DB
 ** BDE
-*** TODO align class data members (should be similar as function args)
-*** TODO align function args should align default values
-** Rtags
-*** TODO make compile_includes path-relative (use environment variables)
-*** WORK fix M-. recenter
-*** TODO shrink the diagnostics window to content size
-*** TODO fix autocomplete for header files
-   Either this will come from Projectile, or
-   It can be easily done with per-directory variables:
-   https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
-   (with an impact on performance)
-** Extensions
-*** DONE directory tree: sr-speedbar or https://github.com/sabof/project-explorer
-** Themes
-*** TODO solarized should be a real theme
-* C++
-** other options for IDE
-*** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
-*** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
-*** Malinka http://blog.refu.co/?tag=clang
-*** Eclim: https://github.com/senny/emacs-eclim
-* Other languages
-** DONE JavaScript js2
-** TODO JavaScript chrome integration
-** TODO Ruby
-** TODO Python
+*** TODO add include for symbol under point
+*** TODO organize includes (list of groups with precedence)
+** Usability
+*** TODO nlinum
+*** TODO undo-tree
+*** TODO replace Electric-Pairs with something better
+*** TODO mark occurrences on demand rather than time-based
+*** WORK checkout graphene: file explorer + cool keys
+* Themes
+** TODO zenburn
+* Language
+** TODO inferior process for Ruby/Python/JS
+** TODO Python Jedi
+* Other
+** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
+** autocomplete-clang https://github.com/brianjcj/auto-complete-clang
+** Malinka http://blog.refu.co/?tag=clang
+** Eclim: https://github.com/senny/emacs-eclim

@@ -1,21 +1,22 @@
 ;;;; Helm - see http://tuhdo.github.io/helm-intro.html
 ;;;; Projectile - see http://batsov.com/projectile/
 ;;;
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; C-c h          Open file with helm/projectile (current project)
-;;; C-c C-h        Same but first select the project
-;;; C-c p s g      Grep in project
-;;; C-h b          Describe keybindings using Helm
+;;; ----------------- -------------------------------------------------------
+;;; Key               Definition
+;;; ----------------- -------------------------------------------------------
+;;; C-c h OR C-c C-f  Open file with helm/projectile (current project)
+;;; C-c C-h           Same but first select the project
+;;; C-c p s g         Grep in project
+;;; C-h b             Describe keybindings using Helm
 
 (require 'helm)
 (require 'projectile)
 (require 'helm-projectile)
 
 (projectile-global-mode)
-(global-set-key [(control c)(h)] 'helm-projectile)
-(global-set-key [(control c)(control h)] 'helm-projectile-switch-project)
+(global-set-key [(control c)(h)] (function helm-projectile))
+(global-set-key [(control c)(control f)] (function helm-projectile))
+(global-set-key [(control c)(control h)] (function helm-projectile-switch-project))
 
 
 ;;; Do not show these files in helm buffer

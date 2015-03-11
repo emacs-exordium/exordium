@@ -231,6 +231,14 @@ names to which it refers are bound."
      (compilation-mode-line-run
       ((,class (:foreground ,orange :weight bold))))
 
+     ;; RTags
+     (rtags-errline
+      ((,class (:underline (:color ,red :style wave)))))
+     (rtags-warnline
+      ((,class (:underline (:color ,orange :style wave)))))
+     (rtags-fixitline
+      ((,class (:underline (:color ,green :style wave)))))
+
      ;; cua
      (cua-global-mark
       ((,class (:background ,yellow :foreground ,monokai-bg))))
@@ -850,4 +858,13 @@ names to which it refers are bound."
 (create-monokai-theme)
 
 (provide-theme 'monokai)
-;;(provide 'color-theme-monokai)
+
+(defun set-monokai-extra-org-statuses ()
+  "Set colors for WORK and WAIT org statuses"
+  (with-monokai-colors
+        'default
+        (setq org-todo-keyword-faces
+              `(("WORK" . (:foreground ,yellow :weight bold :box nil))
+                ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
+
+(provide 'color-theme-monokai)

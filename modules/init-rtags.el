@@ -1,47 +1,55 @@
 ;;;; Rtags - see `https://github.com/Andersbakken/rtags'
 ;;;
-;;; Note: we use C-c r as prefix for rtags keys in order to get more choices.
-;;; --------- -----------------------------------------------------------------
-;;; Keys      Function
-;;; --------- -----------------------------------------------------------------
-;;; C-c r .  `rtags-find-symbol-at-point'
+;;; Rtags keys use prefix C-c r
+;;; ---------- ----------------------------------------------------------------
+;;; Key        Function
+;;; ---------- ----------------------------------------------------------------
+;;; C-c r .    `rtags-find-symbol-at-point'
 ;;; M-.
-;;; C-c r ,  `rtags-find-references-at-point'
+;;; C-c r ,    `rtags-find-references-at-point'
 ;;; M-,
 ;;;
-;;; C-c r >  `rtags-find-symbol' (prompts for symbol name)
-;;; C-c r <  `rtags-find-references' (prompts for symbol name)
-;;; C-c r I  `rtags-imenu' Ido-based select a symbol in current file
-;;; M-C-g
-;;; C-c r v  `rtags-find-virtuals-at-point' list all impl. of function
-;;; C-c r ;  `rtags-find-file' find file in project using partial name
+;;; C-c r >    `rtags-find-symbol' (prompts for symbol name)
+;;; C-c r <    `rtags-find-references' (prompts for symbol name)
 ;;;
-;;; C-c r R  `rtags-rename-symbol'
-;;; C-c r F  `rtags-fixit' fix the error using clang "did you mean".
+;;; M-C-g      List all buffer symbols with Helm
 ;;;
-;;; C-c r [  `rtags-location-stack-back' go back to previous location
+;;; ---------- ----------------------------------------------------------------
+;;; C-c r v    `rtags-find-virtuals-at-point' list all impl. of function
+;;; C-c r ;    `rtags-find-file' find file in project using partial name
+;;;
+;;; C-c r R    `rtags-rename-symbol'
+;;; C-c r F    `rtags-fixit' fix the error using clang "did you mean".
+;;;
+;;; C-c r [    `rtags-location-stack-back' go back to previous location
 ;;; C-{
-;;; C-c r ]  `rtags-location-stack-forward' the opposite
+;;; C-c r ]    `rtags-location-stack-forward' the opposite
 ;;; C-}
 ;;;
-;;;          `rtags-start-rdm' in a subprocess.
-;;;          `rtags-quit-rdm' kill rdm subprocess.
-;;; C-c r l  `rtags-show-rdm-buffer' show rdm log buffer.
-;;;          `rtags-set-current-project' switch between projects
-;;; C-c r e  `rtags-reparse-file' force recompile current buffer.
+;;; ---------- ----------------------------------------------------------------
+;;;            `rtags-start-rdm' in a subprocess.
+;;;            `rtags-quit-rdm' kill rdm subprocess.
+;;; C-c r l    `rtags-show-rdm-buffer' show rdm log buffer.
+;;;            `rtags-set-current-project' switch between projects
+;;; C-c r e    `rtags-reparse-file' force recompile current buffer.
 ;;;
-;;; C-c r D  `rtags-diagnostics' start/show diagnostics buffer
-;;; C-c r Q  `rtags-stop-diagnostics' stop the diagnostic subprocess
-;;; C-c r d  `rtags-show-diagnostics-buffer' (without reparsing)
-;;;          `rtags-next-diag' goes to the next problem.
-;;;          `rtags-clear-diagnostics' clears any error or warning overlay.
-;;;          `rtags-stop-diagnostics' stops the process.
+;;; ---------- ----------------------------------------------------------------
+;;; C-c r D    `rtags-diagnostics' start diagnostics/force reparse
+;;; C-c r Q    `rtags-stop-diagnostics' stop the diagnostic subprocess
+;;; C-c r d    `rtags-show-diagnostics-buffer' toggle diag window
+;;;            (without reparsing)
+;;; C-c r down `rtags-next-diag' goes to the next problem.
+;;; C-c r up   `rtags-previous-diag' goes to previous problem.
+;;; C-c r c    `rtags-clear-diagnostics' clears any error or warning overlay.
+;;;            `rtags-stop-diagnostics' stops the process.
 ;;;
-;;; C-c r U  `rtags-print-cursorinfo' show what we know about symbol
-;;; C-c r P  `rtags-print-dependencies' show all includes
-;;; C-c r T  `rtags-taglist' show all tags in a window on left side
+;;; ---------- ----------------------------------------------------------------
+;;; C-c r U    `rtags-print-cursorinfo' show what we know about symbol
+;;; C-c r P    `rtags-print-dependencies' show all includes
+;;; C-c r T    `rtags-taglist' show all tags in a window on left side
 ;;;
-;;;          `rtags-create-compilation-database' see doc below
+;;; ---------- ----------------------------------------------------------------
+;;;            `rtags-create-compilation-database' see doc below
 ;;; ------- -------- ----------------------------------------------------------
 ;;;
 ;;; Building rtags
@@ -184,7 +192,7 @@
 ;;; forcing a reparsing of the current file.
 ;;; M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
-(require 'init-prolog)
+(require 'init-lib)
 (require 'rtags)
 (require 'rtags-ac)
 (require 'auto-complete-c-headers)
@@ -197,17 +205,26 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-;; Alias keys for common operations
+;; Alias for C-c r .
 (define-key c-mode-base-map "\M-."
   (lambda ()
     (interactive)
     (rtags-find-symbol-at-point)
     (recenter-top-bottom)))
-
+;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
-(define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
+
+;; Alias for C-c r [
 (define-key c-mode-base-map [(control {)] (function rtags-location-stack-back))
+;; Alias for C-c r [
 (define-key c-mode-base-map [(control })] (function rtags-location-stack-forward))
+
+(define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
+
+(define-key c-mode-base-map [(control c) (r) (down)] (function rtags-next-diag))
+(define-key c-mode-base-map [(control c) (r) (up)] (function rtags-previous-diag))
+(define-key c-mode-base-map [(control c) (r) (c)] (function rtags-clear-diagnostics))
+
 (define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
 
 
@@ -260,21 +277,35 @@ buffer"
 ;;; Display the diagnostics buffer without force reparsing
 
 (defun rtags-show-diagnostics-buffer ()
-  "Show the diagnostics buffer (same as `rtags-diagnostics' but
-without reparsing) in a dedicated window"
+  "Show/hide the diagnostics buffer in a dedicated
+window (similar to `rtags-diagnostics' but without reparsing)."
   (interactive)
-  (let ((buffer-name "*RTags Diagnostics*")
-        (num-diagnostics-lines 6))
-    (cond ((get-buffer buffer-name)
+  (let ((buffer-name "*RTags Diagnostics*"))
+    (cond ((get-buffer-window (get-buffer buffer-name))
+           (bury-buffer (get-buffer buffer-name))
+           (delete-window (get-buffer-window (get-buffer buffer-name))))
+          ((get-buffer buffer-name)
            (display-buffer buffer-name)
            (other-window 1)
-           (shrink-window (- (window-height) num-diagnostics-lines))
+           (beginning-of-buffer)
+           (fit-window-to-buffer (get-buffer-window (current-buffer)) 10 2)
            (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
            (other-window -1))
           (t
            (message "Rtags diagnostics is not running (use C-c r D)")))))
 
 (define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
+
+;; Used in powerline:
+(defun rtags-diagnostics-has-errors ()
+  "Return t or nil depending if RTags diagnostics displays errors"
+  (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
+    (if (and diag-buff
+             rtags-diagnostics-process
+             (not (eq (process-status rtags-diagnostics-process) 'exit))
+             (not (eq (process-status rtags-diagnostics-process) 'signal)))
+        (> (buffer-size diag-buff) 0)
+      nil)))
 
 
 ;;; Create a compilation database
@@ -415,8 +446,8 @@ directly: use `rtags-create-compilation-database' instead"
 
 (defun rtags-create-compilation-command ()
   "Return a string containing the clang compilation command to
-  use for the compilation database, using the content of
-  `*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
+use for the compilation database, using the content of
+`*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
   (assert *rtags-project-source-dirs*)
   (let ((command *rtags-clang-command-prefix*))
     (dolist (path *rtags-project-source-dirs*)
@@ -425,10 +456,24 @@ directly: use `rtags-create-compilation-database' instead"
       (setq command (concat command " -I" path)))
     (concat command *rtags-clang-command-suffix*)))
 
+(defun rtags-prompt-compilation-database-dir ()
+  "Prompt the user for the directory where to generate the
+compilation database. If we're in a projectile project, propose
+the project root first, and prompt for a dir if the user
+declines."
+  (let ((project-root (and (featurep 'projectile)
+                           (projectile-project-root))))
+    (let ((dir (if (and project-root
+                        (y-or-n-p (format "Create at project root (%s)?" project-root)))
+                   project-root
+                 (read-directory-name "Project root: "))))
+      dir)))
+
 (defun rtags-create-compilation-database (dir)
   "Regenerates `compile_commands.json' in the specified
 directory"
-  (interactive "DProject root: ")
+  (interactive (list (rtags-prompt-compilation-database-dir)))
+  ;;(interactive "DProject root: ")
   (when (rtags-load-compile-includes-file dir)
     (let ((dbfilename (concat (file-name-as-directory dir)
                               "compile_commands.json"))
@@ -461,13 +506,10 @@ directory"
         (insert "];")
         (newline)
         (write-region (buffer-string) nil dbfilename))
-      (if (get-buffer "*RTags rdm*")
-          (when (yes-or-no-p
-                 (format "Wrote compile_commands.json (%d files). Load it?"
-                         num-files))
-            (rtags-call-rc :path t :output nil "-J" dir)
-            (message "Done (check rdm's logs)"))
-        (message "Wrote compile_commands.json (%d files)" num-files)))))
+      (when (yes-or-no-p
+             (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
+        (rtags-call-rc :path t :output nil "-J" dir)
+        (message "Reloaded (check rdm's logs)")))))
 
 ;; Mode for compile_includes
 

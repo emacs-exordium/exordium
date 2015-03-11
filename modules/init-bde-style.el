@@ -71,7 +71,7 @@
 ;;;                                        // idle sessions. Default is 0,
 ;;;                                        // meaning this feature is not used.
 
-(require 'cl)
+(with-no-warnings (require 'cl))
 
 
 ;;; Utility functions
@@ -143,7 +143,7 @@ current cursor position, if the cursor is within a class definition:
                 ((re-search-forward "^ *//" (point-at-eol) t)
                  ;; looking at a comment line
                  (setq comment-column (- (current-column) 2))
-                 (next-line -1))
+                 (forward-line -1))
                 ((re-search-forward ") *\\(const\\)? *\\(= *0\\)? *; *$"
                                     (point-at-eol) t)
                  ;; looking at end of method declaration
@@ -163,19 +163,45 @@ current cursor position, if the cursor is within a class definition:
                  (return nil)))))))
     (t nil)))
 
+(defun bde-statement-block-intro-offset (element)
+  "Custom line-up function for first line of a statement block.
+The default identation is is '+' (1 basic offset), unless we are in
+a switch statement, in which case the indentation is set to
+'*' (half basic offset). Example:
+switch(val) {
+  case 100: {
+      return 1;
+  } break;
+  default: {
+      return 0;
+  } break;
+}"
+  (save-excursion
+    (goto-char (c-langelem-pos element))
+    (if (looking-at "\\(case\\|default\\)")
+        '*
+      '+)))
+
+;; See http://cc-mode.sourceforge.net/html-manual/Syntactic-Symbols.html#Syntactic-Symbols
 (c-add-style
  "bde"
  '((c-basic-offset . 4)
    (c-comment-only-line-offset . 0)
+   (fill-column . 79)
+   (c-backslash-column . 78)
+   (c-backslash-max-column . 78)
    (c-offsets-alist
     (comment-intro         . bde-comment-offset)
     (defun-open            . 0)
     (defun-close           . 0)
-    (statement-block-intro . +)
+    (statement-block-intro . bde-statement-block-intro-offset)
     (substatement-open     . 0)
     (substatement-label    . 0)
     (label                 . 0)
     (access-label          . /)
+    (case-label            . *)
+    (statement-case-intro  . *)
+    (statement-case-open   . 0)
     (statement-cont        . +)
     (inline-open           . 0)
     (inline-close          . 0)
@@ -213,21 +239,21 @@ current cursor position, if the cursor is within a class definition:
   (let ((erase-hint t))
     (cl-flet ((delete-header-char (n)
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (end-of-line)
                   (backward-delete-char n)
-                  (next-line 2)
+                  (forward-line 2)
                   (end-of-line)
                   (backward-delete-char n)))
               (center-header ()
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (center-line 3))))
       ;; Get started
       (dotimes (i 3)
         (insert "// ")
         (newline))
-      (previous-line 2)
+      (forward-line -2)
       (end-of-line)
       (center-header)
       (insert " <class name>")
@@ -239,11 +265,11 @@ current cursor position, if the cursor is within a class definition:
                 (when erase-hint (kill-line))
                 (insert-char c 1)
                 (save-excursion
-                  (previous-line 1)
+                  (forward-line -1)
                   (end-of-line)
                   (when erase-hint (insert " "))
                   (insert-char header-char 1)
-                  (next-line 2)
+                  (forward-line 2)
                   (end-of-line)
                   (when erase-hint (insert " "))
                   (insert-char header-char 1))
@@ -289,7 +315,7 @@ not a character, backspace, delete, left or right."
              (insert-bar (string-width class-name))
              (insert "// " class-name "\n")
              (insert-bar (string-width class-name))
-             (previous-line 3)
+             (forward-line -3)
              (center-line 3)))
           (t
            (bde-insert-class-header ?=)))))
@@ -367,7 +393,7 @@ guard around it"
           (with-temp-buffer
             (yank)
             ;; Remove any existing include guard and blank line
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
                 (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
@@ -375,13 +401,13 @@ guard around it"
                   (kill-whole-line))
                 (setq more-lines (= 0 (forward-line 1)))))
             ;; Delete all blank lines
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (flush-lines "^$")
             ;; Sort the buffer, because we want our includes sorted
             (mark-whole-buffer)
             (sort-lines nil (region-beginning) (region-end))
             ;; Add the include guards, line by line
-            (beginning-of-buffer)
+            (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
                 (insert "\n") ; insert a blank line between 2 includes
@@ -513,7 +539,11 @@ declaration or definition, align the type and variable names"
                                (- 79 longest-length))
               ;; We cannot indent correctly, some lines are too long
               (indent-region (region-beginning) (region-end))
-              (message "Longest line is %d chars" longest-length))))))))
+              (message "Longest line is %d chars" longest-length))))))
+    ;; Leave the cursor after the closing parenthese instead of on the opening
+    ;; one, since most likely we want to add code after the arg list.
+    (when (looking-at "\\s\(")
+      (forward-list 1))))
 
 (define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
 
@@ -716,18 +746,18 @@ start at column 40."
                       (newline (if (> num-members 0) 2 1))))
                   (buffer-string))))
              ;; Fix the comments for the 79th column, e.g. fill-paragraph on each
-             (previous-line)
+             (forward-line -1)
              (dolist (member (reverse members))
                ;; Move back, skipping empty lines
                (while (= (point-at-bol) (point-at-eol))
-                 (previous-line))
+                 (forward-line -1))
                (let ((comments (cdddr member)))
                  (when comments
                    (end-of-line)
                    (c-fill-paragraph)))
                ;; Move back until we find empty line
                (while (not (= (point-at-bol) (point-at-eol)))
-                 (previous-line))))))
+                 (forward-line -1))))))
         (t
          (message "No region"))))
 

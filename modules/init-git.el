@@ -1,9 +1,15 @@
 ;;;; All git-related stuff
 ;;;
+;;; All keys are C-c g <one-more-key>:
+;;;
 ;;; ----------------- ---------------------------------------------------------
 ;;; Key               Definition
 ;;; ----------------- ---------------------------------------------------------
 ;;; C-c g s           Magit status
+;;; C-c g l           Magit log
+;;; C-c g f           Magit file log
+;;; C-c g b           Toggle Magit blame mode
+;;;
 ;;; C-c g down        Goto next hunk in buffer
 ;;; C-c g up          Goto previous hunk in buffer
 ;;; C-c g d           Diff current hunk
@@ -12,12 +18,22 @@
 ;;; Magit
 (require 'magit)
 
-;;; Ctrl-c g = magit-status
-(define-key global-map [(control c)(g)(s)] 'magit-status)
+;;; Keys
+(define-key global-map [(control c)(g)(s)] (function magit-status))
+(define-key global-map [(control c)(g)(l)] (function magit-log))
+(define-key global-map [(control c)(g)(f)] (function magit-file-log))
+(define-key global-map [(control c)(g)(b)] (function magit-blame-mode))
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
 (defadvice magit-status (around magit-fullscreen activate)
+  (window-configuration-to-register :magit-fullscreen)
+  ad-do-it
+  (delete-other-windows))
+
+;;; Make `magit-log' run alone in the frame, and then restore the old window
+;;; configuration when you quit out of magit.
+(defadvice magit-log (around magit-fullscreen activate)
   (window-configuration-to-register :magit-fullscreen)
   ad-do-it
   (delete-other-windows))
@@ -35,11 +51,21 @@
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
-(when *init-git-gutter*
+
+(when *init-git-gutter-non-fringe*
+  (setq *init-git-gutter* nil)
+  (require 'git-gutter)
+  (global-git-gutter-mode t)
+  (git-gutter:linum-setup)
+  (diminish 'git-gutter-mode))
+
+(when (and *init-git-gutter* (not *init-git-gutter-non-fringe*))
   (require 'git-gutter-fringe)
   (global-git-gutter-mode t)
-  (diminish 'git-gutter-mode)
-  ;; keys
+  (diminish 'git-gutter-mode))
+
+;; keys
+(when (or *init-git-gutter* *init-git-gutter-non-fringe*)
   (define-key global-map [(control c)(g)(down)] 'git-gutter:next-hunk)
   (define-key global-map [(control c)(g)(up)] 'git-gutter:previous-hunk)
   (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-diff)

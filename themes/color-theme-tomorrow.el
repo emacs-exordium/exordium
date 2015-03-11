@@ -128,8 +128,8 @@ names to which it refers are bound."
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
      ;;(linum ((,class (:background ,current-line)))) ; grunge
-     ;;(linum ((,class (:inherit nil :background ,current-line :foreground ,foreground
-     ;;                 :slant normal :weight normal :underline nil :height 1))))
+     (linum ((,class (:background ,current-line :foreground ,foreground
+                      :inherit nil :weight normal :slant normal :underline nil))))
      (hl-line ((,class (:background ,current-line :inherit nil))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
@@ -235,6 +235,10 @@ names to which it refers are bound."
      (rtags-errline ((,class (:underline (:color ,red :style wave)))))
      (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
      (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
+
+     ;;; Deft
+     (deft-title-face ((,class (:foreground ,green :weight bold))))
+     (deft-time-face ((,class (:foreground ,yellow))))
 
      ;; Clojure errors
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
@@ -398,7 +402,8 @@ names to which it refers are bound."
      (org-document-info ((,class (:foreground ,aqua))))
      (org-document-info-keyword ((,class (:foreground ,green))))
      (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
-     (org-done ((,class (:foreground ,green :weight bold :box t))))
+     (org-todo ((,class (:foreground ,red :weight bold :box nil))))
+     (org-done ((,class (:foreground ,green :weight bold :box nil))))
      (org-checkbox ((,class (:foreground ,yellow :weight bold))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
@@ -410,7 +415,6 @@ names to which it refers are bound."
      (org-scheduled-today ((,class (:foreground ,green))))
      (org-special-keyword ((,class (:foreground ,orange))))
      (org-table ((,class (:foreground ,foreground))))
-     (org-todo ((,class (:foreground ,red :weight bold :box t))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
 
@@ -492,5 +496,22 @@ names to which it refers are bound."
   (with-tomorrow-colors
    'night-blue
    (apply 'custom-set-faces (tomorrow-face-specs))))
+
+(defun tomorrow-mode-name ()
+  "Return the mode without the tomorrow- prefix, e.g. day, night
+etc."
+  (intern (substring (symbol-name *init-theme*) 9)))
+
+(defun set-tomorrow-extra-org-statuses ()
+  (require 'org)
+  (with-tomorrow-colors
+   (tomorrow-mode-name)
+   (setq org-todo-keyword-faces
+         `(("WORK" . (;:background ,yellow
+                      :foreground ,yellow
+                      :weight bold :box nil))
+           ("WAIT" . (;:background ,orange
+                      :foreground ,orange
+                      :weight bold :box nil))))))
 
 (provide 'color-theme-tomorrow)

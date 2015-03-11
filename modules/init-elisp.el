@@ -3,8 +3,10 @@
 ;;; Bind M-. to find-function instead of find-tag
 (define-key emacs-lisp-mode-map [(meta .)] 'find-function)
 
-;;; Loud face for TODOs in elisp comments
+;;; Bind M-C-g to helm-imenu (lists functions and variables in buffer)
+(define-key emacs-lisp-mode-map [(meta control g)] 'helm-imenu)
 
+;;; Loud face for TODOs in elisp comments
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (font-lock-add-keywords

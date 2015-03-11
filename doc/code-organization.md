@@ -4,8 +4,7 @@
 
 The source code is in these directories:
 
-* Main directory: *init.el* and the optional files *init-local-prolog.el*,
-  *init-local.el* and *init-local-prefs.el*.
+* Main directory: *init.el*.
 * *modules*: the configuration's modules, which all start with "init-".
 * *themes*: the configuration's visual themes.
 * *elpa*: packages loaded from melpa.
@@ -23,19 +22,32 @@ feature. Any "required" module file must end with a ```provide```
 statement. The name of the file and the symbol in ```provide``` and
 ```require``` must all be identical, otherwise Emacs can't find it.
 
-If a file *init-local.el* is present, it is loaded at the end of the
-configuration. If a file *init-local-prolog.el* is present, it is loaded first,
-before any required module and elpa package.
+If a file *before-init.el* is present, it is loaded at the very beginning. If a
+file *after-init.el* is present, it is loaded at the very end.
 
-If a file *init-local-prefs.el* is present, it is used to override the default
-configuration preferences in *modules/init-prefs.el*. (This allow for tweaking
-the configuration without risk of conflicts during git pull).
+If a file *prefs.el* is present, it is used to override the default
+configuration preferences defined in *modules/init-prefs.el*. This allows for
+tweaking a few things in the configuration without risk of conflicts during git
+pull. For example you can put something like this in your *prefs.el*:
+
+```lisp
+;;; List of font names and sizes, in order of preference. Emacs will pick
+;;; the first one that exists.
+(setq *init-preferred-fonts* '(("Monospace" . 120)
+                               ("Mono" . 120)))
+
+;;; If you don't want to current line to be highlighted:
+(setq *init-line-mode* nil)
+
+;;; Choose another theme:
+(setq *init-theme* 'monokai)
+```
 
 ## Modules
 
-### Prolog and preferences
+### Lib, environment and preferences
 
-* [init.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prolog.el)
+* [init-lib.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-lib.el)
   defines utility functions used by other modules: things like file loading,
   string manipulation etc.
 * [init-environment.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-environment.el)
@@ -47,15 +59,12 @@ the configuration without risk of conflicts during git pull).
 
 ### Look and feel
 
-* [init-ui.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-ui.el):
-  basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar, cursor,
-  font lock, etc.
-* [init-behavior.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-behavior.el):
-  basic behavior: delete trailing spaces upon save, no backup files, prefer spaces over tabs.
-* [init-keyboard.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-keyboard.el):
-  minor modes and custom non-mode-specific keys. Includes things like
-  auto-pairs (automatically close parentheses), winmove, CUA, zoom, and keys to
-  navigate between buffers.
+* [init-look-and-feel.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-look-and-feel.el):
+  * Basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar,
+    cursor, font lock, electric stuff etc.
+  * Keybindings: zoom, navigate between buffers etc.
+  * Basic behavior: delete trailing spaces upon save, no backup files, prefer
+    spaces over tabs.
 * [init-util.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-util.el):
   utility functions and keys like goto matching parenthese, duplicate a line,
   delete words, display an 80 column ruler (FCI), expand the region.

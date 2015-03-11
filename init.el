@@ -13,7 +13,10 @@
 
 ;; Use this file for HTTP proxy settings if needed, for packages.
 (when (file-exists-p "~/.emacs.d/init-local-prolog.el")
+  (warn "init-local-prolog.el is deprecated, use before-init.el")
   (load "~/.emacs.d/init-local-prolog.el"))
+(when (file-exists-p "~/.emacs.d/before-init.el")
+  (load "~/.emacs.d/before-init.el"))
 
 
 ;;; Packages from Melpa
@@ -89,36 +92,52 @@
 
 
 ;;; Load Modules
+(require 'bytecomp)
+(defun recompile-modules ()
+  "Recompile modules for which the .elc is older than the .el, if
+the .elc exists. Also discard .elc without corresponding .el"
+  (interactive)
+  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+    (when (file-directory-p dir)
+      ;; Recompile
+      (dolist (el (directory-files dir t "\\.el$"))
+        (let ((elc (byte-compile-dest-file el)))
+          (when (and (file-exists-p elc)
+                     (file-newer-than-file-p el elc))
+            (byte-compile-file el))))
+      ;; Discard .elc singletons
+      (dolist (elc (directory-files dir t "\\.elc$"))
+        (let ((el (concat (concat (file-name-sans-extension elc) ".el"))))
+          (unless (file-exists-p el)
+            (warn "Removing singleton .elc file: %s" elc)
+            (delete-file elc)))))))
+(recompile-modules)
 
-(require 'init-prolog)      ; utility functions - load this first
+(require 'init-lib)         ; utility functions - load this first
 (require 'init-environment) ; environment variables
 
 ;;; Local preferences (fonts, frame size etc.)
-(require 'init-prefs)       ; defines variables that init-local-prefs can override
+(require 'init-prefs)       ; defines variables that prefs.el can override
 (when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+  (warn "init-local-prefs.el is deprecated, use prefs.el instead")
   (load "~/.emacs.d/init-local-prefs.el"))
+(when (file-exists-p "~/.emacs.d/prefs.el")
+  (load "~/.emacs.d/prefs.el"))
 
 ;;; Look and feel
-(require 'init-ui)          ; fonts, menubar, syntax highlighting etc.
-(require 'init-linum)       ; line numbers
-(require 'init-behavior)    ; save behavior: backup files, trailing spaces...
-(require 'init-keyboard)    ; key bindings
-(require 'init-util)        ; utilities like match paren, bookmarks...
+(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
+(require 'init-linum)           ; line numbers
 
 ;;; Usability
-(require 'init-ido)
-(require 'init-autocomplete)
-(when *init-helm-projectile*
+(require 'init-util)            ; utilities like match paren, bookmarks...
+(require 'init-ido)             ; supercharged completion engine
+(when *init-auto-complete*
+  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+(when *init-helm-projectile*    ; find files anywhere in project
   (require 'init-helm-projectile))
+
+;;; Magit and git gutter
 (require 'init-git)
-
-;;; Shell mode
-(require 'init-shell)
-
-;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
 
 ;;; Themes
 ;;(when *environment-nw*
@@ -128,6 +147,14 @@
 ;;  (when *init-enable-powerline*
 ;;    (require 'init-powerline)))
 
+;;; Shell mode
+(require 'init-shell)
+
+;;; Major modes
+(require 'init-markdown)
+(require 'init-org)
+(require 'init-xml)
+
 ;;; OS-specific things
 (when *environment-osx*
   (require 'init-osx))
@@ -135,10 +162,8 @@
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-
 (when *init-yasnippet*
   (require 'init-yasnippet))
-
 (require 'init-rtags)
 (when *init-rtags-auto-complete*
   (rtags-auto-complete))
@@ -160,10 +185,15 @@
 
 ;;; Local extensions
 (when (file-exists-p "~/.emacs.d/init-local.el")
+  (warn "init-local.el is deprecated, use after-init.el")
   (load "~/.emacs.d/init-local.el"))
+(when (file-exists-p "~/.emacs.d/after-init.el")
+  (load "~/.emacs.d/after-init.el"))
 
 ;;; Greetings
 (setq initial-scratch-message
-      (format ";; Happy hacking %s!
+      (let ((current-user (split-string (user-full-name) " ")))
+        (format ";; Happy hacking %s!
 
-" *environment-current-user*))
+" (if current-user (car current-user) *environment-current-user*))))
+;;; End of file
