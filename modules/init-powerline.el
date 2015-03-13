@@ -18,6 +18,10 @@
                             :background current-line :foreground comment)
         (set-face-attribute 'powerline-inactive2 nil
                             :background background :foreground comment)
+        (defface powerline-inactive3
+          `((t (:background ,comment :foreground ,background)))
+          "Powerline face 3 (buffer name)"
+          :group 'powerline)
         (defface powerline-active3
           `((t (:background ,purple :foreground ,background)))
           "Powerline face 3 (buffer name)"
@@ -38,6 +42,10 @@
         (set-face-attribute 'powerline-active2 nil :background monokai-hl-line)
         (set-face-attribute 'powerline-inactive1 nil :background monokai-hl-line)
         (set-face-attribute 'powerline-inactive2 nil :background monokai-bg)
+        (defface powerline-inactive3
+          `((t (:background ,monokai-comments :foreground ,background)))
+          "Powerline face 3 (buffer name)"
+          :group 'powerline)
         (defface powerline-active3
           `((t (:background ,violet :foreground ,monokai-bg)))
           "Powerline face 3 (buffer name)"
@@ -62,6 +70,11 @@
                            :background (second (assoc 'base02 solarized-colors)))
        (set-face-attribute 'powerline-inactive2 nil
                            :background (second (assoc 'base02 solarized-colors)))
+       (defface powerline-inactive3
+         `((t (:background ,(second (assoc 'base02 solarized-colors))
+               :foreground ,(second (assoc 'base2 solarized-colors)))))
+         "Powerline face 3 (buffer name)"
+         :group 'powerline)
        (defface powerline-active3
          `((t (:background ,(second (assoc 'base02 solarized-colors))
                :foreground ,(second (assoc 'cyan solarized-colors)))))
@@ -78,9 +91,12 @@
          "Powerline face 5 (buffer name sans errors)"
          :group 'powerline)))
 
-(defun my-powerline-theme-buffer-face ()
+(defun my-powerline-theme-buffer-face (active)
   "Return the face to use for the buffer name"
-  (cond ((and (eq major-mode 'c++-mode)
+  (cond ((not active)
+         ;; Gray
+         'powerline-inactive3)
+        ((and (eq major-mode 'c++-mode)
               (featurep 'rtags)
               (rtags-has-diagnostics))
          ;; Green or red
@@ -104,8 +120,8 @@
              (face1 (if active 'powerline-active1 'powerline-inactive1))
              (face2 (if active 'powerline-active2 'powerline-inactive2))
              (face3 (if *init-powerline-shows-rtags-diagnostics*
-                        (my-powerline-theme-buffer-face)
-                      'powerline-active3))
+                        (my-powerline-theme-buffer-face active)
+                      (if active 'powerline-active3 'powerline-inactive3)))
              (separator-left (intern
                               (format "powerline-%s-%s"
                                       powerline-default-separator
