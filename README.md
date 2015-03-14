@@ -244,7 +244,9 @@ See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
 
 Projectile is linked with
 [Project Explorer](https://github.com/sabof/project-explorer) which displays
-the project directory structure on the left side.
+the project directory structure on the left side:
+
+![Project Explorer](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/project_explorer.png)
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
