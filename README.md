@@ -259,7 +259,8 @@ file. <kbd>w</kbd> Show path and copy it to clipboard.
 
 ### Other Helm tools
 
-* <kbd>M-x helm-swoop</kbd>: search for text in current buffer using
+* <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: search for text in current
+  buffer using
   [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop). Start typing
   text: the Helm window shows all matching lines, and you can jump from one to
   another using the arrow keys.

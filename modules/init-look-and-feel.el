@@ -206,9 +206,6 @@
 
 ;;; Cool extensions
 
-;;; Project explorer
-(define-key global-map [(control c)(e)] (function project-explorer-open))
-
 ;;; Expand region
 (require 'expand-region)
 (global-set-key (kbd "C-=") (function er/expand-region))
