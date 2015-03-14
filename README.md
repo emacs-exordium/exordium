@@ -235,13 +235,28 @@ Keybinding           | Description
 
 See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
 
+### Project Explorer
+
 Projectile is linked with
 [Project Explorer](https://github.com/sabof/project-explorer) which displays
 the project directory structure on the left side.
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open project explorer on the left side. <kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open file. <kbd>w</kbd> Show path and copy it to clipboard.
+<kbd>C-c e</kbd>    | Open project explorer on the left side.
+
+With the cursor in the Project Explorer window, you can use these keys:
+<kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to
+toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open
+file. <kbd>w</kbd> Show path and copy it to clipboard.
+
+### Other Helm tools
+
+* <kbd>M-x helm-swoop</kbd>: search for text in current buffer using
+  [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop). Start typing
+  text: the Helm window shows all matching lines, and you can jump from one to
+  another using the arrow keys.
+* <kbd>M-x helm-multiple-swoop-all</kbd>: same but search within all buffers.
 
 ## Git
 
@@ -717,12 +732,20 @@ to make it display"
 * Sometimes a random bug may occur that displays this error:
   `fringe-helper-modification-func: Invalid search bound (wrong side of
   point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
-  git diff icons in the left-side fringe. There are two ways to work around it:
-  either add `(setq *init-git-gutter* nil)` if your `prefs.el` to disable this
-  feature entirely, or add `(setq *init-git-gutter-non-fringe* t)` in your
-  `prefs.el` to display git diffs on the left side of line numbers, e.g. not in
-  the fringe. Note that the latter disables the highighting of the current line
-  number for now.
+  git diff icons in the left-side fringe.
+
+  There are two ways to work around it: either add `(setq *init-git-gutter*
+  nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
+  *init-git-gutter-non-fringe* t)` in your `prefs.el` to display git diffs on
+  the left side of line numbers, e.g. not in the fringe. Note that the latter
+  disables the highighting of the current line number for now.
+
+* Editing large comment blocks in C++ can be slow as hell. Unfortunately this
+  is a problem with
+  [CC-mode](http://www.gnu.org/software/emacs/manual/html_node/ccmode/Performance-Issues.html)
+  and not with this config. A simple solution is to turn off font lock
+  temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable font
+  lock after you're done editing your large component-level comment.
 
 ### Configuration profiling
 

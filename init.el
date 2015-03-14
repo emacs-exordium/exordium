@@ -52,6 +52,7 @@
                            rainbow-delimiters
                            helm
                            helm-descbinds
+                           helm-swoop
                            ido-ubiquitous
                            projectile
                            helm-projectile

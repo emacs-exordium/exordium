@@ -189,6 +189,8 @@ names to which it refers are bound."
      (helm-selection-line ((,class (:background ,selection))))
      (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
      (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
+     (helm-swoop-target-line-face ((,class (:foreground ,background :background ,yellow))))
+     (helm-swoop-target-word-face ((,class (:background ,purple))))
 
      ;; which-func-mode
      (which-func ((,class (:foreground ,blue :background nil :weight bold))))
