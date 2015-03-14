@@ -8,13 +8,11 @@
 ;;; ESC               Quit (= Ctrl-G)
 ;;; M-g               Goto line
 ;;; C-z               Undo
-;;; C-ESC             Delete other windows
 ;;; C-`               Kill current buffer (= C-x k)
 ;;;
 ;;; RETURN            Return or Return + indent, depending on init-prefs
 ;;; S-RETURN          The opposite
 ;;;
-;;; M-ARROW           Move between windows (= Ctrl-x o)
 ;;; M-C-l             Switch to last buffer
 ;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
 ;;; C- +/-            Zoom
@@ -166,57 +164,54 @@
 ;;; Delete selection when typing
 (delete-selection-mode t)
 
+
 ;;; Shortcut keys
-(global-set-key [(meta g)] 'goto-line)
-(define-key global-map [(control z)] 'undo)
-(global-set-key [(control escape)] 'delete-other-windows)
-(global-set-key [(control ?`)] 'kill-this-buffer)
+
+(global-set-key [(meta g)] (function goto-line))
+(define-key global-map [(control z)] (function undo))
+(global-set-key [(control ?`)] (function kill-this-buffer))
 
 ;;; The return key
 (cond (*init-enable-newline-and-indent*
-       (global-set-key "\C-m" 'newline-and-indent)
-       (global-set-key [(shift return)] 'newline))
+       (global-set-key "\C-m" (function newline-and-indent))
+       (global-set-key [(shift return)] (function newline)))
       (t
-       (global-set-key [(shift return)] 'newline-and-indent)))
-
-;;; Winmove:  Meta-Shift-arrow = move the focus between visible buffers
-(require 'windmove)
-(global-set-key [(meta left)] 'windmove-left)
-(global-set-key [(meta right)] 'windmove-right)
-(global-set-key [(meta up)] 'windmove-up)
-(global-set-key [(meta down)] 'windmove-down)
+       (global-set-key [(shift return)] (function newline-and-indent))))
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
   "Alternates between the two most recent buffers"
   (interactive)
   (switch-to-buffer (other-buffer)))
-(define-key global-map [(meta control l)] 'switch-to-other-buffer)
+
+(define-key global-map [(meta control l)] (function switch-to-other-buffer))
 
 ;;; C-x C-b = ibuffer (better than list-buffers)
-(define-key global-map [(control x)(control b)] 'ibuffer)
+(define-key global-map [(control x)(control b)] (function ibuffer))
 
 ;;; Zoom
-(define-key global-map [(control +)] 'text-scale-increase)
-(define-key global-map [(control -)] 'text-scale-decrease)
+(define-key global-map [(control +)] (function text-scale-increase))
+(define-key global-map [(control -)] (function text-scale-decrease))
 
-;;; Project explorer
-(define-key global-map [(control c)(e)] 'project-explorer-open)
-
-;;; CUA
+;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
 ;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
 ;;; It also has a nice feature: C-RET for selecting rectangular regions.
 ;;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
-
 (cond ((eq *init-enable-cua-mode* :region)
        (cua-selection-mode t))
       (*init-enable-cua-mode*
        (cua-mode t)))
 
+
+;;; Cool extensions
+
+;;; Project explorer
+(define-key global-map [(control c)(e)] (function project-explorer-open))
+
 ;;; Expand region
 (require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-=") (function er/expand-region))
 
 
 ;;; File saving and opening
@@ -232,7 +227,9 @@
   "Disable creation of backup files"
   (interactive)
   (setq make-backup-files nil))
-(no-backup-files)
+
+(unless *init-backup-files*
+  (no-backup-files))
 
 ;; Reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)

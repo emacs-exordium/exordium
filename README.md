@@ -105,13 +105,11 @@ Keybinding           | Description
 <kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
-<kbd>C-ESC</kbd>     | `delete-other-windows` (just keep the current window).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
 <kbd>M-g</kbd>       | `goto-line` (prompts for a line number).
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
-<kbd>M-ARROW</kbd>   | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
 
 Editing:
 
@@ -134,6 +132,13 @@ Keybinding              | Description
 <kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
 <kbd>C-c s</kbd>        | Push point onto position stack (e.g. bookmarks).
 <kbd>C-c b</kbd>        | Pop point from position stack.
+
+Window manager:
+
+Keybinding              | Description
+------------------------|----------------------------------------------------------
+<kbd>C-c ARROW</kbd>    | Move cursor between windows.
+<kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
 
 Auto-complete:
 

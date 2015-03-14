@@ -130,6 +130,7 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-linum)           ; line numbers
 
 ;;; Usability
+(require 'init-window-manager)  ; navigate between windows
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
 (when *init-auto-complete*

@@ -68,9 +68,16 @@ shift-return for just newline.  If nil, do the opposite."
   :type 'symbol)
 
 (defcustom *init-enable-cua-mode* nil
-  "IF set to t, enables CUA mode.
+  "If set to t, enables CUA mode.
 If set to :region, enables CUA rectagular regions.
 IF nil, disables CUA completely."
+  :group 'init
+  :type 'symbol)
+
+;;; Backup files (e.g. file~)
+(defcustom *init-backup-files* nil
+  "Enables or disables backup files. Disabled by default, I can't
+  stand these annoying files~"
   :group 'init
   :type 'symbol)
 
