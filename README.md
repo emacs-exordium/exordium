@@ -458,6 +458,9 @@ either absolute or relative to the project root. Here is an example:
   # the "excludesrc" directive. For example this will exclude all test
   # drivers:
   excludesrc \.t\.cpp$
+
+  # -D macros, if any:
+  macro BDE_BUILD_TARGET_SAFE
 ```
 
 In addition, the creation of a compilation database uses these variables:
