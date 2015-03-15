@@ -539,7 +539,7 @@ Debugging utilities:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-c r l</kbd> | Show the rdm log buffer.
+<kbd>C-c r l</kbd> | Show/hide the rdm log buffer.
 <kbd>C-c r U</kbd> | Show what rdm knows about a symbol.
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.

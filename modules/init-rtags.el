@@ -259,10 +259,42 @@ buffer"
 ;; Mode for rdm log output
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
 
+(defsubst rtags-rdm-record-search-forward (&optional regexp bound)
+  "Search forward from point for a log line matching REGEXP.
+Set point to the end of the occurrence found, and return point.
+An optional second argument BOUND bounds the search: the match
+found must not extend after that position. This function also
+sets `match-data' to the entire match."
+  (let ((org-pos (point)))
+    (block while-loop
+      ;; While there are more matches for REGEXP
+      (while (re-search-forward regexp bound t)
+        (if (re-search-backward "^" org-pos t)
+            (let ((begin-pos (point)))
+              ;; If we found a matching log line, set match data and return
+              (if (re-search-forward "$" bound t)
+                  (progn
+                    (set-match-data (list begin-pos (point)))
+                    (return-from while-loop (point)))
+                (return-from while-loop))))))))
+
+(defun rtags-rdm-match-record-error (bound)
+  "Search forward from point to BOUND for error."
+  (rtags-rdm-record-search-forward "\\(error:\\)" bound))
+
+(defun rtags-rdm-match-record-warning (bound)
+  "Search forward from point to BOUND for warning."
+  (rtags-rdm-record-search-forward "\\(warning:\\)" bound))
+
+(defun rtags-rdm-match-record-note (bound)
+  "Search forward from point to BOUND for note."
+  (rtags-rdm-record-search-forward "\\(note:\\)" bound))
+
 (defconst rtags-rdm-mode-keywords
-  ;; Words and associated face.
-  `((,(regexp-opt '("error" "warn")    'words) . font-lock-warning-face)
-    (,(regexp-opt '("Jobs" "Restored") 'words) . font-lock-string-face)))
+  (list '(rtags-rdm-match-record-error 0 'compilation-error)
+        '(rtags-rdm-match-record-warning 0 'compilation-warning)
+        '(rtags-rdm-match-record-note 0 'compilation-info))
+  "Describes how to syntax highlight keywords in rtags-rdm-mode.")
 
 (defconst rtags-rdm-mode-syntax-table
   ;; Defines a "comment" as anything that starts with a square bracket, e.g.
@@ -277,7 +309,7 @@ buffer"
   "Mode for viewing rdm logs"
   :syntax-table rtags-rdm-mode-syntax-table
   ;; Syntax highlighting:
-  (setq font-lock-defaults '((rtags-rdm-mode-keywords))))
+  (setq font-lock-defaults '(rtags-rdm-mode-keywords t t)))
 
 
 ;;; Display the diagnostics buffer without force reparsing
@@ -519,7 +551,7 @@ directory"
 
 (defconst rtags-compile-includes-mode-keywords
   ;; Words and associated face.
-  `((,(regexp-opt '("src" "include" "exclude" "excludesrc" "macro") 'words)
+  `(( "\\(^src\\|^include\\|^excludesrc\\|^exclude\\|^macro\\)"
      . font-lock-keyword-face)))
 
 (defconst rtags-compile-includes-mode-syntax-table
