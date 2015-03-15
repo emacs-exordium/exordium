@@ -205,12 +205,56 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-;; Alias for C-c r .
+(defun pg/rtags-handle-results-buffer (&optional noautojump)
+  "Redefinition of `rtags-handle-result-buffer' that returns t if
+success and nil if not found."
+  (setq rtags-last-request-not-indexed nil)
+  (rtags-reset-bookmarks)
+  (cond ((= (point-min) (point-max))
+         (message "RTags: No results")
+         nil)
+        ((= (count-lines (point-min) (point-max)) 1)
+         (let ((string (buffer-string)))
+           (if (rtags-not-indexed/connected-message-p string)
+               (progn
+                 (setq rtags-last-request-not-indexed t)
+                 nil)
+             (bury-buffer)
+             (rtags-goto-location string)))
+         t)
+        (t
+         (switch-to-buffer-other-window rtags-buffer-name)
+         (shrink-window-if-larger-than-buffer)
+         (goto-char (point-max))
+         (if (= (point-at-bol) (point-max))
+             (delete-char -1))
+         (rtags-init-bookmarks)
+         (rtags-mode)
+         (when (and rtags-jump-to-first-match (not noautojump))
+           (rtags-select-other-window))
+         t)))
+
+(defun pg/rtags-find-symbol-at-point (&optional prefix)
+  "Redefinition of `rtags-find-symbol-at-point' that returns t on
+success and nil if not found."
+  (interactive "P")
+  (rtags-location-stack-push)
+  (let ((arg (rtags-current-location))
+        (fn (buffer-file-name))
+        (found nil))
+    (rtags-reparse-file-if-needed)
+    (with-current-buffer (rtags-get-buffer)
+      (rtags-call-rc :path fn :path-filter prefix "-f" arg)
+      (setq found (pg/rtags-handle-results-buffer)))
+    found))
+
+;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
   (lambda ()
     (interactive)
-    (rtags-find-symbol-at-point)
-    (recenter-top-bottom)))
+    (when (pg/rtags-find-symbol-at-point)
+      (recenter-top-bottom t))))
+
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 
