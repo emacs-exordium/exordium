@@ -190,7 +190,7 @@ names to which it refers are bound."
      (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
      (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
      (helm-swoop-target-line-face ((,class (:foreground ,background :background ,yellow))))
-     (helm-swoop-target-word-face ((,class (:foreground ,background :background ,purple))))
+     (helm-swoop-target-word-face ((,class (:foreground ,background :background ,aqua))))
 
      ;; which-func-mode
      (which-func ((,class (:foreground ,blue :background nil :weight bold))))
