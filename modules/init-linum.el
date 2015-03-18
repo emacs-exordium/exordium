@@ -17,7 +17,8 @@
       compilation-mode
       Info-mode
       calendar-mode
-      project-explorer-mode)
+      project-explorer-mode
+      org-mode)
     "List of modes for which we DO NOT want line numbers")
 
   (defadvice linum-on (around linum-on-inhibit-for-modes)
