@@ -98,6 +98,12 @@ If nil, use a plain line."
   :group 'init
   :type 'boolean)
 
+(defcustom *init-highlight-symbol* t
+  "Whether occurrences of the symbol under point gets highlighted
+  in the buffer after a few seconds."
+  :group 'init
+  :type 'boolean)
+
 
 ;;; Autocomplete -- see init-autocomplete.el
 

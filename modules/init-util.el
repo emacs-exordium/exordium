@@ -255,18 +255,18 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 ;;; Highlight symbol
 
-(require 'highlight-symbol)
-
-(highlight-symbol-nav-mode)
-
-(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-(setq highlight-symbol-on-navigation-p t)
-
-;; Don't show this mode in the modeline
-(eval-after-load 'highlight-symbol
-  '(diminish 'highlight-symbol-mode))
+(when *init-highlight-symbol*
+  (require 'highlight-symbol)
+  (highlight-symbol-nav-mode)
+  ;;
+  (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+  (setq highlight-symbol-on-navigation-p t)
+  ;; Don't show this mode in the modeline
+  (eval-after-load 'highlight-symbol
+    '(diminish 'highlight-symbol-mode)))
 
 
+;;; Buffers and windows
 
 (defun toggle-window-dedicated ()
   "Toggles whether the current active window is dedicated or not"
@@ -280,6 +280,14 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
 (define-key global-map [pause] 'toggle-window-dedicated)
+
+(defun kill-all-buffers ()
+  "Kill all buffers that are associated with a file."
+  (interactive)
+  (mapc #'(lambda (buff)
+            (when (buffer-file-name buff)
+              (kill-buffer buff)))
+        (buffer-list)))
 
 
 ;;; Config management
