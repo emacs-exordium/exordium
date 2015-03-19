@@ -89,11 +89,12 @@
 ;;; Font lock changes
 
 ;;; Display TODO: and FIXME: and TBD: in red
-(font-lock-add-keywords
- 'c++-mode
- '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
+(when *init-font-lock*
+  (font-lock-add-keywords
+   'c++-mode
+   '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
+     ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
+     ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend))))
 
 
 (provide 'init-cpp)

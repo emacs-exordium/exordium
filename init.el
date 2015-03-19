@@ -127,6 +127,7 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Look and feel
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
+(require 'init-font-lock)       ; enables/disables font-lock globally.
 (require 'init-linum)           ; line numbers
 
 ;;; Usability

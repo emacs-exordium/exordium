@@ -39,13 +39,13 @@ available font names by evaluating (font-family-list)."
   :group 'init
   :type 'integer)
 
-(defcustom *init-display-line-numbers* t
-  "Whether line numbers are displayed or not"
+(defcustom *init-line-mode* t
+  "Whether the current line is highlighted or not."
   :group 'init
   :type 'boolean)
 
-(defcustom *init-line-mode* t
-  "Whether the current line is highlighted or not."
+(defcustom *init-font-lock* t
+  "Whether font-lock is turned on globally or not."
   :group 'init
   :type 'boolean)
 
@@ -82,6 +82,14 @@ IF nil, disables CUA completely."
   :type 'symbol)
 
 
+;;; Line numbers - see init-linum.el
+
+(defcustom *init-display-line-numbers* t
+  "Whether line numbers are displayed or not"
+  :group 'init
+  :type 'boolean)
+
+
 ;;; Miscellaneous utilities -- see init-util.el
 
 (defcustom *init-fci-mode* :ondemand
@@ -98,7 +106,7 @@ If nil, use a plain line."
   :group 'init
   :type 'boolean)
 
-(defcustom *init-highlight-symbol* t
+(defcustom *init-highlight-symbol* nil
   "Whether occurrences of the symbol under point gets highlighted
   in the buffer after a few seconds."
   :group 'init
