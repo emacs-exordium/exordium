@@ -728,7 +728,7 @@ You can create a directory `~/.emacs.d/local` for your own local modules (this
 directory is ignored in git). In that case you should use `require` forms in
 `after-init.el` to load them.
 
-Here is an example. Create a file named `~/.emacs.d/local/init-local-test.el`
+Here is an example. Create a file named `~/.emacs.d/local/init-test-local.el`
 with this content:
 
 ```lisp
