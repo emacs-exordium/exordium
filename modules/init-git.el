@@ -68,7 +68,7 @@
 (when (or *init-git-gutter* *init-git-gutter-non-fringe*)
   (define-key global-map [(control c)(g)(down)] 'git-gutter:next-hunk)
   (define-key global-map [(control c)(g)(up)] 'git-gutter:previous-hunk)
-  (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-diff)
+  (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-hunk)
   (define-key global-map [(control c)(g)(r)] 'git-gutter:revert-hunk))
 
 (provide 'init-git)
