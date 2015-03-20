@@ -94,7 +94,9 @@ File name        | Usage
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
 `after-init.el`  | Loaded after everything else. This is where you should add your own features.
 
-See the [Customization](#customization) section below.
+You can also have local modules in a directory `~/.emacs.d/local`.
+
+See the [Customization](#customization) section below for more details.
 
 ## Keymap
 
@@ -719,6 +721,43 @@ File name        | Usage
 
 There are more options, see
 [init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el).
+
+### Local modules
+
+You can create a directory `~/.emacs.d/local` for your own local modules (this
+directory is ignored in git). In that case you should use `require` forms in
+`after-init.el` to load them.
+
+Here is an example. Create a file named `~/.emacs.d/local/init-local-test.el`
+with this content:
+
+```lisp
+;;;; Test local module
+
+(message "**** This test local module is loaded! ****")
+
+(provide 'init-test-local)
+```
+
+Then create a file `~/.emacs.d/after-init.el` with this content:
+
+```lisp
+;;;; Local stuff
+
+(message "**** after_init ****")
+
+(require 'init-test-local)
+```
+
+Restart Emacs. The message buffer should show two lines:
+
+```text
+**** after_init ****
+**** This test local module is loaded! ****
+```
+
+Local modules files can be named anything as long as the file name, the symbol
+in `provide` and the symbol in `require` are the same.
 
 ## Troubleshooting
 

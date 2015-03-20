@@ -308,7 +308,10 @@ afterwards."
 (defun uncompile-modules ()
   "Uncompiles all modules and themes. This is handy for development"
     (interactive)
-  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+    (dolist (dir '("~/.emacs.d/modules"
+                   "~/.emacs.d/themes"
+                   "~/.emacs.d/extensions"
+                   "~/.emacs.d/local"))
     (when (file-directory-p dir)
       (dolist (elc (directory-files dir t "\\.elc$"))
         (warn "Removing .elc file: %s" elc)
@@ -317,7 +320,10 @@ afterwards."
 (defun force-recompile-modules ()
   "Recompile all modules and themes"
   (interactive)
-  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+  (dolist (dir '("~/.emacs.d/modules"
+                 "~/.emacs.d/themes"
+                 "~/.emacs.d/extensions"
+                 "~/.emacs.d/local"))
     (when (file-directory-p dir)
       (dolist (el (directory-files dir t "\\.el$"))
         (let ((elc (byte-compile-dest-file el)))

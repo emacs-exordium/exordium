@@ -79,6 +79,7 @@
 ;;; Path for "require"
 
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
 
 (defun add-directory-tree-to-load-path (dir)
   "Add 'dir' and all its subdirs to the load path"
@@ -98,7 +99,10 @@
   "Recompile modules for which the .elc is older than the .el, if
 the .elc exists. Also discard .elc without corresponding .el"
   (interactive)
-  (dolist (dir '("~/.emacs.d/modules" "~/.emacs.d/themes" "~/.emacs.d/extensions"))
+  (dolist (dir '("~/.emacs.d/modules"
+                 "~/.emacs.d/themes"
+                 "~/.emacs.d/extensions"
+                 "~/.emacs.d/local"))
     (when (file-directory-p dir)
       ;; Recompile
       (dolist (el (directory-files dir t "\\.el$"))
