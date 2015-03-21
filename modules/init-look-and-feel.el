@@ -103,7 +103,9 @@
 (setq x-select-enable-clipboard t)
 
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
+;;; `electric-pair-open-newline-between-pairs'.
 (when *init-enable-electric-pair-mode*
+  (setq electric-pair-open-newline-between-pairs t)
   (electric-pair-mode))
 
 ;;; Indent with spaces, not tabs

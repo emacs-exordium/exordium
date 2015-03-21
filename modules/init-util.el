@@ -216,6 +216,27 @@ With argument, do this that many times."
 (define-key global-map [(meta backspace)] 'backward-delete-word)
 
 
+;;; Moving between words
+;;;
+;;; By default C-Right = M-Right = `right-word',
+;;; and        C-Left  = M-left  = `left-word'.
+;;; These functions move the cursor to the beginning or the end of words.
+;;; Unfortunately they are not symetrical: moving right then left does not
+;;; necessarily bring you back where you started. Here we redefine M-left
+;;; and M-right to move following the syntax: the motion is slower but
+;;; symetrical. C-Left and C-Right are left unchanged (move by words).
+
+(define-key global-map [(meta right)]
+  #'(lambda ()
+    (interactive)
+    (forward-same-syntax 1)))
+
+(define-key global-map [(meta left)]
+  #'(lambda ()
+      (interactive)
+      (forward-same-syntax -1)))
+
+
 ;;; 80-column ruler bound to Ctrl-|
 ;;; Note: if it causes Emacs to crash on images, set the variable
 ;;; fci-always-use-textual-rule to t (it will use a character instead).

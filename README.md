@@ -122,6 +122,7 @@ Keybinding          | Description
 <kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
 <kbd>M-\\</kbd>     | Delete all spaces around cursor.
+<kbd>M-LEFT</kbd> and <kbd>M-RIGHT</kbd> | Move cursor by semantic units (use <kbd>C-LEFT</kbd> and <kbd>C-RIGHT</kbd> to move by words).
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region by semantic units.
 <kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
