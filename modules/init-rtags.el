@@ -281,6 +281,7 @@ buffer"
   (let ((buffer (get-buffer-create "*RTags rdm*")))
     (switch-to-buffer buffer)
     (rtags-rdm-mode)
+    (read-only-mode)
     (let ((process (start-process "rdm" buffer "rdm")))
       (message "Started rdm - PID %d" (process-id process)))))
 

@@ -18,7 +18,9 @@
       Info-mode
       calendar-mode
       project-explorer-mode
-      org-mode)
+      org-mode
+      rtags-rdm-mode
+      rtags-diagnostics-mode)
     "List of modes for which we DO NOT want line numbers")
 
   (defadvice linum-on (around linum-on-inhibit-for-modes)
