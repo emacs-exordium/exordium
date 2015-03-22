@@ -126,10 +126,12 @@ If nil, use a plain line."
 
 (defcustom *init-theme* 'tomorrow-night
   "Theme to load on startup. Use nil to not load any theme,
-otherwise use one of the following: tomorrow-day, tomorrow-night,
-tomorrow-night-bright, tomorrow-night-blue,
-tomorrow-night-eighties, monokai, solarized-light,
-solarized-dark."
+otherwise use one of the following:
+- tomorrow-day, tomorrow-night, tomorrow-night-bright,
+  tomorrow-night-blue, tomorrow-night-eighties
+- monokai
+- solarized-light, solarized-dark
+- zenburn"
   :group 'init
   :type 'symbol)
 

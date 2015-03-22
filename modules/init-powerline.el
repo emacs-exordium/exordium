@@ -3,9 +3,15 @@
 (require 'powerline)
 (require 'init-themes)
 
-;;; Fix the grapphical bug with Emacs24.4 on OSX
-;;; See https://github.com/milkypostman/powerline/issues/54
-(when *environment-osx*
+;;; Fix the graphical bug with Emacs24.4 on OSX (the angles in powerline are
+;;; not rendered correctly):
+;;  see https://github.com/milkypostman/powerline/issues/54
+;;;
+;;; Don't use the fix with the zenburn theme because it makes all colors a bit
+;;; washed up: see http://emacsredux.com/blog/2013/08/21/color-themes-redux/
+;;; Basically you should use Emacs from brew or port instead of Emacs for OSX.
+(when (and *environment-osx*
+           (not (featurep 'color-theme-zenburn)))
   (setq ns-use-srgb-colorspace nil))
 
 (cond ((featurep 'color-theme-tomorrow)
@@ -34,6 +40,7 @@
           `((t (:background ,green :foreground ,background)))
           "Powerline face 5 (buffer name sans errors)"
           :group 'powerline)))
+
       ((featurep 'color-theme-monokai)
        (with-monokai-colors
         'default
@@ -43,7 +50,7 @@
         (set-face-attribute 'powerline-inactive1 nil :background monokai-hl-line)
         (set-face-attribute 'powerline-inactive2 nil :background monokai-bg)
         (defface powerline-inactive3
-          `((t (:background ,monokai-comments :foreground ,background)))
+          `((t (:background ,monokai-comments :foreground ,monokai-bg)))
           "Powerline face 3 (buffer name)"
           :group 'powerline)
         (defface powerline-active3
@@ -58,6 +65,7 @@
           `((t (:background ,green :foreground ,monokai-bg)))
           "Powerline face 5 (buffer name sans errors)"
           :group 'powerline)))
+
       ((featurep 'color-theme-solarized)
        ;; These faces are already defined in themes/powerline.el
        (set-face-attribute 'powerline-active1 nil
@@ -89,7 +97,33 @@
          `((t (:background ,(second (assoc 'base02 solarized-colors))
                :foreground ,(second (assoc 'green solarized-colors)))))
          "Powerline face 5 (buffer name sans errors)"
-         :group 'powerline)))
+         :group 'powerline))
+
+      ((featurep 'color-theme-zenburn)
+       (zenburn-with-color-variables
+         ;; These faces are already defined in themes/powerline.el
+         (set-face-attribute 'powerline-active1 nil :background zenburn-bg-1)
+         (set-face-attribute 'powerline-active2 nil :background zenburn-bg-05)
+         (set-face-attribute 'powerline-inactive1 nil
+                             :background zenburn-bg-05 :foreground zenburn-bg+3)
+         (set-face-attribute 'powerline-inactive2 nil
+                             :background zenburn-bg :foreground zenburn-bg+3)
+         (defface powerline-inactive3
+           `((t (:background ,zenburn-bg+3 :foreground ,zenburn-bg)))
+           "Powerline face 3 (buffer name)"
+           :group 'powerline)
+         (defface powerline-active3
+           `((t (:background ,zenburn-yellow :foreground ,zenburn-bg)))
+           "Powerline face 3 (buffer name)"
+           :group 'powerline)
+         (defface powerline-active4
+           `((t (:background ,zenburn-red :foreground ,zenburn-bg)))
+           "Powerline face 4 (buffer name when errors)"
+           :group 'powerline)
+         (defface powerline-active5
+           `((t (:background ,zenburn-green :foreground ,zenburn-bg)))
+           "Powerline face 5 (buffer name sans errors)"
+           :group 'powerline))))
 
 (defun my-powerline-theme-buffer-face (active)
   "Return the face to use for the buffer name"
@@ -143,7 +177,6 @@
                         (powerline-narrow face1 'l)
                         (powerline-raw " " face1)
                         (funcall separator-left face1 face2)
-                        ;;(powerline-raw '(:eval (my-test)) face2) ; TODO: test
                         (powerline-vc face2 'r)))
              (rhs (list (powerline-raw global-mode-string face2 'r)
                         (funcall separator-right face2 face1)
@@ -160,3 +193,8 @@
 (my-powerline-theme)
 
 (provide 'init-powerline)
+
+;; Local Variables:
+;; no-byte-compile: t
+;; indent-tabs-mode: nil
+;; End:

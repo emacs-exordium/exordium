@@ -237,7 +237,7 @@ With argument, do this that many times."
       (forward-same-syntax -1)))
 
 
-;;; 80-column ruler bound to Ctrl-|
+;;; FCI: 80-column ruler bound to Ctrl-|
 ;;; Note: if it causes Emacs to crash on images, set the variable
 ;;; fci-always-use-textual-rule to t (it will use a character instead).
 
@@ -247,8 +247,14 @@ With argument, do this that many times."
     (setq fci-rule-use-dashes t)
     (setq fci-dash-pattern 0.5))
   (setq fci-rule-width 1)
-  (setq fci-rule-color "dim gray")
-  (define-key global-map [(control |)] 'fci-mode)
+  (define-key global-map [(control |)]
+    #'(lambda ()
+        (interactive)
+        ;; themes are loaded after init-util, which is probably wrong...
+        (setq fci-rule-color (if (facep 'vertical-border)
+                                 (face-foreground 'vertical-border)
+                               "dim gray"))
+        (fci-mode (if fci-mode 0 1))))
   (when (eq *init-fci-mode* :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
       (lambda () (fci-mode 1)))
@@ -270,7 +276,9 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
     (if found
         (when (called-interactively-p)
           (message "Line %d: %d chars" (line-number-at-pos) len-found))
-      (goto-line start-line)
+      ;; Compiler-happy equivalent to (goto-line start-line):
+      (goto-char (point-min))
+      (forward-line (1- start-line))
       (message "Not found"))))
 
 
