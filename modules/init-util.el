@@ -251,9 +251,9 @@ With argument, do this that many times."
     #'(lambda ()
         (interactive)
         ;; themes are loaded after init-util, which is probably wrong...
-        (setq fci-rule-color (if (facep 'vertical-border)
-                                 (face-foreground 'vertical-border)
-                               "dim gray"))
+        (let ((color (and (facep 'vertical-border)
+                          (face-foreground 'vertical-border))))
+          (setq fci-rule-color (or color "dim gray")))
         (fci-mode (if fci-mode 0 1))))
   (when (eq *init-fci-mode* :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
