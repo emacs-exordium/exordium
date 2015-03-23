@@ -11,12 +11,35 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
+(defconst init-local-prolog-file (locate-user-emacs-file "init-local-prolog.el")
+  "location of the local prolog file")
+(defconst init-before-init-file (locate-user-emacs-file "before-init.el")
+  "location of the before init file")
+(defconst init-modules-dir (locate-user-emacs-file "modules")
+  "location of the modules directory")
+(defconst init-themes-dir (locate-user-emacs-file "themes")
+  "location of the themes directory")
+(defconst init-extensions-dir (locate-user-emacs-file "extensions")
+  "location of the extensions directory")
+(defconst init-local-dir (locate-user-emacs-file "local")
+  "location of the local directory")
+
+(defconst init-local-prefs-file (locate-user-emacs-file "init-local-prefs.el")
+  "location of the init local prefs file")
+(defconst init-prefs-file (locate-user-emacs-file "prefs.el")
+  "location of the prefs file")
+
+(defconst init-local-file (locate-user-emacs-file "init-local.el")
+  "location of the init local file")
+(defconst init-after-init-file (locate-user-emacs-file "after-init.el")
+  "location of the after init file")
+
 ;; Use this file for HTTP proxy settings if needed, for packages.
-(when (file-exists-p "~/.emacs.d/init-local-prolog.el")
+(when (file-exists-p init-local-prolog-file)
   (warn "init-local-prolog.el is deprecated, use before-init.el")
-  (load "~/.emacs.d/init-local-prolog.el"))
-(when (file-exists-p "~/.emacs.d/before-init.el")
-  (load "~/.emacs.d/before-init.el"))
+  (load init-local-prolog-file))
+(when (file-exists-p init-before-init-file)
+  (load init-before-init-file))
 
 
 ;;; Packages from Melpa
@@ -26,6 +49,7 @@
 
 ;; Initialize the package system
 (require 'package)
+
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
@@ -56,7 +80,7 @@
                            ido-ubiquitous
                            projectile
                            helm-projectile
-                           ack-and-a-half
+                           ;; ack-and-a-half
                            cmake-mode
                            markdown-mode
                            enh-ruby-mode
@@ -87,10 +111,10 @@
   (let ((default-directory dir))
     (normal-top-level-add-subdirs-to-load-path)))
 
-(add-directory-tree-to-load-path "~/.emacs.d/extensions/")
-(add-directory-tree-to-load-path "~/.emacs.d/themes/")
+(add-directory-tree-to-load-path init-extensions-dir)
+(add-directory-tree-to-load-path init-themes-dir)
 
-(setq custom-theme-directory "~/.emacs.d/themes/")
+(setq custom-theme-directory init-themes-dir)
 
 
 ;;; Load Modules
@@ -99,10 +123,10 @@
   "Recompile modules for which the .elc is older than the .el, if
 the .elc exists. Also discard .elc without corresponding .el"
   (interactive)
-  (dolist (dir '("~/.emacs.d/modules"
-                 "~/.emacs.d/themes"
-                 "~/.emacs.d/extensions"
-                 "~/.emacs.d/local"))
+  (dolist (dir (list init-modules-dir
+                     init-themes-dir
+                     init-extensions-dir
+                     init-local-dir))
     (when (file-directory-p dir)
       ;; Recompile
       (dolist (el (directory-files dir t "\\.el$"))
@@ -123,11 +147,11 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p "~/.emacs.d/init-local-prefs.el")
+(when (file-exists-p init-local-prefs-file)
   (warn "init-local-prefs.el is deprecated, use prefs.el instead")
-  (load "~/.emacs.d/init-local-prefs.el"))
-(when (file-exists-p "~/.emacs.d/prefs.el")
-  (load "~/.emacs.d/prefs.el"))
+  (load init-local-prefs-file))
+(when (file-exists-p init-prefs-file)
+  (load init-prefs-file))
 
 ;;; Look and feel
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
@@ -191,11 +215,11 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-clojure))
 
 ;;; Local extensions
-(when (file-exists-p "~/.emacs.d/init-local.el")
+(when (file-exists-p init-local-file)
   (warn "init-local.el is deprecated, use after-init.el")
-  (load "~/.emacs.d/init-local.el"))
-(when (file-exists-p "~/.emacs.d/after-init.el")
-  (load "~/.emacs.d/after-init.el"))
+  (load init-local-file))
+(when (file-exists-p init-after-init-file)
+  (load init-after-init-file))
 
 ;;; Greetings
 (setq initial-scratch-message

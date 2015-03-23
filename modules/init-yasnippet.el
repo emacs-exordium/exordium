@@ -18,7 +18,7 @@
 
 ;;; Directory tree where to find snippets (subdirectories must be mode names).
 ;;; The t means JIT loading, which saves time during Emacs startup.
-(yas-load-directory "~/.emacs.d/snippets" t)
+(yas-load-directory (locate-user-emacs-file "snippets") t)
 
 ;;; Enable YAS only for C++
 (add-hook 'c-mode-common-hook
