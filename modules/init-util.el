@@ -326,21 +326,21 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 compiles all non-melpa elisp files. You need to restart Emacs
 afterwards."
   (interactive)
-  (cd "~/.emacs.d")
+  (cd user-emacs-directory)
   (shell-command "git pull")
-  (byte-recompile-directory "~/.emacs.d/modules" 0)
-  (byte-recompile-directory "~/.emacs.d/themes" 0)
-  (byte-recompile-directory "~/.emacs.d/extensions" 0)
+  (byte-recompile-directory init-modules-dir 0)
+  (byte-recompile-directory init-themes-dir 0)
+  (byte-recompile-directory init-extensions-dir 0)
   (message (propertize "Restart Emacs to make any changes effective"
                        'face 'error)))
 
 (defun uncompile-modules ()
   "Uncompiles all modules and themes. This is handy for development"
     (interactive)
-    (dolist (dir '("~/.emacs.d/modules"
-                   "~/.emacs.d/themes"
-                   "~/.emacs.d/extensions"
-                   "~/.emacs.d/local"))
+    (dolist (dir (list init-modules-dir
+                       init-themes-dir
+                       init-extensions-dir
+                       init-local-dir))
     (when (file-directory-p dir)
       (dolist (elc (directory-files dir t "\\.elc$"))
         (warn "Removing .elc file: %s" elc)
@@ -349,10 +349,10 @@ afterwards."
 (defun force-recompile-modules ()
   "Recompile all modules and themes"
   (interactive)
-  (dolist (dir '("~/.emacs.d/modules"
-                 "~/.emacs.d/themes"
-                 "~/.emacs.d/extensions"
-                 "~/.emacs.d/local"))
+  (dolist (dir (list init-modules-dir
+                     init-themes-dir
+                     init-extensions-dir
+                     init-local-dir))
     (when (file-directory-p dir)
       (dolist (el (directory-files dir t "\\.el$"))
         (let ((elc (byte-compile-dest-file el)))

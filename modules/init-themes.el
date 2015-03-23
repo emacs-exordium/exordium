@@ -48,7 +48,7 @@ enabled"
 ;;; Linum extension
 (when (and *init-highlight-linum*
            (not *init-git-gutter-non-fringe*))
-  (load "~/.emacs.d/themes/hilinum-mode.el")
+  (load "hilinum-mode.el")
   (require 'hlinum)
   (hlinum-activate))
 
