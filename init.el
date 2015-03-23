@@ -63,8 +63,7 @@
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
-(let ((required-packages (append *init-extra-packages*
-                                 '(diminish
+(let ((required-packages (append '(diminish
                                    highlight-symbol
                                    magit
                                    git-timemachine
@@ -97,7 +96,8 @@
                                    exec-path-from-shell
                                    goto-chg
                                    project-explorer
-                                   page-break-lines)))
+                                   page-break-lines)
+                                 *init-extra-packages*))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
