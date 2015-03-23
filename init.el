@@ -34,7 +34,15 @@
 (defconst init-after-init-file (locate-user-emacs-file "after-init.el")
   "location of the after init file")
 
-;; Use this file for HTTP proxy settings if needed, for packages.
+(defcustom *init-extra-packages* '()
+  "Additional packages to auto load from elpa repositories"
+    :group 'init
+    :type 'list)
+
+;; Use this file for HTTP proxy settings if needed for packages.  Also add
+;; additional packages to *init-extra-packages* for packages to be
+;; automatically pulled from the elpa archives
+
 (when (file-exists-p init-local-prolog-file)
   (warn "init-local-prolog.el is deprecated, use before-init.el")
   (load init-local-prolog-file))
@@ -51,44 +59,45 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
-(let ((required-packages '(diminish
-                           highlight-symbol
-                           magit
-                           git-timemachine
-                           git-gutter
-                           git-gutter-fringe
-                           expand-region
-                           auto-complete
-                           company
-                           rtags
-                           auto-complete-c-headers
-                           yasnippet
-                           js2-mode
-                           ac-js2
-                           iedit
-                           cider
-                           clojure-mode
-                           paredit
-                           rainbow-delimiters
-                           helm
-                           helm-descbinds
-                           helm-swoop
-                           ido-ubiquitous
-                           projectile
-                           helm-projectile
-                           ;; ack-and-a-half
-                           cmake-mode
-                           markdown-mode
-                           enh-ruby-mode
-                           fill-column-indicator
-                           exec-path-from-shell
-                           goto-chg
-                           project-explorer
-                           page-break-lines))
+(let ((required-packages (append *init-extra-packages*
+                                 '(diminish
+                                   highlight-symbol
+                                   magit
+                                   git-timemachine
+                                   git-gutter
+                                   git-gutter-fringe
+                                   expand-region
+                                   auto-complete
+                                   company
+                                   rtags
+                                   auto-complete-c-headers
+                                   yasnippet
+                                   js2-mode
+                                   ac-js2
+                                   iedit
+                                   cider
+                                   clojure-mode
+                                   paredit
+                                   rainbow-delimiters
+                                   helm
+                                   helm-descbinds
+                                   helm-swoop
+                                   ido-ubiquitous
+                                   projectile
+                                   helm-projectile
+                                   ;; ack-and-a-half
+                                   cmake-mode
+                                   markdown-mode
+                                   enh-ruby-mode
+                                   fill-column-indicator
+                                   exec-path-from-shell
+                                   goto-chg
+                                   project-explorer
+                                   page-break-lines)))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -211,6 +220,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Lisp
 (require 'init-elisp)
+
+;;; Clojure
 (when *init-clojure*
   (require 'init-clojure))
 
