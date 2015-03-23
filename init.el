@@ -11,18 +11,28 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
-(setq init-local-prolog-file (locate-user-emacs-file "init-local-prolog.el"))
-(setq init-before-init-file (locate-user-emacs-file "before-init.el"))
-(setq init-modules-dir (locate-user-emacs-file "modules"))
-(setq init-themes-dir (locate-user-emacs-file "themes"))
-(setq init-extensions-dir (locate-user-emacs-file "extensions"))
-(setq init-local-dir (locate-user-emacs-file "local"))
+(defconst init-local-prolog-file (locate-user-emacs-file "init-local-prolog.el")
+  "location of the local prolog file")
+(defconst init-before-init-file (locate-user-emacs-file "before-init.el")
+  "location of the before init file")
+(defconst init-modules-dir (locate-user-emacs-file "modules")
+  "location of the modules directory")
+(defconst init-themes-dir (locate-user-emacs-file "themes")
+  "location of the themes directory")
+(defconst init-extensions-dir (locate-user-emacs-file "extensions")
+  "location of the extensions directory")
+(defconst init-local-dir (locate-user-emacs-file "local")
+  "location of the local directory")
 
-(setq init-local-prefs-file (locate-user-emacs-file "init-local-prefs.el"))
-(setq init-prefs-file (locate-user-emacs-file "prefs.el"))
+(defconst init-local-prefs-file (locate-user-emacs-file "init-local-prefs.el")
+  "location of the init local prefs file")
+(defconst init-prefs-file (locate-user-emacs-file "prefs.el")
+  "location of the prefs file")
 
-(setq init-local-file (locate-user-emacs-file "init-local.el"))
-(setq init-after-init-file (locate-user-emacs-file "after-init.el"))
+(defconst init-local-file (locate-user-emacs-file "init-local.el")
+  "location of the init local file")
+(defconst init-after-init-file (locate-user-emacs-file "after-init.el")
+  "location of the after init file")
 
 ;; Use this file for HTTP proxy settings if needed, for packages.
 (when (file-exists-p init-local-prolog-file)
