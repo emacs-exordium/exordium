@@ -1,10 +1,13 @@
 # What is this repo
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
-Lisp/Clojure programming. It is only intended to work with Emacs 24 running on
-Linux and OS X, including in -nw mode. It is called "init" (because I lack
-imagination). It is modular and customizable. It is not a starter kit, it is a
-hacker kit.
+Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
+and OS X including in -nw mode, and it should work on Windows as well. It is
+modular and customizable. It is not a starter kit, it is a hacker kit.
+
+Note: the project name has changed: if you had previously cloned it you should
+do a `git remote set-url origin https://github.com/philippe-grenet/exordium.git`
+in your repo.
 
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
