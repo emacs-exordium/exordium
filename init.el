@@ -37,13 +37,6 @@
 ;; Use M-x `package-list-package' to load and display the list of packages,
 ;; then press I to mark for installation and X to execute (it's like dired).
 
-
-(setq url-proxy-services
-      '(("no_proxy" . "^.*\\(bloomberg\\)\.\\(com\\|net\\)")
-        ("http"     . "devproxy.bloomberg.com:82")
-        ("https"    . "devproxy.bloomberg.com:82")))
-
-
 ;; Initialize the package system
 (require 'package)
 
