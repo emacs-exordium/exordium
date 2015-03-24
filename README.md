@@ -5,7 +5,7 @@ Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
 and OS X including in -nw mode, and it should work on Windows as well. It is
 modular and customizable. It is not a starter kit, it is a hacker kit.
 
-Note: the project name has changed: if you had previously cloned it you should
+Note: the name of the repo has changed. If you had previously cloned it you should
 do a `git remote set-url origin https://github.com/philippe-grenet/exordium.git`
 in your repo.
 

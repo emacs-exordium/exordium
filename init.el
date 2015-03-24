@@ -1,8 +1,10 @@
-;;;; Philippe's
-;;;;    ___ _ __ ___   __ _  ___ ___
-;;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
-;;;;  |  __/ | | | | | (_| | (__\__ \
-;;;; (_)___|_| |_| |_|\__,_|\___|___/
+;;;;
+;;;; ███████╗██╗  ██╗ ██████╗ ██████╗ ██████╗ ██╗██╗   ██╗███╗   ███╗
+;;;; ██╔════╝╚██╗██╔╝██╔═══██╗██╔══██╗██╔══██╗██║██║   ██║████╗ ████║
+;;;; █████╗   ╚███╔╝ ██║   ██║██████╔╝██║  ██║██║██║   ██║██╔████╔██║
+;;;; ██╔══╝   ██╔██╗ ██║   ██║██╔══██╗██║  ██║██║██║   ██║██║╚██╔╝██║
+;;;; ███████╗██╔╝ ██╗╚██████╔╝██║  ██║██████╔╝██║╚██████╔╝██║ ╚═╝ ██║
+;;;; ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚═╝ ╚═════╝ ╚═╝     ╚═╝
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
@@ -15,6 +17,7 @@
   "location of the local prolog file")
 (defconst init-before-init-file (locate-user-emacs-file "before-init.el")
   "location of the before init file")
+
 (defconst init-modules-dir (locate-user-emacs-file "modules")
   "location of the modules directory")
 (defconst init-themes-dir (locate-user-emacs-file "themes")

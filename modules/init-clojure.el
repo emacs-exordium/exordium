@@ -20,7 +20,7 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-for-lein)
 
-(add-to-list 'load-path (locate-user-emacs-file "vendor")
+(add-to-list 'load-path (locate-user-emacs-file "vendor"))
 
 ;;; Flyspell often slows down editing so it's turned off
 (remove-hook 'text-mode-hook 'turn-on-flyspell)
