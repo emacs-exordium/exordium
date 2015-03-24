@@ -179,6 +179,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when *init-helm-projectile*    ; find files anywhere in project
   (require 'init-helm-projectile))
 
+(require 'init-dired)           ; enable dired+ and wdired permission editing
+
 ;;; Magit and git gutter
 (require 'init-git)
 

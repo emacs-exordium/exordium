@@ -26,6 +26,7 @@
                            "\\*Completions\\*"))
 
 (setq ido-enable-flex-matching t)
+(setq ido-use-filename-at-point 'guess)
 
 
 ;; Open recent files with IDO.
