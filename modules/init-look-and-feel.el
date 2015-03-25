@@ -169,6 +169,8 @@
 ;;; Zoom
 (define-key global-map [(control +)] (function text-scale-increase))
 (define-key global-map [(control -)] (function text-scale-decrease))
+(define-key global-map [(control mouse-4)] (function text-scale-increase))
+(define-key global-map [(control mouse-5)] (function text-scale-increase))
 
 ;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
