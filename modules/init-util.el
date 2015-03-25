@@ -370,7 +370,7 @@ afterwards."
                       't)
   (make-symbolic-link (concat local-dir "before-init.el")
                       (locate-user-emacs-file "before-init.el")
-                      't)
-  )
+                      't))
+
 
 (provide 'init-util)
