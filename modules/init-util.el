@@ -360,5 +360,17 @@ afterwards."
             (delete-file elc))
           (byte-compile-file el))))))
 
+(defun link-local-config (local-dir)
+  (interactive "Dlocal directory to symlink files from")
+  (make-symbolic-link (concat local-dir "prefs.el")
+                      (locate-user-emacs-file "prefs.el")
+                      't)
+  (make-symbolic-link (concat local-dir "after-init.el")
+                      (locate-user-emacs-file "after-init.el")
+                      't)
+  (make-symbolic-link (concat local-dir "before-init.el")
+                      (locate-user-emacs-file "before-init.el")
+                      't)
+  )
 
 (provide 'init-util)
