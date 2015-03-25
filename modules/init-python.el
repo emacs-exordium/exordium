@@ -5,7 +5,7 @@
 
 ;;; Font lock changes
 ;;; Display TODO: and FIXME: and TBD: in red
-(when *init-font-lock*
+(when exordium-font-lock
   (font-lock-add-keywords
    'python-mode
    '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)

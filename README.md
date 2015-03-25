@@ -582,7 +582,7 @@ You can use RTags as source for auto-complete suggestions. Notes:
   disabled. The reasoning being that surely Clang must be more accurate.
 * This feature requires RTags diagnostics to be turned on.
 
-To enable it automatically, set the variable `*init-rtags-auto-complete*` to
+To enable it automatically, set the variable `exordium-rtags-auto-complete` to
 true in your `prefs.el`. Note that auto-complete for `#include` header files
 does not work in this case, because it does not know what project you are in.
 
@@ -642,14 +642,14 @@ Modules can be individually commented out if needed:
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
 (require 'init-autocomplete)    ; auto-completion
-(when *init-helm-projectile*    ; find files anywhere in project
+(when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 
 ;;; Magit and git gutter
 (require 'init-git)
 
 ;;; Themes
-(if *environment-nw*
+(if exordium-nw
     (set-face-background 'highlight nil)
   ;; Using Emacs with GUI:
   (require 'init-themes)
@@ -693,34 +693,34 @@ File name        | Usage
 
 ```lisp
 ;; Fonts + size in order of preference. First available one will be picked.
-(setq *init-prefered-fonts* '("Monospace" . 120) ("Mono" . 120))
+(setq exordium-prefered-fonts '("Monospace" . 120) ("Mono" . 120))
 
 ;; Default Emacs frame size in chars
-(setq *init-preferred-frame-width* 120
-*init-preferred-frame-height* 65)
+(setq exordium-preferred-frame-width  120
+      exordium-preferred-frame-height 65)
 
 ;; Show line numbers (default t)
-(setq *init-display-line-numbers* t)
+(setq exordium-display-line-numbers t)
 
 ;; Highlight current line (default t)
-(setq *init-line-mode* t)
+(setq exordium-line-mode t)
 
 ;; Don't set ESC key to C-g (quit/abort)
-(setq *init-keyboard-escape* nil)
+(setq exordium-keyboard-escape nil)
 
 ;; Disable electric-pair (automatically inserts a closing parenthese,
 ;; curly brace, etc.)
-(setq *init-enable-electric-pair-mode* nil)
+(setq exordium-enable-electric-pair-mode nil)
 
 ;; Available themes (default tomorrow-night):
 ;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
 ;;   tomorrow-night-eighties, tomorrow-day
 ;; - solarized-dark, solarized-light
 ;; - monokai
-(setq *init-theme* 'solarized-light)
+(setq exordium-theme 'solarized-light)
 
 ;; Don't use powerline (may cause Emacs to crash on startup sometimes)
-(setq *init-enable-powerline* nil)
+(setq exordium-enable-powerline nil)
 ```
 
 There are more options, see
@@ -769,7 +769,7 @@ in `provide` and the symbol in `require` are the same.
 
 * Powerline may cause Emacs to crash on startup because of a race condition
   inside Emacs. One trick to fix it is to make powerline be the last thing you
-  enable in your config. For this, add `(setq *init-enabled-powerline* nil)` in
+  enable in your config. For this, add `(setq exordium-enabled-powerline nil)` in
   your `pref.el`, and add `(require 'init-powerline)` in your
   `after-init.el`. If this still does not work, keep Powerline disabled and start
   it manually with this function in your `after-init.el`:
@@ -788,9 +788,9 @@ to make it display"
   point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
   git diff icons in the left-side fringe.
 
-  There are two ways to work around it: either add `(setq *init-git-gutter*
+  There are two ways to work around it: either add `(setq exordium-git-gutter
   nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
-  *init-git-gutter-non-fringe* t)` in your `prefs.el` to display git diffs on
+  exordium-git-gutter-non-fringe t)` in your `prefs.el` to display git diffs on
   the left side of line numbers, e.g. not in the fringe. Note that the latter
   disables the highighting of the current line number for now.
 

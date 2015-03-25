@@ -196,5 +196,7 @@ grayed out.")
    percentage
    (car timings) (nth 1 timings) (nth 2 timings)))
 
-
+;; Local Variables:
+;; no-byte-compile: t
+;; End:
 ;; profile-dotemacs.el ends here

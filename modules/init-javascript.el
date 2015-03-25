@@ -17,7 +17,7 @@
 ;; - 2 adds highlighting of some Ecma built-in properties.
 ;; - 3 adds highlighting of many Ecma built-in functions.
 
-(if *init-font-lock*
+(if exordium-font-lock
     (setq js2-highlight-level 3)
   (setq js2-highlight-level -1))
 
@@ -39,7 +39,7 @@
 ;;; Font lock changes
 
 ;;; Display TODO: and FIXME: and TBD: in red
-(when *init-font-lock*
+(when exordium-font-lock
   (font-lock-add-keywords
    'js-mode
    '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)

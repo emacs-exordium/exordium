@@ -25,13 +25,13 @@
 
 ;;; Font
 
-(defun init-set-font ()
+(defun exordium-set-font ()
   "Find the preferred fonts that are available and choose the first one."
   (let* ((available-fonts (font-family-list))
          (available-preferred-fonts
           (remove-if-not (lambda (font-and-size)
                            (member (car font-and-size) available-fonts))
-                         *init-preferred-fonts*)))
+                         exordium-preferred-fonts)))
     (when available-preferred-fonts
       (let ((preferred-font (caar available-preferred-fonts))
             (preferred-size (cdar available-preferred-fonts)))
@@ -41,17 +41,17 @@
                             :height preferred-size
                             :weight 'normal)))))
 
-(when *init-preferred-fonts*
-  (init-set-font))
+(when exordium-preferred-fonts
+  (exordium-set-font))
 
 
 ;;; User interface
 
 ;;; Default frame size
-(when (and *init-preferred-frame-width*
-           *init-preferred-frame-height*)
-  (setq default-frame-alist `((width  . ,*init-preferred-frame-width*)
-                              (height . ,*init-preferred-frame-height*))))
+(when (and exordium-preferred-frame-width
+           exordium-preferred-frame-height)
+  (setq default-frame-alist `((width  . ,exordium-preferred-frame-width)
+                              (height . ,exordium-preferred-frame-height))))
 
 ;;; Remove the toolbar
 (when (fboundp 'tool-bar-mode)
@@ -72,7 +72,7 @@
 (column-number-mode 1)
 
 ;;; Highlight the line where the cursor is
-(when *init-line-mode*
+(when exordium-line-mode
   (global-hl-line-mode 1))
 
 ;;; Smooth scrolling
@@ -104,7 +104,7 @@
 
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
 ;;; `electric-pair-open-newline-between-pairs'.
-(when *init-enable-electric-pair-mode*
+(when exordium-enable-electric-pair-mode
   (setq electric-pair-open-newline-between-pairs t)
   (electric-pair-mode))
 
@@ -132,7 +132,7 @@
 ;;; Keyboard preferences
 
 ;; Use ESC as Control-G (default requires ESC ESC ESC)
-(when *init-keyboard-escape*
+(when exordium-keyboard-escape
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
@@ -149,7 +149,7 @@
 (global-set-key [(control ?`)] (function kill-this-buffer))
 
 ;;; The return key
-(cond (*init-enable-newline-and-indent*
+(cond (exordium-enable-newline-and-indent
        (global-set-key "\C-m" (function newline-and-indent))
        (global-set-key [(shift return)] (function newline)))
       (t
@@ -176,10 +176,10 @@
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
 ;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
 ;;; It also has a nice feature: C-RET for selecting rectangular regions.
-;;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
-(cond ((eq *init-enable-cua-mode* :region)
+;;; If exordium-enable-cua-mode is nil, only the rectangular regions are enabled.
+(cond ((eq exordium-enable-cua-mode :region)
        (cua-selection-mode t))
-      (*init-enable-cua-mode*
+      (exordium-enable-cua-mode
        (cua-mode t)))
 
 
@@ -204,7 +204,7 @@
   (interactive)
   (setq make-backup-files nil))
 
-(unless *init-backup-files*
+(unless exordium-backup-files
   (no-backup-files))
 
 ;; Reduce the frequency of garbage collection by making it happen on

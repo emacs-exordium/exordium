@@ -1,8 +1,8 @@
 ;;;; Font Lock
 ;;;
-;;; *init-font-lock* turns on or off the syntax highighting globally.
+;;; exordium-font-lock turns on or off the syntax highighting globally.
 
-(cond (*init-font-lock*
+(cond (exordium-font-lock
        (global-font-lock-mode 1)
        (setq font-lock-maximum-decoration
              '((emacs-lisp-mode . t)
