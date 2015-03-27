@@ -114,8 +114,7 @@
 
 ;;; Path for "require"
 
-(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
+(add-to-list 'load-path exordium-modules-dir)
 
 (defun add-directory-tree-to-load-path (dir)
   "Add 'dir' and all its subdirs to the load path"
@@ -125,6 +124,7 @@
 
 (add-directory-tree-to-load-path exordium-extensions-dir)
 (add-directory-tree-to-load-path exordium-themes-dir)
+(add-directory-tree-to-load-path exordium-local-dir)
 
 (setq custom-theme-directory exordium-themes-dir)
 
