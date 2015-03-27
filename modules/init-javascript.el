@@ -45,15 +45,4 @@
                              activebase)))
 
 
-;;; Font lock changes
-
-;;; Display TODO: and FIXME: and TBD: in red
-(when exordium-font-lock
-  (font-lock-add-keywords
-   'js-mode
-   '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
-     ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
-     ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend))))
-
-
 (provide 'init-javascript)

@@ -274,6 +274,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 (update-progress-bar)
 
+;;; Prog mode
+(require 'init-prog-mode)
+
 ;;; Shell mode
 (require 'init-shell)
 
