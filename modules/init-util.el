@@ -241,9 +241,9 @@ With argument, do this that many times."
 ;;; Note: if it causes Emacs to crash on images, set the variable
 ;;; fci-always-use-textual-rule to t (it will use a character instead).
 
-(when *init-fci-mode*
+(when exordium-fci-mode
   (require 'fill-column-indicator)
-  (when *init-fci-use-dashes*
+  (when exordium-fci-use-dashes
     (setq fci-rule-use-dashes t)
     (setq fci-dash-pattern 0.5))
   (setq fci-rule-width 1)
@@ -255,7 +255,7 @@ With argument, do this that many times."
                           (face-foreground 'vertical-border))))
           (setq fci-rule-color (or color "dim gray")))
         (fci-mode (if fci-mode 0 1))))
-  (when (eq *init-fci-mode* :always)
+  (when (eq exordium-fci-mode :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
       (lambda () (fci-mode 1)))
     (global-fci-mode 1)))
@@ -284,7 +284,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 ;;; Highlight symbol
 
-(when *init-highlight-symbol*
+(when exordium-highlight-symbol
   (require 'highlight-symbol)
   (highlight-symbol-nav-mode)
   ;;
@@ -328,19 +328,19 @@ afterwards."
   (interactive)
   (cd user-emacs-directory)
   (shell-command "git pull")
-  (byte-recompile-directory init-modules-dir 0)
-  (byte-recompile-directory init-themes-dir 0)
-  (byte-recompile-directory init-extensions-dir 0)
+  (byte-recompile-directory exordium-modules-dir 0)
+  (byte-recompile-directory exordium-themes-dir 0)
+  (byte-recompile-directory exordium-extensions-dir 0)
   (message (propertize "Restart Emacs to make any changes effective"
                        'face 'error)))
 
 (defun uncompile-modules ()
   "Uncompiles all modules and themes. This is handy for development"
     (interactive)
-    (dolist (dir (list init-modules-dir
-                       init-themes-dir
-                       init-extensions-dir
-                       init-local-dir))
+    (dolist (dir (list exordium-modules-dir
+                       exordium-themes-dir
+                       exordium-extensions-dir
+                       exordium-local-dir))
     (when (file-directory-p dir)
       (dolist (elc (directory-files dir t "\\.elc$"))
         (warn "Removing .elc file: %s" elc)
@@ -349,10 +349,10 @@ afterwards."
 (defun force-recompile-modules ()
   "Recompile all modules and themes"
   (interactive)
-  (dolist (dir (list init-modules-dir
-                     init-themes-dir
-                     init-extensions-dir
-                     init-local-dir))
+  (dolist (dir (list exordium-modules-dir
+                     exordium-themes-dir
+                     exordium-extensions-dir
+                     exordium-local-dir))
     (when (file-directory-p dir)
       (dolist (el (directory-files dir t "\\.el$"))
         (let ((elc (byte-compile-dest-file el)))
@@ -370,7 +370,7 @@ afterwards."
                       't)
   (make-symbolic-link (concat local-dir "before-init.el")
                       (locate-user-emacs-file "before-init.el")
-                      't)
-  )
+                      't))
+
 
 (provide 'init-util)

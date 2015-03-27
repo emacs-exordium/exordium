@@ -503,7 +503,7 @@ names to which it refers are bound."
 (defun tomorrow-mode-name ()
   "Return the mode without the tomorrow- prefix, e.g. day, night
 etc."
-  (intern (substring (symbol-name *init-theme*) 9)))
+  (intern (substring (symbol-name exordium-theme) 9)))
 
 (defun set-tomorrow-extra-org-statuses ()
   (require 'org)

@@ -10,7 +10,7 @@
 ;;; Don't use the fix with the zenburn theme because it makes all colors a bit
 ;;; washed up: see http://emacsredux.com/blog/2013/08/21/color-themes-redux/
 ;;; Basically you should use Emacs from brew or port instead of Emacs for OSX.
-(when (and *environment-osx*
+(when (and exordium-osx
            (not (featurep 'color-theme-zenburn)))
   (setq ns-use-srgb-colorspace nil))
 
@@ -153,7 +153,7 @@
              (mode-line (if active 'mode-line 'mode-line-inactive))
              (face1 (if active 'powerline-active1 'powerline-inactive1))
              (face2 (if active 'powerline-active2 'powerline-inactive2))
-             (face3 (if *init-powerline-shows-rtags-diagnostics*
+             (face3 (if exordium-powerline-shows-rtags-diagnostics
                         (my-powerline-theme-buffer-face active)
                       (if active 'powerline-active3 'powerline-inactive3)))
              (separator-left (intern

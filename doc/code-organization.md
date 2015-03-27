@@ -33,14 +33,14 @@ pull. For example you can put something like this in your *prefs.el*:
 ```lisp
 ;;; List of font names and sizes, in order of preference. Emacs will pick
 ;;; the first one that exists.
-(setq *init-preferred-fonts* '(("Monospace" . 120)
-                               ("Mono" . 120)))
+(setq exordium-preferred-fonts '(("Monospace" . 120)
+                                 ("Mono" . 120)))
 
 ;;; If you don't want to current line to be highlighted:
-(setq *init-line-mode* nil)
+(setq exordium-line-mode nil)
 
 ;;; Choose another theme:
-(setq *init-theme* 'monokai)
+(setq exordium-theme 'zenburn)
 ```
 
 ## Modules
@@ -54,7 +54,7 @@ pull. For example you can put something like this in your *prefs.el*:
   defines environment global variables, such as "are we on OSX".
 * [init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el)
   defines preferences variables for all modules. It can be edited to change a
-  preference, or alternatively you can create a file *init-local-prefs.el* (in
+  preference, or alternatively you can create a file *prefs.el* (in
   the main directory) to override the variables in *init-prefs.el*.
 
 ### Look and feel

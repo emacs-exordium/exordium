@@ -52,20 +52,20 @@
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 
-(when *init-git-gutter-non-fringe*
-  (setq *init-git-gutter* nil)
+(when exordium-git-gutter-non-fringe
+  (setq exordium-git-gutter nil)
   (require 'git-gutter)
   (global-git-gutter-mode t)
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
-(when (and *init-git-gutter* (not *init-git-gutter-non-fringe*))
+(when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   (require 'git-gutter-fringe)
   (global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 
 ;; keys
-(when (or *init-git-gutter* *init-git-gutter-non-fringe*)
+(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
   (define-key global-map [(control c)(g)(down)] 'git-gutter:next-hunk)
   (define-key global-map [(control c)(g)(up)] 'git-gutter:previous-hunk)
   (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-hunk)

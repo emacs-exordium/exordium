@@ -24,8 +24,8 @@
 
 (require 'init-prefs)
 
-(when *init-theme*
-  (load-theme *init-theme* t))
+(when exordium-theme
+  (load-theme exordium-theme t))
 
 (defun current-theme ()
   "Return the current theme, or nil if no custom theme is
@@ -46,8 +46,8 @@ enabled"
          (set-solarized-extra-org-statuses))))
 
 ;;; Linum extension
-(when (and *init-highlight-linum*
-           (not *init-git-gutter-non-fringe*))
+(when (and exordium-highlight-linum
+           (not exordium-git-gutter-non-fringe))
   (load "hilinum-mode.el")
   (require 'hlinum)
   (hlinum-activate))

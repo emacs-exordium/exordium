@@ -13,44 +13,44 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
-(defconst init-local-prolog-file (locate-user-emacs-file "init-local-prolog.el")
+(defconst exordium-local-prolog-file (locate-user-emacs-file "init-local-prolog.el")
   "location of the local prolog file")
-(defconst init-before-init-file (locate-user-emacs-file "before-init.el")
+(defconst exordium-before-init-file (locate-user-emacs-file "before-init.el")
   "location of the before init file")
 
-(defconst init-modules-dir (locate-user-emacs-file "modules")
+(defconst exordium-modules-dir (locate-user-emacs-file "modules")
   "location of the modules directory")
-(defconst init-themes-dir (locate-user-emacs-file "themes")
+(defconst exordium-themes-dir (locate-user-emacs-file "themes")
   "location of the themes directory")
-(defconst init-extensions-dir (locate-user-emacs-file "extensions")
+(defconst exordium-extensions-dir (locate-user-emacs-file "extensions")
   "location of the extensions directory")
-(defconst init-local-dir (locate-user-emacs-file "local")
+(defconst exordium-local-dir (locate-user-emacs-file "local")
   "location of the local directory")
 
-(defconst init-local-prefs-file (locate-user-emacs-file "init-local-prefs.el")
+(defconst exordium-local-prefs-file (locate-user-emacs-file "init-local-prefs.el")
   "location of the init local prefs file")
-(defconst init-prefs-file (locate-user-emacs-file "prefs.el")
+(defconst exordium-prefs-file (locate-user-emacs-file "prefs.el")
   "location of the prefs file")
 
-(defconst init-local-file (locate-user-emacs-file "init-local.el")
+(defconst exordium-local-file (locate-user-emacs-file "init-local.el")
   "location of the init local file")
-(defconst init-after-init-file (locate-user-emacs-file "after-init.el")
+(defconst exordium-after-init-file (locate-user-emacs-file "after-init.el")
   "location of the after init file")
 
-(defcustom *init-extra-packages* '()
+(defcustom exordium-extra-packages '()
   "Additional packages to auto load from elpa repositories"
     :group 'init
     :type 'list)
 
 ;; Use this file for HTTP proxy settings if needed for packages.  Also add
-;; additional packages to *init-extra-packages* for packages to be
+;; additional packages to exordium-extra-packages for packages to be
 ;; automatically pulled from the elpa archives
 
-(when (file-exists-p init-local-prolog-file)
+(when (file-exists-p exordium-local-prolog-file)
   (warn "init-local-prolog.el is deprecated, use before-init.el")
-  (load init-local-prolog-file))
-(when (file-exists-p init-before-init-file)
-  (load init-before-init-file))
+  (load exordium-local-prolog-file))
+(when (file-exists-p exordium-before-init-file)
+  (load exordium-before-init-file))
 
 
 ;;; Packages from Melpa
@@ -100,7 +100,7 @@
                                    goto-chg
                                    project-explorer
                                    page-break-lines)
-                                 *init-extra-packages*))
+                                 exordium-extra-packages))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
@@ -123,10 +123,10 @@
   (let ((default-directory dir))
     (normal-top-level-add-subdirs-to-load-path)))
 
-(add-directory-tree-to-load-path init-extensions-dir)
-(add-directory-tree-to-load-path init-themes-dir)
+(add-directory-tree-to-load-path exordium-extensions-dir)
+(add-directory-tree-to-load-path exordium-themes-dir)
 
-(setq custom-theme-directory init-themes-dir)
+(setq custom-theme-directory exordium-themes-dir)
 
 
 ;;; Load Modules
@@ -135,10 +135,10 @@
   "Recompile modules for which the .elc is older than the .el, if
 the .elc exists. Also discard .elc without corresponding .el"
   (interactive)
-  (dolist (dir (list init-modules-dir
-                     init-themes-dir
-                     init-extensions-dir
-                     init-local-dir))
+  (dolist (dir (list exordium-modules-dir
+                     exordium-themes-dir
+                     exordium-extensions-dir
+                     exordium-local-dir))
     (when (file-directory-p dir)
       ;; Recompile
       (dolist (el (directory-files dir t "\\.el$"))
@@ -159,11 +159,11 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p init-local-prefs-file)
+(when (file-exists-p exordium-local-prefs-file)
   (warn "init-local-prefs.el is deprecated, use prefs.el instead")
-  (load init-local-prefs-file))
-(when (file-exists-p init-prefs-file)
-  (load init-prefs-file))
+  (load exordium-local-prefs-file))
+(when (file-exists-p exordium-prefs-file)
+  (load exordium-prefs-file))
 
 ;;; Look and feel
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
@@ -174,9 +174,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-window-manager)  ; navigate between windows
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
-(when *init-auto-complete*
+(when exordium-auto-complete
   (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
-(when *init-helm-projectile*    ; find files anywhere in project
+(when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 
 (require 'init-dired)           ; enable dired+ and wdired permission editing
@@ -185,11 +185,11 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-git)
 
 ;;; Themes
-(when *environment-nw*
+(when exordium-nw
   (set-face-background 'highlight nil))
-(when (and (not *environment-nw*) *init-theme*)
+(when (and (not exordium-nw) exordium-theme)
   (require 'init-themes)
-  (when *init-enable-powerline*
+  (when exordium-enable-powerline
     (require 'init-powerline)))
 
 ;;; Shell mode
@@ -201,16 +201,16 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-xml)
 
 ;;; OS-specific things
-(when *environment-osx*
+(when exordium-osx
   (require 'init-osx))
 
 ;;; C++
 (require 'init-cpp)
 (require 'init-bde-style)
-(when *init-yasnippet*
+(when exordium-yasnippet
   (require 'init-yasnippet))
 (require 'init-rtags)
-(when *init-rtags-auto-complete*
+(when exordium-rtags-auto-complete
   (rtags-auto-complete))
 (require 'init-rtags-helm)
 
@@ -227,20 +227,20 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-elisp)
 
 ;;; Clojure
-(when *init-clojure*
+(when exordium-clojure
   (require 'init-clojure))
 
 ;;; Local extensions
-(when (file-exists-p init-local-file)
+(when (file-exists-p exordium-local-file)
   (warn "init-local.el is deprecated, use after-init.el")
-  (load init-local-file))
-(when (file-exists-p init-after-init-file)
-  (load init-after-init-file))
+  (load exordium-local-file))
+(when (file-exists-p exordium-after-init-file)
+  (load exordium-after-init-file))
 
 ;;; Greetings
 (setq initial-scratch-message
       (let ((current-user (split-string (user-full-name) " ")))
         (format ";; Happy hacking %s!
 
-" (if current-user (car current-user) *environment-current-user*))))
+" (if current-user (car current-user) exordium-current-user))))
 ;;; End of file

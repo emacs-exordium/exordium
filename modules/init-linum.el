@@ -7,7 +7,7 @@
 ;;; See also init-ui.el
 
 (when (and (boundp 'global-linum-mode)
-           *init-display-line-numbers*)
+           exordium-display-line-numbers)
   (global-linum-mode t)
 
   (defvar linum-mode-inhibit-modes-list
