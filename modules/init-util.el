@@ -31,6 +31,9 @@
 ;;; Ctrl-|         Toggle FCI mode on and off ("Fill columm indicator",
 ;;;                e.g. the 80 column ruler)
 
+(require 'init-lib)
+(require 'init-prefs)
+
 
 ;;; Match parentheses
 ;;; Ctrl-% = go to match paren
@@ -241,6 +244,9 @@ With argument, do this that many times."
 ;;; Note: if it causes Emacs to crash on images, set the variable
 ;;; fci-always-use-textual-rule to t (it will use a character instead).
 
+(eval-when-compile
+  (require 'fill-column-indicator))
+
 (when exordium-fci-mode
   (require 'fill-column-indicator)
   (when exordium-fci-use-dashes
@@ -250,10 +256,6 @@ With argument, do this that many times."
   (define-key global-map [(control |)]
     #'(lambda ()
         (interactive)
-        ;; themes are loaded after init-util, which is probably wrong...
-        (let ((color (and (facep 'vertical-border)
-                          (face-foreground 'vertical-border))))
-          (setq fci-rule-color (or color "dim gray")))
         (fci-mode (if fci-mode 0 1))))
   (when (eq exordium-fci-mode :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
@@ -283,6 +285,9 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 
 ;;; Highlight symbol
+
+(eval-when-compile
+  (require 'highlight-symbol))
 
 (when exordium-highlight-symbol
   (require 'highlight-symbol)

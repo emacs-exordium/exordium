@@ -72,6 +72,16 @@ enabled"
                                           "#ff0000"))))
                          "]")))))
 
+;;; FCI color
+(eval-when-compile
+  (require 'fill-column-indicator))
+
+(when exordium-fci-mode
+  (require 'fill-column-indicator)
+  (let ((color (and (facep 'vertical-border)
+                    (face-foreground 'vertical-border))))
+    (setq fci-rule-color (or color "dim gray"))))
+
 
 ;;; Utilities
 
