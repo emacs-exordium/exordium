@@ -301,6 +301,22 @@ buffer"
 
 (define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
 
+(defun rtags-quit-all ()
+  "Stop both RTags diagnostics and rdm, if they are running."
+  (interactive)
+  ;; Stop RTags Diagnostics and kill its buffer without prompt
+  (when (and rtags-diagnostics-process
+             (not (eq (process-status rtags-diagnostics-process) 'exit)))
+    (kill-process rtags-diagnostics-process))
+  (when (get-buffer "*RTags Diagnostics*")
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer "*RTags Diagnostics*")))
+  ;; Stop rdm and kill its buffer without prompt
+  (rtags-quit-rdm)
+  (when (get-buffer "*RTags rdm*")
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer "*RTags rdm*"))))
+
 ;; Mode for rdm log output
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
 
