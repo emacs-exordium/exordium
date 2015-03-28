@@ -2,7 +2,7 @@
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
 Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
-and OS X including in -nw mode, and it should work on Windows as well. It is
+and OS X including in -nw mode, but it should work on Windows as well. It is
 modular and customizable. It is not a starter kit, it is a hacker kit.
 
 Note: the name of the repo has changed. If you had previously cloned it you should
@@ -47,15 +47,15 @@ might want to check these links:
 * Projects: [Projectile](http://batsov.com/projectile) a project-based file
   management tool, and [Helm](http://tuhdo.github.io/helm-intro.html) an
   equivalent of IDO.
-* Git: [magit](http://magit.github.io) (git UI);
-  [git gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
+* Git: [Magit](http://magit.github.io) (git UI);
+  [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
   * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
     indexer providing goto definition, find references, refactoring,
     compilation errors in buffer, auto-complete etc.
   * Formatting keys and snippets for the
     [BDE](https://github.com/bloomberg/bde) code style.
-* JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
+* JavaScript: [JS2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
 * Eye candy: a few [themes](https://github.com/chriskempson/tomorrow-theme)
@@ -76,8 +76,8 @@ packages, which may take a couple of minutes.
 
 ### Updates
 
-To update the config, do <kbd>M-x update-config</kbd>. This command pulls from
-github and recompiles everything. Restart Emacs after that.
+To update Exordium, do <kbd>M-x update-config</kbd>. This command pulls from
+Github and recompiles everything. Restart Emacs after that.
 
 Melpa packages are not updated automatically: you can do it with <kbd>M-x
 package-list-packages</kbd>, then "U".
@@ -86,7 +86,7 @@ package-list-packages</kbd>, then "U".
 
 The main file is `init.el`: it load the modules from the `modules` subdirectory
 and the default theme from the `themes` subdirectory. The `extensions`
-subdirectory is used for third-party plugins that are not available in melpa.
+subdirectory is used for third-party plugins that are not available in Melpa.
 
 3 files can be added in your directory `~/.emacs.d` to customize the
 configuration for the local machine (these files are not tracked by git):
@@ -94,7 +94,7 @@ configuration for the local machine (these files are not tracked by git):
 File name        | Usage
 -----------------|-------------------------------------------------------
 `prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
-`before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
+`before-init.el` | Loaded before anything else. Use it to set up the HTTP proxy for instance.
 `after-init.el`  | Loaded after everything else. This is where you should add your own features.
 
 You can also have local modules in a directory `~/.emacs.d/local`.
@@ -107,7 +107,7 @@ General:
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
+<kbd>ESC</kbd>       | Quit command (`keyboard-quit`), also bound to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
@@ -120,7 +120,7 @@ Editing:
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>RETURN</kbd>   | Return and indent by defaut; use <kbd>S-RETURN</kbd> for just return.
+<kbd>RETURN</kbd>   | Return and indent by default; use <kbd>S-RETURN</kbd> for just return.
 <kbd>M-BCKSP</kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
 <kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
@@ -201,7 +201,7 @@ patterns to ignore are then applied to that set. Refer to the
 
 Now you need to teach Projectile where your projects are. You can do that by:
 
-1\. Simply opening the project's root dir in dired, and then pretending to
+1\. Simply opening the project's root dir in Dired, and then pretending to
   search a file with Helm (<kbd>C-c h</kbd>), or switching project with IDO
   (<kbd>C-c p p</kbd>). The top of the Helm buffer should show the list of
   projects including yours.
@@ -244,7 +244,8 @@ Keybinding           | Description
 <kbd>C-c p s a</kbd> | Same but using ack
 <kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
 
-See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
+See [Projectile](https://github.com/bbatsov/projectile) documentation for other
+keys.
 
 ### Project Explorer
 
@@ -356,17 +357,17 @@ name in `after-init.el`.
 ### RTags
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
-which provides a deamon called "rdm" that maintains an in-memory index, and a
+which provides a daemon called "rdm" that maintains an in-memory index, and a
 command-line client called "rc". RTags uses a single index for all symbols, but
 it allows for loading and unloading projects individually.
 
-To use it, first start the deamon:
+To use it, first start the daemon:
 
 ```bash
 $ rdm
 ```
 
-This will start the deamon on the foreground, using a number of concurrent "rp"
+This will start the daemon on the foreground, using a number of concurrent "rp"
 jobs that is function of the number of CPUs on the local machine. It starts by
 reading the saved project indices in `~/.rtags` if any. By default it logs to
 the console but you can make it log to a file instead with `-L file` or make it
@@ -426,7 +427,7 @@ rtags-create-compilation-database</kbd>. But before you do, it needs a little he
 you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
-The command uses a file `compile_includes` in the project root dir, which
+The command uses a file `compile_includes` in the project root directory, which
 specifies how to generate `compilation_database.json` for your project. It is a
 simple text file indicating where are all the source files and all the include
 files. The "src" directives indicate where to find the source files to put in
@@ -496,7 +497,7 @@ $ rc -J
 Check the output of rdm for any compilation errors and adjust your compilation
 database accordingly.
 
-The rdm deamon should automatically re-compile any file you edit in Emacs as
+The rdm daemon should automatically re-compile any file you edit in Emacs as
 soon as you save it or otherwise touch it.
 
 #### Using the index
@@ -518,7 +519,7 @@ Keybinding                           | Description
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
 <kbd>C-c r S</kbd>                   | Show symbol summary in tooltip (`rtags-display-summary`).
-<kbd>M-C-g</kbd>                     | Find symbol in file usign Helm.
+<kbd>M-C-g</kbd>                     | Find symbol in file using Helm.
 <kbd>C-c r ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
@@ -554,7 +555,7 @@ Keybinding         | Description
 
 The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
 process to receive compilation warnings and errors from rdm. They are displayed
-into diagnostics buffer which works with flymake to put highlighting on code
+into diagnostics buffer which works with Flymake to put highlighting on code
 with warnings and errors. By default Powerline displays the name of the buffer
 in green if the project compiles and in red if there are errors:
 
@@ -604,7 +605,7 @@ Coming soon: Emacs Lisp, Common Lisp and Clojure.
 
 ## Customization
 
-The main file of the config is `init.el`. It looks like this:
+The main file of the configuration is `init.el`. It looks like this:
 
 ```lisp
 ;;; 1. Load before-init.el if it exists
@@ -693,7 +694,7 @@ File name        | Usage
 
 ```lisp
 ;; Fonts + size in order of preference. First available one will be picked.
-(setq exordium-prefered-fonts '("Monospace" . 120) ("Mono" . 120))
+(setq exordium-preferred-fonts '("Monospace" . 120) ("Mono" . 120))
 
 ;; Default Emacs frame size in chars
 (setq exordium-preferred-frame-width  120
@@ -717,9 +718,10 @@ File name        | Usage
 ;;   tomorrow-night-eighties, tomorrow-day
 ;; - solarized-dark, solarized-light
 ;; - monokai
+;; - zenburn
 (setq exordium-theme 'solarized-light)
 
-;; Don't use powerline (may cause Emacs to crash on startup sometimes)
+;; Don't use Powerline (may cause Emacs to crash on startup sometimes)
 (setq exordium-enable-powerline nil)
 ```
 
@@ -768,7 +770,7 @@ in `provide` and the symbol in `require` are the same.
 ### Bugs
 
 * Powerline may cause Emacs to crash on startup because of a race condition
-  inside Emacs. One trick to fix it is to make powerline be the last thing you
+  inside Emacs. One trick to fix it is to make Powerline be the last thing you
   enable in your config. For this, add `(setq exordium-enabled-powerline nil)` in
   your `pref.el`, and add `(require 'init-powerline)` in your
   `after-init.el`. If this still does not work, keep Powerline disabled and start
@@ -792,7 +794,7 @@ to make it display"
   nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
   exordium-git-gutter-non-fringe t)` in your `prefs.el` to display git diffs on
   the left side of line numbers, e.g. not in the fringe. Note that the latter
-  disables the highighting of the current line number for now.
+  disables the highlighting of the current line number for now.
 
 * Editing large comment blocks in C++ can be slow as hell. Unfortunately this
   is a problem with

@@ -21,6 +21,7 @@
 ;;; ----------------- ---------------------------------------------------------
 
 (with-no-warnings (require 'cl))
+(require 'init-prefs)
 
 
 ;;; Font
@@ -131,9 +132,9 @@
 
 ;;; Keyboard preferences
 
-;; Use ESC as Control-G (default requires ESC ESC ESC)
+;; Use ESC as Control-G
 (when exordium-keyboard-escape
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+  (global-set-key (kbd "<escape>") 'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
 (fset 'yes-or-no-p 'y-or-n-p)
