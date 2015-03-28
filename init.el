@@ -13,8 +13,6 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
-(defconst exordium-local-prolog-file (locate-user-emacs-file "init-local-prolog.el")
-  "location of the local prolog file")
 (defconst exordium-before-init-file (locate-user-emacs-file "before-init.el")
   "location of the before init file")
 
@@ -27,13 +25,9 @@
 (defconst exordium-local-dir (locate-user-emacs-file "local")
   "location of the local directory")
 
-(defconst exordium-local-prefs-file (locate-user-emacs-file "init-local-prefs.el")
-  "location of the init local prefs file")
 (defconst exordium-prefs-file (locate-user-emacs-file "prefs.el")
   "location of the prefs file")
 
-(defconst exordium-local-file (locate-user-emacs-file "init-local.el")
-  "location of the init local file")
 (defconst exordium-after-init-file (locate-user-emacs-file "after-init.el")
   "location of the after init file")
 
@@ -46,9 +40,6 @@
 ;; additional packages to exordium-extra-packages for packages to be
 ;; automatically pulled from the elpa archives
 
-(when (file-exists-p exordium-local-prolog-file)
-  (warn "init-local-prolog.el is deprecated, use before-init.el")
-  (load exordium-local-prolog-file))
 (when (file-exists-p exordium-before-init-file)
   (load exordium-before-init-file))
 
@@ -159,9 +150,6 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p exordium-local-prefs-file)
-  (warn "init-local-prefs.el is deprecated, use prefs.el instead")
-  (load exordium-local-prefs-file))
 (when (file-exists-p exordium-prefs-file)
   (load exordium-prefs-file))
 
@@ -231,9 +219,6 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-clojure))
 
 ;;; Local extensions
-(when (file-exists-p exordium-local-file)
-  (warn "init-local.el is deprecated, use after-init.el")
-  (load exordium-local-file))
 (when (file-exists-p exordium-after-init-file)
   (load exordium-after-init-file))
 
@@ -243,4 +228,5 @@ the .elc exists. Also discard .elc without corresponding .el"
         (format ";; Happy hacking %s!
 
 " (if current-user (car current-user) exordium-current-user))))
+
 ;;; End of file
