@@ -28,6 +28,7 @@
 
 ;;; Highlight dead code between #if 0 and #endif
 
+(require 'cpp)
 (defun cpp-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
   (let ((color (face-background 'region)))

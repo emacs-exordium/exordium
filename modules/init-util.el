@@ -68,7 +68,7 @@
 
 (defvar postack-stack '() "The position stack")
 
-(defun postack-goto (marker)
+(defun postack-goto (pos)
   "Should be marker-goto."
   (switch-to-buffer (marker-buffer pos))
   (goto-char (marker-position pos)))
@@ -274,7 +274,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
       (forward-line 1)
       (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
     (if found
-        (when (called-interactively-p)
+        (when (called-interactively-p 'interactive)
           (message "Line %d: %d chars" (line-number-at-pos) len-found))
       ;; Compiler-happy equivalent to (goto-line start-line):
       (goto-char (point-min))

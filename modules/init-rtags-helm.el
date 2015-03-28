@@ -24,7 +24,9 @@
   (sort pairs #'(lambda (p1 p2) (< (cdr p1) (cdr p2)))))
 
 (defun rtags-helm-jump-to-line (line)
-  (goto-line line)
+  ;;Compiler-happy equivalent of (goto-line line):
+  (goto-char (point-min))
+  (forward-line (1- line))
   (recenter))
 
 (defun rtags-helm-propertize-function (text)

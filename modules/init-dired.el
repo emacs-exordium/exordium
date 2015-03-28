@@ -9,6 +9,7 @@
 (define-key global-map "\C-x\C-j" 'dired-jump)
 (define-key global-map "\C-x4\C-j" 'dired-jump-other-window)
 
+(require 'wdired)
 (add-hook 'dired-load-hook
           (lambda ()
             ;; Set dired-x global variables here.  For example:

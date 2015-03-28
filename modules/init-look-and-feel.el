@@ -103,6 +103,9 @@
 ;;; Mouse selection
 (setq x-select-enable-clipboard t)
 
+;;; http://www.reddit.com/r/emacs/comments/30g5wo/the_kill_ring_and_the_clipboard/
+(setq save-interprogram-paste-before-kill t)
+
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
 ;;; `electric-pair-open-newline-between-pairs'.
 (when exordium-enable-electric-pair-mode
