@@ -1,5 +1,9 @@
 ;;;; JavaScript mode
 
+(require 'js)
+(require 'js2-mode)
+(require 'init-prefs)
+
 ;;; Activate js2-mode and ac-js2 for auto-complete.
 
 (add-hook 'js-mode-hook 'js2-minor-mode)
