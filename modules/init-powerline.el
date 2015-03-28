@@ -132,7 +132,7 @@
          'powerline-inactive3)
         ((and (eq major-mode 'c++-mode)
               (featurep 'rtags)
-              (rtags-has-diagnostics))
+              (pg/rtags-has-diagnostics))
          ;; Green or red
          (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
            (if (and diag-buff (> (buffer-size diag-buff) 0))
