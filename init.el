@@ -109,9 +109,10 @@
 
 (defun add-directory-tree-to-load-path (dir)
   "Add 'dir' and all its subdirs to the load path"
-  (add-to-list 'load-path dir)
-  (let ((default-directory dir))
-    (normal-top-level-add-subdirs-to-load-path)))
+  (when (file-directory-p dir)
+    (add-to-list 'load-path dir)
+    (let ((default-directory dir))
+      (normal-top-level-add-subdirs-to-load-path))))
 
 (add-directory-tree-to-load-path exordium-extensions-dir)
 (add-directory-tree-to-load-path exordium-themes-dir)
