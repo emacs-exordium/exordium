@@ -195,7 +195,18 @@ names to which it refers are bound."
      (font-lock-warning-face
        ((,class (:foreground ,orange :weight bold :slant italic :underline t))))
      (c-annotation-face
-       ((,class (:inherit font-lock-constant-face))))
+      ((,class (:inherit font-lock-constant-face))))
+
+     ;; Powerline
+     (exordium-powerline-active1 ((,class (:background ,monokai-hl))))
+     (exordium-powerline-active2 ((,class (:background ,monokai-hl-line))))
+     (exordium-powerline-active3 ((,class (:background ,violet :foreground ,monokai-bg))))
+     (exordium-powerline-active4 ((,class (:background ,red :foreground ,monokai-bg))))
+     (exordium-powerline-active5 ((,class (:background ,green :foreground ,monokai-bg))))
+     (exordium-powerline-inactive1 ((,class (:background ,monokai-hl-line))))
+     (exordium-powerline-inactive2 ((,class (:background ,monokai-bg))))
+     (exordium-powerline-inactive3 ((,class (:background ,monokai-comments :foreground ,monokai-bg))))
+     (exordium-project-name ((,class (:foreground ,violet))))
 
      ;; compilation
      (compilation-column-face

@@ -312,6 +312,16 @@ the \"Gen RGB\" column in solarized-definitions.el to improve them further."
              (font-lock-other-emphasized-face ((t (,@fmt-bldi ,@fg-violet))))
              (font-lock-regexp-grouping-backslash
               ((t (,@fmt-none ,@fg-yellow))))
+             ;; Powerline
+             (exordium-powerline-active1 ((t (:background ,base2 :foreground ,base01))))
+             (exordium-powerline-active2 ((t (:background ,base02 :foreground ,base01))))
+             (exordium-powerline-active3 ((t (:background ,base02 :foreground ,cyan))))
+             (exordium-powerline-active4 ((t (:background ,base02 :foreground ,red))))
+             (exordium-powerline-active5 ((t (:background ,base02 :foreground ,green))))
+             (exordium-powerline-inactive1 ((t (:background ,base02))))
+             (exordium-powerline-inactive2 ((t (:background ,base02))))
+             (exordium-powerline-inactive3 ((t (:background ,base02 :foreground ,base2))))
+             (exordium-project-name ((t (:background ,red))))
              ;; info
              (info-xref ((t (,@fmt-undr ,@fg-blue))))
              (info-xref-visited ((t (,@fg-magenta :inherit info-xref))))

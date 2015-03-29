@@ -170,6 +170,16 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(font-lock-warning-face ((t (:foreground ,zenburn-yellow-2 :weight bold))))
 
    `(c-annotation-face ((t (:inherit font-lock-constant-face))))
+;;;;; Powerline
+   `(exordium-powerline-active1 ((t (:background ,zenburn-bg-1))))
+   `(exordium-powerline-active2 ((t (:background ,zenburn-bg-05))))
+   `(exordium-powerline-active3 ((t (:background ,zenburn-yellow :foreground ,zenburn-bg))))
+   `(exordium-powerline-active4 ((t (:background ,zenburn-red :foreground ,zenburn-bg))))
+   `(exordium-powerline-active5 ((t (:background ,zenburn-green :foreground ,zenburn-bg))))
+   `(exordium-powerline-inactive1 ((t (:background ,zenburn-bg-1))))
+   `(exordium-powerline-inactive2 ((t (:background ,zenburn-bg-05))))
+   `(exordium-powerline-inactive3 ((t (:background ,zenburn-bg :foreground ,zenburn-yellow))))
+   `(exordium-project-name ((t (:foreground ,zenburn-yellow))))
 ;;;;; newsticker
    `(newsticker-date-face ((t (:foreground ,zenburn-fg))))
    `(newsticker-default-face ((t (:foreground ,zenburn-fg))))

@@ -53,23 +53,16 @@ enabled"
   (hlinum-activate))
 
 ;;; Colorize the name of the current project in the modeline.
+(defface exordium-project-name '((t (:inherit mode-line)))
+  "Face for the name of the current project in the modeline"
+  :group 'exordium)
+
 (when (featurep 'init-helm-projectile)
   (eval-after-load "projectile"
     `(setq projectile-mode-line
            `(:eval (list " ["
-                         (propertize
-                          (projectile-project-name)
-                          'face `(:foreground
-                                  ,(cond ((featurep 'color-theme-monokai)
-                                          (with-monokai-colors
-                                           'default violet))
-                                         ((featurep 'color-theme-tomorrow)
-                                          (with-tomorrow-colors
-                                           (tomorrow-mode-name) purple))
-                                         ((featurep 'color-theme-solarized)
-                                          (second (assoc 'violet solarized-colors)))
-                                         (t ;; loud red
-                                          "#ff0000"))))
+                         (propertize (projectile-project-name)
+                                     'face 'exordium-project-name)
                          "]")))))
 
 ;;; FCI color

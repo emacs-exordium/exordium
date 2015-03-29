@@ -1,5 +1,8 @@
 ;;;; Inspired by the "Tomorrow" theme from Chris Kempson (MIT license)
 
+(require 'init-prefs)
+(require 'org)
+
 (defconst tomorrow-colors
   '((night . ((background . "#1d1f21")
               (current-line . "#282a2e")
@@ -159,6 +162,17 @@ names to which it refers are bound."
      (custom-variable-tag ((,class (:foreground ,blue))))
      (custom-group-tag ((,class (:foreground ,blue))))
      (custom-state ((,class (:foreground ,green))))
+
+     ;; Powerline
+     (exordium-powerline-active1 ((,class (:background ,selection))))
+     (exordium-powerline-active2 ((,class (:background ,current-line))))
+     (exordium-powerline-active3 ((,class (:background ,purple :foreground ,background))))
+     (exordium-powerline-active4 ((,class (:background ,red :foreground ,background))))
+     (exordium-powerline-active5 ((,class (:background ,green :foreground ,background))))
+     (exordium-powerline-inactive1 ((,class (:background ,current-line :foreground ,comment))))
+     (exordium-powerline-inactive2 ((,class (:background ,background :foreground ,comment))))
+     (exordium-powerline-inactive3 ((,class (:background ,comment :foreground ,background))))
+     (exordium-project-name ((,class (:foreground ,purple))))
 
      ;; Search
      (match ((,class (:foreground ,blue :background ,background :inverse-video t))))
