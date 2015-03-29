@@ -107,16 +107,18 @@
 
 (add-to-list 'load-path exordium-modules-dir)
 
-(defun add-directory-tree-to-load-path (dir)
-  "Add 'dir' and all its subdirs to the load path"
-  (when (file-directory-p dir)
-    (add-to-list 'load-path dir)
-    (let ((default-directory dir))
-      (normal-top-level-add-subdirs-to-load-path))))
+(defun add-directory-tree-to-load-path (dir &optional ignore-if-absent)
+  "Add DIR and all its subdirs to the load path."
+  (cond ((file-directory-p dir)
+         (add-to-list 'load-path dir)
+         (let ((default-directory dir))
+           (normal-top-level-add-subdirs-to-load-path)))
+        ((not ignore-if-absent)
+         (warn "Missing directory: %s" dir))))
 
 (add-directory-tree-to-load-path exordium-extensions-dir)
 (add-directory-tree-to-load-path exordium-themes-dir)
-(add-directory-tree-to-load-path exordium-local-dir)
+(add-directory-tree-to-load-path exordium-local-dir t)
 
 (setq custom-theme-directory exordium-themes-dir)
 
