@@ -176,9 +176,10 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-git)
 
 ;;; Themes
+;;; Note: use "export TERM=xterm-256color" for emacs -nw
 (when exordium-nw
   (set-face-background 'highlight nil))
-(when (and (not exordium-nw) exordium-theme)
+(when exordium-theme
   (require 'init-themes)
   (when exordium-enable-powerline
     (require 'init-powerline)))
