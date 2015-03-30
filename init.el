@@ -153,6 +153,10 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when (file-exists-p exordium-prefs-file)
   (load exordium-prefs-file))
 
+;;; Desktop
+(when exordium-desktop
+  (require 'init-desktop))
+
 ;;; Look and feel
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
 (require 'init-font-lock)       ; enables/disables font-lock globally.

@@ -198,4 +198,11 @@ default color."
   :type  'boolean)
 
 
+;;; Desktop state
+(defcustom exordium-desktop nil
+  "Whether the desktop state is saved"
+  :group 'exordium
+  :type  'boolean)
+
+
 (provide 'init-prefs)
