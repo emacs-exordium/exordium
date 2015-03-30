@@ -19,10 +19,12 @@
 (require 'magit)
 
 ;;; Keys
-(define-key global-map [(control c)(g)(s)] (function magit-status))
-(define-key global-map [(control c)(g)(l)] (function magit-log))
-(define-key global-map [(control c)(g)(f)] (function magit-file-log))
-(define-key global-map [(control c)(g)(b)] (function magit-blame-mode))
+(define-prefix-command 'exordium-git-map nil)
+(define-key exordium-git-map (kbd "s") (function magit-status))
+(define-key exordium-git-map (kbd "l") (function magit-log))
+(define-key exordium-git-map (kbd "f") (function magit-file-log))
+(define-key exordium-git-map (kbd "b") (function magit-blame-mode))
+(global-set-key (kbd "C-c g") 'exordium-git-map)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
@@ -66,9 +68,9 @@
 
 ;; keys
 (when (or exordium-git-gutter exordium-git-gutter-non-fringe)
-  (define-key global-map [(control c)(g)(down)] 'git-gutter:next-hunk)
-  (define-key global-map [(control c)(g)(up)] 'git-gutter:previous-hunk)
-  (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-hunk)
-  (define-key global-map [(control c)(g)(r)] 'git-gutter:revert-hunk))
+  (define-key exordium-git-map (kbd "<down>") 'git-gutter:next-hunk)
+  (define-key exordium-git-map (kbd "<up>") 'git-gutter:previous-hunk)
+  (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
+  (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
 
 (provide 'init-git)
