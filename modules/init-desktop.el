@@ -4,7 +4,8 @@
 
 (savehist-mode t) ;; minibuffer history is saved
 
-(setq save-place-file "~/.emacs.d/saveplace") ;; location to save point
+(setq save-place-file
+      (locate-user-emacs-file "saveplace"))   ;; location to save point
 (setq-default save-place t)                   ;; activate it for all buffers
 (require 'saveplace)                          ;; Automatically save place in files
 
