@@ -1,26 +1,24 @@
 ;;;; Custom Themes
 ;;;
-;;; These config provides 3 themes:
-;;; - Tomorrow, which comes in several declinasons (night, day, etc.)
-;;; - Monokai (only one flavor)
-;;; - Solarized, which comes with solarized-dark and solarized-light.
+;;; These config provides several themes:
+;;; - Tomorrow, which comes in several flavors:
+;;;   tomorrow-day,
+;;;   tomorrow-night,
+;;;   tomorrow-night-bright,
+;;;   tomorrow-night-blue,
+;;;   tomorrow-night-eighties.
+;;; - Monokai.
+;;; - Solarized-dark and solarized-light.
+;;; - Zenburn.
+;;; - Material.
+;;; The default theme is tomorrow-night.
 ;;;
 ;;; Usage:
-;;; New way: M-x load-theme <tab>  or (load-theme 'tomorrow-night t)
-;;; Old way: M-x set-colors-XXX    or (set-colors-tomorrow-night)
+;;; Edit ~/.emacs.d/prefs.el and set your favorite theme like so:
+;;;   (setq exordium-theme 'zenburn)
 ;;;
-;;; --------- ------------------------------------ ----------------------------
-;;; Theme     Dark                                 Light
-;;; --------- ------------------------------------ ----------------------------
-;;; Tomorrow  `set-colors-tomorrow-night'          `set-colors-tomorrow-day'
-;;;           `set-colors-tomorrow-night-bright'
-;;;           `set-colors-tomorrow-night-eighties'
-;;;           `set-colors-tomorrow-night-blue'
-;;; --------- ------------------------------------ ----------------------------
-;;; Monokai   `set-colors-monokai-default'
-;;; --------- ------------------------------------ ----------------------------
-;;; Solarized `set-colors-solarized-dark'          `set-colors-solarized-light'
-;;; --------- ------------------------------------ ----------------------------
+;;; At runtime, change the theme with: M-x load-theme <tab>
+;;; or evaluate something like: (load-theme 'tomorrow-night t)
 
 (require 'init-prefs)
 
@@ -33,7 +31,7 @@ enabled"
   (car custom-enabled-themes))
 
 
-;;; Org mode extra statuses (WORK and WAIT)
+;;; Theme additions
 
 (cond ((featurep 'color-theme-tomorrow)
        (when (fboundp 'set-tomorrow-extra-org-statuses)
@@ -43,9 +41,15 @@ enabled"
          (set-monokai-extra-org-statuses)))
       ((featurep 'color-theme-solarized)
        (when (fboundp 'set-solarized-extra-org-statuses)
-         (set-solarized-extra-org-statuses))))
+         (set-solarized-extra-org-statuses)))
+      ((featurep 'color-theme-zenburn)
+       (when (fboundp 'set-zenburn-extra-org-statuses)
+         (set-zenburn-extra-org-statuses)))
+      ((featurep 'material)
+       (when (fboundp 'set-material-extra-org-statuses)
+         (set-material-extra-org-statuses))))
 
-;;; Linum extension
+;;; linum extension
 (when (and exordium-highlight-linum
            (not exordium-git-gutter-non-fringe))
   (load "hilinum-mode.el")

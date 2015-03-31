@@ -1068,6 +1068,17 @@ This requires library `rainbow-mode'.")
                   (file-name-as-directory
                    (file-name-directory load-file-name))))
 
+(defun set-zenburn-extra-org-statuses ()
+  (require 'org)
+  (zenburn-with-color-variables
+   (setq org-todo-keyword-faces
+         `(("WORK" . (;:background ,yellow
+                      :foreground ,zenburn-yellow
+                      :weight bold :box nil))
+           ("WAIT" . (;:background ,orange
+                      :foreground ,zenburn-orange
+                      :weight bold :box nil))))))
+
 (provide-theme 'zenburn)
 (provide 'color-theme-zenburn)
 
