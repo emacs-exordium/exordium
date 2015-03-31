@@ -25,4 +25,8 @@
               'dired-mouse-find-file-other-window)
             ))
 
+(require 'find-dired)
+;; xargs to get options rather than exec ls on each find
+(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+
 (provide 'init-dired)
