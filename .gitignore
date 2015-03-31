@@ -29,6 +29,12 @@ ido.last
 recentf
 project-explorer-cache
 
+# Desktop State
+.emacs.desktop
+.emacs.desktop.lock
+saveplace
+history
+
 # Compiled files
 modules/*.elc
 themes/*.elc
