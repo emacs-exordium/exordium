@@ -196,6 +196,7 @@
 (require 'rtags)
 (require 'rtags-ac)
 (require 'auto-complete-c-headers)
+(require 'projectile)
 
 
 ;;; Key bindings

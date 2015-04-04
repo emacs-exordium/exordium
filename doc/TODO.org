@@ -3,23 +3,23 @@
 
 * Improvements
 ** RTags
-*** TODO diagnostics in regular mode-line
-*** TODO fix goto definition recenter
 *** TODO list-based project config for compilation DB
 ** BDE
 *** TODO add include for symbol under point
 *** TODO organize includes (list of groups with precedence)
 ** Usability
 *** TODO nlinum
-*** TODO undo-tree
 *** TODO replace Electric-Pairs with something better
 *** TODO mark occurrences on demand rather than time-based
-*** WORK checkout graphene: file explorer + cool keys
+** Start-up time
+*** TODO Use-package?
 * Themes
-** TODO zenburn
-* Language
+** TODO refactor the themes (one single theme?)
+** TODO powerlines graphical issues
+* Languages
 ** TODO inferior process for Ruby/Python/JS
 ** TODO Python Jedi
+** TODO make Clojure work well
 * Other
 ** Irony http://clang.llvm.org/docs/ExternalClangExamples.html
 ** autocomplete-clang https://github.com/brianjcj/auto-complete-clang

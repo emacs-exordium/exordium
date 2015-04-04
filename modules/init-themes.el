@@ -82,9 +82,10 @@ enabled"
 
 ;;; Utilities
 
-;;; FIXME: why isn't this recognized as an interactive function?
 (defun switch-theme (theme)
-  "Prompt for a theme name with auto-complete and loads it"
+  "Prompt for a theme name with auto-complete and loads it.
+Use this function rather than `load-theme' because it makes
+Powerline follow."
   (interactive
    (list
     (intern (completing-read "Load theme: "
