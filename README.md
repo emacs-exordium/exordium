@@ -701,16 +701,16 @@ latter). It is going to be called `tap`. Anything below `taps` subdirectory is
 not tracked by Exordium, although each `tap` can be a repository itself,
 allowing for tracked customisation.
 
-When Exordium is initialised, it searches for the three special files from the
+When Exordium is initialised, it searches for the three special
 [Local files](#local-files) in each `tap`. Files are then added to the tapped
 lists: before, prefs, and after. `tap`s are searched in alphabetical order of
 their respective names in `~/.emacs.d/taps` directory (`string-lessp` to be
 exact). This order determines the order of files in each tapped list. This lets
 you influence the order of processing within each tapped list, i.e., you can
-rename your tapped repositories (clones).
-
-The default before, prefs, and after [Local files](#local-files) are always
-first in each respective tapped list.
+rename your tapped repositories (clones). The [Local files](#local-files) from
+your `~/.emacs.d` are always first in each respective tapped list. Each tapped
+list is processed (each file from it is loaded) as a replacement for a
+respective [Local file](#local-files).
 
 Exordium sepcific emacs functions are WIP.
 
