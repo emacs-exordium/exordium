@@ -610,7 +610,7 @@ The main file of the configuration is `init.el`. It looks like this:
 ```lisp
 ;;; 1. Load all before-init.el files. The ~/.emacs.d/before-init.el
 ;;; comes first (if exists), followed by any existing before-init.el
-;;; file from all ~/.emacs.d/taps/subidirs.
+;;; file from all ~/.emacs.d/taps/subdirs.
 (dolist (tapped-file exordium-tapped-before-init-files)
   (load tapped-file))
 
@@ -619,7 +619,7 @@ The main file of the configuration is `init.el`. It looks like this:
 
 ;;; 3. Local preferences: load all prefs.el. The ~/.emacs.d/prefs.el
 ;;; comes first (if exists), followed by any existing prefs.el
-;;; file from all ~/.emacs.d/taps/subidirs.
+;;; file from all ~/.emacs.d/taps/subdirs.
 (require 'init-prefs)       ; defines variables that prefs.el can override
 (dolist (tapped-file exordium-tapped-prefs-files)
   (load tapped-file))
@@ -630,7 +630,7 @@ The main file of the configuration is `init.el`. It looks like this:
 
 ;;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el
 ;;; comes first (if exists), followed by any existing after-init.el
-;;; file from all ~/.emacs.d/taps/subidirs.
+;;; file from all ~/.emacs.d/taps/subdirs.
 (dolist (tapped-file exordium-tapped-after-init-files)
   (load tapped-file))
 ```
@@ -712,7 +712,7 @@ your `~/.emacs.d` are always first in each respective tapped list. Each tapped
 list is processed (each file from it is loaded) as a replacement for a
 respective [Local file](#local-files).
 
-Exordium sepcific emacs functions are WIP.
+Exordium-specific emacs functions are WIP.
 
 ### Preferences
 

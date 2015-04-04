@@ -55,13 +55,13 @@
 (defconst exordium-taps-root (locate-user-emacs-file "taps")
   "location of the tapped directories")
 
-(defconst exordium-tapped-before-init-files (list)
+(defconst exordium-tapped-before-init-files ()
   "all tapped before init files, including master")
 
-(defconst exordium-tapped-prefs-files (list)
+(defconst exordium-tapped-prefs-files ()
   "all tapped prefs files, including master")
 
-(defconst exordium-tapped-after-init-files (list)
+(defconst exordium-tapped-after-init-files ()
   "all tapped after init files, including master")
 
 (when (file-accessible-directory-p exordium-taps-root)
