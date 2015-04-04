@@ -13,8 +13,21 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
-(defconst exordium-before-init-file (locate-user-emacs-file "before-init.el")
-  "location of the before init file")
+(defconst exordium-before-init "before-init.el"
+  "name of the before init file")
+
+(defconst exordium-prefs "prefs.el"
+  "name of the prefs file")
+
+(defconst exordium-after-init "after-init.el"
+  "name of the after init file")
+
+;; Use this file for HTTP proxy settings if needed for packages.  Also add
+;; additional packages to exordium-extra-packages for packages to be
+;; automatically pulled from the elpa archives
+
+(defconst exordium-before-init-file (locate-user-emacs-file exordium-before-init)
+  "location of the master before init file")
 
 (defconst exordium-modules-dir (locate-user-emacs-file "modules")
   "location of the modules directory")
@@ -25,23 +38,54 @@
 (defconst exordium-local-dir (locate-user-emacs-file "local")
   "location of the local directory")
 
-(defconst exordium-prefs-file (locate-user-emacs-file "prefs.el")
-  "location of the prefs file")
+(defconst exordium-prefs-file (locate-user-emacs-file exordium-prefs)
+  "location of the master prefs file")
 
-(defconst exordium-after-init-file (locate-user-emacs-file "after-init.el")
-  "location of the after init file")
+(defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
+  "location of the master after init file")
 
 (defcustom exordium-extra-packages '()
   "Additional packages to auto load from elpa repositories"
     :group 'init
     :type 'list)
 
-;; Use this file for HTTP proxy settings if needed for packages.  Also add
-;; additional packages to exordium-extra-packages for packages to be
-;; automatically pulled from the elpa archives
+;; Taps definition of before and after files. These are loaded
+;; after master 'before', 'after', and 'prefs' files
 
-(when (file-exists-p exordium-before-init-file)
-  (load exordium-before-init-file))
+(defconst exordium-taps-root (locate-user-emacs-file "taps")
+  "location of the tapped directories")
+
+(defconst exordium-tapped-before-init-files (list)
+  "all tapped before init files, including master")
+
+(defconst exordium-tapped-prefs-files (list)
+  "all tapped prefs files, including master")
+
+(defconst exordium-tapped-after-init-files (list)
+  "all tapped after init files, including master")
+
+(when (file-accessible-directory-p exordium-taps-root)
+  (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
+    (when (file-accessible-directory-p tap)
+      (setq tapped (concat (file-name-as-directory tap) exordium-before-init))
+      (when (file-readable-p tapped)
+        (add-to-list 'exordium-tapped-before-init-files tapped))
+      (setq tapped (concat (file-name-as-directory tap) exordium-prefs))
+      (when (file-readable-p tapped)
+        (add-to-list 'exordium-tapped-prefs-files tapped))
+      (setq tapped (concat (file-name-as-directory tap) exordium-after-init))
+      (when (file-readable-p tapped)
+        (add-to-list 'exordium-tapped-after-init-files tapped)))))
+(when (file-readable-p exordium-before-init-file)
+  (add-to-list 'exordium-tapped-before-init-files exordium-before-init-file))
+(when (file-readable-p exordium-prefs-file)
+  (add-to-list 'exordium-tapped-prefs-files exordium-prefs-file))
+(when (file-readable-p exordium-after-init-file)
+  (add-to-list 'exordium-tapped-after-init-files exordium-after-init-file))
+
+;; Load before init files
+(dolist (tapped-file exordium-tapped-before-init-files)
+  (load tapped-file))
 
 
 ;;; Packages from Melpa
@@ -153,8 +197,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Local preferences (fonts, frame size etc.)
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p exordium-prefs-file)
-  (load exordium-prefs-file))
+(dolist (tapped-file exordium-tapped-prefs-files)
+  (load tapped-file))
 
 ;;; Desktop
 (when exordium-desktop
@@ -227,8 +271,8 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-clojure))
 
 ;;; Local extensions
-(when (file-exists-p exordium-after-init-file)
-  (load exordium-after-init-file))
+(dolist (tapped-file exordium-tapped-after-init-files)
+  (load tapped-file))
 
 ;;; Greetings
 (setq initial-scratch-message
