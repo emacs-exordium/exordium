@@ -21,13 +21,16 @@
 ;;; or evaluate something like: (load-theme 'tomorrow-night t)
 
 (require 'init-prefs)
+(eval-when-compile
+  (require 'fill-column-indicator)
+  (require 'hilinum-mode)
+  (require 'powerline))
 
 (when exordium-theme
   (load-theme exordium-theme t))
 
 (defun current-theme ()
-  "Return the current theme, or nil if no custom theme is
-enabled"
+  "Return the current theme, or nil if no custom theme is enabled"
   (car custom-enabled-themes))
 
 
@@ -50,13 +53,15 @@ enabled"
          (set-material-extra-org-statuses))))
 
 ;;; linum extension
+
 (when (and exordium-highlight-linum
            (not exordium-git-gutter-non-fringe))
-  (load "hilinum-mode.el")
-  (require 'hlinum)
+  ;;(load "hilinum-mode.el")
+  (require 'hilinum-mode)
   (hlinum-activate))
 
 ;;; Colorize the name of the current project in the modeline.
+
 (defface exordium-project-name '((t (:inherit mode-line)))
   "Face for the name of the current project in the modeline"
   :group 'exordium)
@@ -69,9 +74,7 @@ enabled"
                                      'face 'exordium-project-name)
                          "]")))))
 
-;;; FCI color
-(eval-when-compile
-  (require 'fill-column-indicator))
+;;; FCI (80-column marker) color
 
 (when exordium-fci-mode
   (require 'fill-column-indicator)

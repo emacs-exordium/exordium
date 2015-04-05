@@ -166,6 +166,19 @@ names to which it refers are bound."
      (font-lock-warning-face ((,class (:foreground ,orange :weight bold :slant italic :underline t))))
      (c-annotation-face ((,class (:inherit font-lock-constant-face))))
 
+     ;; Mode line
+     (mode-line ((,class (:inverse-video unspecified
+                          :underline unspecified
+                          :foreground ,monokai-fg
+                          :background ,monokai-hl ; for powerline (previously monokai-hl-line)
+                          :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
+     (mode-line-buffer-id ((,class (:foreground ,green :weight bold))))
+     (mode-line-inactive ((,class (:inverse-video unspecified
+                                   :underline unspecified
+                                   :foreground ,monokai-comments
+                                   :background ,monokai-hl-line ; for powerline (previously monokai-bg)
+                                   :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
+
      ;; Powerline
      (exordium-powerline-active1 ((,class (:background ,monokai-hl))))
      (exordium-powerline-active2 ((,class (:background ,monokai-hl-line))))
@@ -234,17 +247,6 @@ names to which it refers are bound."
      (menu ((,class (:foreground ,monokai-fg :background ,monokai-bg))))
      (minibuffer-prompt ((,class (:foreground ,blue))))
 
-     (mode-line ((,class (:inverse-video unspecified
-                          :underline unspecified
-                          :foreground ,monokai-fg
-                          :background ,monokai-hl-line
-                          :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
-     (mode-line-buffer-id ((,class (:foreground ,green :weight bold))))
-     (mode-line-inactive ((,class (:inverse-video unspecified
-                                   :underline unspecified
-                                   :foreground ,monokai-comments
-                                   :background ,monokai-bg
-                                   :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
      (header-line ((,class (:inverse-video unspecified
                             :underline unspecified
                             :foreground ,monokai-emph
@@ -540,7 +542,7 @@ names to which it refers are bound."
   (with-monokai-colors
    'default
    (apply 'custom-theme-set-faces 'monokai (monokai-face-specs)))
-  (provide-theme 'monokay))
+  (provide-theme 'monokai))
 
 (defun set-monokai-extra-org-statuses ()
   "Set colors for WORK and WAIT org statuses"

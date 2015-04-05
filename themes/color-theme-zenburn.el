@@ -117,7 +117,7 @@ names to which it refers are bound."
        (t :inverse-video t)))
      (mode-line-buffer-id ((,class (:foreground ,yellow :weight bold))))
      (mode-line-inactive
-      ((,class (:foreground ,green-1 :background ,bg-05
+      ((,class (:foreground ,green-1 :background ,bg-1 ; for powerline (previously bg-05)
                             :box (:line-width -1 :style released-button)))))
      (region ((,class (:background ,bg-1))
               (t :inverse-video t)))
@@ -176,11 +176,6 @@ names to which it refers are bound."
      (popup-scroll-bar-foreground-face ((,class (:background ,blue-5))))
      (popup-scroll-bar-background-face ((,class (:background ,bg-1))))
      (popup-isearch-match ((,class (:background ,bg :foreground ,fg))))
-
-     ;; clojure-test-mode
-     (clojure-test-failure-face ((,class (:foreground ,orange :weight bold :underline t))))
-     (clojure-test-error-face ((,class (:foreground ,red :weight bold :underline t))))
-     (clojure-test-success-face ((,class (:foreground ,green+1 :weight bold :underline t))))
 
      ;; diff
      (diff-added ((,class (:foreground ,green+4 :background nil))
@@ -261,6 +256,15 @@ names to which it refers are bound."
         (:underline (:style wave :color ,green)
                     :inherit unspecified :foreground unspecified :background unspecified))
        (t (:foreground ,green-1 :weight bold :underline t))))
+
+     ;; Rtags
+     ;; Loud:
+     ;;(rtags-errline ((,class (:background ,red :foreground ,background))))
+     ;;(rtags-warnline ((,class (:background ,orange :foreground ,background))))
+     ;;(rtags-fixitline ((,class (:background ,green :foreground ,background))))
+     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
+     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
+     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
 
      ;; flyspell
      (flyspell-duplicate
@@ -434,6 +438,11 @@ names to which it refers are bound."
      (outline-7 ((,class (:foreground ,red-4))))
      (outline-8 ((,class (:foreground ,blue-4))))
 
+     ;; Clojure
+     (clojure-test-failure-face ((,class (:foreground ,orange :weight bold :underline t))))
+     (clojure-test-error-face ((,class (:foreground ,red :weight bold :underline t))))
+     (clojure-test-success-face ((,class (:foreground ,green+1 :weight bold :underline t))))
+
      ;; rainbow-delimiters
      (rainbow-delimiters-depth-1-face ((,class (:foreground ,fg))))
      (rainbow-delimiters-depth-2-face ((,class (:foreground ,green+4))))
@@ -552,13 +561,13 @@ names to which it refers are bound."
 
 (defun set-zenburn-extra-org-statuses ()
   (require 'org)
-  (zenburn-with-color-variables
+  (with-zenburn-colors
    (setq org-todo-keyword-faces
          `(("WORK" . (;:background ,yellow
-                      :foreground ,zenburn-yellow
+                      :foreground ,yellow
                       :weight bold :box nil))
            ("WAIT" . (;:background ,orange
-                      :foreground ,zenburn-orange
+                      :foreground ,orange
                       :weight bold :box nil))))))
 
 ;;; Debugging functions:

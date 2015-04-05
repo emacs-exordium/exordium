@@ -106,5 +106,5 @@ Otherwise hlinum will highlight only in the active buffer."
   (ad-deactivate 'linum-after-size)
   (ad-deactivate 'linum-after-scroll))
 
-(provide 'hlinum)
-;;; hlinum.el ends here
+(provide 'hilinum-mode)
+;;; hilinum-mode.el ends here

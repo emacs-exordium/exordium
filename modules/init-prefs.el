@@ -147,6 +147,15 @@ This does not work with nlinum-mode currently."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-fix-powerline-osx-bug t
+  "Fix the graphical bug with Emacs24.4 on OS-X (the angles in
+powerline are not rendered correctly). It makes the colors a bit
+washed up, especially with the zenburn theme. See these links:
+https://github.com/milkypostman/powerline/issues/54
+http://emacsredux.com/blog/2013/08/21/color-themes-redux"
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-powerline-shows-rtags-diagnostics t
   "Whether Powerline shows RTags Diagnostics results. If there
 are errors, the buffer name is displayed in red instead of the
