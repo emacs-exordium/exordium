@@ -48,7 +48,7 @@
       ((featurep 'color-theme-zenburn)
        (when (fboundp 'set-zenburn-extra-org-statuses)
          (set-zenburn-extra-org-statuses)))
-      ((featurep 'material)
+      ((featurep 'color-theme-material)
        (when (fboundp 'set-material-extra-org-statuses)
          (set-material-extra-org-statuses))))
 

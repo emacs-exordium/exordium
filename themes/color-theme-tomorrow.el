@@ -81,6 +81,8 @@
         (purple       . "#c397d8")
         (black        . "#000000")))))
 
+;;; Theme definition
+
 (defmacro with-tomorrow-colors (mode &rest body)
   "Execute `BODY' in a scope with variables bound to the various tomorrow colors.
 `MODE' should be set to either 'day, 'night, 'night-eighties,
@@ -274,6 +276,7 @@ names to which it refers are bound."
      (diff-file-header ((,class (:background ,selection))))
      (diff-hunk-header ((,class (:background ,current-line :foreground ,purple))))
 
+     ;; Ediff
      (ediff-even-diff-A ((,class (:foreground nil :background nil :inverse-video t))))
      (ediff-even-diff-B ((,class (:foreground nil :background nil :inverse-video t))))
      (ediff-odd-diff-A ((,class (:foreground ,comment :background nil :inverse-video t))))
@@ -347,12 +350,6 @@ names to which it refers are bound."
      ;;; Deft
      (deft-title-face ((,class (:foreground ,green :weight bold))))
      (deft-time-face ((,class (:foreground ,yellow))))
-
-     ;; which-func-mode
-     (which-func ((,class (:foreground ,blue :background nil :weight bold))))
-
-     ;; Csv
-     (csv-separator-face ((,class (:foreground ,orange))))
 
      ;; undo-tree
      (undo-tree-visualizer-default-face ((,class (:foreground ,foreground))))
@@ -434,6 +431,11 @@ names to which it refers are bound."
      (font-latex-string-face ((,class (:foreground ,yellow))))
      (font-latex-verbatim-face ((,class (:foreground ,orange))))
      (font-latex-warning-face ((,class (:foreground ,red))))
+
+     ;; Others
+     (which-func ((,class (:foreground ,blue :background nil :weight bold))))
+
+     (csv-separator-face ((,class (:foreground ,orange))))
      )))
 
 (defmacro define-tomorrow-theme (mode)
@@ -446,6 +448,8 @@ names to which it refers are bound."
         ',mode
         (apply 'custom-theme-set-faces ',name (tomorrow-face-specs)))
        (provide-theme ',name))))
+
+;;; Extra functions
 
 (defun tomorrow-mode-name ()
   "Return the mode without the tomorrow- prefix, e.g. day, night etc."

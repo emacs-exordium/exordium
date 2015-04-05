@@ -559,6 +559,8 @@ names to which it refers are bound."
    (apply 'custom-theme-set-faces 'zenburn (zenburn-face-specs)))
   (provide-theme 'zenburn))
 
+;;; Extra functions
+
 (defun set-zenburn-extra-org-statuses ()
   (require 'org)
   (with-zenburn-colors
@@ -570,7 +572,7 @@ names to which it refers are bound."
                       :foreground ,orange
                       :weight bold :box nil))))))
 
-;;; Debugging functions:
+;;; Debugging functions
 
 (defun set-colors-zenburn ()
   "Sets the colors to the zenburn theme"
@@ -579,4 +581,5 @@ names to which it refers are bound."
     (apply 'custom-set-faces (zenburn-face-specs))))
 
 (provide 'color-theme-zenburn)
+
 ;;; color-theme-zenburn.el ends here
