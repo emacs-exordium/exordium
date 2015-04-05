@@ -3,15 +3,17 @@
 (require 'powerline)
 (require 'init-themes)
 
-;;; Fix the graphical bug with Emacs24.4 on OSX (the angles in powerline are
-;;; not rendered correctly):
-;;  see https://github.com/milkypostman/powerline/issues/54
+;;; Fix the graphical bug with Emacs24.4 on OS-X (the angles in powerline are
+;;; not rendered correctly); see
+;;; https://github.com/milkypostman/powerline/issues/54
 ;;;
-;;; Don't use the fix with the zenburn theme because it makes all colors a bit
-;;; washed up: see http://emacsredux.com/blog/2013/08/21/color-themes-redux/
-;;; Basically you should use Emacs from brew or port instead of Emacs for OSX.
+;;; You may not want to use it with the zenburn theme because it makes all
+;;; colors a bit washed up; see
+;;; http://emacsredux.com/blog/2013/08/21/color-themes-redux/
+;;; Basically you should use Emacs from brew or port instead of Emacs for OS-X.
 (when (and exordium-osx
-           (not (featurep 'color-theme-zenburn)))
+           exordium-fix-powerline-osx-bug)
+  (message "Fixing OS-X powerline bug")
   (setq ns-use-srgb-colorspace nil))
 
 ;;; Faces for our powerline theme. They are defined here and customized within
