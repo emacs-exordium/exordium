@@ -608,25 +608,31 @@ Coming soon: Emacs Lisp, Common Lisp and Clojure.
 The main file of the configuration is `init.el`. It looks like this:
 
 ```lisp
-;;; 1. Load before-init.el if it exists
-(when (file-exists-p "~/.emacs.d/before-init.el")
-  (load "~/.emacs.d/before-init.el"))
+;;; 1. Load all before-init.el files. The ~/.emacs.d/before-init.el
+;;; comes first (if exists), followed by any existing before-init.el
+;;; file from all ~/.emacs.d/taps/subdirs.
+(dolist (tapped-file exordium-tapped-before-init-files)
+  (load tapped-file))
 
 ;;; 2. Define the list of Melpa packages that we need, and load any missing
 ;;; one. Note that they are NOT updated automatically.
 
-;;; 3. Local preferences: load prefs.el if it exists.
+;;; 3. Local preferences: load all prefs.el. The ~/.emacs.d/prefs.el
+;;; comes first (if exists), followed by any existing prefs.el
+;;; file from all ~/.emacs.d/taps/subdirs.
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p "~/.emacs.d/prefs.el")
-  (load "~/.emacs.d/prefs.el"))
+(dolist (tapped-file exordium-tapped-prefs-files)
+  (load tapped-file))
 
 ;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
 
 ;;; 5. Load the default theme in ~/.emacs.d/themes.
 
-;;; 6. Load after-init.el if it exists
-(when (file-exists-p "~/.emacs.d/after-init.el")
-  (load "~/.emacs.d/after-init.el"))
+;;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el
+;;; comes first (if exists), followed by any existing after-init.el
+;;; file from all ~/.emacs.d/taps/subdirs.
+(dolist (tapped-file exordium-tapped-after-init-files)
+  (load tapped-file))
 ```
 
 Modules can be individually commented out if needed:
@@ -686,6 +692,27 @@ File name        | Usage
 `prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
 `after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
+
+### Taps
+
+The idea is inspired by taps from [Homebrew](http://brew.sh). You can clone any
+git repository into `~/.emacs.d/taps/` directory (as a subdirectory of the
+latter). It is going to be called `tap`. Anything below `taps` subdirectory is
+not tracked by Exordium, although each `tap` can be a repository itself,
+allowing for tracked customisation.
+
+When Exordium is initialised, it searches for the three special
+[Local files](#local-files) in each `tap`. Files are then added to the tapped
+lists: before, prefs, and after. `tap`s are searched in alphabetical order of
+their respective names in `~/.emacs.d/taps` directory (`string-lessp` to be
+exact). This order determines the order of files in each tapped list. This lets
+you influence the order of processing within each tapped list, i.e., you can
+rename your tapped repositories (clones). The [Local files](#local-files) from
+your `~/.emacs.d` are always first in each respective tapped list. Each tapped
+list is processed (each file from it is loaded) as a replacement for a
+respective [Local file](#local-files).
+
+Exordium-specific emacs functions are WIP.
 
 ### Preferences
 

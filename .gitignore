@@ -39,3 +39,6 @@ history
 modules/*.elc
 themes/*.elc
 extensions/*.elc
+
+# Taps
+taps/**
