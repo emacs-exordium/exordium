@@ -50,6 +50,8 @@
     (blue-5   . "#366060")
     (magenta  . "#DC8CC3")))
 
+;;; Theme definition
+
 (defmacro with-zenburn-colors (&rest body)
   "Execute `BODY' in a scope with variables bound to the zenburn colors."
   `(let ((class '((class color) (min-colors 89)))
