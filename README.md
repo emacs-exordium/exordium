@@ -746,7 +746,8 @@ Exordium-specific emacs functions are WIP.
 ;; - solarized-dark, solarized-light
 ;; - monokai
 ;; - zenburn
-(setq exordium-theme 'solarized-light)
+;; - material
+(setq exordium-theme 'zenburn)
 
 ;; Don't use Powerline (may cause Emacs to crash on startup sometimes)
 (setq exordium-enable-powerline nil)
@@ -829,6 +830,13 @@ to make it display"
   and not with this config. A simple solution is to turn off font lock
   temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable font
   lock after you're done editing your large component-level comment.
+
+* Sometimes weird bugs may happen after an upgrade or during development on a
+  module. Exordium recompiles any `.el` file for which the corresponding `.elc`
+  files is older on startup, but does not try to force any `.el` file to be
+  compiled.  Two functions are useful in this case: `M-x uncompile-modules`
+  removes all `.elc` files (if you restart Emacs it will not compile
+  anything). `M-x force-recompile-modules` recompiles everything.
 
 ### Configuration profiling
 
