@@ -76,10 +76,13 @@
         (setq tapped (concat (file-name-as-directory tap) exordium-after-init))
         (when (file-readable-p tapped)
           (add-to-list 'exordium-tapped-after-init-files tapped))))))
+
 (when (file-readable-p exordium-before-init-file)
   (add-to-list 'exordium-tapped-before-init-files exordium-before-init-file))
+
 (when (file-readable-p exordium-prefs-file)
   (add-to-list 'exordium-tapped-prefs-files exordium-prefs-file))
+
 (when (file-readable-p exordium-after-init-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-after-init-file))
 
