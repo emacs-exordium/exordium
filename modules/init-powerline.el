@@ -2,6 +2,7 @@
 
 (require 'powerline)
 (require 'init-themes)
+(require 'init-prefs)
 
 ;;; Fix the graphical bug with Emacs24.4 on OS-X (the angles in powerline are
 ;;; not rendered correctly); see
@@ -70,9 +71,12 @@
          ;; Purple
          'exordium-powerline-active3)))
 
+
 (defun exordium-powerline-theme ()
   "Setup the default mode-line."
   (interactive)
+  (when (eq exordium-powerline-theme :wave)
+    (setq-default powerline-default-separator 'wave))
   (setq-default
    mode-line-format
    '("%e"
@@ -96,7 +100,10 @@
                         (powerline-raw "%b " face3 'l)
                         (when (and (boundp 'which-func-mode) which-func-mode)
                           (powerline-raw which-func-format nil 'l))
-                        (funcall separator-left face3 mode-line)
+                        (funcall (if (eq exordium-powerline-theme :wave)
+                                     separator-right
+                                   separator-left)
+                                 face3 mode-line)
                         ;;(funcall separator-left face3 face2)
                         (when (boundp 'erc-modified-channels-object)
                           (powerline-raw erc-modified-channels-object face1 'l))

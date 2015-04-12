@@ -25,7 +25,8 @@
     (green               . "#8bc34a")
     (aqua                . "#81d4fa")
     (blue                . "#4dd0e1")
-    (purple              . "#b39ddb")))
+    (purple              . "#b39ddb")
+    (black               . "#000000")))
 
 ;;; Theme definition
 
@@ -100,12 +101,12 @@ names to which it refers are bound."
      (widget-field ((,class (:background ,current-line :box (:line-width 1 :color ,foreground)))))
 
      ;; Mode line
-     (mode-line ((,class (:background ,selection ; for powerline (previously far-background)
+     (mode-line ((,class (:background ,black ; for powerline (previously far-background)
                           :foreground ,foreground))))
      (mode-line-buffer-id ((,class (:foreground ,foreground :background nil))))
      (mode-line-inactive ((,class (:inherit mode-line
                                    :foreground ,subtle
-                                   :background ,current-line; for powerline (previously far-background)
+                                   :background ,black; for powerline (previously far-background)
                                    :weight normal
                                    :box nil))))
      (mode-line-emphasis ((,class (:foreground ,foreground :slant italic))))
@@ -113,12 +114,12 @@ names to which it refers are bound."
      (minibuffer-prompt ((,class (:foreground ,blue))))
 
      ;; Powerline
-     (exordium-powerline-active1 ((,class (:background ,selection))))
+     (exordium-powerline-active1 ((,class (:background ,black))))
      (exordium-powerline-active2 ((,class (:background ,current-line))))
-     (exordium-powerline-active3 ((,class (:background ,purple :foreground ,background))))
+     (exordium-powerline-active3 ((,class (:background ,orange :foreground ,background))))
      (exordium-powerline-active4 ((,class (:background ,red :foreground ,background))))
      (exordium-powerline-active5 ((,class (:background ,green :foreground ,background))))
-     (exordium-powerline-inactive1 ((,class (:background ,current-line :foreground ,comment))))
+     (exordium-powerline-inactive1 ((,class (:background ,black :foreground ,comment))))
      (exordium-powerline-inactive2 ((,class (:background ,background :foreground ,comment))))
      (exordium-powerline-inactive3 ((,class (:background ,comment :foreground ,background))))
      (exordium-project-name ((,class (:foreground ,purple))))

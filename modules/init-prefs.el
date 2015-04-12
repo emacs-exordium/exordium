@@ -156,6 +156,12 @@ http://emacsredux.com/blog/2013/08/21/color-themes-redux"
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-powerline-theme :angle
+  "Drives the shape of Powerline separators, and other things.
+Possible values are :angle, :wave"
+  :group 'exordium
+  :type  'symbol)
+
 (defcustom exordium-powerline-shows-rtags-diagnostics t
   "Whether Powerline shows RTags Diagnostics results. If there
 are errors, the buffer name is displayed in red instead of the
