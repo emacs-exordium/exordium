@@ -120,7 +120,7 @@ names to which it refers are bound."
      (exordium-powerline-active4 ((,class (:background ,red :foreground ,background))))
      (exordium-powerline-active5 ((,class (:background ,green :foreground ,background))))
      (exordium-powerline-inactive1 ((,class (:background ,black :foreground ,comment))))
-     (exordium-powerline-inactive2 ((,class (:background ,background :foreground ,comment))))
+     (exordium-powerline-inactive2 ((,class (:background ,current-line :foreground ,comment))))
      (exordium-powerline-inactive3 ((,class (:background ,comment :foreground ,background))))
      (exordium-project-name ((,class (:foreground ,purple))))
 
