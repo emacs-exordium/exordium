@@ -36,8 +36,6 @@ might want to check these links:
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
   (turned on by default);
   [Auto Complete](https://github.com/auto-complete/auto-complete);
-  [Windmove](http://www.emacswiki.org/emacs/WindMove) (move between windows
-  with meta-arrow);
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
@@ -45,8 +43,8 @@ might want to check these links:
   [Project Explorer](https://github.com/sabof/project-explorer) (directory
   tree); etc.
 * Projects: [Projectile](http://batsov.com/projectile) a project-based file
-  management tool, and [Helm](http://tuhdo.github.io/helm-intro.html) an
-  equivalent of IDO.
+  management tool; [Helm](http://tuhdo.github.io/helm-intro.html) an
+  alternative to IDO.
 * Git: [Magit](http://magit.github.io) (git UI);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
@@ -80,7 +78,7 @@ To update Exordium, do <kbd>M-x update-config</kbd>. This command pulls from
 Github and recompiles everything. Restart Emacs after that.
 
 Melpa packages are not updated automatically: you can do it with <kbd>M-x
-package-list-packages</kbd>, then "U".
+package-list-packages</kbd>, then <kbd>U</kbd> then <kbd>x</kbd>.
 
 ### Files
 
@@ -243,6 +241,7 @@ Keybinding           | Description
 <kbd>C-c p s g</kbd> | Grep in current project
 <kbd>C-c p s a</kbd> | Same but using ack
 <kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
+<kbd>C-c p i</kbd>   | Invalidate cache
 
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.

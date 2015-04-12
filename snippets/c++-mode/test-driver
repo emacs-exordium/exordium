@@ -36,17 +36,18 @@ using namespace bsl;
 //                             Overview
 //                             --------
 //
+// TODO: add doc
 //
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-// [ ]
+// [ 1] BREATHING TEST
 // ----------------------------------------------------------------------------
 
 static int testStatus = 0;
 static bool             verbose = 0;
 static bool         veryVerbose = 0;
 static bool     veryVeryVerbose = 0;
-bool        veryVeryVeryVerbose = 0;
+static bool veryVeryVeryVerbose = 0;
 
 //=============================================================================
 //                      GLOBAL HELPER FUNCTIONS FOR TESTING
