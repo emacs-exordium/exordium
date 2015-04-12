@@ -4,7 +4,9 @@
 ;;; Inspired by the theme from Paulik Christoph
 ;;; See https://github.com/cpaulik/emacs-material-theme
 ;;;
-;;; FIXME: replace all custom colors in spec with constants.
+;;; FIXME: replace all custom colors in `material-face-specs' with
+;;; constants. All colors should be defined from the Material palette: see
+;;; http://www.google.com/design/spec/style/color.html#color-ui-color-application
 
 (require 'org)
 
@@ -59,7 +61,7 @@ names to which it refers are bound."
      (show-paren-mismatch-face ((,class (:background "red1" :foreground "white"))))
 
      ;; Region
-     (region ((,class (:background ,selection :foreground ,background))))
+     (region ((,class (:background ,selection))))
      (secondary-selection ((,class (:background ,secondary-selection))))
 
      ;; Font lock
