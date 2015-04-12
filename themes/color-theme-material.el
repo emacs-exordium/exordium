@@ -84,7 +84,8 @@ names to which it refers are bound."
      (cursor ((,class (:background ,orange))))
      (fringe ((,class (:background ,background))))
 
-     (linum ((,class (:background ,background :foreground ,subtle))))
+     (linum ((,class (:background ,background :foreground ,subtle
+                      :underline nil :weight normal :box nil :slant normal))))
      (linum-highlight-face ((,class (:background ,current-line :foreground ,foreground))))
 
      (border ((,class (:background ,current-line))))
