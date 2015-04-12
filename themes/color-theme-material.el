@@ -133,10 +133,12 @@ names to which it refers are bound."
      (powerline-inactive2 ((t (:foreground ,comment :background ,selection))))
 
      ;; Search
-     (match ((,class (:foreground ,selection :background ,current-line :inverse-video nil))))
-     (isearch ((,class (:foreground ,selection :background ,current-line))))
-     (isearch-lazy-highlight-face ((,class (:foreground ,selection :background nil :inverse-video nil))))
-     (isearch-fail ((,class (:background ,background :inherit font-lock-warning-face :inverse-video t))))
+     (match ((,class (:foreground ,blue :background ,background :inverse-video t))))
+     (isearch ((,class (:foreground ,yellow :background ,background :inverse-video t))))
+     (isearch-lazy-highlight-face
+      ((,class (:foreground ,aqua :background ,background :inverse-video t))))
+     (isearch-fail
+      ((,class (:background ,background :inherit font-lock-warning-face :inverse-video t))))
 
      ;; IDO
      (ido-subdir ((,class (:foreground ,purple))))
@@ -149,18 +151,16 @@ names to which it refers are bound."
      (flx-highlight-face ((,class (:inherit nil :foreground ,yellow :weight bold :underline nil))))
 
      ;; Helm
-     (helm-header ((,class (:foreground ,foreground :background ,background))))
-     (helm-selection ((,class (:background ,current-line :foreground ,yellow))))
-     (helm-ff-file ((,class (:foreground ,foreground ))))
-     (helm-ff-directory ((,class (:foreground ,aqua ))))
-     (helm-ff-executable ((,class (:foreground ,green ))))
-     (helm-buffer-directory ((,class (:foreground ,aqua))))
-     (helm-buffer-file ((,class (:foreground ,foreground))))
-     (helm-grep-file ((,class (:foreground ,aqua :underline t))))
-     (helm-buffer-process ((,class (:foreground ,red))))
-     (helm-buffer-not-saved ((,class (:foreground ,orange))))
-     (helm-candidate-number ((,class (:foreground ,foreground :background ,"#ef6c00"))))
-     (helm-source-header ((,class (:background ,"#455A64" :foreground ,"#eceff1" :height 1.3 :bold t ))))
+     (helm-header ((,class (:foreground ,green :background ,background
+                            :underline nil :box nil))))
+     (helm-source-header ((,class (:foreground ,background :background ,orange
+                                   :underline nil :weight bold :box nil))))
+     (helm-selection ((,class (:background ,selection :underline nil))))
+     (helm-selection-line ((,class (:background ,selection))))
+     (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
+     (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
+     (helm-swoop-target-line-face ((,class (:foreground ,background :background ,yellow))))
+     (helm-swoop-target-word-face ((,class (:foreground ,background :background ,aqua))))
 
      ;; Flycheck
      (flycheck-error ((,class (:underline (:style wave :color ,red)))))
