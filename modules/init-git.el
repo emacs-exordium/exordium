@@ -51,6 +51,10 @@
 ;;; Don't show "MRev" in the modeline
 (diminish 'magit-auto-revert-mode)
 
+
+;;; Turn off the horrible warning about magit auto-revert of saved buffers
+(setq magit-last-seen-setup-instructions "1.4.0")
+
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 
