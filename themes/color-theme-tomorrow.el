@@ -120,6 +120,7 @@ names to which it refers are bound."
      (success ((,class (:foreground ,green))))
      (error ((,class (:foreground ,red))))
      (warning ((,class (:foreground ,orange))))
+     (scroll-bar ((,class (:background ,background))))
 
      ;; Parenthesis matching (built-in)
      (show-paren-match ((,class (:background ,blue :foreground ,current-line))))

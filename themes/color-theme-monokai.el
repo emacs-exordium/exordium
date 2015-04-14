@@ -147,6 +147,7 @@ names to which it refers are bound."
      (lazy-highlight ((,class (:foreground ,monokai-bg :background ,yellow :weight normal))))
      (escape-glyph ((,class (:foreground ,violet))))
      (button ((t (:underline t))))
+     (scroll-bar ((,class (:background ,monokai-bg))))
 
      ;; font lock
      (font-lock-builtin-face ((,class (:foreground ,red :weight normal))))

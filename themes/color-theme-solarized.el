@@ -60,6 +60,7 @@ names to which it refers are bound."
      (success ((,class (:foreground ,green))))
      (error ((,class (:weight bold :foreground ,red))))
      (warning ((,class (:weight bold :foreground ,orange))))
+     (scroll-bar ((,class (:background ,back))))
 
      ;; Parenthesis matching (built-in)
      (show-paren-match ((,class (:weight bold :foreground ,cyan :background ,base02))))

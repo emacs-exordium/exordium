@@ -55,6 +55,7 @@ names to which it refers are bound."
      (success ((,class (:foreground "SeaGreen2"))))
      (error ((,class (:foreground ,red))))
      (warning ((,class (:foreground ,orange))))
+     (scroll-bar ((,class (:background ,background))))
 
      ;; Parenthesis matching (built-in)
      (show-paren-match-face ((,class (:background "dodgerblue1" :foreground "white"))))
