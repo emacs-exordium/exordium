@@ -750,7 +750,7 @@ There are more options, see
 
 Exordium includes several themes that are integrated with Powerline and that
 should work well in -nw mode. Use <kbd>M-x switch-theme</kbd> to change the
-theme, otherwise you can set your favorite theme in `prefs.el` like the
+theme. Otherwise, setting your favorite theme in `prefs.el` like the
 following will give you this:
 
 ```lisp
