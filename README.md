@@ -739,21 +739,35 @@ Exordium-specific emacs functions are WIP.
 ;; curly brace, etc.)
 (setq exordium-enable-electric-pair-mode nil)
 
-;; Available themes (default tomorrow-night):
-;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
-;;   tomorrow-night-eighties, tomorrow-day
-;; - solarized-dark, solarized-light
-;; - monokai
-;; - zenburn
-;; - material
-(setq exordium-theme 'zenburn)
-
 ;; Don't use Powerline (may cause Emacs to crash on startup sometimes)
 (setq exordium-enable-powerline nil)
 ```
 
 There are more options, see
 [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
+
+### Themes
+
+Exordium includes several themes that are integrated with Powerline and that
+should work well in -nw mode. Use <kbd>M-x switch-theme</kbd> to change the
+theme, otherwise you can set your favorite theme in `prefs.el` like the
+following will give you this:
+
+```lisp
+;; Available themes (default is tomorrow-night):
+;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
+;;   tomorrow-night-eighties, tomorrow-day
+;; - solarized-dark, solarized-light
+;; - monokai
+;; - zenburn
+;; - material
+(setq exordium-theme 'material)
+
+;; Powerline theme:
+(setq exordium-powerline-theme :wave)
+```
+
+![Material](https://raw.github.com/philippe-grenet/exordium/master/doc/material.png)
 
 ### Local modules
 

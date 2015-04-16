@@ -70,8 +70,8 @@ names to which it refers are bound."
      (font-lock-comment-delimiter-face ((,class (:foreground ,comment))))
      (font-lock-comment-face ((,class (:foreground ,comment))))
      (font-lock-constant-face ((,class (:foreground ,green))))
-     (font-lock-doc-face ((,class (:foreground "moccasin"))))
-     (font-lock-doc-string-face ((,class (:foreground ,yellow))))
+     (font-lock-doc-face ((,class (:foreground ,comment))))
+     (font-lock-doc-string-face ((,class (:foreground ,comment))))
      (font-lock-function-name-face ((,class (:foreground ,"#b3e5fc"))))
      (font-lock-keyword-face ((,class (:foreground ,yellow))))
      (font-lock-negation-char-face ((,class (:foreground ,blue))))
@@ -103,6 +103,7 @@ names to which it refers are bound."
      (link ((,class (:foreground nil :underline t))))
      (widget-button ((,class (:underline t))))
      (widget-field ((,class (:background ,current-line :box (:line-width 1 :color ,foreground)))))
+     (menu ((,class (:foreground ,foreground :background ,background))))
 
      ;; Mode line
      (mode-line ((,class (:background ,black ; for powerline (previously far-background)
