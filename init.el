@@ -137,7 +137,8 @@
                                    exec-path-from-shell
                                    goto-chg
                                    project-explorer
-                                   page-break-lines)
+                                   page-break-lines
+                                   org-bullets)
                                  exordium-extra-packages))
       (has-refreshed nil))
   (dolist (p required-packages)
