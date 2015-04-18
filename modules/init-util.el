@@ -326,6 +326,14 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 ;;; Config management
 
+(defun update-taps ()
+  "Updates each installed tap. Specifically, for each tap it pulls from github."
+  (when (file-accessible-directory-p exordium-taps-root)
+    (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
+      (when (file-accessible-directory-p tap)
+        (cd tap)
+        (shell-command "git pull")))))
+
 (defun update-config ()
   "Updates the configuration. Specifically, pulls from github and
 compiles all non-melpa elisp files. You need to restart Emacs
@@ -336,6 +344,8 @@ afterwards."
   (byte-recompile-directory exordium-modules-dir 0)
   (byte-recompile-directory exordium-themes-dir 0)
   (byte-recompile-directory exordium-extensions-dir 0)
+  (unless exordium-skip-taps-update
+    (update-taps))
   (message (propertize "Restart Emacs to make any changes effective"
                        'face 'error)))
 
