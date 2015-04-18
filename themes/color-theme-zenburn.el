@@ -7,6 +7,7 @@
 ;;; https://github.com/bbatsov/zenburn-emacs
 
 (require 'org)
+(require 'init-prefs)
 
 ;;; Color palette.
 ;;; `+N' suffixes indicate a color is lighter.
@@ -260,13 +261,15 @@ names to which it refers are bound."
        (t (:foreground ,green-1 :weight bold :underline t))))
 
      ;; Rtags
-     ;; Loud:
-     ;;(rtags-errline ((,class (:background ,red :foreground ,background))))
-     ;;(rtags-warnline ((,class (:background ,orange :foreground ,background))))
-     ;;(rtags-fixitline ((,class (:background ,green :foreground ,background))))
-     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
-     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
-     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
+     (rtags-errline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                  `(:background ,red :foreground ,bg)
+                                `(:underline (:color ,red :style wave))))))
+     (rtags-warnline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                   `(:background ,orange :foreground ,bg)
+                                 `(:underline (:color ,orange :style wave))))))
+     (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                    `(:background ,green :foreground ,bg)
+                                  `(:underline (:color ,green :style wave))))))
 
      ;; flyspell
      (flyspell-duplicate
@@ -403,7 +406,12 @@ names to which it refers are bound."
      (org-formula ((,class (:foreground ,yellow-2))))
      (org-headline-done ((,class (:foreground ,green+3))))
      (org-hide ((,class (:foreground ,bg-1))))
-     (org-level-1 ((,class (:foreground ,orange))))
+     (org-document-title ((,class
+                           ,(append `(:weight bold :foreground ,green+2)
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+     (org-level-1 ((,class
+                    ,(append `(:foreground ,orange)
+                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
      (org-level-2 ((,class (:foreground ,green+4))))
      (org-level-3 ((,class (:foreground ,blue-1))))
      (org-level-4 ((,class (:foreground ,yellow-2))))

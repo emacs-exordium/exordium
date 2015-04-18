@@ -143,6 +143,20 @@ otherwise use one of the following:
   :group 'exordium
   :type  'symbol)
 
+(defcustom exordium-theme-use-loud-rtags-faces nil
+  "Whether RTags error/warning/fixit faces are loud or not with
+the current theme. It depends on the theme but generally setting
+this to t will use reverse video, while setting it to nil will
+use underline waves."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-theme-use-big-org-fonts t
+  "Whether Org mode uses big fonts for titles and top-level
+  items."
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-highlight-linum t
   "Whether the current line number is highlighted.
 This does not work with nlinum-mode currently."

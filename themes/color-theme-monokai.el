@@ -4,6 +4,7 @@
 ;;; Inspired by the "Monokai" theme from Kelvin Smith.
 
 (require 'org)
+(require 'init-prefs)
 
 ;;; Color palette. Note: only variant of the theme for now ("default").
 
@@ -213,9 +214,15 @@ names to which it refers are bound."
      (compilation-mode-line-run ((,class (:foreground ,orange :weight bold))))
 
      ;; RTags
-     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
-     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
-     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
+     (rtags-errline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                  `(:background ,red :foreground ,monokai-bg)
+                                `(:underline (:color ,red :style wave))))))
+     (rtags-warnline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                   `(:background ,orange :foreground ,monokai-bg)
+                                 `(:underline (:color ,orange :style wave))))))
+     (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                    `(:background ,green :foreground ,monokai-bg)
+                                  `(:underline (:color ,green :style wave))))))
 
      ;; cua
      (cua-global-mark ((,class (:background ,yellow :foreground ,monokai-bg))))

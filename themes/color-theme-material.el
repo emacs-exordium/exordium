@@ -9,6 +9,7 @@
 ;;; http://www.google.com/design/spec/style/color.html#color-ui-color-application
 
 (require 'org)
+(require 'init-prefs)
 
 ;;; Color palette
 
@@ -72,7 +73,7 @@ names to which it refers are bound."
      (font-lock-constant-face ((,class (:foreground ,green))))
      (font-lock-doc-face ((,class (:foreground ,comment))))
      (font-lock-doc-string-face ((,class (:foreground ,comment))))
-     (font-lock-function-name-face ((,class (:foreground ,"#b3e5fc"))))
+     (font-lock-function-name-face ((,class (:foreground "#b3e5fc"))))
      (font-lock-keyword-face ((,class (:foreground ,yellow))))
      (font-lock-negation-char-face ((,class (:foreground ,blue))))
      (font-lock-preprocessor-face ((,class (:foreground "gold"))))
@@ -130,7 +131,7 @@ names to which it refers are bound."
      (exordium-project-name ((,class (:foreground ,purple))))
 
      (powerline-active1 ((t (:foreground ,foreground :background ,selection))))
-     (powerline-active2 ((t (:foreground ,foreground :background ,"#78909c"))))
+     (powerline-active2 ((t (:foreground ,foreground :background "#78909c"))))
      (powerline-inactive1 ((t (:foreground ,comment :background ,selection))))
      (powerline-inactive2 ((t (:foreground ,comment :background ,selection))))
 
@@ -181,13 +182,15 @@ names to which it refers are bound."
      (compilation-mode-line-run ((,class (:foreground ,blue))))
 
      ;; RTags
-     ;; Loud:
-     ;;(rtags-errline ((,class (:background ,red :foreground ,background))))
-     ;;(rtags-warnline ((,class (:background ,orange :foreground ,background))))
-     ;;(rtags-fixitline ((,class (:background ,green :foreground ,background))))
-     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
-     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
-     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
+     (rtags-errline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                  `(:background ,red :foreground ,background)
+                                `(:underline (:color ,red :style wave))))))
+     (rtags-warnline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                   `(:background ,orange :foreground ,background)
+                                 `(:underline (:color ,orange :style wave))))))
+     (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                    `(:background ,green :foreground ,background)
+                                  `(:underline (:color ,green :style wave))))))
 
      ;; Magit
      (magit-branch ((,class (:foreground ,green))))
@@ -251,10 +254,16 @@ names to which it refers are bound."
      (org-code ((,class (:foreground ,yellow))))
      (org-column ((,class (:background ,current-line))))
      (org-column-title ((,class (:inherit org-column :weight bold :underline t))))
-     (org-date ((,class (:foreground ,"#80cbc4" :underline t))))
-     (org-document-info ((,class (:foreground ,aqua :height 1.35))))
-     (org-document-info-keyword ((,class (:foreground ,green :height 1.35))))
-     (org-document-title ((,class (:weight bold :foreground ,orange :height 1.35))))
+     (org-date ((,class (:foreground "#80cbc4" :underline t))))
+     (org-document-info ((,class
+                          ,(append `(:foreground ,aqua)
+                                   (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
+     (org-document-info-keyword ((,class
+                                  ,(append `(:foreground ,green)
+                                           (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
+     (org-document-title ((,class
+                           ,(append `(:weight bold :foreground ,orange)
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.35))))))
      (org-done ((,class (:foreground ,green :bold t :background,"#1b5e20"))))
      (org-ellipsis ((,class (:foreground ,comment))))
      (org-footnote ((,class (:foreground ,aqua))))
@@ -265,42 +274,43 @@ names to which it refers are bound."
      (org-scheduled-previously ((,class (:foreground ,orange))))
      (org-scheduled-today ((,class (:foreground ,green))))
      (org-special-keyword ((,class (:foreground ,comment))))
-     (org-table ((,class (:foreground ,"#e3f2fd" :background ,far-background))))
-     (org-todo ((,class (:foreground ,"#ffab91" :bold t :background ,"#dd2c00"))))
+     (org-table ((,class (:foreground "#e3f2fd" :background ,far-background))))
+     (org-todo ((,class (:foreground "#ffab91" :bold t :background "#dd2c00"))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
-     (org-block-begin-line ((,class (:foreground ,"#b3e5fc" :underline ,"#e1f5fe"))))
-     (org-block-end-line ((,class (:foreground ,"#b3e5fc" :overline ,"#e1f5fe"))))
+     (org-block-begin-line ((,class (:foreground "#b3e5fc" :underline "#e1f5fe"))))
+     (org-block-end-line ((,class (:foreground "#b3e5fc" :overline "#e1f5fe"))))
 
-     (org-level-1 ((,class (:inherit nil
-                            :overline ,"#b0bec5"
-                            :foreground ,"#eceff1"
-                            :background ,"#455A64"
-                            :weight bold
-                            :height 1.3))))
-     (org-level-2 ((,class (:inherit nil
-                            :foreground ,"#e1f5fe"
-                            :background ,"#21575b"
-                            :overline ,"#e1f5fe"
-                            :height 1.2))))
-     (org-level-3 ((,class (:inherit nil :foreground ,"#a5d6a7" :height 1.1))))
-     (org-level-4 ((,class (:inherit nil :foreground ,"#ffcc80" :height 1.0))))
-     (org-level-5 ((,class (:inherit nil :foreground ,"#b3e5fc"))))
-     (org-level-6 ((,class (:inherit nil :foreground ,"CadetBlue1"))))
-     (org-level-7 ((,class (:inherit nil :foreground ,"aquamarine1"))))
+     (org-level-1 ((,class ,(append '(:inherit nil
+                                      :overline "#b0bec5"
+                                      :foreground "#eceff1"
+                                      :background "#455A64"
+                                      :weight bold)
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.3) nil)))))
+     (org-level-2 ((,class ,(append '(:inherit nil
+                                      :foreground "#e1f5fe"
+                                      :background "#21575b"
+                                      :overline "#e1f5fe")
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.2) nil)))))
+     (org-level-3 ((,class ,(append '(:inherit nil :foreground "#a5d6a7")
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.1) nil)))))
+     (org-level-4 ((,class (:inherit nil :foreground "#ffcc80"))))
+     (org-level-5 ((,class (:inherit nil :foreground "#b3e5fc"))))
+     (org-level-6 ((,class (:inherit nil :foreground "CadetBlue1"))))
+     (org-level-7 ((,class (:inherit nil :foreground "aquamarine1"))))
      (org-level-8 ((,class (:inherit nil :foreground ,purple))))
-     (org-level-9 ((,class (:inherit nil :foreground ,"LightSteelBlue1"))))
+     (org-level-9 ((,class (:inherit nil :foreground "LightSteelBlue1"))))
 
      ;; Outline
-     (outline-1 ((,class (:inherit nil :foreground ,"#cfd8dc"))))
-     (outline-2 ((,class (:inherit nil :foreground ,"#b0bec5"))))
-     (outline-3 ((,class (:inherit nil :foreground ,"#a5d6a7" ))))
-     (outline-4 ((,class (:inherit nil :foreground ,"#ffcc80" ))))
-     (outline-5 ((,class (:inherit nil :foreground ,"#b3e5fc"))))
-     (outline-6 ((,class (:inherit nil :foreground ,"CadetBlue1"))))
-     (outline-7 ((,class (:inherit nil :foreground ,"aquamarine1"))))
+     (outline-1 ((,class (:inherit nil :foreground "#cfd8dc"))))
+     (outline-2 ((,class (:inherit nil :foreground "#b0bec5"))))
+     (outline-3 ((,class (:inherit nil :foreground "#a5d6a7" ))))
+     (outline-4 ((,class (:inherit nil :foreground "#ffcc80" ))))
+     (outline-5 ((,class (:inherit nil :foreground "#b3e5fc"))))
+     (outline-6 ((,class (:inherit nil :foreground "CadetBlue1"))))
+     (outline-7 ((,class (:inherit nil :foreground "aquamarine1"))))
      (outline-8 ((,class (:inherit nil :foreground ,purple))))
-     (outline-9 ((,class (:inherit nil :foreground ,"LightSteelBlue1"))))
+     (outline-9 ((,class (:inherit nil :foreground "LightSteelBlue1"))))
 
      ;; ansi-term
      (term ((,class (:foreground nil :background nil :inherit default))))
