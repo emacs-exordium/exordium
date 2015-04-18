@@ -113,6 +113,13 @@ If nil, use a plain line."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-skip-taps-update nil
+  "Whether to skip taps update when updating configuration.
+If set to nil, each tap need to be updated manually,
+i.e., with git pull."
+  :group 'exordium
+  :type  'boolean)
+
 
 ;;; Autocomplete -- see init-autocomplete.el
 
