@@ -78,6 +78,10 @@
 ;;; TODO: the regex should be fixed for words like "e.g." or "i.e.".
 
 (with-no-warnings (require 'cl))
+(require 'cc-defs)
+(require 'cc-vars)
+(require 'cc-mode)
+(require 'init-lib)
 
 
 ;;; Utility functions
@@ -834,9 +838,9 @@ or comment block. See also `repunctuate-sentences'."
                  end (bde-comment-end))))
     (if (and beginning end)
         (save-excursion
-          (replace-regexp "\\([]\"')]?\\)\\([.?!]\\)\\([]\"')]?\\) +"
-                          "\\1\\2\\3  "
-                          nil beginning end)
+          (goto-char beginning)
+          (while (re-search-forward "\\([]\"')]?\\)\\([.?!]\\)\\([]\"')]?\\) +" end t)
+            (replace-match "\\1\\2\\3  " nil nil))
           (fill-paragraph))
       (message "No region or comment"))))
 
