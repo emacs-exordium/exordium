@@ -155,7 +155,8 @@ Uses `current-date-time-format' for the formatting the date/time."
         eol
         (num-lines (if mark-active
                        (count-lines (region-beginning) (region-end))
-                     1)))
+                     1))
+        (col (current-column)))
     (save-excursion
       (if mark-active
           (setq eol (region-end))
@@ -172,7 +173,10 @@ Uses `current-date-time-format' for the formatting the date/time."
       ;; Create the undo information
       (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
     ;; Move the point to the lowest line
-    (forward-line (* arg num-lines))))
+    (forward-line (* arg num-lines))
+    (when (= num-lines 1)
+      ;; Leave the cursor an the same column if we duplicated 1 line
+      (move-to-column col))))
 
 (global-set-key [(control c)(d)] 'duplicate-line-or-region)
 

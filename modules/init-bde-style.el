@@ -14,24 +14,26 @@
 ;;; C-c a          `bde-align-functions-arguments'
 ;;; C-c f          `bde-align-funcall'
 ;;; C-c m          `bde-align-class-members'
+;;; (no key)       `bde-repunctuate'
+;;; -------------- -------------------------------------------------------
 ;;;
-;;; Aligh right after point:
+;;; `bde-aligh-right-after-point':
 ;;; Before (cursor anywhere after semi-colon):
 ;;;     return x; // RETURN
 ;;; After:
 ;;;     return x;                                     // RETURN
 ;;;
-;;; Insert redundant include guard (cursor must be on the line, or region with
-;;; one or more includes must be selected):
-;;; Before:
+;;; `bde-insert-redundant-include-guard':
+;;; Before (cursor must be on the line, or region with one or more includes
+;;; must be selected):
 ;;;     #include <bsl_iostream.h>
 ;;; After:
 ;;;     #ifndef INCLUDED_BSL_IOSTREAM
 ;;;     #include <bsl_iostream.h>
 ;;;     #endif
 ;;;
-;;; Align function arguments (cursor must be inside the argument list):
-;;; Before:
+;;; `bde-align-functions-arguments': align function signature
+;;; Before (cursor must be inside the argument list):
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
 ;;;             const bsl::vector<int>& accounts,
@@ -45,8 +47,8 @@
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
 ;;; TODO: apparently default values should be aligned too.
 ;;;
-;;; Align function call arguments (cursor must be inside the argument list):
-;;; Before:
+;;; `bde-align-funcall': align function call arguments
+;;; Before (cursor must be inside the argument list):
 ;;;    bslma::ManagedPtr<BufferedMessage> message(
 ;;;       groupInfo->bufferedMessages()[0], &d_bufferedMessagePool);
 ;;; After:
@@ -55,8 +57,8 @@
 ;;;                                           &d_bufferedMessagePool);
 ;;; TODO: currently does not work well with comments.
 ;;;
-;;; Align class members (region must be selected):
-;;; Before:
+;;; `bde-align-class-members'
+;;; Before (region must be selected):
 ;;;    bslma::Allocator *d_allocator_p; // held not owned
 ;;;    bool d_started;
 ;;;    bdet_TimeInterval d_idleCheckInterval; // Delay between 2 checks for
@@ -70,6 +72,10 @@
 ;;;                                        // Delay between 2 checks for
 ;;;                                        // idle sessions. Default is 0,
 ;;;                                        // meaning this feature is not used.
+;;;
+;;; `bde-repunctuate': puts two spaces at the end of each sentence in selected
+;;; region or comment block.
+;;; TODO: the regex should be fixed for words like "e.g." or "i.e.".
 
 (with-no-warnings (require 'cl))
 
@@ -762,6 +768,76 @@ start at column 40."
          (message "No region"))))
 
 (define-key c-mode-base-map [(control c)(m)] 'bde-align-class-members)
+
+
+;;; Repunctuate: the BDE comment style requires 2 spaces at the end of each
+;;; sentence, which is both annoying and debatable:
+;;; http://en.wikipedia.org/wiki/Sentence_spacing
+;;; Fortunately Emacs can take care of that for us.
+
+(defun bde-in-comment-p ()
+  "Predicate returning non-nil if the cursor is within a C++ comment."
+  (let ((syntax (if (boundp 'c-syntactic-context)
+                    ;; Use `c-syntactic-context' in the same way as
+                    ;; `c-indent-line', to be consistent.
+                    c-syntactic-context
+                  (c-save-buffer-state nil
+                    (c-guess-basic-syntax)))))
+    ;; `syntax' is c-syntactic-context and contains 'comment-intro if
+    ;; we are within a comment block.
+    (assq 'comment-intro syntax)))
+
+(defun bde-comment-beginning ()
+  "Return the position of the beginning of a comment block, at
+the beginning of the first line, or nil if not found. It is safer
+to use this function in conjunction with `bde-in-comment-p'. Note
+that this function only considers lines that only contain a
+comment."
+  (loop
+   (beginning-of-line)
+   (cond ((= (point) (point-min))
+          (return nil))
+         ((re-search-forward "^ *//" (point-at-eol) t)
+          ;; looking at a comment line
+          (forward-line -1))
+         (t
+          (forward-line 1)
+          (return (point))))))
+
+(defun bde-comment-end ()
+  "Return the position of the end of a comment block, at the end
+of the last line, or nil if not found. It is safer to use this
+function in conjunction with `bde-in-comment-p'. Note that this
+function only considers lines that only contain a comment."
+  (loop
+   (beginning-of-line)
+   (cond ((= (point) (point-min))
+          (return nil))
+         ((re-search-forward "^ *//" (point-at-eol) t)
+          ;; looking at a comment line
+          (forward-line 1))
+         (t
+          (forward-line -1)
+          (end-of-line)
+          (return (point))))))
+
+(defun bde-repunctuate ()
+  "Put two spaces at the end of sentences in the selected region
+or comment block. See also `repunctuate-sentences'."
+  (interactive)
+  (let (beginning end)
+    (cond ((region-active-p)
+           (setq beginning (region-beginning)
+                 end (region-end)))
+          ((bde-in-comment-p)
+           (setq beginning (bde-comment-beginning)
+                 end (bde-comment-end))))
+    (if (and beginning end)
+        (save-excursion
+          (replace-regexp "\\([]\"')]?\\)\\([.?!]\\)\\([]\"')]?\\) +"
+                          "\\1\\2\\3  "
+                          nil beginning end))
+      (message "No region or comment"))))
 
 
 (provide 'init-bde-style)
