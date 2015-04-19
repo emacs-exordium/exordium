@@ -836,7 +836,8 @@ or comment block. See also `repunctuate-sentences'."
         (save-excursion
           (replace-regexp "\\([]\"')]?\\)\\([.?!]\\)\\([]\"')]?\\) +"
                           "\\1\\2\\3  "
-                          nil beginning end))
+                          nil beginning end)
+          (fill-paragraph))
       (message "No region or comment"))))
 
 
