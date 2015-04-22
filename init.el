@@ -49,6 +49,11 @@
     :group 'init
     :type 'list)
 
+(defcustom exordium-extra-pinned '()
+  "Additional packages locations to pin to"
+  :group 'init
+  :type 'list)
+
 ;; Taps definition of before and after files. These are loaded
 ;; after master 'before', 'after', and 'prefs' files
 
@@ -63,6 +68,12 @@
 
 (defconst exordium-tapped-after-init-files ()
   "all tapped after init files, including master")
+
+(defconst exordium-melpa-package-repo "http://melpa.org/packages/"
+  "URL for packages repository")
+
+(defconst exordium-pinned-melpa-package-repo "http://melpa.org/packages/"
+  "URL for pinned default packages. Set to stable melpa.org if you want stable")
 
 (when (file-accessible-directory-p exordium-taps-root)
   (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
@@ -100,7 +111,10 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
+             (cons "melpa" exordium-melpa-package-repo) t)
+(add-to-list 'package-archives
+             (cons "melpa-pinned" exordium-pinned-melpa-package-repo) t)
+
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
@@ -139,6 +153,43 @@
                                    project-explorer
                                    page-break-lines)
                                  exordium-extra-packages))
+
+      (package-pinned-packages (append '(
+                                         (diminish                . "melpa-pinned")
+                                         (highlight-symbol        . "melpa-pinned")
+                                         (magit                   . "melpa-pinned")
+                                         (git-timemachine         . "melpa-pinned")
+                                         (git-gutter              . "melpa-pinned")
+                                         (git-gutter-fringe       . "melpa-pinned")
+                                         (expand-region           . "melpa-pinned")
+                                         (auto-complete           . "melpa-pinned")
+                                         (company                 . "melpa-pinned")
+                                         (rtags                   . "melpa-pinned")
+                                         (auto-complete-c-headers . "melpa")
+                                         (yasnippet               . "melpa-pinned")
+                                         (js2-mode                . "melpa-pinned")
+                                         (ac-js2                  . "melpa")
+                                         (iedit                   . "melpa")
+                                         (cider                   . "melpa-pinned")
+                                         (clojure-mode            . "melpa-pinned")
+                                         (paredit                 . "melpa-pinned")
+                                         (rainbow-delimiters      . "melpa-pinned")
+                                         (helm                    . "melpa-pinned")
+                                         (helm-descbinds          . "melpa-pinned")
+                                         (helm-swoop              . "melpa-pinned")
+                                         (ido-ubiquitous          . "melpa-pinned")
+                                         (projectile              . "melpa-pinned")
+                                         (helm-projectile         . "melpa-pinned")
+                                         (cmake-mode              . "melpa-pinned")
+                                         (markdown-mode           . "melpa-pinned")
+                                         (enh-ruby-mode           . "melpa")
+                                         (fill-column-indicator   . "melpa-pinned")
+                                         (exec-path-from-shell    . "melpa-pinned")
+                                         (goto-chg                . "melpa")
+                                         (project-explorer        . "melpa-pinned")
+                                         (page-break-lines        . "melpa-pinned")
+                                         )
+                                       exordium-extra-pinned))
       (has-refreshed nil))
   (dolist (p required-packages)
     (unless (package-installed-p p)
