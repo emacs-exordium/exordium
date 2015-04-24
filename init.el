@@ -44,12 +44,12 @@
 (defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
   "location of the master after init file")
 
-(defcustom exordium-extra-packages '()
+(defcustom exordium-extra-packages ()
   "Additional packages to auto load from elpa repositories"
     :group 'init
     :type 'list)
 
-(defcustom exordium-extra-pinned '()
+(defcustom exordium-extra-pinned ()
   "Additional packages locations to pin to"
   :group 'init
   :type 'list)
