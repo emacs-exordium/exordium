@@ -376,14 +376,6 @@ sets `match-data' to the entire match."
 
 ;;; Display the diagnostics buffer without force reparsing
 
-;;; Anders introduced a bug with commit 9fc77c9. I'm redefining this function
-;;; until he fixes it:
-(defun pg/rtags-has-diagnostics ()
-  (and (get-buffer "*RTags Diagnostics*")
-       rtags-diagnostics-process
-       (not (eq (process-status rtags-diagnostics-process) 'exit))
-       (not (eq (process-status rtags-diagnostics-process) 'signal))))
-
 (defun rtags-show-diagnostics-buffer ()
   "Show/hide the diagnostics buffer in a dedicated
 window (similar to `rtags-diagnostics' but without reparsing)."

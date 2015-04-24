@@ -61,7 +61,7 @@
          'exordium-powerline-inactive3)
         ((and (eq major-mode 'c++-mode)
               (featurep 'rtags)
-              (pg/rtags-has-diagnostics))
+              (rtags-has-diagnostics))
          ;; Green or red
          (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
            (if (and diag-buff (> (buffer-size diag-buff) 0))

@@ -159,9 +159,15 @@ names to which it refers are bound."
      (info-xref-visited ((,class (:foreground ,magenta :inherit info-xref))))
 
      ;; RTags
-     (rtags-errline ((,class (:background ,red))))
-     (rtags-warnline ((,class (:background ,orange))))
-     (rtags-fixitline ((,class (:background ,green))))
+     (rtags-errline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                  `(:background ,red :foreground ,back)
+                                `(:underline (:color ,red :style wave))))))
+     (rtags-warnline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                   `(:background ,orange :foreground ,back)
+                                 `(:underline (:color ,orange :style wave))))))
+     (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                    `(:background ,green :foreground ,back)
+                                  `(:underline (:color ,green :style wave))))))
 
      ;; Org
      (org-hide ((,class (:foreground ,base03))))
@@ -175,6 +181,12 @@ names to which it refers are bound."
      (org-started-kwd-face ((,class (:foreground ,yellow :background ,base03))))
      (org-cancelled-kwd-face ((,class (:foreground ,green :background ,base03))))
      (org-delegated-kwd-face ((,class (:foreground ,cyan :background ,base03))))
+     (org-document-title ((,class
+                           ,(append `(:weight bold :foreground ,cyan)
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+     (org-level-1 ((,class
+                    ,(append `(:foreground ,base0)
+                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
 
      ;; outline
      (outline-1 ((,class (:foreground ,blue))))

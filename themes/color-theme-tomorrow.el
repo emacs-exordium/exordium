@@ -236,13 +236,15 @@ names to which it refers are bound."
      (compilation-mode-line-run ((,class (:foreground ,blue))))
 
      ;; Rtags
-     ;; Loud:
-     ;;(rtags-errline ((,class (:background ,red :foreground ,background))))
-     ;;(rtags-warnline ((,class (:background ,orange :foreground ,background))))
-     ;;(rtags-fixitline ((,class (:background ,green :foreground ,background))))
-     (rtags-errline ((,class (:underline (:color ,red :style wave)))))
-     (rtags-warnline ((,class (:underline (:color ,orange :style wave)))))
-     (rtags-fixitline ((,class (:underline (:color ,green :style wave)))))
+     (rtags-errline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                  `(:background ,red :foreground ,background)
+                                `(:underline (:color ,red :style wave))))))
+     (rtags-warnline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                   `(:background ,orange :foreground ,background)
+                                 `(:underline (:color ,orange :style wave))))))
+     (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
+                                    `(:background ,green :foreground ,background)
+                                  `(:underline (:color ,green :style wave))))))
 
      ;; Magit
      (magit-branch ((,class (:foreground ,green))))
@@ -290,7 +292,9 @@ names to which it refers are bound."
      (grep-match-face ((,class (:foreground nil :background nil :inherit match))))
 
      ;; Org
-     (org-level-1 ((,class (:foreground ,foreground :height 1.44))))
+     (org-level-1 ((,class
+                    ,(append `(:foreground ,foreground)
+                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
      (org-level-2 ((,class (:foreground ,aqua))))
      (org-level-3 ((,class (:foreground ,purple))))
      (org-level-4 ((,class (:foreground ,comment))))
@@ -305,7 +309,9 @@ names to which it refers are bound."
      (org-date ((,class (:foreground ,purple :underline t))))
      (org-document-info ((,class (:foreground ,aqua))))
      (org-document-info-keyword ((,class (:foreground ,green))))
-     (org-document-title ((,class (:weight bold :foreground ,green :height 1.44))))
+     (org-document-title ((,class
+                           ,(append `(:weight bold :foreground ,green)
+                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
      (org-todo ((,class (:foreground ,red :weight bold :box nil))))
      (org-done ((,class (:foreground ,green :weight bold :box nil))))
      (org-checkbox ((,class (:foreground ,yellow :weight bold))))

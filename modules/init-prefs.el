@@ -113,6 +113,13 @@ If nil, use a plain line."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-skip-taps-update nil
+  "Whether to skip taps update when updating configuration.
+If set to nil, each tap need to be updated manually,
+i.e., with git pull."
+  :group 'exordium
+  :type  'boolean)
+
 
 ;;; Autocomplete -- see init-autocomplete.el
 
@@ -135,6 +142,20 @@ otherwise use one of the following:
 - zenburn"
   :group 'exordium
   :type  'symbol)
+
+(defcustom exordium-theme-use-loud-rtags-faces nil
+  "Whether RTags error/warning/fixit faces are loud or not with
+the current theme. It depends on the theme but generally setting
+this to t will use reverse video, while setting it to nil will
+use underline waves."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-theme-use-big-org-fonts t
+  "Whether Org mode uses big fonts for titles and top-level
+  items."
+  :group 'exordium
+  :type  'boolean)
 
 (defcustom exordium-highlight-linum t
   "Whether the current line number is highlighted.

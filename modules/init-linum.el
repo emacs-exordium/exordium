@@ -20,7 +20,8 @@
       project-explorer-mode
       org-mode
       rtags-rdm-mode
-      rtags-diagnostics-mode)
+      rtags-diagnostics-mode
+      eww-mode)
     "List of modes for which we DO NOT want line numbers")
 
   (defadvice linum-on (around linum-on-inhibit-for-modes)
