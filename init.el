@@ -118,43 +118,7 @@
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
-(let ((required-packages (append '(diminish
-                                   highlight-symbol
-                                   magit
-                                   git-timemachine
-                                   git-gutter
-                                   git-gutter-fringe
-                                   expand-region
-                                   auto-complete
-                                   company
-                                   rtags
-                                   auto-complete-c-headers
-                                   yasnippet
-                                   js2-mode
-                                   ac-js2
-                                   iedit
-                                   cider
-                                   clojure-mode
-                                   paredit
-                                   rainbow-delimiters
-                                   helm
-                                   helm-descbinds
-                                   helm-swoop
-                                   ido-ubiquitous
-                                   projectile
-                                   helm-projectile
-                                   ;; ack-and-a-half
-                                   cmake-mode
-                                   markdown-mode
-                                   enh-ruby-mode
-                                   fill-column-indicator
-                                   exec-path-from-shell
-                                   goto-chg
-                                   project-explorer
-                                   page-break-lines)
-                                 exordium-extra-packages))
-
-      (package-pinned-packages (append '(
+(let ((package-pinned-packages (append '(
                                          (diminish                . "melpa-pinned")
                                          (highlight-symbol        . "melpa-pinned")
                                          (magit                   . "melpa-pinned")
@@ -191,14 +155,22 @@
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
-  (dolist (p required-packages)
+
+  (defun update-package (p  has-refreshed)
     (unless (package-installed-p p)
       (unless has-refreshed
         (message "Refreshing package database...")
         (package-refresh-contents)
         (setq has-refreshed t)
         (message "Done."))
-      (package-install p))))
+      (package-install p)))
+
+  (dolist (pkg package-pinned-packages)
+    (let ((p (car pkg)))
+      (update-package p has-refreshed)))
+
+  (dolist (pkg exordium-extra-packages)
+    (update-package pkg has-refreshed)))
 
 
 ;;; Path for "require"
