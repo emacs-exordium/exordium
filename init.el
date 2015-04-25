@@ -152,7 +152,7 @@
                                          (goto-chg                . "melpa")
                                          (project-explorer        . "melpa-pinned")
                                          (page-break-lines        . "melpa-pinned")
-					 (org-bullets             . "melpa-pinned")
+                                         (org-bullets             . "melpa-pinned")
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
