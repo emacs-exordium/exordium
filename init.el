@@ -44,10 +44,15 @@
 (defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
   "location of the master after init file")
 
-(defcustom exordium-extra-packages '()
+(defcustom exordium-extra-packages ()
   "Additional packages to auto load from elpa repositories"
     :group 'init
     :type 'list)
+
+(defcustom exordium-extra-pinned ()
+  "Additional packages locations to pin to"
+  :group 'init
+  :type 'list)
 
 ;; Taps definition of before and after files. These are loaded
 ;; after master 'before', 'after', and 'prefs' files
@@ -63,6 +68,12 @@
 
 (defconst exordium-tapped-after-init-files ()
   "all tapped after init files, including master")
+
+(defconst exordium-melpa-package-repo "http://melpa.org/packages/"
+  "URL for packages repository")
+
+(defconst exordium-pinned-melpa-package-repo "http://melpa.org/packages/"
+  "URL for pinned default packages. Set to stable melpa.org if you want stable")
 
 (when (file-accessible-directory-p exordium-taps-root)
   (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
@@ -100,55 +111,67 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
+             (cons "melpa" exordium-melpa-package-repo) t)
+(add-to-list 'package-archives
+             (cons "melpa-pinned" exordium-pinned-melpa-package-repo) t)
+
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
-(let ((required-packages (append '(diminish
-                                   highlight-symbol
-                                   magit
-                                   git-timemachine
-                                   git-gutter
-                                   git-gutter-fringe
-                                   expand-region
-                                   auto-complete
-                                   company
-                                   rtags
-                                   auto-complete-c-headers
-                                   yasnippet
-                                   js2-mode
-                                   ac-js2
-                                   iedit
-                                   cider
-                                   clojure-mode
-                                   paredit
-                                   rainbow-delimiters
-                                   helm
-                                   helm-descbinds
-                                   helm-swoop
-                                   ido-ubiquitous
-                                   projectile
-                                   helm-projectile
-                                   ;; ack-and-a-half
-                                   cmake-mode
-                                   markdown-mode
-                                   enh-ruby-mode
-                                   fill-column-indicator
-                                   exec-path-from-shell
-                                   goto-chg
-                                   project-explorer
-                                   page-break-lines
-                                   org-bullets)
-                                 exordium-extra-packages))
+(let ((package-pinned-packages (append '(
+                                         (diminish                . "melpa-pinned")
+                                         (highlight-symbol        . "melpa-pinned")
+                                         (magit                   . "melpa-pinned")
+                                         (git-timemachine         . "melpa-pinned")
+                                         (git-gutter              . "melpa-pinned")
+                                         (git-gutter-fringe       . "melpa-pinned")
+                                         (expand-region           . "melpa-pinned")
+                                         (auto-complete           . "melpa-pinned")
+                                         (company                 . "melpa-pinned")
+                                         (rtags                   . "melpa-pinned")
+                                         (auto-complete-c-headers . "melpa")
+                                         (yasnippet               . "melpa-pinned")
+                                         (js2-mode                . "melpa-pinned")
+                                         (ac-js2                  . "melpa")
+                                         (iedit                   . "melpa")
+                                         (cider                   . "melpa-pinned")
+                                         (clojure-mode            . "melpa-pinned")
+                                         (paredit                 . "melpa-pinned")
+                                         (rainbow-delimiters      . "melpa-pinned")
+                                         (helm                    . "melpa-pinned")
+                                         (helm-descbinds          . "melpa-pinned")
+                                         (helm-swoop              . "melpa-pinned")
+                                         (ido-ubiquitous          . "melpa-pinned")
+                                         (projectile              . "melpa-pinned")
+                                         (helm-projectile         . "melpa-pinned")
+                                         (cmake-mode              . "melpa-pinned")
+                                         (markdown-mode           . "melpa-pinned")
+                                         (enh-ruby-mode           . "melpa")
+                                         (fill-column-indicator   . "melpa-pinned")
+                                         (exec-path-from-shell    . "melpa-pinned")
+                                         (goto-chg                . "melpa")
+                                         (project-explorer        . "melpa-pinned")
+                                         (page-break-lines        . "melpa-pinned")
+					 (org-bullets             . "melpa-pinned")
+                                         )
+                                       exordium-extra-pinned))
       (has-refreshed nil))
-  (dolist (p required-packages)
+
+  (defun update-package (p  has-refreshed)
     (unless (package-installed-p p)
       (unless has-refreshed
         (message "Refreshing package database...")
         (package-refresh-contents)
         (setq has-refreshed t)
         (message "Done."))
-      (package-install p))))
+      (package-install p)))
+
+  (dolist (pkg package-pinned-packages)
+    (let ((p (car pkg)))
+      (update-package p has-refreshed)))
+
+  (dolist (pkg exordium-extra-packages)
+    (update-package pkg has-refreshed)))
 
 
 ;;; Path for "require"
