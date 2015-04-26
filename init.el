@@ -46,13 +46,13 @@
 
 (defcustom exordium-extra-packages ()
   "Additional packages to auto load from elpa repositories"
-    :group 'init
-    :type 'list)
+    :group 'exordium
+    :type  'list)
 
 (defcustom exordium-extra-pinned ()
   "Additional packages locations to pin to"
-  :group 'init
-  :type 'list)
+  :group 'exordium
+  :type  'list)
 
 ;; Taps definition of before and after files. These are loaded
 ;; after master 'before', 'after', and 'prefs' files
@@ -153,6 +153,7 @@
                                          (project-explorer        . "melpa-pinned")
                                          (page-break-lines        . "melpa-pinned")
                                          (org-bullets             . "melpa-pinned")
+                                         (powerline               . "melpa-pinned")
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
