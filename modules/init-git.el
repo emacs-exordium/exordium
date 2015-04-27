@@ -77,4 +77,11 @@
   (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
   (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
 
+
+;;; Git Timemachine
+
+(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
+
+
+
 (provide 'init-git)
