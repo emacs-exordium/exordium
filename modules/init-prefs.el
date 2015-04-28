@@ -35,7 +35,7 @@ available font names by evaluating (font-family-list)."
   :type  'integer)
 
 ;; Note: a weird bug in OS X makes the title bar black if height is too big
-(defcustom exordium-preferred-frame-height 65
+(defcustom exordium-preferred-frame-height 60
   "Default frame height (a number of lines)."
   :group 'exordium
   :type  'integer)
