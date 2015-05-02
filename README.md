@@ -857,12 +857,11 @@ in `provide` and the symbol in `require` are the same.
   removes all `.elc` files (if you restart Emacs it will not compile
   anything). `M-x force-recompile-modules` recompiles everything.
 
-* RTags now uses memory mapped files instead of loading projects into memory
-  ( Andersbakken/rtags@c64f58e1c273be89855c0021664c2dc48d70bfed ). It may be slow
-  if your home directory is NFS-mounted, since by default the index is stored
-  in `~/.rtags`. The solution is to store the index on a local drive,
-  preferably an SSD. You do this by creating a file `~/.rdmrc` with a content
-  like this: `--data-dir=/local/drive/.rtags`.
+* RTags now uses memory mapped files instead of loading projects into
+  memory. It may be slow if your home directory is NFS-mounted, since by
+  default the index is stored in `~/.rtags`. The solution is to store the index
+  on a local drive, preferably an SSD. You do this by creating a file
+  `~/.rdmrc` with a content like this: `--data-dir=/local/drive/.rtags`.
 
 ### Configuration profiling
 
