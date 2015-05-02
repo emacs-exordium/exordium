@@ -356,9 +356,10 @@ name in `after-init.el`.
 ### RTags
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
-which provides a daemon called "rdm" that maintains an in-memory index, and a
-command-line client called "rc". RTags uses a single index for all symbols, but
-it allows for loading and unloading projects individually.
+which provides a daemon called "rdm" that maintains a persistent (memory
+mapped) file-based index. The client for "rdm" is command-line client called
+"rc". RTags uses a single index for all symbols, but it allows for loading and
+unloading projects individually.
 
 To use it, first start the daemon:
 
@@ -810,13 +811,13 @@ in `provide` and the symbol in `require` are the same.
 
 ### Bugs
 
-* Powerline may cause Emacs to crash on startup because of a race condition
-  inside Emacs. One trick to fix it is to make Powerline be the last thing you
-  enable in your config. For this, add `(setq exordium-enabled-powerline nil)`
-  in your `pref.el`, and add `(require 'init-powerline)` in your
-  `after-init.el`. If this still does not work, keep Powerline disabled and
-  start it after one second of idle time by adding this at the very end of your
-  `after-init.el`:
+1. Powerline may cause Emacs to crash on startup because of a race condition
+   inside Emacs. One trick to fix it is to make Powerline be the last thing you
+   enable in your config. For this, add `(setq exordium-enabled-powerline nil)`
+   in your `pref.el`, and add `(require 'init-powerline)` in your
+   `after-init.el`. If this still does not work, keep Powerline disabled and
+   start it after one second of idle time by adding this at the very end of
+   your `after-init.el`:
 
 ```lisp
 (defun powerline ()
@@ -831,30 +832,37 @@ in `provide` and the symbol in `require` are the same.
 (run-with-idle-timer 1 nil #'powerline)
 ```
 
-* Sometimes a random bug may occur that displays this error:
-  `fringe-helper-modification-func: Invalid search bound (wrong side of
-  point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
-  git diff icons in the left-side fringe.
+2. Sometimes a random bug may occur that displays this error:
+   `fringe-helper-modification-func: Invalid search bound (wrong side of
+   point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
+   git diff icons in the left-side fringe.
 
-  There are two ways to work around it: either add `(setq exordium-git-gutter
-  nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
-  exordium-git-gutter-non-fringe t)` in your `prefs.el` to display git diffs on
-  the left side of line numbers, e.g. not in the fringe. Note that the latter
-  disables the highlighting of the current line number for now.
+   There are two ways to work around it: either add `(setq exordium-git-gutter
+   nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
+   exordium-git-gutter-non-fringe t)` in your `prefs.el` to display git diffs
+   on the left side of line numbers, e.g. not in the fringe. Note that the
+   latter disables the highlighting of the current line number for now.
 
-* Editing large comment blocks in C++ can be slow as hell. Unfortunately this
-  is a problem with
-  [CC-mode](http://www.gnu.org/software/emacs/manual/html_node/ccmode/Performance-Issues.html)
-  and not with this config. A simple solution is to turn off font lock
-  temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable font
-  lock after you're done editing your large component-level comment.
+3. Editing large comment blocks in C++ can be slow as hell. Unfortunately this
+   is a problem with
+   [CC-mode](http://www.gnu.org/software/emacs/manual/html_node/ccmode/Performance-Issues.html)
+   and not with this config. A simple solution is to turn off font lock
+   temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable
+   font lock after you're done editing your large component-level comment.
 
-* Sometimes weird bugs may happen after an upgrade or during development on a
-  module. Exordium recompiles any `.el` file for which the corresponding `.elc`
-  files is older on startup, but does not try to force any `.el` file to be
-  compiled.  Two functions are useful in this case: `M-x uncompile-modules`
-  removes all `.elc` files (if you restart Emacs it will not compile
-  anything). `M-x force-recompile-modules` recompiles everything.
+4. Sometimes weird bugs may happen after an upgrade or during development on a
+   module. Exordium recompiles any `.el` file for which the corresponding
+   `.elc` files is older on startup, but does not try to force any `.el` file
+   to be compiled.  Two functions are useful in this case: `M-x
+   uncompile-modules` removes all `.elc` files (if you restart Emacs it will
+   not compile anything). `M-x force-recompile-modules` recompiles everything.
+
+5. RTags now uses memory mapped files instead of loading projects into memory
+   (Andersbakken/rtags@c64f58e1c273be89855c0021664c2dc48d70bfed). It may be
+   slow if your home directory is NFS-mounted, since by default the index is
+   stored in `~/.rtags`. The solution is to store the index on a local drive,
+   preferably an SSD. You do this by creating a file `~/.rdmrc` with a content
+   like this: `--data-dir=/local/drive/.rtags`.
 
 ### Configuration profiling
 
