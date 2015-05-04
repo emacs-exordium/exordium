@@ -1,5 +1,7 @@
 ;;;; Shell mode
 
+(require 'comint)
+
 ;;; This is needed so that clearing shell buffer works as expected
 (remove-hook 'comint-output-filter-functions
              'comint-postoutput-scroll-to-bottom)
@@ -20,5 +22,12 @@
  '(comint-input-ring-size 5000)         ; max shell history size
  '(protect-buffer-bury-p nil)
 )
+
+;;; Clear the buffer
+(defun clear-buffer ()
+  "Clears the current buffer, removing all its content"
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
 
 (provide 'init-shell)
