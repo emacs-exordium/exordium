@@ -812,12 +812,11 @@ in `provide` and the symbol in `require` are the same.
 ### Bugs
 
 * Powerline may cause Emacs to crash on startup because of a race condition
-  inside Emacs. One trick to fix it is to make Powerline be the last thing you
-  enable in your config. For this, add `(setq exordium-enabled-powerline nil)`
-  in your `pref.el`, and add `(require 'init-powerline)` in your
-  `after-init.el`. If this still does not work, keep Powerline disabled and
-  start it after one second of idle time by adding this at the very end of your
-  `after-init.el`:
+  inside Emacs. A solution is to make it display after one second of idle time
+  in order to guarantee that Emacs has finished initializing. For this, add
+  `(setq exordium-display-powerline-after-idle-time 1)` in your
+  `prefs.el`. Another solution is to enable powerline manually using a function
+  like this:
 
 ```lisp
 (defun powerline ()
@@ -827,9 +826,6 @@ in `provide` and the symbol in `require` are the same.
   (powerline-set-selected-window)
   (require 'init-powerline)
   (redraw-display))
-
-;;; Call the powerline function the next time Emacs is idle for 1 second:
-(run-with-idle-timer 1 nil #'powerline)
 ```
 
 * Sometimes a random bug may occur that displays this error:

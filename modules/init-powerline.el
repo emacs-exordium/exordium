@@ -126,7 +126,19 @@
                 (powerline-fill face2 (powerline-width rhs))
                 (powerline-render rhs)))))))
 
-(exordium-powerline-theme)
+(defun display-powerline ()
+  "(Re)Displays Powerline"
+  (powerline-set-selected-window)
+  (exordium-powerline-theme)
+  (redraw-display))
+
+;; Depending on the preferences, either display powerline immediately or after
+;; a number of seconds of idle time. This is a fix for Emacs crashing on some
+;; environments.
+(if (eq exordium-display-powerline-after-idle-time 0)
+    (exordium-powerline-theme)
+  (run-with-idle-timer exordium-display-powerline-after-idle-time nil
+                       #'display-powerline))
 
 (provide 'init-powerline)
 

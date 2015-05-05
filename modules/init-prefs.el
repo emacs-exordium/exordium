@@ -168,6 +168,14 @@ This does not work with nlinum-mode currently."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-display-powerline-after-idle-time 0
+  "Fix a race/crash at startup related to Powerline that may
+  happen on some environments, by displaying Powerline only after
+  a specified number of seconds of idle time. Normally 1 second
+  is enough."
+  :group 'exordium
+  :type  'integer)
+
 (defcustom exordium-fix-powerline-osx-bug t
   "Fix the graphical bug with Emacs24.4 on OS-X (the angles in
 powerline are not rendered correctly). It makes the colors a bit
