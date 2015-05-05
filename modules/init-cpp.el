@@ -81,22 +81,18 @@
         (setq matching-ext (cdr matching-ext)))
       (cond (matching-ext
              (unless (catch 'found
-                       ;; First look into the existing buffers
-                       (let ((buffers (mapcar (lambda (i)
-                                                (concat base-name i))
-                                              matching-ext)))
-                         (dolist (buff buffers)
+                       (dolist (candidate-ext matching-ext)
+                         ;; Look for a buffer matching candidate-ext
+                         (let ((buff (concat base-name candidate-ext)))
                            (when (bufferp (get-buffer buff))
                              (switch-to-buffer buff)
-                             (throw 'found t))))
-                       ;; If no such buffer, look into the files in the same dir
-                       (let ((files (mapcar (lambda (matching-ext)
-                                              (concat base-path matching-ext))
-                                            matching-ext)))
-                         (dolist (file files)
+                             (throw 'found t)))
+                         ;; No buffer => look for a file
+                         (let ((file (concat base-path candidate-ext)))
                            (when (file-exists-p file)
                              (find-file file)
                              (throw 'found t))))
+                       ;; No buffer or file for any matching-ext
                        nil)
                (message "No matching buffer or file")))
             (t (message "This is not a C/C++ file"))))))
