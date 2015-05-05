@@ -13,6 +13,10 @@
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
 
+(setq initial-scratch-message
+      "EXORDIUM DID NOT LOAD CORRECTLY.
+Check the warnings and messages buffers, or restart with --debug-init")
+
 (defconst exordium-before-init "before-init.el"
   "name of the before init file")
 
@@ -228,6 +232,14 @@ the .elc exists. Also discard .elc without corresponding .el"
 (dolist (tapped-file exordium-tapped-prefs-files)
   (load tapped-file))
 
+;;; Themes
+;;; Note: use "export TERM=xterm-256color" for emacs -nw
+(require 'init-progress-bar)
+(when exordium-nw
+  (set-face-background 'highlight nil))
+(when exordium-theme
+  (require 'init-themes))
+
 ;;; Desktop
 (when exordium-desktop
   (require 'init-desktop))
@@ -236,6 +248,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
 (require 'init-font-lock)       ; enables/disables font-lock globally.
 (require 'init-linum)           ; line numbers
+
+(update-progress-bar)
 
 ;;; Usability
 (require 'init-window-manager)  ; navigate between windows
@@ -246,19 +260,12 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 
+(update-progress-bar)
+
 (require 'init-dired)           ; enable dired+ and wdired permission editing
+(require 'init-git)             ; Magit and git gutter
 
-;;; Magit and git gutter
-(require 'init-git)
-
-;;; Themes
-;;; Note: use "export TERM=xterm-256color" for emacs -nw
-(when exordium-nw
-  (set-face-background 'highlight nil))
-(when exordium-theme
-  (require 'init-themes)
-  (when exordium-enable-powerline
-    (require 'init-powerline)))
+(update-progress-bar)
 
 ;;; Shell mode
 (require 'init-shell)
@@ -282,6 +289,8 @@ the .elc exists. Also discard .elc without corresponding .el"
   (rtags-auto-complete))
 (require 'init-rtags-helm)
 
+(update-progress-bar)
+
 ;;; JS
 (require 'init-javascript)
 
@@ -298,9 +307,14 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-clojure
   (require 'init-clojure))
 
+(update-progress-bar)
+
 ;;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
   (load tapped-file))
+
+(when (and exordium-theme exordium-enable-powerline)
+  (require 'init-powerline))
 
 ;;; Greetings
 (setq initial-scratch-message

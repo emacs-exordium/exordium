@@ -241,4 +241,13 @@ default color."
   :type  'boolean)
 
 
+;;; Progress bar
+(defcustom exordium-progress-bar nil
+  "Whether a progress bar is displayed when Exordium is loaded.
+It is disabled by default because it actually makes the
+configuration load slower."
+  :group 'exordium
+  :type  'boolean)
+
+
 (provide 'init-prefs)
