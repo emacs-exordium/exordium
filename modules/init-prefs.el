@@ -107,6 +107,13 @@ If nil, use a plain line."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-fci-fix-autocomplete-bug t
+  "Whether fill-column-indicator is temporarily disabled when an
+  auto-complete popup is displayed, in order to work around a bug
+  that causes the popup to be incorrectly displayed"
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-highlight-symbol nil
   "Whether occurrences of the symbol under point gets highlighted
   in the buffer after a few seconds."

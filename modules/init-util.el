@@ -253,18 +253,48 @@ With argument, do this that many times."
 
 (when exordium-fci-mode
   (require 'fill-column-indicator)
+
   (when exordium-fci-use-dashes
     (setq fci-rule-use-dashes t)
     (setq fci-dash-pattern 0.5))
   (setq fci-rule-width 1)
+
   (define-key global-map [(control |)]
     #'(lambda ()
         (interactive)
         (fci-mode (if fci-mode 0 1))))
+
   (when (eq exordium-fci-mode :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
       (lambda () (fci-mode 1)))
     (global-fci-mode 1)))
+
+;;; Fix a display bug in auto-complete caused by FCI. See
+;;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
+
+(when (and exordium-fci-mode
+           exordium-auto-complete
+           exordium-fci-fix-autocomplete-bug)
+  (require 'fill-column-indicator)
+  (require 'popup)
+
+  (defvar exordium-fci-mode-suppressed nil)
+
+  (defadvice popup-create (before suppress-fci-mode activate)
+    "Suspend fci-mode while popups are visible"
+    (let ((fci-enabled (and (boundp 'fci-mode) fci-mode)))
+      (when fci-enabled
+        (set (make-local-variable 'exordium-fci-mode-suppressed) fci-enabled)
+        (turn-off-fci-mode))))
+
+  (defadvice popup-delete (after restore-fci-mode activate)
+    "Restore fci-mode when all popups have closed"
+    (when (and exordium-fci-mode-suppressed
+               (null popup-instances))
+      (setq exordium-fci-mode-suppressed nil)
+      (turn-on-fci-mode))))
+
+
 
 (defun goto-long-line (len)
   "Go to the first line that is at least LEN characters long.
