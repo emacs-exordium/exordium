@@ -66,7 +66,7 @@ shift-return for just newline.  If nil, do the opposite."
 (defcustom exordium-enable-electric-pair-mode t
   "Enables electric-pair-mode."
   :group 'exordium
-  :type  'symbol)
+  :type  'boolean)
 
 (defcustom exordium-enable-cua-mode nil
   "If set to t, enables CUA mode.
@@ -80,15 +80,19 @@ IF nil, disables CUA completely."
   "Enables or disables backup files. Disabled by default, I can't
   stand these annoying files~"
   :group 'exordium
-  :type  'symbol)
+  :type  'boolean)
 
 
 ;;; Line numbers - see init-linum.el
 
 (defcustom exordium-display-line-numbers t
-  "Whether line numbers are displayed or not"
+  "Whether line numbers are displayed or not.
+Set to nil to disable line numbers.
+Set to t or :linum to enable line numbers using package `linum'.
+Set to :nlinum to enable line numbers using pakage `nlinum'
+which should be more efficient in particular for large buffers."
   :group 'exordium
-  :type  'boolean)
+  :type  'symbol)
 
 
 ;;; Miscellaneous utilities -- see init-util.el

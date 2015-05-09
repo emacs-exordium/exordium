@@ -79,6 +79,9 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (defconst exordium-pinned-melpa-package-repo "http://melpa.org/packages/"
   "URL for pinned default packages. Set to stable melpa.org if you want stable")
 
+(defconst exordium-gnu-package-repo "http://elpa.gnu.org/packages/"
+  "URL for the GNU package repository")
+
 (when (file-accessible-directory-p exordium-taps-root)
   (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
     (when (file-accessible-directory-p tap)
@@ -118,6 +121,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
              (cons "melpa" exordium-melpa-package-repo) t)
 (add-to-list 'package-archives
              (cons "melpa-pinned" exordium-pinned-melpa-package-repo) t)
+(add-to-list 'package-archives
+             (cons "gnu" exordium-gnu-package-repo) t)
 
 (package-initialize)
 
@@ -158,6 +163,7 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (page-break-lines        . "melpa-pinned")
                                          (org-bullets             . "melpa-pinned")
                                          (powerline               . "melpa-pinned")
+                                         (nlinum                  . "gnu")
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
