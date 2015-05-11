@@ -199,6 +199,10 @@
 ;; Warn when opening files bigger than 100MB (use nil to disable it entirely)
 (setq large-file-warning-threshold 100000000)
 
+;; Propose vlf (Very Large File) as a choice when opening large files
+;; (otherwise one can open a file using M-x vlf):
+(require 'vlf-setup)
+
 ;; Remove trailing blanks on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
