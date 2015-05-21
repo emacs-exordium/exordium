@@ -278,6 +278,11 @@ With argument, do this that many times."
   (require 'fill-column-indicator)
   (require 'popup)
 
+  ;;; fci-mode turns line truncation on by default; this is pretty annoying
+  ;;; when you have long lines and fci-mode goes off (to display popup)
+  ;;; and your line truncation goes off.
+  (setq-default truncate-lines t)
+
   (defvar exordium-fci-mode-suppressed nil)
 
   (defadvice popup-create (before suppress-fci-mode activate)
