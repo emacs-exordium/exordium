@@ -606,7 +606,9 @@ directory"
           (write-region (buffer-string) nil dbfilename))
         (when (yes-or-no-p
                (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
-          (rtags-call-rc :path t :output nil "-J" dir)
+          ;; FIXME: rtags-call-rc does not work if you don't specify a current buffer?
+          ;; That seems broken.
+          (rtags-call-rc :path t :output nil :unsaved (current-buffer) "-J" dir)
           (message "Reloaded (check rdm's logs)"))))))
 
 ;; Mode for compile_includes
