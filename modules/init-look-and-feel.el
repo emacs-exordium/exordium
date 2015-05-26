@@ -84,9 +84,10 @@
       scroll-down-aggressively 0.01
       scroll-preserve-screen-position t)
 
-;;; Scrollbar on the right
-;;(setq scroll-bar-mode-explicit t)
-;;(set-scroll-bar-mode `right)
+;;; Scrollbar
+(if exordium-scroll-bar
+    (set-scroll-bar-mode `right)
+  (set-scroll-bar-mode nil))
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))
