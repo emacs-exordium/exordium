@@ -50,7 +50,7 @@ available font names by evaluating (font-family-list)."
   :group 'exordium
   :type  'boolean)
 
-(defcustom exordium-scroll-bar nil
+(defcustom exordium-scroll-bar t
   "Whether a scroll bar is displayed globally or not"
   :group 'exordium
   :type   'boolean)
