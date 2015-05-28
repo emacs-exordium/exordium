@@ -105,7 +105,7 @@ which should be more efficient in particular for large buffers."
 (defcustom exordium-fci-mode :ondemand
   "Controls fill-column-indicator e.g. the 80-character ruler.
 :ondemand off by default (you need to hit C-| to toggle it),
-:always means it is always on,
+:always means it is always on, :prog means on for programming modes
 nil means it is disabled."
   :group 'exordium
   :type  'symbol)

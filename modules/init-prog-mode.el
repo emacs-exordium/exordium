@@ -11,7 +11,6 @@
   :lighter nil
   (progn (setq require-final-newline exordium-require-final-newline-mode)))
 
-(add-hook 'prog-mode-hook 'fci-mode)
 (add-hook 'prog-mode-hook 'show-paren-mode)
 (add-hook 'prog-mode-hook 'exordium-show-trailing-whitespace-mode)
 (add-hook 'prog-mode-hook 'exordium-require-final-newline-mode)
@@ -33,6 +32,16 @@
        (define-key prog-mode-map (kbd "<S-return>") (function newline-and-indent))))
 
 
+;;; Fill comments, comment regions
+(require 'newcomment)
+(setq comment-auto-fill-only-comments 1)
+(define-key prog-mode-map (kbd "\C-c\C-c") (function comment-region))
+
+
+;;; Step through compile errors
+(global-set-key (quote [f10]) (quote next-error))
+(global-set-key (quote [(control f10)]) (quote previous-error))
+
 
 ;;; Highlight symbol
 
@@ -53,10 +62,18 @@
 ;;; Display TODO: and FIXME: and TBD: in red
 (when exordium-font-lock
   (font-lock-add-keywords
-   'c++-mode
+   'prog-mode
    '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
      ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
      ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend))))
+
+
+
+
+;;; Fill column indicator
+(when (eq exordium-fci-mode :prog)
+  (add-hook 'prog-mode-hook 'fci-mode))
+
 
 (provide 'init-prog-mode)
 ;; End of file
