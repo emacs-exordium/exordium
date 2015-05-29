@@ -1,4 +1,7 @@
-;; Shared prog-mode-configuration
+;; Shared prog-mode configuration
+
+(require 'init-prefs)
+
 (define-minor-mode exordium-show-trailing-whitespace-mode
   "Enables `show-trailing-whitespace'."
   :init-value nil
@@ -14,7 +17,9 @@
 (add-hook 'prog-mode-hook 'show-paren-mode)
 (add-hook 'prog-mode-hook 'exordium-show-trailing-whitespace-mode)
 (add-hook 'prog-mode-hook 'exordium-require-final-newline-mode)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(when (eq exordium-spell-check :prog)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
 
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
@@ -61,11 +66,13 @@
 
 ;;; Display TODO: and FIXME: and TBD: in red
 (when exordium-font-lock
-  (font-lock-add-keywords
-   'prog-mode
-   '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
-     ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
-     ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend))))
+  (defun add-keywords-for-todos ()
+    (font-lock-add-keywords
+     nil
+     '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
+       ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
+       ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend))))
+  (add-hook 'prog-mode-hook 'add-keywords-for-todos))
 
 
 

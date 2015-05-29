@@ -217,6 +217,13 @@ default color."
 
 ;;; Programming
 
+;;; See init-prog.el
+(defcustom exordium-spell-check :prog
+  "Enables flyspell for prog modes if set to :prog.
+Disables flyspell if set to nil."
+  :group 'exordium
+  :type  'symbol)
+
 ;;; See init-rtags.el
 (defcustom exordium-rtags-auto-complete nil
   "Whether RTags is used as the source for auto-complete in C++ mode."
