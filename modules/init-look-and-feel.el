@@ -153,12 +153,6 @@
 (define-key global-map [(control z)] (function undo))
 (global-set-key [(control ?`)] (function kill-this-buffer))
 
-;;; The return key
-(cond (exordium-enable-newline-and-indent
-       (global-set-key "\C-m" (function newline-and-indent))
-       (global-set-key [(shift return)] (function newline)))
-      (t
-       (global-set-key [(shift return)] (function newline-and-indent))))
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()

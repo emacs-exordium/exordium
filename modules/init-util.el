@@ -323,22 +323,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
       (message "Not found"))))
 
 
-;;; Highlight symbol
 
-(eval-when-compile
-  (require 'highlight-symbol))
-
-(when exordium-highlight-symbol
-  (require 'highlight-symbol)
-  (highlight-symbol-nav-mode)
-  ;;
-  (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-  (setq highlight-symbol-on-navigation-p t)
-  ;; Don't show this mode in the modeline
-  (eval-after-load 'highlight-symbol
-    '(diminish 'highlight-symbol-mode)))
-
-
 ;;; Buffers and windows
 
 (defun toggle-window-dedicated ()
