@@ -1,3 +1,5 @@
+![Exordium](https://raw.github.com/philippe-grenet/exordium/master/doc/Exordium.png)
+
 # What is this repo
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
