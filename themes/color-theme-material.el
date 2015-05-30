@@ -4,18 +4,24 @@
 ;;; Inspired by the theme from Paulik Christoph
 ;;; See https://github.com/cpaulik/emacs-material-theme
 ;;;
-;;; FIXME: replace all custom colors in `material-face-specs' with
-;;; constants. All colors should be defined from the Material palette: see
-;;; http://www.google.com/design/spec/style/color.html#color-ui-color-application
+;;; The colors in this theme should be defined from the Material palette: see
+;;; http://www.google.com/design/spec/style/color.html
 
 (require 'org)
 (require 'init-prefs)
 
+;;; Themes options
+
+(defcustom exordium-material-italics nil
+  "Enable italics for certain faces, such as comments"
+  :group 'exordium
+  :type  'boolean)
+
 ;;; Color palette
 
 (defconst material-colors
-  '((background          . "#263238")
-    (current-line        . "#37474f")
+  '((background          . "#263238")  ; = Blue Gray 900
+    (current-line        . "#37474f")  ; = Blue Gray 800
     (far-background      . "#1c1f26")
     (subtle              . "#a7adba")
     (selection           . "#555555")
@@ -24,10 +30,24 @@
     (comment             . "#b0bec5")
     (red                 . "#f36c60")
     (orange              . "#ff9800")
+    (orange-200          . "#ffcc80")
+    (deep-orange-200     . "#ffab91")
+    (deep-orange-a700    . "#DD2C00")
     (yellow              . "#fff59d")
-    (green               . "#8bc34a")
-    (aqua                . "#81d4fa")
+    (yellow-600          . "#fdd835")
+    (light-green-500     . "#8bc34a")
+    (light-green-400     . "#9ccc65")
+    (green-200           . "#a5d6a7")
+    (green-900           . "#1b5e20")
+    (light-blue-200      . "#81d4fa")
+    (light-blue-100      . "#b3e5fc")
+    (light-blue-50       . "#e1f5fe")
     (blue                . "#4dd0e1")
+    (cyan-a100           . "#84ffff")
+    (teal-200            . "#80cbc4")
+    (blue-gray-50        . "#eceff1")
+    (blue-gray-100       . "#cfd8dc")
+    (blue-gray-700       . "#455a64")
     (purple              . "#b39ddb")
     (black               . "#000000")))
 
@@ -53,34 +73,37 @@ names to which it refers are bound."
      (underline ((,class (:underline t))))
      (italic ((,class (:slant italic))))
      (shadow ((,class (:foreground ,comment))))
-     (success ((,class (:foreground "SeaGreen2"))))
+     (success ((,class (:foreground ,light-green-500))))
      (error ((,class (:foreground ,red))))
      (warning ((,class (:foreground ,orange))))
      (scroll-bar ((,class (:background ,background))))
 
      ;; Parenthesis matching (built-in)
-     (show-paren-match-face ((,class (:background "dodgerblue1" :foreground "white"))))
-     (show-paren-mismatch-face ((,class (:background "red1" :foreground "white"))))
+     (show-paren-match ((,class (:background ,blue :foreground ,current-line))))
+     (show-paren-mismatch ((,class (:background ,red :foreground ,current-line))))
 
      ;; Region
      (region ((,class (:background ,selection))))
      (secondary-selection ((,class (:background ,secondary-selection))))
 
      ;; Font lock
-     (font-lock-builtin-face ((,class (:foreground "#ff7043"))))
-     (font-lock-comment-delimiter-face ((,class (:foreground ,comment))))
-     (font-lock-comment-face ((,class (:foreground ,comment))))
-     (font-lock-constant-face ((,class (:foreground ,green))))
-     (font-lock-doc-face ((,class (:foreground ,comment))))
+     (font-lock-builtin-face ((,class (:foreground ,light-blue-200))))
+     (font-lock-comment-delimiter-face ((,class (:foreground ,comment
+                                                 :slant ,(if exordium-material-italics 'italic 'normal)))))
+     (font-lock-comment-face ((,class (:foreground ,comment
+                                       :slant ,(if exordium-material-italics 'italic 'normal)))))
+     (font-lock-constant-face ((,class (:foreground ,light-green-500))))
+     (font-lock-doc-face ((,class (:foreground ,comment
+                                   :slant ,(if exordium-material-italics 'italic 'normal)))))
      (font-lock-doc-string-face ((,class (:foreground ,comment))))
-     (font-lock-function-name-face ((,class (:foreground "#b3e5fc"))))
+     (font-lock-function-name-face ((,class (:foreground ,light-blue-100))))
      (font-lock-keyword-face ((,class (:foreground ,yellow))))
      (font-lock-negation-char-face ((,class (:foreground ,blue))))
-     (font-lock-preprocessor-face ((,class (:foreground "gold"))))
+     (font-lock-preprocessor-face ((,class (:foreground ,yellow-600))))
      (font-lock-regexp-grouping-backslash ((,class (:foreground ,yellow))))
      (font-lock-regexp-grouping-construct ((,class (:foreground ,purple))))
-     (font-lock-string-face ((,class (:foreground "#9ccc65"))))
-     (font-lock-type-face ((,class (:foreground "CadetBlue1"))))
+     (font-lock-string-face ((,class (:foreground ,light-green-400))))
+     (font-lock-type-face ((,class (:foreground ,cyan-a100))))
      (font-lock-variable-name-face ((,class (:foreground ,yellow))))
      (font-lock-warning-face ((,class (:weight bold :foreground ,red))))
 
@@ -124,14 +147,14 @@ names to which it refers are bound."
      (exordium-powerline-active2 ((,class (:background ,current-line))))
      (exordium-powerline-active3 ((,class (:background ,orange :foreground ,background))))
      (exordium-powerline-active4 ((,class (:background ,red :foreground ,background))))
-     (exordium-powerline-active5 ((,class (:background ,green :foreground ,background))))
+     (exordium-powerline-active5 ((,class (:background ,light-green-500 :foreground ,background))))
      (exordium-powerline-inactive1 ((,class (:background ,black :foreground ,comment))))
      (exordium-powerline-inactive2 ((,class (:background ,current-line :foreground ,comment))))
      (exordium-powerline-inactive3 ((,class (:background ,comment :foreground ,background))))
      (exordium-project-name ((,class (:foreground ,purple))))
 
      (powerline-active1 ((t (:foreground ,foreground :background ,selection))))
-     (powerline-active2 ((t (:foreground ,foreground :background "#78909c"))))
+     (powerline-active2 ((t (:foreground ,foreground :background ,light-green-400))))
      (powerline-inactive1 ((t (:foreground ,comment :background ,selection))))
      (powerline-inactive2 ((t (:foreground ,comment :background ,selection))))
 
@@ -139,14 +162,14 @@ names to which it refers are bound."
      (match ((,class (:foreground ,blue :background ,background :inverse-video t))))
      (isearch ((,class (:foreground ,yellow :background ,background :inverse-video t))))
      (isearch-lazy-highlight-face
-      ((,class (:foreground ,aqua :background ,background :inverse-video t))))
+      ((,class (:foreground ,light-blue-200 :background ,background :inverse-video t))))
      (isearch-fail
       ((,class (:background ,background :inherit font-lock-warning-face :inverse-video t))))
 
      ;; IDO
      (ido-subdir ((,class (:foreground ,purple))))
      (ido-first-match ((,class (:foreground ,orange))))
-     (ido-only-match ((,class (:foreground ,green))))
+     (ido-only-match ((,class (:foreground ,light-green-500))))
      (ido-indicator ((,class (:foreground ,red :background ,background))))
      (ido-virtual ((,class (:foreground ,comment))))
 
@@ -154,16 +177,16 @@ names to which it refers are bound."
      (flx-highlight-face ((,class (:inherit nil :foreground ,yellow :weight bold :underline nil))))
 
      ;; Helm
-     (helm-header ((,class (:foreground ,green :background ,background
+     (helm-header ((,class (:foreground ,light-green-500 :background ,background
                             :underline nil :box nil))))
      (helm-source-header ((,class (:foreground ,background :background ,orange
                                    :underline nil :weight bold :box nil))))
      (helm-selection ((,class (:background ,selection :underline nil))))
      (helm-selection-line ((,class (:background ,selection))))
      (helm-visible-mark ((,class (:foreground ,background :background ,yellow))))
-     (helm-candidate-number ((,class (:foreground ,green :background ,selection))))
+     (helm-candidate-number ((,class (:foreground ,light-green-500 :background ,selection))))
      (helm-swoop-target-line-face ((,class (:foreground ,background :background ,yellow))))
-     (helm-swoop-target-word-face ((,class (:foreground ,background :background ,aqua))))
+     (helm-swoop-target-word-face ((,class (:foreground ,background :background ,light-blue-200))))
 
      ;; Flycheck
      (flycheck-error ((,class (:underline (:style wave :color ,red)))))
@@ -177,7 +200,7 @@ names to which it refers are bound."
      (compilation-column-number ((,class (:foreground ,yellow))))
      (compilation-line-number ((,class (:foreground ,yellow))))
      (compilation-message-face ((,class (:foreground ,blue))))
-     (compilation-mode-line-exit ((,class (:foreground ,green))))
+     (compilation-mode-line-exit ((,class (:foreground ,light-green-500))))
      (compilation-mode-line-fail ((,class (:foreground ,red))))
      (compilation-mode-line-run ((,class (:foreground ,blue))))
 
@@ -189,42 +212,42 @@ names to which it refers are bound."
                                    `(:background ,orange :foreground ,background)
                                  `(:underline (:color ,orange :style wave))))))
      (rtags-fixitline ((,class ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,green :foreground ,background)
-                                  `(:underline (:color ,green :style wave))))))
+                                    `(:background ,light-green-500 :foreground ,background)
+                                  `(:underline (:color ,light-green-500 :style wave))))))
 
      ;; Magit
-     (magit-branch ((,class (:foreground ,green))))
+     (magit-branch ((,class (:foreground ,light-green-500))))
      (magit-diff-add ((,class (:inherit diff-added))))
      (magit-diff-del ((,class (:inherit diff-removed))))
      (magit-header ((,class (:inherit nil :weight bold))))
      (magit-item-highlight ((,class (:inherit highlight :background nil))))
-     (magit-log-author ((,class (:foreground ,aqua))))
+     (magit-log-author ((,class (:foreground ,light-blue-200))))
      (magit-log-graph ((,class (:foreground ,comment))))
      (magit-log-head-label-bisect-bad ((,class (:foreground ,red))))
-     (magit-log-head-label-bisect-good ((,class (:foreground ,green))))
+     (magit-log-head-label-bisect-good ((,class (:foreground ,light-green-500))))
      (magit-log-head-label-default ((,class (:foreground ,yellow :box nil :weight bold))))
      (magit-log-head-label-local ((,class (:foreground ,purple :box nil :weight bold))))
      (magit-log-head-label-remote ((,class (:foreground ,purple :box nil :weight bold))))
-     (magit-log-head-label-tags ((,class (:foreground ,aqua :box nil :weight bold))))
+     (magit-log-head-label-tags ((,class (:foreground ,light-blue-200 :box nil :weight bold))))
      (magit-log-sha1 ((,class (:foreground ,yellow))))
      (magit-section-title ((,class (:foreground ,blue :weight bold))))
 
      ;; git-gutter
      (git-gutter:modified ((,class (:foreground ,purple :weight bold))))
-     (git-gutter:added ((,class (:foreground ,green :weight bold))))
+     (git-gutter:added ((,class (:foreground ,light-green-500 :weight bold))))
      (git-gutter:deleted ((,class (:foreground ,red :weight bold))))
      (git-gutter:unchanged ((,class (:background ,yellow))))
 
      ;; git-gutter-fringe
      (git-gutter-fr:modified ((,class (:foreground ,purple :weight bold))))
-     (git-gutter-fr:added ((,class (:foreground ,green :weight bold))))
+     (git-gutter-fr:added ((,class (:foreground ,light-green-500 :weight bold))))
      (git-gutter-fr:deleted ((,class (:foreground ,red :weight bold))))
 
      ;; Diff
-     (diff-added ((,class (:foreground ,green))))
+     (diff-added ((,class (:foreground ,light-green-500))))
      (diff-changed ((,class (:foreground ,purple))))
      (diff-removed ((,class (:foreground ,orange))))
-     (diff-header ((,class (:foreground ,aqua :background nil))))
+     (diff-header ((,class (:foreground ,light-blue-200 :background nil))))
      (diff-file-header ((,class (:foreground ,blue :background nil))))
      (diff-hunk-header ((,class (:foreground ,purple))))
      (diff-refine-added ((,class (:inherit diff-added :inverse-video t))))
@@ -245,82 +268,81 @@ names to which it refers are bound."
      (regex-tool-matched-face ((,class (:foreground nil :background nil :inherit match))))
 
      ;; Org
-     (org-agenda-structure ((,class (:foreground ,aqua :bold t))))
+     (org-agenda-structure ((,class (:foreground ,light-blue-200 :bold t))))
      (org-agenda-date ((,class (:foreground ,blue :underline nil))))
-     (org-agenda-done ((,class (:foreground ,green))))
+     (org-agenda-done ((,class (:foreground ,light-green-500))))
      (org-agenda-dimmed-todo-face ((,class (:foreground ,comment))))
      (org-block ((,class (:foreground ,orange))))
-     (org-block-background ((,class (:background "#1F2232"))))
      (org-code ((,class (:foreground ,yellow))))
      (org-column ((,class (:background ,current-line))))
      (org-column-title ((,class (:inherit org-column :weight bold :underline t))))
-     (org-date ((,class (:foreground "#80cbc4" :underline t))))
+     (org-date ((,class (:foreground ,teal-200 :underline t))))
      (org-document-info ((,class
-                          ,(append `(:foreground ,aqua)
+                          ,(append `(:foreground ,light-blue-200)
                                    (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
      (org-document-info-keyword ((,class
-                                  ,(append `(:foreground ,green)
+                                  ,(append `(:foreground ,light-green-500)
                                            (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
      (org-document-title ((,class
                            ,(append `(:weight bold :foreground ,orange)
                                     (if exordium-theme-use-big-org-fonts '(:height 1.35))))))
-     (org-done ((,class (:foreground ,green :bold t :background,"#1b5e20"))))
+     (org-done ((,class (:foreground ,light-green-500 :bold t :background ,green-900))))
      (org-ellipsis ((,class (:foreground ,comment))))
-     (org-footnote ((,class (:foreground ,aqua))))
+     (org-footnote ((,class (:foreground ,light-blue-200))))
      (org-formula ((,class (:foreground ,red))))
      (org-hide ((,class (:foreground ,background :background ,background))))
      (org-link ((,class (:foreground ,blue :underline t))))
-     (org-scheduled ((,class (:foreground ,green))))
+     (org-scheduled ((,class (:foreground ,light-green-500))))
      (org-scheduled-previously ((,class (:foreground ,orange))))
-     (org-scheduled-today ((,class (:foreground ,green))))
+     (org-scheduled-today ((,class (:foreground ,light-green-500))))
      (org-special-keyword ((,class (:foreground ,comment))))
-     (org-table ((,class (:foreground "#e3f2fd" :background ,far-background))))
-     (org-todo ((,class (:foreground "#ffab91" :bold t :background "#dd2c00"))))
+     (org-table ((,class (:foreground ,light-blue-50 :background ,far-background))))
+     (org-todo ((,class (:foreground ,deep-orange-200 :bold t :background ,deep-orange-a700))))
      (org-upcoming-deadline ((,class (:foreground ,orange))))
      (org-warning ((,class (:weight bold :foreground ,red))))
-     (org-block-begin-line ((,class (:foreground "#b3e5fc" :underline "#e1f5fe"))))
-     (org-block-end-line ((,class (:foreground "#b3e5fc" :overline "#e1f5fe"))))
+     (org-block-begin-line ((,class (:foreground ,light-blue-100 :underline ,light-blue-50))))
+     (org-block-end-line ((,class (:foreground ,light-blue-100 :overline ,light-blue-50))))
 
-     (org-level-1 ((,class ,(append '(:inherit nil
-                                      :overline "#b0bec5"
-                                      :foreground "#eceff1"
-                                      :background "#455A64"
+     (org-level-1 ((,class ,(append `(:inherit nil
+                                      :overline ,comment
+                                      :foreground ,blue-gray-50
+                                      :background ,blue-gray-700
                                       :weight bold)
                                     (if exordium-theme-use-big-org-fonts '(:height 1.3) nil)))))
-     (org-level-2 ((,class ,(append '(:inherit nil
-                                      :foreground "#e1f5fe"
+     (org-level-2 ((,class ,(append `(:inherit nil
+                                      :foreground ,light-blue-50
                                       :background "#21575b"
-                                      :overline "#e1f5fe")
+                                      :overline ,light-blue-50)
                                     (if exordium-theme-use-big-org-fonts '(:height 1.2) nil)))))
-     (org-level-3 ((,class ,(append '(:inherit nil :foreground "#a5d6a7")
+     (org-level-3 ((,class ,(append `(:inherit nil :foreground ,green-200)
                                     (if exordium-theme-use-big-org-fonts '(:height 1.1) nil)))))
-     (org-level-4 ((,class (:inherit nil :foreground "#ffcc80"))))
-     (org-level-5 ((,class (:inherit nil :foreground "#b3e5fc"))))
-     (org-level-6 ((,class (:inherit nil :foreground "CadetBlue1"))))
-     (org-level-7 ((,class (:inherit nil :foreground "aquamarine1"))))
+     (org-level-4 ((,class (:inherit nil :foreground ,orange-200))))
+     (org-level-5 ((,class (:inherit nil :foreground ,light-blue-100))))
+     (org-level-6 ((,class (:inherit nil :foreground ,cyan-a100))))
+     (org-level-7 ((,class (:inherit nil :foreground ,teal-200))))
      (org-level-8 ((,class (:inherit nil :foreground ,purple))))
-     (org-level-9 ((,class (:inherit nil :foreground "LightSteelBlue1"))))
+     (org-level-9 ((,class (:inherit nil :foreground ,blue-gray-100))))
 
      ;; Outline
-     (outline-1 ((,class (:inherit nil :foreground "#cfd8dc"))))
+     (outline-1 ((,class (:inherit nil :foreground ,blue-gray-100))))
      (outline-2 ((,class (:inherit nil :foreground "#b0bec5"))))
-     (outline-3 ((,class (:inherit nil :foreground "#a5d6a7" ))))
-     (outline-4 ((,class (:inherit nil :foreground "#ffcc80" ))))
-     (outline-5 ((,class (:inherit nil :foreground "#b3e5fc"))))
-     (outline-6 ((,class (:inherit nil :foreground "CadetBlue1"))))
-     (outline-7 ((,class (:inherit nil :foreground "aquamarine1"))))
+     (outline-3 ((,class (:inherit nil :foreground ,green-200))))
+     (outline-4 ((,class (:inherit nil :foreground ,orange-200))))
+     (outline-5 ((,class (:inherit nil :foreground ,light-blue-100))))
+     (outline-6 ((,class (:inherit nil :foreground ,cyan-a100))))
+     (outline-7 ((,class (:inherit nil :foreground ,teal-200))))
      (outline-8 ((,class (:inherit nil :foreground ,purple))))
-     (outline-9 ((,class (:inherit nil :foreground "LightSteelBlue1"))))
+     (outline-9 ((,class (:inherit nil :foreground ,blue-gray-100))))
 
      ;; ansi-term
      (term ((,class (:foreground nil :background nil :inherit default))))
      (term-color-black ((,class (:foreground ,foreground :background ,foreground))))
      (term-color-red ((,class (:foreground ,red :background ,red))))
-     (term-color-green ((,class (:foreground ,green :background ,green))))
+     (term-color-green ((,class (:foreground ,light-green-500 :background ,light-green-500))))
      (term-color-yellow ((,class (:foreground ,yellow :background ,yellow))))
      (term-color-blue ((,class (:foreground ,blue :background ,blue))))
      (term-color-magenta ((,class (:foreground ,purple :background ,purple))))
-     (term-color-cyan ((,class (:foreground ,aqua :background ,aqua))))
+     (term-color-cyan ((,class (:foreground ,light-blue-200 :background ,light-blue-200))))
      (term-color-white ((,class (:foreground ,background :background ,background))))
 
      ;; Markdown
@@ -345,7 +367,7 @@ names to which it refers are bound."
 
      ;; undo-tree
      (undo-tree-visualizer-default-face ((,class (:foreground ,foreground))))
-     (undo-tree-visualizer-current-face ((,class (:foreground ,green :weight bold))))
+     (undo-tree-visualizer-current-face ((,class (:foreground ,light-green-500 :weight bold))))
      (undo-tree-visualizer-active-branch-face ((,class (:foreground ,red))))
      (undo-tree-visualizer-register-face ((,class (:foreground ,yellow))))
 
@@ -356,7 +378,7 @@ names to which it refers are bound."
      (whitespace-space-before-tab ((,class (:foreground ,red :inverse-video t :underline nil))))
      (whitespace-empty ((,class (:foreground ,red :inverse-video t :underline nil))))
      (whitespace-line ((,class (:background nil :foreground ,red))))
-     (whitespace-indentation ((,class (:background nil :foreground ,aqua))))
+     (whitespace-indentation ((,class (:background nil :foreground ,light-blue-200))))
      (whitespace-space ((,class (:background nil :foreground ,selection))))
      (whitespace-newline ((,class (:background nil :foreground ,selection))))
      (whitespace-tab ((,class (:background nil :foreground ,selection))))
@@ -365,13 +387,13 @@ names to which it refers are bound."
      ;; Clojure
      (clojure-test-failure-face ((,class (:background nil :inherit flymake-warnline))))
      (clojure-test-error-face ((,class (:background nil :inherit flymake-errline))))
-     (clojure-test-success-face ((,class (:background nil :foreground nil :underline ,green))))
+     (clojure-test-success-face ((,class (:background nil :foreground nil :underline ,light-green-500))))
 
      (clojure-keyword ((,class (:foreground ,yellow))))
      (clojure-parens ((,class (:foreground ,foreground))))
-     (clojure-braces ((,class (:foreground ,green))))
+     (clojure-braces ((,class (:foreground ,light-green-500))))
      (clojure-brackets ((,class (:foreground ,yellow))))
-     (clojure-double-quote ((,class (:foreground ,aqua :background nil))))
+     (clojure-double-quote ((,class (:foreground ,light-blue-200 :background nil))))
      (clojure-special ((,class (:foreground ,blue))))
      (clojure-java-call ((,class (:foreground ,purple))))
 
@@ -382,14 +404,14 @@ names to which it refers are bound."
 
      ;; Rainbow-delimiters
      (rainbow-delimiters-depth-1-face ((,class (:foreground ,foreground))))
-     (rainbow-delimiters-depth-2-face ((,class (:foreground ,aqua))))
+     (rainbow-delimiters-depth-2-face ((,class (:foreground ,light-blue-200))))
      (rainbow-delimiters-depth-3-face ((,class (:foreground ,yellow))))
-     (rainbow-delimiters-depth-4-face ((,class (:foreground ,green))))
+     (rainbow-delimiters-depth-4-face ((,class (:foreground ,light-green-500))))
      (rainbow-delimiters-depth-5-face ((,class (:foreground ,blue))))
      (rainbow-delimiters-depth-6-face ((,class (:foreground ,foreground))))
-     (rainbow-delimiters-depth-7-face ((,class (:foreground ,aqua))))
+     (rainbow-delimiters-depth-7-face ((,class (:foreground ,light-blue-200))))
      (rainbow-delimiters-depth-8-face ((,class (:foreground ,yellow))))
-     (rainbow-delimiters-depth-9-face ((,class (:foreground ,green))))
+     (rainbow-delimiters-depth-9-face ((,class (:foreground ,light-green-500))))
      (rainbow-delimiters-unmatched-face ((,class (:foreground ,red))))
 
      ;; Slime
@@ -398,7 +420,7 @@ names to which it refers are bound."
      (slime-highlight-edits-face ((,class (:weight bold))))
      (slime-repl-input-face ((,class (:weight normal :underline nil))))
      (slime-repl-prompt-face ((,class (:underline nil :weight bold :foreground ,purple))))
-     (slime-repl-result-face ((,class (:foreground ,green))))
+     (slime-repl-result-face ((,class (:foreground ,light-green-500))))
      (slime-repl-output-face ((,class (:foreground ,blue :background ,background))))
 
      ;; Other
@@ -427,10 +449,10 @@ names to which it refers are bound."
   (with-material-colors
    (setq org-todo-keyword-faces
          `(("WORK" . (;:background ,yellow
-                      :foreground ,yellow :background "#dd2c00"
+                      :foreground ,yellow :background ,deep-orange-a700
                       :weight bold :box nil))
            ("WAIT" . (;:background ,orange
-                      :foreground ,orange :background "#dd2c00"
+                      :foreground ,orange :background ,deep-orange-a700
                       :weight bold :box nil))))))
 
 ;;; Debugging functions

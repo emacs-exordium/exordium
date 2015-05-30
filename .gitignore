@@ -34,6 +34,7 @@ project-explorer-cache
 .emacs.desktop.lock
 saveplace
 history
+places
 
 # Compiled files
 modules/*.elc
