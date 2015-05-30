@@ -64,20 +64,6 @@
   (require 'hilinum-mode)
   (hlinum-activate))
 
-;;; Colorize the name of the current project in the modeline.
-
-(defface exordium-project-name '((t (:inherit mode-line)))
-  "Face for the name of the current project in the modeline"
-  :group 'exordium)
-
-(when (featurep 'init-helm-projectile)
-  (eval-after-load "projectile"
-    `(setq projectile-mode-line
-           `(:eval (list " ["
-                         (propertize (projectile-project-name)
-                                     'face 'exordium-project-name)
-                         "]")))))
-
 ;;; FCI (80-column marker) color
 
 (when exordium-fci-mode

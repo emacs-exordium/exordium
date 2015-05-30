@@ -12,10 +12,27 @@
 ;;; colors a bit washed up; see
 ;;; http://emacsredux.com/blog/2013/08/21/color-themes-redux/
 ;;; Basically you should use Emacs from brew or port instead of Emacs for OS-X.
+
 (when (and exordium-osx
            exordium-fix-powerline-osx-bug)
   (message "Fixing OS-X powerline bug")
   (setq ns-use-srgb-colorspace nil))
+
+
+;;; Colorize the name of the current project in the modeline.
+
+(defface exordium-project-name '((t (:inherit mode-line)))
+  "Face for the name of the current project in the modeline"
+  :group 'exordium)
+
+(when (featurep 'init-helm-projectile)
+  (eval-after-load "projectile"
+    `(setq projectile-mode-line
+           `(:eval (list " ["
+                         (propertize (projectile-project-name)
+                                     'face 'exordium-project-name)
+                         "]")))))
+
 
 ;;; Faces for our powerline theme. They are defined here and customized within
 ;;; each theme.
@@ -70,7 +87,6 @@
         (t
          ;; Purple
          'exordium-powerline-active3)))
-
 
 (defun exordium-powerline-theme ()
   "Setup the default mode-line."
