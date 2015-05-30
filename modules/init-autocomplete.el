@@ -16,6 +16,7 @@
 
 ;; Use ESC to escape auto-complete (in addition to C-g)
 (define-key ac-completing-map (kbd "<escape>") 'ac-stop)
+(define-key ac-completing-map [return] 'ac-complete)
 
 ;; Key to force trigger auto-complete (useful if ac-auto-start is set to nil)
 (global-set-key [(control .)] 'auto-complete)
