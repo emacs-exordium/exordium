@@ -281,4 +281,11 @@ configuration load slower."
   :type  'boolean)
 
 
+(defcustom exordium-no-org-babel-confirm nil
+  "Disable confirmation requests when evaluating code blocks when
+  using org-babel. Setting to non-nil could conceivably result in
+  accidentally executing code."
+  :group 'exordium
+  :type  'boolean)
+
 (provide 'init-prefs)

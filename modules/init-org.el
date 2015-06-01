@@ -4,8 +4,11 @@
       '((sequence "TODO" "WORK" "WAIT" "DONE")))
 (setq org-startup-truncated nil)
 
-;;; Native formatting in block codes
+;;; Native formatting in code blocks
 (setq org-src-fontify-natively t)
+
+;;; Preserve indentation in code blocks
+(setq org-src-preserve-indentation t)
 
 ;;; Show images inline
 (setq org-startup-with-inline-images t)
@@ -13,5 +16,44 @@
 ;;; Show org-mode bullets as UTF-8 characters.
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; use ido for org completion
+(setq org-completion-use-ido t)
+
+;; load exporters for markdown, beamer, ODT, and site publish
+(eval-after-load "org"
+  '(require 'ox-md))
+
+(eval-after-load "org"
+  '(require 'ox-beamer))
+
+(eval-after-load "org"
+  '(require 'ox-odt))
+
+(eval-after-load "org"
+  '(require 'ox-publish))
+
+;;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((perl . t)
+   (ruby . t)
+   (sh . t)
+   (python . t)
+   (emacs-lisp . t)
+   (C . t)
+   (dot . t)
+   ))
+
+
+;;; Turn off the confirmation for code eval when using org-babel
+(when exordium-no-org-babel-confirm
+  (setq org-confirm-babel-evaluate nil))
+
+;;; Don't markup src blocks with fill column indicator
+(add-hook 'org-src-mode-hook
+          (lambda ()
+            (turn-off-fci-mode)))
+
 
 (provide 'init-org)
