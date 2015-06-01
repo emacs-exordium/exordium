@@ -70,12 +70,18 @@
   (global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 
-;; keys
+;; Keys
 (when (or exordium-git-gutter exordium-git-gutter-non-fringe)
   (define-key exordium-git-map (kbd "<down>") 'git-gutter:next-hunk)
   (define-key exordium-git-map (kbd "<up>") 'git-gutter:previous-hunk)
   (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
   (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
+
+;; Automatically update git gutter after staging or unstaging with magit (magit
+;; runs this hook for all buffers in the repo after all operations, if
+;; `magit-auto-revert-mode' is enabled -- the default).
+(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
+  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook))
 
 
 ;;; Git Timemachine
