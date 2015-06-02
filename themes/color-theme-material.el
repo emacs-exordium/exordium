@@ -118,7 +118,8 @@ names to which it refers are bound."
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
 
-     (highlight ((,class (:inverse-video nil :background ,current-line))))
+     (hl-line ((,class (:background ,current-line :inherit nil))))
+     (highlight ((,class (:background ,light-green-500 :foreground ,background)))) ;+:foreground
 
      (gui-element ((,class (:background ,current-line :foreground ,foreground))))
 
@@ -466,3 +467,8 @@ names to which it refers are bound."
 (provide 'color-theme-material)
 
 ;;; material-theme.el ends here
+
+;; Local Variables:
+;; no-byte-compile: t
+;; indent-tabs-mode: nil
+;; End:
