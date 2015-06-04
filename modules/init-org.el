@@ -22,16 +22,19 @@
 
 ;; load exporters for markdown, beamer, ODT, and site publish
 (eval-after-load "org"
-  '(require 'ox-md))
+  '(require 'ox-md)) ;; markdown
 
 (eval-after-load "org"
-  '(require 'ox-beamer))
+  '(require 'ox-beamer)) ;; beamer (LaTeX slides)
 
 (eval-after-load "org"
-  '(require 'ox-odt))
+  '(require 'ox-odt))  ;; open doc format
 
 (eval-after-load "org"
-  '(require 'ox-publish))
+  '(require 'ox-publish)) ;; publish web sites
+
+(eval-after-load "org"
+  '(require 'ox-gfm)) ;; github-flavored-markdown
 
 ;;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
 (org-babel-do-load-languages
