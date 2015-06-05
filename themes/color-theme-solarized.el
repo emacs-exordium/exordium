@@ -56,7 +56,7 @@ names to which it refers are bound."
   (quote
    `(;; Standard faces
      (default ((,class (:foreground ,base0 :background ,back))))
-     (shadow ((,class (foreground ,base01))))
+     (shadow ((,class (:background ,base01))))
      (success ((,class (:foreground ,green))))
      (error ((,class (:weight bold :foreground ,red))))
      (warning ((,class (:weight bold :foreground ,orange))))
@@ -67,7 +67,7 @@ names to which it refers are bound."
      (show-paren-mismatch ((,class (:weight bold :foreground ,red :background ,base01))))
 
      ;; Region
-     (region ((,class (:foreground ,base01 :background ,base03))))
+     (region ((,class (:background ,base00))))
      (secondary-selection ((,class (:background ,base02))))
 
      ;; font-lock

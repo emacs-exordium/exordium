@@ -116,7 +116,7 @@ names to which it refers are bound."
      (bold-italic ((,class (:slant italic :weight bold))))
      (underline ((,class (:underline t))))
      (italic ((,class (:slant italic))))
-     (shadow ((,class (:foreground ,comment))))
+     (shadow ((,class (:background ,current-line))))
      (success ((,class (:foreground ,green))))
      (error ((,class (:foreground ,red))))
      (warning ((,class (:foreground ,orange))))

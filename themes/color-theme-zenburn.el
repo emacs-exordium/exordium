@@ -79,6 +79,7 @@ names to which it refers are bound."
      (highlight ((,class (:background ,bg-05))))
      (success ((,class (:foreground ,green :weight bold))))
      (warning ((,class (:foreground ,orange :weight bold))))
+     (shadow ((,class (:background ,bg+1))))
 
      ;; compilation
      (compilation-column-face ((,class (:foreground ,yellow))))

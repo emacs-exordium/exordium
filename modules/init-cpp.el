@@ -11,6 +11,7 @@
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
 (require 'cc-mode)
+(require 'init-lib)
 
 ;;; Open a header file in C++ mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -28,7 +29,7 @@
 (require 'cpp)
 (defun cpp-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
-  (let ((color (face-background 'region)))
+  (let ((color (face-background 'shadow)))
     (setq cpp-known-face 'default)
     (setq cpp-unknown-face 'default)
     (setq cpp-known-writable 't)

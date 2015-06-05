@@ -133,7 +133,7 @@ names to which it refers are bound."
   (quote
    `(;; Standard faces
      (default ((,class (:foreground ,monokai-fg :background ,monokai-bg))))
-     (shadow ((,class (:foreground ,monokai-comments))))
+     (shadow ((,class (:background ,monokai-hl-line))))
      (match ((,class (:background ,monokai-hl :foreground ,monokai-emph :weight bold))))
      (cursor ((,class (:foreground ,monokai-bg :background ,monokai-fg :inverse-video t))))
      (mouse ((,class (:foreground ,monokai-bg :background ,monokai-fg :inverse-video t))))
