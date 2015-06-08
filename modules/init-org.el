@@ -17,6 +17,9 @@
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
+;;; visual line mode in org-mode, paragraphs without embedded newline
+(add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
 ;; use ido for org completion
 (setq org-completion-use-ido t)
 
@@ -57,6 +60,5 @@
 (add-hook 'org-src-mode-hook
           (lambda ()
             (turn-off-fci-mode)))
-
 
 (provide 'init-org)
