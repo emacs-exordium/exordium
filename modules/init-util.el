@@ -278,10 +278,11 @@ With argument, do this that many times."
   (require 'fill-column-indicator)
   (require 'popup)
 
-  ;;; fci-mode turns line truncation on by default; this is pretty annoying
-  ;;; when you have long lines and fci-mode goes off (to display popup)
-  ;;; and your line truncation goes off.
-  (setq-default truncate-lines t)
+  ;;; fci-mode turns line truncation on by default (see
+  ;;; `fci-handle-truncate-lines'); this is pretty annoying when you have long
+  ;;; lines and fci-mode goes off (to display popup) and your line truncation
+  ;;; goes off. Hence, for popups we turn off this handler and let `fc-mode'
+  ;;; relay on whatever buffer value of `truncate-lines' is.
 
   (defvar exordium-fci-mode-suppressed nil)
 
@@ -290,6 +291,9 @@ With argument, do this that many times."
     (let ((fci-enabled (and (boundp 'fci-mode) fci-mode)))
       (when fci-enabled
         (set (make-local-variable 'exordium-fci-mode-suppressed) fci-enabled)
+        (set (make-local-variable 'exordium-fci-handle-truncate-lines)
+             fci-handle-truncate-lines)
+        (setq fci-handle-truncate-lines nil)
         (turn-off-fci-mode))))
 
   (defadvice popup-delete (after restore-fci-mode activate)
@@ -297,6 +301,7 @@ With argument, do this that many times."
     (when (and exordium-fci-mode-suppressed
                (null popup-instances))
       (setq exordium-fci-mode-suppressed nil)
+      (setq fci-handle-truncate-lines 'exordium-fci-handle-truncate-lines)
       (turn-on-fci-mode))))
 
 
