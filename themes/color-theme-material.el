@@ -221,7 +221,7 @@ names to which it refers are bound."
      (magit-diff-add ((,class (:inherit diff-added))))
      (magit-diff-del ((,class (:inherit diff-removed))))
      (magit-header ((,class (:inherit nil :weight bold))))
-     (magit-item-highlight ((,class (:inherit highlight :background nil))))
+     (magit-item-highlight ((,class (:inherit hl-line :background nil))))
      (magit-log-author ((,class (:foreground ,light-blue-200))))
      (magit-log-graph ((,class (:foreground ,comment))))
      (magit-log-head-label-bisect-bad ((,class (:foreground ,red))))
