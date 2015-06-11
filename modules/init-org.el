@@ -56,6 +56,10 @@
 (when exordium-no-org-babel-confirm
   (setq org-confirm-babel-evaluate nil))
 
+(when exordium-org-export-css
+  (setq org-html-htmlize-output-type 'css)
+  (setq org-html-head exordium-org-export-css-stylesheet))
+
 ;;; Don't markup src blocks with fill column indicator
 (add-hook 'org-src-mode-hook
           (lambda ()
