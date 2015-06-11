@@ -281,4 +281,32 @@ configuration load slower."
   :type  'boolean)
 
 
+(defcustom exordium-no-org-babel-confirm nil
+  "Disable confirmation requests when evaluating code blocks when
+  using org-babel. Setting to non-nil could conceivably result in
+  accidentally executing code."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-org-export-css nil
+  "Export from org mode using a css style sheet, rather than
+  inline styles. This allows more control over the appearance, at
+  the cost of having to maintain a stylesheet."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-org-export-css-stylesheet ""
+  "The stylesheet to use in html based org export. This will be
+  loaded into `org-html-head' and exported. For example,
+
+     <link rel=\"stylesheet\" type=\"text/css\" href=\"http://sundev3.dev.bloomberg.com/~sdowney/smd-zenburn.css\" />
+
+  To generate a basic css file that matches your theme, use
+  `org-html-htmlize-generate-css' which will create a buffer with
+  css definitions for all currently defined faces."
+  :group 'exordium
+  :type  'string)
+
+
+
 (provide 'init-prefs)
