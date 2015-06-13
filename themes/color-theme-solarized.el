@@ -114,7 +114,7 @@ names to which it refers are bound."
 
      ;; Powerline
      (exordium-powerline-active1 ((,class (:background ,base01 :foreground ,back))))
-     (exordium-powerline-active2 ((,class (:background ,base02 :foreground ,back))))
+     (exordium-powerline-active2 ((,class (:background ,base02 :foreground ,base01))))
      (exordium-powerline-active3 ((,class (:background ,base2 :foreground ,back))))
      (exordium-powerline-active4 ((,class (:background ,red :foreground ,back))))
      (exordium-powerline-active5 ((,class (:background ,green :foreground ,back))))
