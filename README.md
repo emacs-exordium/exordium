@@ -7,10 +7,6 @@ Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
 and OS X including in -nw mode, but it should work on Windows as well. It is
 modular and customizable. It is not a starter kit, it is a hacker kit.
 
-Note: the name of the repo has changed. If you had previously cloned it you should
-do a `git remote set-url origin https://github.com/philippe-grenet/exordium.git`
-in your repo.
-
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
 [Emacs Prelude](https://github.com/bbatsov/prelude),
@@ -225,19 +221,25 @@ Now you need to teach Projectile where your projects are. You can do that by:
 
 ### Using Projectile
 
-To open a file with Projectile using Helm, type <kbd>C-c h</kbd>. This will
-display the Helm buffer, displaying initially just the list of projects at the
-top. Choose your project with the arrow keys and press enter; Helm will now
-display all indexed files in the project. Start typing a partial name to narrow
-the selection until you find what you were looking for.
+The name of the current project is displayed in the mode line, between square
+brackets. There are only 2 keys to remember:
+
+* To open a file in the current project using Helm, type <kbd>C-c h</kbd>. This
+  will display the Helm buffer. Start typing for a partial name to narrow the
+  selection until you find what you were looking for. Note that it performs
+  fuzzy matching.
+* If you want to open a file from a different project, type <kbd>C-c C-h</kbd>
+  instead. The Helm buffer will initially display just the list of
+  projects. Choose your project and press enter; Helm will now display all
+  indexed files in that project.
 
 <kbd>C-c p C-h</kbd> displays the list of keys for Projectile. Below are the
 most important ones.
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>C-c h</kbd> or <kbd>C-c C-f</kbd>  | Helm: find file in current project
-<kbd>C-c C-h</kbd>   | Same but first select project
+<kbd>C-c h</kbd>     | Find file in current project with helm
+<kbd>C-c C-h</kbd>   | Same, but first select project
 <kbd>C-c p p</kbd>   | IDO: switch project
 <kbd>C-c p f</kbd>   | IDO: find file in current project
 <kbd>C-c p s g</kbd> | Grep in current project

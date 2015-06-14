@@ -4,7 +4,7 @@
 ;;; ----------------- -------------------------------------------------------
 ;;; Key               Definition
 ;;; ----------------- -------------------------------------------------------
-;;; C-c h OR C-c C-f  Open file with helm/projectile (current project).
+;;; C-c h             Open file with helm/projectile (current project).
 ;;; C-c C-h           Same but first select the project.
 ;;; C-c p s g         Grep in project.
 ;;;
@@ -20,7 +20,6 @@
 
 (projectile-global-mode)
 (global-set-key [(control c)(h)] (function helm-projectile))
-(global-set-key [(control c)(control f)] (function helm-projectile))
 (global-set-key [(control c)(control h)] (function helm-projectile-switch-project))
 
 
