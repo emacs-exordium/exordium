@@ -40,6 +40,22 @@
 ;;; C-S-s = helm-swoop
 (define-key global-map [(control shift s)] (function helm-swoop))
 
+;; TODO: work in progress
+;; The intent is to improve the readability of the helm swoop selection line
+;; (in the helm buffer).
+
+;; (defun fix-helm-swoop-colors (orig-fun &rest args)
+;;   "Advice around `helm-swoop' to change the background of the
+;; selected line in the hem buffer, for better readability"
+;;   (let ((bg       (face-attribute 'helm-selection :background))
+;;         (swoop-bg (face-attribute 'helm-swoop-target-line-face :background)))
+;;     (set-face-attribute 'helm-selection nil :background swoop-bg)
+;;     (let ((res (apply orig-fun args)))
+;;       (set-face-attribute 'helm-selection nil :background bg)
+;;       res)))
+
+;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
+
 ;;; C-e = Project explorer
 (define-key global-map [(control c)(e)] (function project-explorer-open))
 

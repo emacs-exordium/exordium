@@ -123,13 +123,6 @@
 ;;; Wordwrap at word boundadies
 ;;;(global-visual-line-mode 1)
 
-;;; Display page breaks with an horizontal line instead of ^L.
-;;; Note: To insert a page break: C-q C-l
-;;;       To jump to the previous/next page break: C-x [ and C-x ]
-(require 'page-break-lines)
-(global-page-break-lines-mode 1)
-(diminish 'page-break-lines-mode)
-
 ;; Show only 1 window on startup (useful if you open multiple files)
 (add-hook 'emacs-startup-hook (lambda () (delete-other-windows)) t)
 
