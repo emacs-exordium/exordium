@@ -16,7 +16,8 @@
 enables line truncation as well to prevent a rendering bug (page
 break lines wrap around)."
   (set (make-local-variable 'truncate-lines) t)
-  (turn-on-page-break-lines-mode))
+  (turn-on-page-break-lines-mode)
+  (diminish 'page-break-lines-mode))
 
 (add-hook 'emacs-lisp-mode-hook #'exordium-elisp-mode-hook)
 
