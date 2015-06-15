@@ -70,6 +70,11 @@ $ git clone https://github.com/philippe-grenet/exordium.git ~/.emacs.d
 The first time you start Emacs it will download and compile the required
 packages, which may take a couple of minutes.
 
+You can also clone the repository elsewhere, and use the `init-test.sh` script
+to try out exordium. `init-test.sh` will run your default emacs with the
+current directory as your user-emacs-directory, loading `init.el`, and no other
+init files.
+
 ### Updates
 
 To update Exordium, do <kbd>M-x update-config</kbd>. This command pulls from
