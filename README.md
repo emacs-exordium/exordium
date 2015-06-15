@@ -70,6 +70,11 @@ $ git clone https://github.com/philippe-grenet/exordium.git ~/.emacs.d
 The first time you start Emacs it will download and compile the required
 packages, which may take a couple of minutes.
 
+You can also clone the repository elsewhere, and use the `init-test.sh` script
+to try out exordium. `init-test.sh` will run your default emacs with the
+current directory as your user-emacs-directory, loading `init.el`, and no other
+init files.
+
 ### Updates
 
 To update Exordium, do <kbd>M-x update-config</kbd>. This command pulls from
@@ -103,7 +108,7 @@ General:
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command (`keyboard-quit`), also bound to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
+<kbd>ESC</kbd>       | Quit command (`keyboard-quit`), also bound to <kbd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
@@ -146,7 +151,7 @@ Auto-complete:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-.</bkd>     | Force trigger auto-complete.
+<kbd>C-.</kbd>     | Force trigger auto-complete.
 <kbd>ESC</kbd>     | Abort auto-complete.
 
 ## Projectile
@@ -301,8 +306,8 @@ Magit keys:
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g s</bkd>    | Open git status (`magit-status`).
-<kbd>C-c g l</bkd>    | Open git log (`magit-log`).
+<kbd>C-c g s</kbd>    | Open git status (`magit-status`).
+<kbd>C-c g l</kbd>    | Open git log (`magit-log`).
 <kbd>C-c g f</kbd>    | Open git file log (`magit-file-log`).
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
 
@@ -310,10 +315,14 @@ Git gutter keys:
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g down</bkd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
-<kbd>C-c g up</bkd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
-<kbd>C-c g d</bkd>    | Diff the current hunk (`git-gutter:popup-diff`).
-<kbd>C-c g r</bkd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
+<kbd>C-c g down</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
+<kbd>C-c g up</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
+<kbd>C-c g d</kbd>    | Diff the current hunk (`git-gutter:popup-diff`).
+<kbd>C-c g r</kbd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
+
+Git Timemachine key   | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c g t</kbd>    | Enter the git timemachine (`git-timemachine-toggle`)
 
 ## C++
 
