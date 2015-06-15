@@ -1,5 +1,11 @@
 ;;;; Org mode
 
+(require 'init-prefs)
+(eval-when-compile
+  (require 'org)
+  (require 'ox-html)
+  (require 'fill-column-indicator))
+
 (setq org-todo-keywords
       '((sequence "TODO" "WORK" "WAIT" "DONE")))
 (setq org-startup-truncated nil)
@@ -23,42 +29,35 @@
 ;; use ido for org completion
 (setq org-completion-use-ido t)
 
-;; load exporters for markdown, beamer, ODT, and site publish
-(eval-after-load "org"
-  '(require 'ox-md)) ;; markdown
+(when exordium-enable-org-export
+  ;; load exporters for markdown, beamer, ODT, and site publish
+  (eval-after-load "org"
+    '(progn
+       (require 'ox-md)                 ; markdown
+       (require 'ox-beamer)             ; beamer (LaTeX slides)
+       (require 'ox-odt)                ; open doc format
+       (require 'ox-publish)            ; publish web sites
+       (require 'ox-gfm)))              ; github-flavored-markdown
 
-(eval-after-load "org"
-  '(require 'ox-beamer)) ;; beamer (LaTeX slides)
+  ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((perl       . t)
+     (ruby       . t)
+     (sh         . t)
+     (python     . t)
+     (emacs-lisp . t)
+     (C          . t)
+     (dot        . t)))
 
-(eval-after-load "org"
-  '(require 'ox-odt))  ;; open doc format
+  ;; Turn off the confirmation for code eval when using org-babel
+  (when exordium-no-org-babel-confirm
+    (setq org-confirm-babel-evaluate nil))
 
-(eval-after-load "org"
-  '(require 'ox-publish)) ;; publish web sites
-
-(eval-after-load "org"
-  '(require 'ox-gfm)) ;; github-flavored-markdown
-
-;;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((perl . t)
-   (ruby . t)
-   (sh . t)
-   (python . t)
-   (emacs-lisp . t)
-   (C . t)
-   (dot . t)
-   ))
-
-
-;;; Turn off the confirmation for code eval when using org-babel
-(when exordium-no-org-babel-confirm
-  (setq org-confirm-babel-evaluate nil))
-
-(when exordium-org-export-css
-  (setq org-html-htmlize-output-type 'css)
-  (setq org-html-head exordium-org-export-css-stylesheet))
+  ;; Configure export using a css style sheet
+  (when exordium-org-export-css
+    (setq org-html-htmlize-output-type 'css)
+    (setq org-html-head exordium-org-export-css-stylesheet)))
 
 ;;; Don't markup src blocks with fill column indicator
 (add-hook 'org-src-mode-hook

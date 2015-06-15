@@ -281,6 +281,15 @@ configuration load slower."
   :type  'boolean)
 
 
+;;; Org mode
+
+(defcustom exordium-enable-org-export t
+  "Configure org mode for code export and babel. Setting this to
+  nil makes emacs starts a little bit faster, if you don't need
+  to use this feature."
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-no-org-babel-confirm nil
   "Disable confirmation requests when evaluating code blocks when
   using org-babel. Setting to non-nil could conceivably result in
