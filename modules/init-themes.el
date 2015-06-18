@@ -85,6 +85,7 @@ Powerline follow."
                              (mapcar 'symbol-name
                                      (custom-available-themes))))))
   (load-theme theme t nil)
+  (setq exordium-theme theme)
   (powerline-reset))
 
 (defun what-face (pos)
@@ -93,6 +94,20 @@ Powerline follow."
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
+;; Emacs daemon sometimes displays a some faces incorrectly: it seems like it
+;; does not load all the theme colors/fonts when no frame is present during
+;; loading time (which is the case when starting in daemon mode). Here we force
+;; a reload of the theme when a new frame is created with Emacs client to work
+;; around that bug:
+
+(defun reload-current-theme-in-frame (frame)
+  "Reload the current theme in FRAME"
+  (select-frame frame)
+  (load-theme exordium-theme t nil))
+
+(when (daemonp)
+  (add-hook 'after-make-frame-functions #'reload-current-theme-in-frame))
 
 
 (provide 'init-themes)
