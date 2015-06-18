@@ -101,10 +101,15 @@ Powerline follow."
 ;; a reload of the theme when a new frame is created with Emacs client to work
 ;; around that bug:
 
+(defvar exordium-theme-loaded-in-frame nil
+  "Whether `reloa-current-theme-in-frame' was called")
+
 (defun reload-current-theme-in-frame (frame)
   "Reload the current theme in FRAME"
-  (select-frame frame)
-  (load-theme exordium-theme t nil))
+  (unless exordium-theme-loaded-in-frame
+    (select-frame frame)
+    (load-theme exordium-theme t nil)
+    (setq exordium-theme-loaded-in-frame t)))
 
 (when (daemonp)
   (add-hook 'after-make-frame-functions #'reload-current-theme-in-frame))
