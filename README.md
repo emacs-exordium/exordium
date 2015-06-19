@@ -68,7 +68,16 @@ $ git clone https://github.com/philippe-grenet/exordium.git ~/.emacs.d
 ```
 
 The first time you start Emacs it will download and compile the required
-packages, which may take a couple of minutes.
+packages, which may take a couple of minutes. If your machine is behind a proxy
+server, you should create a file `.emacs.d/before-init.el` with the address of
+the proxy before you start Emacs:
+
+```lisp
+(setq url-proxy-services
+      '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+        ("http"     . "<proxy-name>:<proxy-port>")
+        ("https"    . "<proxy-name>:<proxy-port>")))
+```
 
 You can also clone the repository elsewhere, and use the `init-test.sh` script
 to try out exordium. `init-test.sh` will run your default emacs with the
