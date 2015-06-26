@@ -240,6 +240,15 @@ names to which it refers are bound."
      (term-color-cyan ((,class ( :foreground ,cyan))))
      (term-color-white ((,class ( :foreground ,base00))))
 
+     ;; helm
+     (helm-selection ((,class (:background ,base02 :underline t))))
+     (helm-selection-line ((,class (:background ,base02 :foreground ,base1 :underline nil))))
+
+     ;; helm-swoop
+     (helm-swoop-target-line-face ((,class (:foreground unspecified :background ,base02))))
+     (helm-swoop-target-line-block-face ((,class (:foreground unspecified :background ,base02))))
+     (helm-swoop-target-word-face ((,class (:foreground ,magenta :background unspecified))))
+
      ;; whitespace
      (trailing-whitespace ((,class (:foreground ,red))))
 
