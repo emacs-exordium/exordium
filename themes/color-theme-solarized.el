@@ -249,6 +249,17 @@ names to which it refers are bound."
      (helm-swoop-target-line-block-face ((,class (:foreground unspecified :background ,base02))))
      (helm-swoop-target-word-face ((,class (:foreground ,magenta :background unspecified))))
 
+     ;; diff
+     (diff-added ((,class (:foreground ,green :background nil))))
+     (diff-changed ((,class (:foreground ,blue :background nil))))
+     (diff-removed ((,class (:foreground ,red :background nil))))
+     (diff-context ((,class (:background nil))))
+     (diff-header ((,class (:background ,base2 :foreground ,base01))))
+     (diff-file-header ((,class (:background ,base2 :foreground ,base00 :weight bold))))
+     (diff-refine-added ((,class (:foreground ,green :background ,base03 :inverse-video t))))
+     (diff-refine-change ((,class (:foreground ,blue :background ,base03 :inverse-video t))))
+     (diff-refine-removed ((,class (:foreground ,red :background ,base03 :inverse-video t))))
+
      ;; whitespace
      (trailing-whitespace ((,class (:foreground ,red))))
 
