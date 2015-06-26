@@ -92,7 +92,7 @@ names to which it refers are bound."
      (font-lock-special-keyword-face ((,class (:foreground ,red))))
      (font-lock-exit-face ((,class (:foreground ,red))))
      (font-lock-other-emphasized-face ((,class (:foreground ,violet))))
-     (font-lock-regexp-grouping-backslash ((,class (:foregrouund ,yellow))))
+     (font-lock-regexp-grouping-backslash ((,class (:foreground ,yellow))))
 
      ;; Emacs interface
      (cursor ((,class (:foreground ,base03 :background ,base0))))
