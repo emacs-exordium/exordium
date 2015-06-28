@@ -234,14 +234,14 @@ With argument, do this that many times."
 ;;; symetrical. C-Left and C-Right are left unchanged (move by words).
 
 (define-key global-map [(meta right)]
-  #'(lambda ()
-    (interactive)
-    (forward-same-syntax 1)))
+  #'(lambda (arg)
+    (interactive "p")
+    (forward-same-syntax arg)))
 
 (define-key global-map [(meta left)]
-  #'(lambda ()
-      (interactive)
-      (forward-same-syntax -1)))
+  #'(lambda (arg)
+      (interactive "p")
+      (forward-same-syntax (- arg))))
 
 
 ;;; FCI: 80-column ruler bound to Ctrl-|
