@@ -260,9 +260,9 @@ success and nil if not found."
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control {)] (function rtags-location-stack-back))
+(define-key c-mode-base-map [(control c) (r) (left)] (function rtags-location-stack-back))
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control })] (function rtags-location-stack-forward))
+(define-key c-mode-base-map [(control c) (r) (right)] (function rtags-location-stack-forward))
 
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 

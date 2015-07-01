@@ -16,6 +16,9 @@
 ;;; M-C-l             Switch to last buffer
 ;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
 ;;; C- +/-            Zoom
+
+;;; C-=               Expand region by semantic units
+;;; M-C-=             Contract region by semantic units
 ;;;
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
@@ -180,6 +183,7 @@
 ;;; Expand region
 (require 'expand-region)
 (global-set-key (kbd "C-=") (function er/expand-region))
+(global-set-key (kbd "M-C-=") (function er/contract-region))
 
 
 ;;; File saving and opening

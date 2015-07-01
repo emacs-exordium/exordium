@@ -27,7 +27,6 @@
 ;;; M-d            `delete-word'
 ;;; M-BACKSPACE    `backward-delete-word'
 ;;;
-;;; Ctrl-=         Expand region
 ;;; Ctrl-|         Toggle FCI mode on and off ("Fill columm indicator",
 ;;;                e.g. the 80 column ruler)
 

@@ -138,6 +138,7 @@ Keybinding          | Description
 <kbd>M-LEFT</kbd> and <kbd>M-RIGHT</kbd> | Move cursor by semantic units (use <kbd>C-LEFT</kbd> and <kbd>C-RIGHT</kbd> to move by words).
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region by semantic units.
+<kbd>M-C-=</kbd>    | Contract region by semantic units.
 <kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
@@ -319,6 +320,7 @@ Keybinding            | Description
 <kbd>C-c g l</kbd>    | Open git log (`magit-log`).
 <kbd>C-c g f</kbd>    | Open git file log (`magit-file-log`).
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
+<kbd>C-c g g</kbd>    | Git grep (`vc-git-grep`).
 
 Git gutter keys:
 
@@ -546,10 +548,10 @@ Keybinding                           | Description
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
-Keybinding                            | Description
---------------------------------------|---------------------------------------
-<kbd>C-{</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>C-}</kbd> or <kbd>C-c r ]</kbd>  | Go forward to next location.
+Keybinding                                   | Description
+---------------------------------------------|---------------------------------
+<kbd>C-c r LEFT</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-c r RIGHT</kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 
