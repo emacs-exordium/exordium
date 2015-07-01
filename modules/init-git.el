@@ -89,5 +89,10 @@
 (define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
 
+;;; Git Grep
 
+(define-key exordium-git-map (kbd "g") (function vc-git-grep))
+
+
+
 (provide 'init-git)
