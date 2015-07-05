@@ -34,6 +34,7 @@
 ;; buffers are open or killed in order to maintain the variable. The hook has a
 ;; very small cost.
 ;;
+;; FIXME: doesn't seem to play well with magit
 ;; TODO: implement support for bury-buffer in FLB mode
 
 (require 'cl)
