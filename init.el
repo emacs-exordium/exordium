@@ -263,6 +263,7 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
+(require 'init-flb-mode)
 
 (update-progress-bar)
 
