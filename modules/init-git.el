@@ -49,7 +49,8 @@
 (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
 ;;; Don't show "MRev" in the modeline
-(diminish 'magit-auto-revert-mode)
+(when (bound-and-true-p magit-auto-revert-mode)
+  (diminish 'magit-auto-revert-mode))
 
 
 ;;; Turn off the horrible warning about magit auto-revert of saved buffers
