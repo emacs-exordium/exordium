@@ -472,6 +472,13 @@ guard around it"
          (star2-pos     (string-match "\\*\\*[\\s-]*" before-var))
          (type          (pg/string-trim
                          (substring before-var 0 (or star-pos var-pos)))))
+    ;; Remove possible spaces between type and &:
+    (when (string-match "\\(\\.*\\)[[:blank:]]+&" type)
+      (let ((ampersand (match-string 0 type)))
+        (when ampersand
+          (setq type (concat
+                      (substring type 0 (- (length type) (length ampersand)))
+                      "&")))))
     (list type
           (cond (star2-pos (concat "**" var))
                 (star-pos  (concat "*" var))
