@@ -625,7 +625,11 @@ declaration or definition, align the type and variable names"
                                  (- 79 longest-length))
                 ;; We cannot indent correctly, some lines are too long
                 (indent-region (region-beginning) (region-end))
-                (message "Longest line is %d chars" longest-length)))))))))
+                (message "Longest line is %d chars" longest-length))))))))
+  ;; Leave the cursor after the closing parenthese instead of on the opening
+  ;; one, since most likely we want to add code after the arg list.
+  (when (looking-at "\\s\(")
+    (forward-list 1)))
 
 (define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
 
