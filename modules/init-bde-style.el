@@ -365,7 +365,8 @@ backspace, delete, left or right."
     (if (> num-spaces 0)
         (dotimes (i num-spaces)
           (insert " "))
-      (message "Sorry, not enough space..."))))
+      (message "Sorry, not enough space...")))
+  (move-end-of-line nil))
 
 ;;; Ctrl-> to right-aligh the text after point
 (global-set-key [(control >)] 'bde-aligh-right)
