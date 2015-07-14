@@ -310,11 +310,10 @@ With argument, do this that many times."
 Use a prefix arg to provide LEN.
 Plain `C-u' (no number) uses `fill-column' as LEN."
   (interactive "P")
-  (setq len  (or len fill-column))
-  (let ((start-line                 (line-number-at-pos))
-        (len-found                  0)
-        (found                      nil)
-        (inhibit-field-text-motion  t))
+  (setq len (or len fill-column))
+  (let ((start-line (line-number-at-pos))
+        (len-found  0)
+        (found      nil))
     (while (and (not found) (not (eobp)))
       (forward-line 1)
       (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
