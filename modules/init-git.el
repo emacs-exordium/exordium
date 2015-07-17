@@ -21,8 +21,14 @@
 ;;; Keys
 (define-prefix-command 'exordium-git-map nil)
 (define-key exordium-git-map (kbd "s") (function magit-status))
-(define-key exordium-git-map (kbd "l") (function magit-log))
-(define-key exordium-git-map (kbd "f") (function magit-file-log))
+(define-key exordium-git-map (kbd "l")
+  (if (fboundp 'magit-log-current)
+      (function magit-log-current)
+    (function magit-log)))
+(define-key exordium-git-map (kbd "f")
+  (if (fboundp 'magit-log-buffer-file)
+      (function magit-log-buffer-file)
+    (function magit-file-log)))
 (define-key exordium-git-map (kbd "b") (function magit-blame-mode))
 (global-set-key (kbd "C-c g") 'exordium-git-map)
 
