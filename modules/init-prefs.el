@@ -57,7 +57,7 @@ available font names by evaluating (font-family-list)."
 
 ;;; Keyboard
 
-(defcustom exordium-keyboard-escape t
+(defcustom exordium-keyboard-escape nil
   "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G."
   :group 'exordium
   :type  'boolean)
