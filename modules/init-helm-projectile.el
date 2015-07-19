@@ -5,7 +5,8 @@
 ;;; Key               Definition
 ;;; ----------------- -------------------------------------------------------
 ;;; C-c h             Open file with helm/projectile (current project).
-;;; C-c C-h           Same but first select the project.
+;;; C-c M-h           Same but first select the project.
+;;; or C-c H
 ;;; C-c p s g         Grep in project.
 ;;;
 ;;; C-h b             Describe keybindings using Helm.
@@ -20,7 +21,8 @@
 
 (projectile-global-mode)
 (global-set-key [(control c)(h)] (function helm-projectile))
-(global-set-key [(control c)(control h)] (function helm-projectile-switch-project))
+(global-set-key [(control c)(H)] (function helm-projectile-switch-project))
+(global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
 
 
 ;;; Do not show these files in helm buffer

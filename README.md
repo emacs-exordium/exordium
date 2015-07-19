@@ -117,7 +117,6 @@ General:
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command (`keyboard-quit`), also bound to <kbd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
@@ -163,6 +162,11 @@ Keybinding         | Description
 -------------------|-----------------------------------------------------------
 <kbd>C-.</kbd>     | Force trigger auto-complete.
 <kbd>ESC</kbd>     | Abort auto-complete.
+
+Tip: if you are looking for a particular key and you know it starts with a
+given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
+the list of keys starting with that prefix. For example <kbd>C-c C-h</kbd> lists
+all the keys starting with <kbd>C-c</kbd>.
 
 ## Projectile
 
@@ -243,7 +247,7 @@ brackets. There are only 2 keys to remember:
   will display the Helm buffer. Start typing for a partial name to narrow the
   selection until you find what you were looking for. Note that it performs
   fuzzy matching.
-* If you want to open a file from a different project, type <kbd>C-c C-h</kbd>
+* If you want to open a file from a different project, type <kbd>C-c M-h</kbd>
   instead. The Helm buffer will initially display just the list of
   projects. Choose your project and press enter; Helm will now display all
   indexed files in that project.
@@ -251,16 +255,16 @@ brackets. There are only 2 keys to remember:
 <kbd>C-c p C-h</kbd> displays the list of keys for Projectile. Below are the
 most important ones.
 
-Keybinding           | Description
----------------------|---------------------------------------------------------
-<kbd>C-c h</kbd>     | Find file in current project with helm
-<kbd>C-c C-h</kbd>   | Same, but first select project
-<kbd>C-c p p</kbd>   | IDO: switch project
-<kbd>C-c p f</kbd>   | IDO: find file in current project
-<kbd>C-c p s g</kbd> | Grep in current project
-<kbd>C-c p s a</kbd> | Same but using ack
-<kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
-<kbd>C-c p i</kbd>   | Invalidate cache
+Keybinding                             | Description
+---------------------------------------|--------------------------------------------------
+<kbd>C-c h</kbd>                       | Find file in current project with helm
+<kbd>C-c M-h</kbd> or <kbd>C-c H</kbd> | Same, but first select project
+<kbd>C-c p p</kbd>                     | IDO: switch project
+<kbd>C-c p f</kbd>                     | IDO: find file in current project
+<kbd>C-c p s g</kbd>                   | Grep in current project
+<kbd>C-c p s a</kbd>                   | Same but using ack
+<kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project
+<kbd>C-c p i</kbd>                     | Invalidate cache
 
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.
