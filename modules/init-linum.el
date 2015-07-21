@@ -6,8 +6,35 @@
 ;;;
 ;;; See also init-ui.el
 
+(require 'linum)
+(require 'nlinum)
+(require 'init-prefs)
+
+(defun nlinum--setup-window-fudge ()
+  "Workaround a bug in older versions of Emacs"
+  (let ((width (if (display-graphic-p)
+                   (ceiling
+                    (let ((width nil))
+                      (if width
+                          (/ (* nlinum--width 1.0 width)
+                             (frame-char-width))
+                        (/ (* nlinum--width 1.0
+                              16)
+                           (frame-char-height)))))
+                 nlinum--width)))
+    (set-window-margins nil (if nlinum-mode width)
+                        (cdr (window-margins)))))
+
 (cond ((and (fboundp 'global-nlinum-mode)
             (eq exordium-display-line-numbers :nlinum))
+       ;; Enable nlinum
+       (let ((min-version "24.5"))
+         (when (version< emacs-version min-version)
+           ;; Workaround a bug in Emacs causing emacsclient to display
+           ;; "*ERROR*: Invalid face: linum".  See
+           ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2015-01/msg00079.html
+           (fset 'nlinum--setup-window 'nlinum--setup-window-fudge)))
+
        (global-nlinum-mode t))
 
       ((and (fboundp 'global-linum-mode)
