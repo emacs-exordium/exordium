@@ -874,6 +874,15 @@ in `provide` and the symbol in `require` are the same.
   temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable font
   lock after you're done editing your large component-level comment.
 
+* `exordium-preferred-fonts` does not work with `emacs --daemon`. This is
+  annoying if you start Emacs as a server and then only use `emacsclient`
+  afterwards. The problem is that functions like `font-family-list` return nil
+  in Emacs server, so there is no good way to verify what fonts are available
+  in the server process (believe me I tried). The solution is to put something
+  like `(setq default-frame-alist '((font . "Inconsolata-12")))` in your
+  `after-init.el` (so you need to know exactly what font and size you want for
+  your local machine).
+
 * Sometimes weird bugs may happen after an upgrade or during development on a
   module. Exordium recompiles any `.el` file for which the corresponding `.elc`
   files is older on startup, but does not try to force any `.el` file to be
