@@ -880,7 +880,7 @@ in `provide` and the symbol in `require` are the same.
   in Emacs server, so there is no good way to verify what fonts are available
   in the server process (believe me I tried). The solution is to put something
   like `(setq default-frame-alist '((font . "Inconsolata-12")))` in your
-  `after-init.el` (so you need to know exactly what font and size you want for
+  `pref.el` (you need to know exactly what font and size you want for
   your local machine).
 
 * Sometimes weird bugs may happen after an upgrade or during development on a
