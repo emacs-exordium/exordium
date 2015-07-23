@@ -196,6 +196,33 @@ names to which it refers are bound."
       ((,class (:background ,zenburn-bg+2 :foreground ,zenburn-fg :bold t))
        (t (:background ,zenburn-fg :foreground ,zenburn-bg :bold t))))
 
+
+     ;; dired+
+     (diredp-display-msg ((t (:foreground ,zenburn-blue))))
+     (diredp-compressed-file-suffix ((t (:foreground ,zenburn-orange))))
+     (diredp-date-time ((t (:foreground ,zenburn-magenta))))
+     (diredp-deletion ((t (:foreground ,zenburn-yellow))))
+     (diredp-deletion-file-name ((t (:foreground ,zenburn-red))))
+     (diredp-dir-heading ((t (:foreground ,zenburn-blue :background ,zenburn-bg-1))))
+     (diredp-dir-priv ((t (:foreground ,zenburn-cyan))))
+     (diredp-exec-priv ((t (:foreground ,zenburn-red))))
+     (diredp-executable-tag ((t (:foreground ,zenburn-green+1))))
+     (diredp-file-name ((t (:foreground ,zenburn-blue))))
+     (diredp-file-suffix ((t (:foreground ,zenburn-green))))
+     (diredp-flag-mark ((t (:foreground ,zenburn-yellow))))
+     (diredp-flag-mark-line ((t (:foreground ,zenburn-orange))))
+     (diredp-ignored-file-name ((t (:foreground ,zenburn-red))))
+     (diredp-link-priv ((t (:foreground ,zenburn-yellow))))
+     (diredp-mode-line-flagged ((t (:foreground ,zenburn-yellow))))
+     (diredp-mode-line-marked ((t (:foreground ,zenburn-orange))))
+     (diredp-no-priv ((t (:foreground ,zenburn-fg))))
+     (diredp-number ((t (:foreground ,zenburn-green+1))))
+     (diredp-other-priv ((t (:foreground ,zenburn-yellow-1))))
+     (diredp-rare-priv ((t (:foreground ,zenburn-red-1))))
+     (diredp-read-priv ((t (:foreground ,zenburn-green-1))))
+     (diredp-symlink ((t (:foreground ,zenburn-yellow))))
+     (diredp-write-priv ((t (:foreground ,zenburn-magenta))))
+
      ;; ediff
      (ediff-current-diff-A ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
      (ediff-current-diff-Ancestor ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
