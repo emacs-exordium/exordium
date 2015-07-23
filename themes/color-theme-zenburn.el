@@ -315,6 +315,11 @@ names to which it refers are bound."
      (ack-line ((t (:foreground ,zenburn-yellow))))
      (ack-match ((t (:foreground ,zenburn-orange :background ,zenburn-bg-1 :weight bold))))
 
+     ;; git-commit
+     (git-commit-comment-action  ((,class (:foreground ,zenburn-green+1 :weight bold))))
+     (git-commit-comment-branch  ((,class (:foreground ,zenburn-blue+1  :weight bold))))
+     (git-commit-comment-heading ((,class (:foreground ,zenburn-yellow  :weight bold))))
+
      ;; git-gutter
      (git-gutter:added ((t (:foreground ,zenburn-green :weight bold :inverse-video t))))
      (git-gutter:deleted ((t (:foreground ,zenburn-red :weight bold :inverse-video t))))
@@ -326,7 +331,7 @@ names to which it refers are bound."
      (git-gutter-fr:deleted ((t (:foreground ,zenburn-red :weight bold))))
      (git-gutter-fr:modified ((t (:foreground ,zenburn-magenta :weight bold))))
 
-     ;; git-rebase-mode
+     ;; git-rebase
      (git-rebase-hash ((t (:foreground ,zenburn-orange))))
 
      ;; helm
