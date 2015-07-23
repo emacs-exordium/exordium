@@ -563,11 +563,48 @@ names to which it refers are bound."
      (yascroll:thumb-fringe ((t (:background ,zenburn-bg-1 :foreground ,zenburn-bg-1))))
      )))
 
+
+(defmacro zenburn-variables ()
+  "Return a backquote which defines a list of variables.
+It expects to be evaluated in a scope in which the various color
+names to which it refers are bound."
+  (quote
+   `(
+     (ansi-color-names-vector [,zenburn-bg ,zenburn-red ,zenburn-green ,zenburn-yellow
+                                         ,zenburn-blue ,zenburn-magenta ,zenburn-cyan ,zenburn-fg])
+;;;;; fill-column-indicator
+     (fci-rule-color ,zenburn-bg+05)
+;;;;; vc-annotate
+     (vc-annotate-color-map
+      '(( 20. . ,zenburn-red-1)
+        ( 40. . ,zenburn-red)
+        ( 60. . ,zenburn-orange)
+        ( 80. . ,zenburn-yellow-2)
+        (100. . ,zenburn-yellow-1)
+        (120. . ,zenburn-yellow)
+        (140. . ,zenburn-green-1)
+        (160. . ,zenburn-green)
+        (180. . ,zenburn-green+1)
+        (200. . ,zenburn-green+2)
+        (220. . ,zenburn-green+3)
+        (240. . ,zenburn-green+4)
+        (260. . ,zenburn-cyan)
+        (280. . ,zenburn-blue-2)
+        (300. . ,zenburn-blue-1)
+        (320. . ,zenburn-blue)
+        (340. . ,zenburn-blue+1)
+        (360. . ,zenburn-magenta)))
+     (vc-annotate-very-old-color ,zenburn-magenta)
+     (vc-annotate-background ,zenburn-bg-1)
+     )))
+
 (defun define-zenburn-theme ()
   "Define the zenburn theme (only one variant for now)"
   (deftheme zenburn "A low contrast theme")
   (with-zenburn-colors
    (apply 'custom-theme-set-faces 'zenburn (zenburn-face-specs)))
+  (with-zenburn-colors
+   (apply 'custom-theme-set-variables 'zenburn (zenburn-variables)))
   (provide-theme 'zenburn))
 
 ;;; Extra functions
