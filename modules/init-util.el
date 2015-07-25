@@ -27,8 +27,15 @@
 ;;; M-d            `delete-word'
 ;;; M-BACKSPACE    `backward-delete-word'
 ;;;
-;;; Ctrl-|         Toggle FCI mode on and off ("Fill columm indicator",
+;;; C-|            Toggle FCI mode on and off ("Fill columm indicator",
 ;;;                e.g. the 80 column ruler)
+;;;
+;;; C-j            Avy: jump to the beginning of any word on the screen. It
+;;; C-'            asks for the first character of the word you want, and then
+;;;                annotates each word that starts with this character with a
+;;;                unique code of 1 or 2 letters. Type this code to jump
+;;;                directly to the word. Note that the codes it generates are
+;;;                optimized for touch-type.
 
 (require 'init-lib)
 (require 'init-prefs)
@@ -304,6 +311,15 @@ With argument, do this that many times."
       (turn-on-fci-mode))))
 
 
+;;; Avy - go to any word on the screen in just 2 or 3 keystrokes.
+;;; C-c j => asks for a character, then one or 2 keys to jump.
+;;; Note: Avy has other commands, this is the most useful.
+
+(global-set-key [(control c)(j)] #'avy-goto-word-or-subword-1)
+(global-set-key [(control ?\')] 'avy-goto-word-or-subword-1)
+
+
+;;; Finding lines that are too long (according to some code styles).
 
 (defun goto-long-line (len)
   "Go to the first line that is at least LEN characters long.
