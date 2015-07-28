@@ -40,7 +40,7 @@ might want to check these links:
   (80-character column marker);
   [Project Explorer](https://github.com/sabof/project-explorer) (directory
   tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
-  3 key-stokes); etc.
+  3 key-strokes); etc.
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool); [Helm](http://tuhdo.github.io/helm-intro.html) (an
   alternative to IDO).
