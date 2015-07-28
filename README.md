@@ -32,17 +32,18 @@ might want to check these links:
 ## Features
 
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
-  (turned on by default);
+  (completion engine, turned on by default);
   [Auto Complete](https://github.com/auto-complete/auto-complete);
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
-  (80 character column marker);
+  (80-character column marker);
   [Project Explorer](https://github.com/sabof/project-explorer) (directory
-  tree); etc.
-* Projects: [Projectile](http://batsov.com/projectile) a project-based file
-  management tool; [Helm](http://tuhdo.github.io/helm-intro.html) an
-  alternative to IDO.
+  tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
+  3 key-stokes); etc.
+* Projects: [Projectile](http://batsov.com/projectile) (project-based file
+  management tool); [Helm](http://tuhdo.github.io/helm-intro.html) (an
+  alternative to IDO).
 * Git: [Magit](http://magit.github.io) (git UI);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
@@ -54,8 +55,7 @@ might want to check these links:
 * JavaScript: [JS2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
-* Eye candy: a few [themes](https://github.com/chriskempson/tomorrow-theme)
-  that do not look like an "angry fruit salad", and
+* Eye candy: a few themes that do not look like an "angry fruit salad", and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
 
 ## Installation
@@ -142,12 +142,13 @@ Keybinding          | Description
 
 Navigation:
 
-Keybinding              | Description
-------------------------|----------------------------------------------------------
-<kbd>C-x C-\\</kbd>     | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
-<kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
-<kbd>C-c s</kbd>        | Push point onto position stack (e.g. bookmarks).
-<kbd>C-c b</kbd>        | Pop point from position stack.
+Keybinding                         | Description
+-----------------------------------|----------------------------------------------------------
+<kbd>C-x C-\\</kbd>                | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
+<kbd>C-x C-&#124;</kbd>            | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
+<kdb>C-c j</kbd> or <kbd>C-'</kbd> | Goto visible word or subword (`avy-goto-word-or-subword-1`). It first asks for the first character of the word, then annotates all words starting with that character with a unique touch-type friendly code.
+<kbd>C-c s</kbd>                   | Push point onto position stack (e.g. bookmarks).
+<kbd>C-c b</kbd>                   | Pop point from position stack.
 
 Window manager:
 
