@@ -265,7 +265,7 @@ Keybinding                             | Description
 <kbd>C-c p s g</kbd>                   | Grep in current project
 <kbd>C-c p s a</kbd>                   | Same but using ack
 <kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project
-<kbd>C-c p i</kbd>                     | Invalidate cache
+<kbd>C-c p i</kbd>                     | Invalidate the cache
 
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.
@@ -338,16 +338,17 @@ Keybinding            | Description
 
 Git Timemachine key   | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g t</kbd>    | Enter the git timemachine (`git-timemachine-toggle`)
+<kbd>C-c g t</kbd>    | Enter the git time machine (`git-timemachine-toggle`)
 
 ## C++
 
 ### Utilities
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-TAB</kbd>   | Alternate between header file and source file.
-<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
+Keybinding           | Description
+---------------------|-----------------------------------------------------------
+<kbd>C-TAB</kbd>     | Alternate between header file and source file.
+<kbd>C-u C-TAB</kbd> | Alternate between source/header file and BDE test driver.
+<kbd>C-c ;</kbd>     | Rename variable under cursor (but see also RTags, which is a better solution).
 
 Keys for formatting code according to the
 [BDE](https://github.com/bloomberg/bde) style:
