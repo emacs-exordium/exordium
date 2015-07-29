@@ -366,6 +366,13 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
               (kill-buffer buff)))
         (buffer-list)))
 
+(defun new-scratch ()
+  "Create a new scratch buffer that does not need to be
+saved. This is useful for editing snippets of text in a temporary
+buffer"
+  (interactive)
+  (switch-to-buffer (make-temp-name "scratch-")))
+
 
 ;;; Config management
 
