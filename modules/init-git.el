@@ -29,7 +29,10 @@
   (if (fboundp 'magit-log-buffer-file)
       (function magit-log-buffer-file)
     (function magit-file-log)))
-(define-key exordium-git-map (kbd "b") (function magit-blame-mode))
+(define-key exordium-git-map (kbd "b")
+  (if (fboundp 'magit-blame)
+      (function magit-blame)
+    (function magit-blame-mode)))
 (global-set-key (kbd "C-c g") 'exordium-git-map)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
