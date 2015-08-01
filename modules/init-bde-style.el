@@ -579,59 +579,61 @@ according to the BDE style."
       (setq arglist (substring arglist 1)))
     (when (pg/string-ends-with arglist ")")
       (setq arglist (substring arglist 0 (1- (length arglist)))))
-    ;; Extract the list of arguments
-    (let ((args (split-string arglist ","))
-          (parsed-args ()))
-      (dolist (arg args)
-        (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
-                                              (substring arg 1)
-                                            arg))))
-          (setq parsed-args (cons parsed-arg parsed-args))))
-      (setq parsed-args (reverse parsed-args))
-      ;; Cut the argument list and edit it into a temporary buffer
-      (backward-up-list)
-      (push-mark)
-      (forward-list)
-      (delete-region (region-beginning) (region-end))
-      (insert
-       (with-temp-buffer
-         (insert "(")
-         (let ((i 1))
-           (dolist (arg parsed-args)
-             (insert arg)
-             (unless (>= i (length parsed-args))
-               (insert ",")
-               (newline))
-             (incf i)))
-         (insert ")")
-         (buffer-string)))
-      ;; Reindent
-      (push-mark)
-      (backward-list)
-      (indent-region (region-beginning) (region-end))
-      ;; If some lines exceed the dreadful 79th column, insert a new line before
-      ;; the first line and reindent, with longest line to the right edge
-      (save-excursion
-        (let ((start-col (1+ (current-column)))
-              (max-col (bde-max-column-in-region)))
-          (when (> max-col 79)
-            (backward-list)
-            (forward-char)
-            (newline)
-            (backward-char 2)
-            (push-mark)
-            (forward-list)
-            (let ((longest-length (- max-col start-col)))
-              (if (<= longest-length 79)
-                  (indent-region (region-beginning) (region-end)
-                                 (- 79 longest-length))
-                ;; We cannot indent correctly, some lines are too long
-                (indent-region (region-beginning) (region-end))
-                (message "Longest line is %d chars" longest-length))))))))
-  ;; Leave the cursor after the closing parenthese instead of on the opening
-  ;; one, since most likely we want to add code after the arg list.
-  (when (looking-at "\\s\(")
-    (forward-list 1)))
+    (if (string= "" (pg/string-trim arglist))
+        (message "There are no arguments")
+      ;; Extract the list of arguments
+      (let ((args (split-string arglist ","))
+            (parsed-args ()))
+        (dolist (arg args)
+          (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
+                                                (substring arg 1)
+                                              arg))))
+            (setq parsed-args (cons parsed-arg parsed-args))))
+        (setq parsed-args (reverse parsed-args))
+        ;; Cut the argument list and edit it into a temporary buffer
+        (backward-up-list)
+        (push-mark)
+        (forward-list)
+        (delete-region (region-beginning) (region-end))
+        (insert
+         (with-temp-buffer
+           (insert "(")
+           (let ((i 1))
+             (dolist (arg parsed-args)
+               (insert arg)
+               (unless (>= i (length parsed-args))
+                 (insert ",")
+                 (newline))
+               (incf i)))
+           (insert ")")
+           (buffer-string)))
+        ;; Reindent
+        (push-mark)
+        (backward-list)
+        (indent-region (region-beginning) (region-end))
+        ;; If some lines exceed the dreadful 79th column, insert a new line before
+        ;; the first line and reindent, with longest line to the right edge
+        (save-excursion
+          (let ((start-col (1+ (current-column)))
+                (max-col (bde-max-column-in-region)))
+            (when (> max-col 79)
+              (backward-list)
+              (forward-char)
+              (newline)
+              (backward-char 2)
+              (push-mark)
+              (forward-list)
+              (let ((longest-length (- max-col start-col)))
+                (if (<= longest-length 79)
+                    (indent-region (region-beginning) (region-end)
+                                   (- 79 longest-length))
+                  ;; We cannot indent correctly, some lines are too long
+                  (indent-region (region-beginning) (region-end))
+                  (message "Longest line is %d chars" longest-length))))))))
+    ;; Leave the cursor after the closing parenthese instead of on the opening
+    ;; one, since most likely we want to add code after the arg list.
+    (when (looking-at "\\s\(")
+      (forward-list 1))))
 
 (define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
 
