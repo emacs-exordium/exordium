@@ -491,7 +491,8 @@ guard around it"
 
 (defun bde-align-functions-arguments ()
   "Assuming the cursor is within the argument list of a function
-declaration or definition, align the type and variable names"
+declaration or definition, align the type and variable names
+according to the BDE style."
   (interactive)
   ;; Get a list of the arguments. Note that the external parentheses are included
   (let ((args (split-string (thing-at-point 'list) ","))
@@ -509,7 +510,7 @@ declaration or definition, align the type and variable names"
     (backward-up-list)
     (push-mark)
     (forward-list)
-    (kill-region (region-beginning) (region-end))
+    (delete-region (region-beginning) (region-end))
     (insert
      (with-temp-buffer
        (insert "(")
@@ -569,8 +570,8 @@ declaration or definition, align the type and variable names"
 
 (defun bde-align-funcall ()
   "Assuming the cursor is within the list of arguments of a
-  function call, align the arguments. It puts one argument per
-  line and aligns to the right"
+  function call, align the arguments according the the BDE
+  style. It puts one argument per line and aligns to the right."
   (interactive)
   ;; Get the argument string (remove the external parentheses)
   (let ((arglist (thing-at-point 'list)))
@@ -711,7 +712,7 @@ include semicolons."
       (indent-according-to-mode)
       (setq n (current-indentation))
       (beginning-of-line)
-      (kill-line))
+      (delete-region (point) (line-end-position)))
     n))
 
 (defun bde-align-class-members ()
