@@ -142,6 +142,11 @@
 ;;; Delete selection when typing
 (delete-selection-mode t)
 
+;;; Let me scroll the buffer while searching, without exiting the search.
+;;; This allows for using C-l during isearch.
+(when (boundp 'isearch-allow-scroll)
+  (setq isearch-allow-scroll t))
+
 
 ;;; Shortcut keys
 
