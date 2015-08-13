@@ -266,10 +266,9 @@ names to which it refers are bound."
      (magit-section-title ((t (:inherit diff-hunk-header))))
 
      ;; Git gutter fringe
-     ;; Note: this uses linum color, but green/red/yellow are another option.
-     (git-gutter-fr:added ((t (:foreground ,comment))))
-     (git-gutter-fr:deleted ((t (:foreground ,comment))))
-     (git-gutter-fr:modified ((t (:foreground ,comment))))
+     (git-gutter-fr:added ((t (:foreground ,green :weight bold))))
+     (git-gutter-fr:deleted ((t (:foreground ,red :weight bold))))
+     (git-gutter-fr:modified ((t (:foreground ,purple :weight bold))))
 
      ;; Diff
      (diff-added ((t (:foreground ,green))))

@@ -207,6 +207,11 @@ names to which it refers are bound."
      (git-gutter:added ((t (:foreground ,green))))
      (git-gutter:deleted ((t (:foreground ,red))))
 
+     ;; git-gutter-fringe
+     (git-gutter-fr:added ((t (:foreground ,green :weight bold))))
+     (git-gutter-fr:deleted ((t (:foreground ,red :weight bold))))
+     (git-gutter-fr:modified ((t (:foreground ,violet :weight bold))))
+
      ;; rainbow-delimiters
      (rainbow-delimiters-depth-1-face ((t (:foreground ,cyan))))
      (rainbow-delimiters-depth-2-face ((t (:foreground ,yellow))))
