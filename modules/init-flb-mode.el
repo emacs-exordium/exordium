@@ -66,8 +66,24 @@ and variable `flb-mode'."
 (defvar flb-last-buffer nil
   "Last selected buffer, or nil if flb-mode is disabled")
 
+(defun common-buffer-list (orig-fun)
+  "Using `orig-fun' as a function that retuns a list of
+buffers (e.g. `buffer-list'), returns a subset of this list that
+contains all common buffers, e.g. the buffers that should be
+shared among all frames."
+  (let ((buffers (funcall orig-fun)))
+    (loop for b in buffers
+          when (let ((n (buffer-name b)))
+                 (and (string-prefix-p "*" n)
+                      (string-suffix-p "*" n)))
+          collect b)))
+
 (defun flb-buffer-list (orig-fun &rest args)
-  (plist-get flb-frame-buffers (selected-frame)))
+  "Advice around `buffer-list': returns the list of buffers. Note
+that this advice disregards the `orig-fun'."
+  (cl-remove-duplicates
+   (append (plist-get flb-frame-buffers (selected-frame))
+           (common-buffer-list orig-fun))))
 
 (defun flb-activate ()
   "Activates the frame-local-buffers mode"
@@ -117,7 +133,7 @@ and variable `flb-mode'."
   FRAME and BUFFER: adds BUFFER to the front of FRAME's local
   buffers and removes any dead buffers."
   (let ((local-buffers (plist-get flb-frame-buffers frame)))
-    (add-to-list 'local-buffers buffer)
+    (cl-pushnew buffer local-buffers)
     (setq local-buffers (remove-if-not #'buffer-live-p local-buffers))
     (setq flb-frame-buffers (plist-put flb-frame-buffers frame local-buffers))))
 
