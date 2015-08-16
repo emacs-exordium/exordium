@@ -7,6 +7,14 @@
 (require 'init-prefs)
 (require 'org)
 
+;;; Theme options
+
+(defcustom exordium-tomorrow-modeline-box t
+  "Enable displaying a box around the modeline.
+Inspired by the apropospriate-theme."
+  :group 'exordium
+  :type  'boolean)
+
 ;;; Color palette.
 
 (defconst tomorrow-colors
@@ -169,7 +177,7 @@ names to which it refers are bound."
      (widget-button ((t (:underline t))))
      (widget-field
       ((t (:background ,current-line :box (:line-width 1 :color ,foreground)))))
-     (header-line ((t (:inherit mode-line :foreground ,purple :background nil))))
+     (header-line ((t (:foreground ,purple :background nil))))
      (menu ((t (:foreground ,foreground :background ,selection))))
 
      ;; Customize
@@ -178,8 +186,16 @@ names to which it refers are bound."
      (custom-state ((t (:foreground ,green))))
 
      ;; Mode line
-     (mode-line ((t (:background ,selection :foreground ,foreground))))
-     (mode-line-inactive ((t (:background ,current-line :foreground ,foreground))))
+     (mode-line ((t ,(if exordium-tomorrow-modeline-box
+                         `(:box (:line-width 4 :color ,black :style nil)
+                           :height 0.9
+                           :background ,selection :foreground ,foreground)
+                       `(:background ,selection :foreground ,foreground)))))
+     (mode-line-inactive ((t ,(if exordium-tomorrow-modeline-box
+                                  `(:box (:line-width 4 :color ,black :style nil)
+                                    :height 0.9
+                                    :background ,current-line :foreground ,foreground)
+                                `(:background ,current-line :foreground ,foreground)))))
      (mode-line-buffer-id ((t (:foreground ,purple :background nil))))
      (mode-line-emphasis ((t (:foreground ,foreground :slant italic))))
      (mode-line-highlight ((t (:foreground ,purple :box nil :weight bold))))
