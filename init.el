@@ -293,6 +293,7 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-bde-style)
 (when exordium-yasnippet
   (require 'init-yasnippet))
+(require 'init-gdb)
 (require 'init-rtags)
 (when exordium-rtags-auto-complete
   (rtags-auto-complete))
