@@ -11,6 +11,11 @@
 ;;; - M-C-l           open a different buffer in the current window
 ;;; - C-c up/down     jump between windows
 ;;; - C-c S-up/down   swap windows
+;;;
+;;; Functions:
+;;;
+;;; `toggle-window-dedicated' makes a window dedicated or not (it prevents
+;;; Emacs from reusing the window to display another buffer).
 
 
 ;;; C-c arrow = move the focus between visible buffers
@@ -77,5 +82,20 @@
 (global-set-key [(control c) (shift down)]  (function move-buffer-down))
 (global-set-key [(control c) (shift left)]  (function move-buffer-left))
 (global-set-key [(control c) (shift right)] (function move-buffer-right))
+
+
+
+(defun toggle-window-dedicated ()
+  "Toggles whether the current active window is dedicated or not"
+  (interactive)
+  (let ((window (get-buffer-window (current-buffer))))
+    (message (if (set-window-dedicated-p window
+                                         (not (window-dedicated-p window)))
+                 "Window '%s' is dedicated"
+               "Window '%s' is normal")
+             (current-buffer))))
+
+;;; Note: apparently there is no Pause key on an Apple keyboard...
+(define-key global-map [pause] 'toggle-window-dedicated)
 
 (provide 'init-window-manager)

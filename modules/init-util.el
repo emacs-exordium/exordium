@@ -36,6 +36,13 @@
 ;;;                unique code of 1 or 2 letters. Type this code to jump
 ;;;                directly to the word. Note that the codes it generates are
 ;;;                optimized for touch-type.
+;;;
+;;; Functions:
+;;;
+;;; `kill-all-buffers' does what you expect.
+;;;
+;;; `new-scratch' creates a new scratch buffer with a unique name, in
+;;; fundamental mode. This buffer doesn't need to be saved before being killed.
 
 (require 'init-lib)
 (require 'init-prefs)
@@ -343,20 +350,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 
 
 
-;;; Buffers and windows
-
-(defun toggle-window-dedicated ()
-  "Toggles whether the current active window is dedicated or not"
-  (interactive)
-  (let ((window (get-buffer-window (current-buffer))))
-    (message (if (set-window-dedicated-p window
-                                         (not (window-dedicated-p window)))
-                 "Window '%s' is dedicated"
-               "Window '%s' is normal")
-             (current-buffer))))
-
-;;; Note: apparently there is no Pause key on an Apple keyboard...
-(define-key global-map [pause] 'toggle-window-dedicated)
+;;; Buffers
 
 (defun kill-all-buffers ()
   "Kill all buffers that are associated with a file."
