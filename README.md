@@ -124,6 +124,7 @@ Keybinding           | Description
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
+<kbd>C-c C-SPC</kbd> | Toggle highlight of the symbol under the cursor (up to 4 different symbols using different colors).
 
 Editing:
 

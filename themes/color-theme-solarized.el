@@ -129,6 +129,12 @@ names to which it refers are bound."
      (lazy-highlight ((t (:foreground ,yellow :background ,back))))
      (match ((t (:foreground ,yellow :background ,back))))
 
+     ;; Hi-Lock
+     (hi-yellow ((t (:foreground ,yellow :background ,back :inverse-video t))))
+     (hi-pink ((t (:foreground ,magenta :background ,back :inverse-video t))))
+     (hi-green ((t (:foreground ,green :background ,back :inverse-video t))))
+     (hi-blue ((t (:foreground ,cyan :background ,back :inverse-video t))))
+
      ;; Compilation
      (compilation-info ((t (:weight bold :foreground ,green))))
      (compilation-warning ((t (:weight bold :foreground ,orange))))

@@ -75,10 +75,6 @@
 ;;; Display column number in the modebar
 (column-number-mode 1)
 
-;;; Highlight the line where the cursor is
-(when exordium-line-mode
-  (global-hl-line-mode 1))
-
 ;;; Smooth scrolling
 (setq scroll-step 1)
 (setq scroll-margin 0

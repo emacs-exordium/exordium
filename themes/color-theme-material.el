@@ -161,11 +161,17 @@ names to which it refers are bound."
 
      ;; Search
      (match ((t (:foreground ,blue :background ,background :inverse-video t))))
-     (isearch ((t (:foreground ,yellow :background ,background :inverse-video t))))
+     (isearch ((t (:foreground ,yellow :background ,background :inverse-video t :inherit nil))))
      (isearch-lazy-highlight-face
       ((t (:foreground ,light-blue-200 :background ,background :inverse-video t))))
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))
+
+     ;; Hi-Lock
+     (hi-yellow ((t (:foreground ,yellow :background ,background :inverse-video t))))
+     (hi-pink ((t (:foreground ,purple :background ,background :inverse-video t))))
+     (hi-green ((t (:foreground ,light-green-500 :background ,background :inverse-video t))))
+     (hi-blue ((t (:foreground ,light-blue-200 :background ,background :inverse-video t))))
 
      ;; IDO
      (ido-subdir ((t (:foreground ,purple))))

@@ -220,6 +220,12 @@ names to which it refers are bound."
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))
 
+     ;; Hi-Lock
+     (hi-yellow ((t (:foreground ,yellow :background ,background :inverse-video t))))
+     (hi-pink ((t (:foreground ,purple :background ,background :inverse-video t))))
+     (hi-green ((t (:foreground ,green :background ,background :inverse-video t))))
+     (hi-blue ((t (:foreground ,aqua :background ,background :inverse-video t))))
+
      ;; IDO
      (ido-subdir ((t (:foreground ,comment))))
      (ido-first-match ((t (:foreground ,orange :weight bold))))

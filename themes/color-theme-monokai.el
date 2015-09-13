@@ -251,6 +251,12 @@ names to which it refers are bound."
      (isearch ((t (:foreground ,monokai-bg :background ,magenta :weight normal))))
      (isearch-fail ((t (:foreground ,red :background ,monokai-bg :bold t))))
 
+     ;; Hi-Lock
+     (hi-yellow ((t (:foreground ,yellow :background ,monokai-bg :inverse-video t))))
+     (hi-pink ((t (:foreground ,violet :background ,monokai-bg :inverse-video t))))
+     (hi-green ((t (:foreground ,green :background ,monokai-bg :inverse-video t))))
+     (hi-blue ((t (:foreground ,cyan :background ,monokai-bg :inverse-video t))))
+
      ;; misc faces
      (menu ((t (:foreground ,monokai-fg :background ,monokai-bg))))
      (minibuffer-prompt ((t (:foreground ,blue))))

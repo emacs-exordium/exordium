@@ -47,19 +47,6 @@
 (global-set-key (quote [f10]) (quote next-error))
 (global-set-key (quote [(control f10)]) (quote previous-error))
 
-
-;;; Highlight symbol
-
-(when exordium-highlight-symbol
-  (require 'highlight-symbol)
-  (highlight-symbol-nav-mode)
-  ;;
-  (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-  (setq highlight-symbol-on-navigation-p t)
-  ;; Don't show this mode in the modeline
-  (eval-after-load 'highlight-symbol
-    '(diminish 'highlight-symbol-mode)))
-
 
 
 ;;; Font lock changes

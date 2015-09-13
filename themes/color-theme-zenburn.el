@@ -112,6 +112,12 @@ names to which it refers are bound."
      (isearch-fail ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
      (lazy-highlight ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg-05))))
 
+     ;; Hi-Lock
+     (hi-yellow ((t (:foreground ,zenburn-yellow-2 :background ,zenburn-bg :inverse-video t))))
+     (hi-pink ((t (:foreground ,zenburn-magenta :background ,zenburn-bg :inverse-video t))))
+     (hi-green ((t (:foreground ,zenburn-green :background ,zenburn-bg :inverse-video t))))
+     (hi-blue ((t (:foreground ,zenburn-cyan :background ,zenburn-bg :inverse-video t))))
+
      ;; UI
      (menu ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
      (minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
