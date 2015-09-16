@@ -18,6 +18,34 @@
 ;; Highlight changed variables using the error face.
 (setq gdb-show-changed-values t)
 
+
+;;; Highlight the current line in the source window.
+(defconst gdb-highlight-face 'highlight
+  "face to use for highlighting the current line")
+
+(defvar gud-overlay
+  (let ((ov (make-overlay (point-min) (point-min))))
+    (overlay-put ov 'face gdb-highlight-face)
+    ov)
+  "Overlay variable for GUD highlighting.")
+
+(defadvice gud-display-line (after my-gud-highlight act)
+  "Highlight the current line."
+  (let ((ov gud-overlay)
+        (bf (gud-find-file true-file)))
+    ;; TODO: should use with-current-buffer?
+    (save-excursion
+      (set-buffer bf)
+      (move-overlay ov (line-beginning-position) (line-end-position)
+                    (current-buffer)))))
+
+(defun gud-kill-buffer ()
+  (if (eq major-mode 'gud-mode)
+      (delete-overlay gud-overlay)))
+
+(add-hook 'kill-buffer-hook 'gud-kill-buffer)
+
+
 ;;; Keep the current line in sync with the point and in the center of the
 ;;; buffer. Otherwise the current line may disappear from the buffer as you step
 ;;; into the code. I don't know why this is not the default.
@@ -32,6 +60,7 @@
         (forward-line (1- (ad-get-arg 1)))
         (recenter)))))
 
+
 (defun gdb-few-windows ()
   "Slit the current frame into 3 windows: gdb command line,
 source code, and program IO."
