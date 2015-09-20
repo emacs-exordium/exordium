@@ -265,12 +265,12 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
-(require 'init-flb-mode)
 
 (update-progress-bar)
 
 (require 'init-dired)           ; enable dired+ and wdired permission editing
 (require 'init-git)             ; Magit and git gutter
+(require 'init-flb-mode)        ; frame-local buffers
 
 (update-progress-bar)
 

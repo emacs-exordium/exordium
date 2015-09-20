@@ -85,7 +85,7 @@ that this advice disregards the `orig-fun'."
    (append (plist-get flb-frame-buffers (selected-frame))
            (common-buffer-list orig-fun))))
 
-(defun flb-activate ()
+(defun flb-activate (&optional silent)
   "Activates the frame-local-buffers mode"
   ;; Make each existing frame share all existing buffers
   (dolist (f (frame-list))
@@ -93,9 +93,10 @@ that this advice disregards the `orig-fun'."
   ;; Replace `buffer-list' with our own function and add a post-command hook
   (advice-add 'buffer-list :around #'flb-buffer-list)
   (add-hook 'post-command-hook #'flb-post-command-hook)
-  (message "Frame-local-buffers mode is enabled"))
+  (unless silent
+    (message "Frame-local-buffers mode is enabled")))
 
-(defun flb-deactivate ()
+(defun flb-deactivate (&optional silent)
   "Deactivates the frame-local-buffers mode"
   ;; Restore the original `buffer-list' and remove our hook
   (advice-remove 'buffer-list #'flb-buffer-list)
@@ -104,7 +105,8 @@ that this advice disregards the `orig-fun'."
   (setq flb-frame-buffers nil
         flb-last-frame nil
         flb-last-buffer nil)
-  (message "Frame-local-buffers mode is disabled"))
+  (unless silent
+    (message "Frame-local-buffers mode is disabled")))
 
 (defun flb-frame-owns-buffer-p (frame buffer)
   "Predicate testing if FRAME owns BUFFER, e.g. if BUFFER is only
@@ -157,8 +159,8 @@ that this advice disregards the `orig-fun'."
 (when (fboundp 'magit-save-repository-buffers)
   (defadvice magit-save-repository-buffers (around magit-disable-flb activate)
     (let ((previously-on flb-mode))
-      (when flb-mode (flb-deactivate))
+      (when flb-mode (flb-deactivate t))
       ad-do-it
-      (when previously-on (flb-activate)))))
+      (when previously-on (flb-activate t)))))
 
 (provide 'init-flb-mode)
