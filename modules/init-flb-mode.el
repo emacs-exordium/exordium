@@ -151,4 +151,14 @@ that this advice disregards the `orig-fun'."
     (setq flb-last-frame f
           flb-last-buffer b)))
 
+;;; Quick workaround to make magit work when FLB mode is turned on.
+;;; TODO: there must be a better way...
+
+(when (fboundp 'magit-save-repository-buffers)
+  (defadvice magit-save-repository-buffers (around magit-disable-flb activate)
+    (let ((previously-on flb-mode))
+      (when flb-mode (flb-deactivate))
+      ad-do-it
+      (when previously-on (flb-activate)))))
+
 (provide 'init-flb-mode)
