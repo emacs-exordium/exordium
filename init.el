@@ -4,6 +4,10 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
+;;; Increase the number of bytes of consing before GC kicks in. This reduces
+;;; the startup time.
+(setq gc-cons-threshold 100000000)
+
 (let ((min-version "24.1"))
   (when (version< emacs-version min-version)
     (error "This config requires at least Emacs %s, but you're running %s"
