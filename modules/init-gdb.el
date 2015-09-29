@@ -3,6 +3,16 @@
 ;;; Shortcuts:
 ;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
 ;;;
+;;; This module sets up the same function keys as Eclipse, F5 to F8 (run slow to fast):
+;;;
+;;; -------------- -------------------------------------------------------
+;;; Key            Definition
+;;; -------------- -------------------------------------------------------
+;;; F5             Step into (s)
+;;; F6             Next (n)
+;;; F7             Run to the end of the function
+;;; F8             Run
+;;;
 ;;; Functions:
 ;;;
 ;;; - M-x `gdb-few-windows': split the current frame into 3 windows stacked up
@@ -83,6 +93,15 @@ source code, and program IO."
          (list-buffers-noselect))))
     (setq gdb-source-window (selected-window))
     ;; Give focus to the comint window.
+    (set-window-dedicated-p win0 t)
     (select-window win0)))
+
+
+;;; Keys
+
+(define-key gud-minor-mode-map [(f5)] #'gud-step)
+(define-key gud-minor-mode-map [(f6)] #'gud-next)
+(define-key gud-minor-mode-map [(f7)] #'gud-finish)
+(define-key gud-minor-mode-map [(f8)] #'gud-cont)
 
 (provide 'init-gdb)
