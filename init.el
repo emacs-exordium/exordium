@@ -4,8 +4,9 @@
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
 
-;;; Increase the number of bytes of consing before GC kicks in. This reduces
-;;; the startup time.
+;; Reduce the frequency of garbage collection by making it happen on
+;; each 100MB of allocated data (the default is on every 0.76MB). This reduces
+;; the startup time.
 (setq gc-cons-threshold 100000000)
 
 (let ((min-version "24.1"))
@@ -25,6 +26,9 @@ Check the warnings and messages buffers, or restart with --debug-init")
 
 (defconst exordium-after-init "after-init.el"
   "name of the after init file")
+
+;; Save any custom set variable in after-init.el rather than at the end of init.el:
+(setq custom-file "~/.emacs.d/after-init.el")
 
 ;; Use this file for HTTP proxy settings if needed for packages.  Also add
 ;; additional packages to exordium-extra-packages for packages to be
