@@ -109,7 +109,7 @@ names to which it refers are bound."
 
      ;; Emacs interface
      (cursor ((t (:background ,orange))))
-     (fringe ((t (:background ,background))))
+     (fringe ((t (:background ,far-background))))
 
      (linum ((t (:background ,background :foreground ,subtle
                       :underline nil :weight normal :box nil :slant normal))))
