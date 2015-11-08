@@ -360,7 +360,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
               (kill-buffer buff)))
         (buffer-list)))
 
-(defun new-scratch ()
+(defun scratch ()
   "Create a new scratch buffer that does not need to be
 saved. This is useful for editing snippets of text in a temporary
 buffer"
