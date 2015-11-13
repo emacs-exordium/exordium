@@ -29,21 +29,31 @@
 
 ;;; Font
 
-(defun exordium-set-font ()
+(defvar exordium-available-preferred-fonts
+  (remove-if-not (lambda (font-and-size)
+                   (member (car font-and-size) (font-family-list)))
+                 exordium-preferred-fonts))
+
+(defvar exordium-font-size
+  (when exordium-available-preferred-fonts
+    (cdar exordium-available-preferred-fonts)))
+
+(defvar exordium-font-name
+  (when exordium-available-preferred-fonts
+    (caar exordium-available-preferred-fonts)))
+
+(defun exordium-set-font (&optional font size)
   "Find the preferred fonts that are available and choose the first one."
-  (let* ((available-fonts (font-family-list))
-         (available-preferred-fonts
-          (remove-if-not (lambda (font-and-size)
-                           (member (car font-and-size) available-fonts))
-                         exordium-preferred-fonts)))
-    (when available-preferred-fonts
-      (let ((preferred-font (caar available-preferred-fonts))
-            (preferred-size (cdar available-preferred-fonts)))
-        (message "Setting font: %s %d" preferred-font preferred-size)
-        (set-face-attribute 'default nil
-                            :family preferred-font
-                            :height preferred-size
-                            :weight 'normal)))))
+  (interactive
+   (list (completing-read (format "Font (default %s): " exordium-font-name)
+                          exordium-available-preferred-fonts nil nil nil nil exordium-font-name)
+         (read-number "Size: " exordium-font-size)))
+  (let* ((font (or font exordium-font-name))
+         (size (or size exordium-font-size)))
+    (set-face-attribute 'default nil
+                        :family font
+                        :height size
+                        :weight 'normal)))
 
 (when exordium-preferred-fonts
   (exordium-set-font))
