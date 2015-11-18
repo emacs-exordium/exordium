@@ -537,9 +537,11 @@ according to the BDE style."
        (insert ")")
        (buffer-string)))
     ;; Reindent
-    (push-mark)
-    (backward-list)
-    (indent-region (region-beginning) (region-end))
+    (save-restriction
+      (widen)
+      (push-mark)
+      (backward-list)
+      (indent-region (region-beginning) (region-end)))
     ;; If some lines exceed the dreadful 79th column, insert a new line before
     ;; the first line and reindent, with longest line to the right edge
     (save-excursion
@@ -608,9 +610,11 @@ according to the BDE style."
            (insert ")")
            (buffer-string)))
         ;; Reindent
-        (push-mark)
-        (backward-list)
-        (indent-region (region-beginning) (region-end))
+    (save-restriction
+      (widen)
+      (push-mark)
+      (backward-list)
+      (indent-region (region-beginning) (region-end)))
         ;; If some lines exceed the dreadful 79th column, insert a new line before
         ;; the first line and reindent, with longest line to the right edge
         (save-excursion
