@@ -50,8 +50,9 @@
 
 (defconst exordium-cpp-header-switches
   '(("t.cpp" . ("h" "cpp"))
-    ("h"     . ("cpp" "t.cpp" "c"))
+    ("h"     . ("cpp" "cc" "t.cpp" "c"))
     ("cpp"   . ("h" "t.cpp"))
+    ("cc"    . ("h" "t.cc"))
     ("c"     . ("h")))
   "A-list of extension -> list of matching extensions")
 
