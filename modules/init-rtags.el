@@ -213,6 +213,7 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
   (interactive "P")
   (rtags-delete-rtags-windows)
   (rtags-location-stack-push)
+  (defvar init-rtags-found)
   (let ((arg (rtags-current-location))
         (tagname (or (rtags-current-symbol) (rtags-current-token)))
         (fn (buffer-file-name)))
@@ -221,20 +222,20 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
       (rtags-call-rc :path fn :path-filter prefix "-f" arg)
       (cond ((or (not rtags-follow-symbol-try-harder)
                  (= (length tagname) 0))
-             (setq found (rtags-handle-results-buffer nil nil fn)))
-            ((setq found (rtags-handle-results-buffer nil t fn)))
+             (setq init-rtags-found (rtags-handle-results-buffer nil nil fn)))
+            ((setq init-rtags-found (rtags-handle-results-buffer nil t fn)))
             (t
              (erase-buffer)
              (rtags-call-rc :path fn "-F" tagname "--definition-only" "-M" "1" "--dependency-filter" fn :path-filter prefix
                             (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
                             (when rtags-symbolnames-case-insensitive "-I"))
-             (unless (setq found (rtags-handle-results-buffer nil nil fn))
+             (unless (setq init-rtags-found (rtags-handle-results-buffer nil nil fn))
                (erase-buffer)
                (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
                               (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
                               (when rtags-symbolnames-case-insensitive "-I"))
-               (setq found (rtags-handle-results-buffer nil nil fn))))))
-    found))
+               (setq init-rtags-found (rtags-handle-results-buffer nil nil fn))))))
+    init-rtags-found))
 
 
 ;; Alias for C-c r . This key recenters the buffer if needed.
@@ -242,7 +243,7 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
   (lambda ()
     (interactive)
     (when (pg/rtags-find-symbol-at-point)
-      (recenter)))
+      (recenter))))
 
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
