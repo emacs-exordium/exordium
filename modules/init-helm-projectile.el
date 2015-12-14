@@ -4,7 +4,9 @@
 ;;; ----------------- -------------------------------------------------------
 ;;; Key               Definition
 ;;; ----------------- -------------------------------------------------------
-;;; C-c h             Open file with helm/projectile (current project).
+;;; C-c p p           [Opt remap] Select project and open file with helm.
+;;; C-c p f           [Opt remap] Open file with helm-projectile (current project).
+;;; C-c h             Open file with helm-projectile (current project).
 ;;; C-c M-h           Same but first select the project.
 ;;; or C-c H
 ;;; C-c p s g         Grep in project.
@@ -23,6 +25,13 @@
 (global-set-key [(control c)(h)] (function helm-projectile))
 (global-set-key [(control c)(H)] (function helm-projectile-switch-project))
 (global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
+(when exordium-helm-everywhere
+  (substitute-key-definition
+   'projectile-switch-project 'helm-projectile-switch-project
+   projectile-mode-map)
+  (substitute-key-definition
+   'projectile-find-file 'helm-projectile
+   projectile-mode-map))
 
 
 ;;; Do not show these files in helm buffer
@@ -61,4 +70,10 @@
 (define-key global-map [(control c)(e)] (function project-explorer-open))
 
 
+;;; Use fuzzy matching for helm-projectile when requested
+(when exordium-helm-fuzzy-match
+  (setq helm-projectile-fuzzy-match t))
+
+
+
 (provide 'init-helm-projectile)

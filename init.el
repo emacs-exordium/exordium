@@ -154,6 +154,7 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (helm                    . "melpa-pinned")
                                          (helm-descbinds          . "melpa-pinned")
                                          (helm-swoop              . "melpa-pinned")
+                                         (helm-ag                 . "melpa-pinned")
                                          (ido-ubiquitous          . "melpa-pinned")
                                          (projectile              . "melpa-pinned")
                                          (helm-projectile         . "melpa-pinned")
@@ -273,6 +274,7 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
+(require 'init-helm)            ; setup helm
 
 (update-progress-bar)
 
