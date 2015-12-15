@@ -33,6 +33,7 @@ might want to check these links:
 
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
   (completion engine, turned on by default);
+  [Helm](http://tuhdo.github.io/helm-intro.html) (an alternative to IDO);
   [Auto Complete](https://github.com/auto-complete/auto-complete);
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
@@ -42,8 +43,7 @@ might want to check these links:
   tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
   3 key-strokes); etc.
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
-  management tool); [Helm](http://tuhdo.github.io/helm-intro.html) (an
-  alternative to IDO).
+  management tool).
 * Git: [Magit](http://magit.github.io) (git UI);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
@@ -179,7 +179,8 @@ knows about; this list is created by scanning the project root directory. The
 main usage is to jump to a file using a partial name without having to remember
 in which directory it is, but it also supports grep/ack and replace in
 project. Projectile works with Helm or IDO, so you can use either one with
-different keys.
+different keys. Alternatively, you can always use Helm by setting
+`exordium-helm-everywhere` to true.
 
 Here is an example: <kbd>C-c h</kbd> shows the list of buffers and files in the
 current project using Helm; to find a file you just need to type a few letters and the
@@ -261,8 +262,8 @@ Keybinding                             | Description
 ---------------------------------------|--------------------------------------------------
 <kbd>C-c h</kbd>                       | Find file in current project with helm
 <kbd>C-c M-h</kbd> or <kbd>C-c H</kbd> | Same, but first select project
-<kbd>C-c p p</kbd>                     | IDO: switch project
-<kbd>C-c p f</kbd>                     | IDO: find file in current project
+<kbd>C-c p p</kbd>                     | IDO: switch project (alternative: Helm)
+<kbd>C-c p f</kbd>                     | IDO: find file in current project (alternative Helm)
 <kbd>C-c p s g</kbd>                   | Grep in current project
 <kbd>C-c p s a</kbd>                   | Same but using ack
 <kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project
@@ -288,14 +289,40 @@ With the cursor in the Project Explorer window, you can use these keys:
 toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open
 file. <kbd>w</kbd> Show path and copy it to clipboard.
 
-### Other Helm tools
+### Helm
 
-* <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: search for text in current
-  buffer using
-  [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop). Start typing
-  text: the Helm window shows all matching lines, and you can jump from one to
-  another using the arrow keys.
-* <kbd>M-x helm-multiple-swoop-all</kbd>: same but search within all buffers.
+Helm can be set up as a primary completion and selection narrowing framework
+for most commonly used functions. You can achieve that by setting
+`exordium-helm-everywhere` to true. The following keys will use Helm:
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c p p</kbd>  | Select project and open file with projectile.
+<kbd>C-c p f</kbd>  | Open file with projectile.
+<kbd>C-x C-r</kbd>  | Open recent file.
+<kbd>M-x</kbd>      | Execute command.
+<kbd>M-y</kbd>      | Select yank pop.
+<kbd>C-x b</kbd>    | Switch buffer.
+<kbd>C-x C-f</kbd>  | Find file.
+
+#### Other Helm tools
+
+Helm is a pretty good when you need quickly scan search results. The below commands
+will start different search modes. By default, they will use symbol under the point.
+However if it is not there just start typing text: the Helm window shows all
+matching lines, and you can jump from one to another using the arrow keys.
+
+Some of them will use  [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop) while
+the reminder will use [Silver Searcher](https://github.com/ggreer/the_silver_searcher).
+The latter, abbreviated `Ag`, being substitute to `grep` and `ack` has support for regular
+expressions.
+
+* <kbd>C-S-a</kbd>: Ag search for text in current projectile project.
+* <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: Swoop search for text in current buffer.
+* <kbd>C-S-d</kbd>: Ag search for text, but ask for directory to start first.
+* <kbd>C-S-f</kbd>: Ag search for text in current buffer (similar to Swoop).
+* <kbd>C-S-r</kbd>: Ag search starting from project root.
+* <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
 ## Git
 
@@ -677,11 +704,15 @@ Modules can be individually commented out if needed:
 (require 'init-linum)           ; line numbers
 
 ;;; Usability
+(require 'init-window-manager)  ; navigate between windows
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
-(require 'init-autocomplete)    ; auto-completion
+(require 'init-highlight)       ; highlighting current line, symbol under point
+(when exordium-auto-complete
+  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
+(require 'init-helm)            ; setup helm
 
 ;;; Magit and git gutter
 (require 'init-git)
