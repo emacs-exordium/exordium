@@ -265,6 +265,18 @@ Disables flyspell if set to nil."
   :type  'boolean)
 
 
+;;; See init-helm.el
+(defcustom exordium-helm-everywhere nil
+  "Whether Helm should be used as a substitute for common key bindings."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-helm-fuzzy-match t
+  "Whether Helm should use fuzzy matching for searches."
+  :group 'exordium
+  :type  'boolean)
+
+
 ;;; Desktop state
 (defcustom exordium-desktop nil
   "Whether the desktop state is saved"

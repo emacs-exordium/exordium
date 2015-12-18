@@ -206,55 +206,44 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-(defun pg/rtags-handle-results-buffer (&optional noautojump)
-  "Redefinition of `rtags-handle-result-buffer' that returns t if
-success and nil if not found."
-  (setq rtags-last-request-not-indexed nil)
-  (rtags-reset-bookmarks)
-  (cond ((= (point-min) (point-max))
-         (message "RTags: No results")
-         nil)
-        ((= (count-lines (point-min) (point-max)) 1)
-         (let ((string (buffer-string)))
-           (if (rtags-not-indexed/connected-message-p string)
-               (progn
-                 (setq rtags-last-request-not-indexed t)
-                 nil)
-             (bury-buffer)
-             (rtags-goto-location string)))
-         t)
-        (t
-         (switch-to-buffer-other-window rtags-buffer-name)
-         (shrink-window-if-larger-than-buffer)
-         (goto-char (point-max))
-         (if (= (point-at-bol) (point-max))
-             (delete-char -1))
-         (rtags-init-bookmarks)
-         (rtags-mode)
-         (when (and rtags-jump-to-first-match (not noautojump))
-           (rtags-select-other-window))
-         t)))
-
 (defun pg/rtags-find-symbol-at-point (&optional prefix)
   "Redefinition of `rtags-find-symbol-at-point' that returns t on
-success and nil if not found."
+success and nil if not found. This implementation comes from
+https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
   (interactive "P")
+  (rtags-delete-rtags-windows)
   (rtags-location-stack-push)
   (let ((arg (rtags-current-location))
+        (tagname (or (rtags-current-symbol) (rtags-current-token)))
         (fn (buffer-file-name))
-        (found nil))
+        (found-it nil))
     (rtags-reparse-file-if-needed)
     (with-current-buffer (rtags-get-buffer)
       (rtags-call-rc :path fn :path-filter prefix "-f" arg)
-      (setq found (pg/rtags-handle-results-buffer)))
-    found))
+      (cond ((or (not rtags-follow-symbol-try-harder)
+                 (= (length tagname) 0))
+             (setq found-it (rtags-handle-results-buffer nil nil fn)))
+            ((setq found-it (rtags-handle-results-buffer nil t fn)))
+            (t
+             (erase-buffer)
+             (rtags-call-rc :path fn "-F" tagname "--definition-only" "-M" "1" "--dependency-filter" fn :path-filter prefix
+                            (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
+                            (when rtags-symbolnames-case-insensitive "-I"))
+             (unless (setq found-it (rtags-handle-results-buffer nil nil fn))
+               (erase-buffer)
+               (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
+                              (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
+                              (when rtags-symbolnames-case-insensitive "-I"))
+               (setq found-it (rtags-handle-results-buffer nil nil fn))))))
+    found-it))
+
 
 ;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
   (lambda ()
     (interactive)
     (when (pg/rtags-find-symbol-at-point)
-      (recenter-top-bottom t))))
+      (recenter))))
 
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))

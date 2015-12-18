@@ -48,12 +48,14 @@
    (list (completing-read (format "Font (default %s): " exordium-font-name)
                           exordium-available-preferred-fonts nil nil nil nil exordium-font-name)
          (read-number "Size: " exordium-font-size)))
-  (let* ((font (or font exordium-font-name))
-         (size (or size exordium-font-size)))
-    (set-face-attribute 'default nil
-                        :family font
-                        :height size
-                        :weight 'normal)))
+  (let ((font (or font exordium-font-name))
+        (size (or size exordium-font-size)))
+    (when (and font size)
+      (message "Setting font family: %s, height: %s" font size)
+      (set-face-attribute 'default nil
+                          :family font
+                          :height size
+                          :weight 'normal))))
 
 (when exordium-available-preferred-fonts
   (exordium-set-font))

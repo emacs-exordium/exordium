@@ -30,4 +30,7 @@
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
 
+;;; Set $PAGER to `cat` instead of `less` etc in shell mode
+(setenv "PAGER" "cat")
+
 (provide 'init-shell)
