@@ -1,10 +1,11 @@
+![Exordium](https://raw.github.com/philippe-grenet/exordium/master/doc/Exordium.png)
+
 # What is this repo
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
-Lisp/Clojure programming. It is only intended to work with Emacs 24 running on
-Linux and OS X, including in -nw mode. It is called "init" (because I lack
-imagination). It is modular and customizable. It is not a starter kit, it is a
-hacker kit.
+Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
+and OS X including in -nw mode, but it should work on Windows as well. It is
+modular and customizable. It is not a starter kit, it is a hacker kit.
 
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
@@ -31,32 +32,30 @@ might want to check these links:
 ## Features
 
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
-  (turned on by default);
+  (completion engine, turned on by default);
+  [Helm](http://tuhdo.github.io/helm-intro.html) (an alternative to IDO);
   [Auto Complete](https://github.com/auto-complete/auto-complete);
-  [Windmove](http://www.emacswiki.org/emacs/WindMove) (move between windows
-  with meta-arrow);
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
-  (80 character column marker);
+  (80-character column marker);
   [Project Explorer](https://github.com/sabof/project-explorer) (directory
-  tree); etc.
-* Projects: [Projectile](http://batsov.com/projectile) a project-based file
-  management tool, and [Helm](http://tuhdo.github.io/helm-intro.html) an
-  equivalent of IDO.
-* Git: [magit](http://magit.github.io) (git UI);
-  [git gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
+  tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
+  3 key-strokes); etc.
+* Projects: [Projectile](http://batsov.com/projectile) (project-based file
+  management tool).
+* Git: [Magit](http://magit.github.io) (git UI);
+  [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
   * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
     indexer providing goto definition, find references, refactoring,
     compilation errors in buffer, auto-complete etc.
   * Formatting keys and snippets for the
     [BDE](https://github.com/bloomberg/bde) code style.
-* JavaScript: [js2-mode](http://www.emacswiki.org/emacs/Js2Mode).
+* JavaScript: [JS2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
-* Eye candy: a few [themes](https://github.com/chriskempson/tomorrow-theme)
-  that do not look like an "angry fruit salad", and
+* Eye candy: a few themes that do not look like an "angry fruit salad", and
   [PowerLine](http://www.emacswiki.org/emacs/PowerLine).
 
 ## Installation
@@ -65,36 +64,52 @@ Backup any `.emacs` file or `.emacs.d` directory you may have, and then clone
 this repo:
 
 ```bash
-$ git clone https://github.com/philippe-grenet/dot.emacs.git ~/.emacs.d
+$ git clone https://github.com/philippe-grenet/exordium.git ~/.emacs.d
 ```
 
 The first time you start Emacs it will download and compile the required
-packages, which may take a couple of minutes.
+packages, which may take a couple of minutes. If your machine is behind a proxy
+server, you should create a file `.emacs.d/before-init.el` with the address of
+the proxy before you start Emacs:
+
+```lisp
+(setq url-proxy-services
+      '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+        ("http"     . "<proxy-name>:<proxy-port>")
+        ("https"    . "<proxy-name>:<proxy-port>")))
+```
+
+You can also clone the repository elsewhere, and use the `init-test.sh` script
+to try out exordium. `init-test.sh` will run your default emacs with the
+current directory as your user-emacs-directory, loading `init.el`, and no other
+init files.
 
 ### Updates
 
-To update the config, do <kbd>M-x update-config</kbd>. This command pulls from
-github and recompiles everything. Restart Emacs after that.
+To update Exordium, do <kbd>M-x update-config</kbd>. This command pulls from
+Github and recompiles everything. Restart Emacs after that.
 
 Melpa packages are not updated automatically: you can do it with <kbd>M-x
-package-list-packages</kbd>, then "U".
+package-list-packages</kbd>, then <kbd>U</kbd> then <kbd>x</kbd>.
 
 ### Files
 
 The main file is `init.el`: it load the modules from the `modules` subdirectory
 and the default theme from the `themes` subdirectory. The `extensions`
-subdirectory is used for third-party plugins that are not available in melpa.
+subdirectory is used for third-party plugins that are not available in Melpa.
 
 3 files can be added in your directory `~/.emacs.d` to customize the
 configuration for the local machine (these files are not tracked by git):
 
 File name        | Usage
 -----------------|-------------------------------------------------------
-`prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
-`before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
+`prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
+`before-init.el` | Loaded before anything else. Use it to set up the HTTP proxy for instance.
 `after-init.el`  | Loaded after everything else. This is where you should add your own features.
 
-See the [Customization](#customization) section below.
+You can also have local modules in a directory `~/.emacs.d/local`.
+
+See the [Customization](#customization) section below for more details.
 
 ## Keymap
 
@@ -102,45 +117,58 @@ General:
 
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
-<kbd>ESC</kbd>       | Quit command/dismiss window/abort autocomplete. It is equivalent to <bkd>C-g</kbd>. You can [disable](#customization) this if you like.
 <kbd>C-z</kbd>       | Undo! (`undo`).
 <kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
-<kbd>C-ESC</kbd>     | `delete-other-windows` (just keep the current window).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
 <kbd>M-g</kbd>       | `goto-line` (prompts for a line number).
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
-<kbd>M-ARROW</kbd>   | Move the focus between visible buffers (faster than <kbd>C-x o</kbd>).
+<kbd>C-c C-SPC</kbd> | Toggle highlight of the symbol under the cursor (up to 4 different symbols using different colors).
 
 Editing:
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>RETURN</kbd>   | Return and indent by defaut; use <kbd>S-RETURN</kbd> for just return.
+<kbd>RETURN</kbd>   | Return and indent by default; use <kbd>S-RETURN</kbd> for just return.
 <kbd>M-BCKSP</kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
 <kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
 <kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
 <kbd>M-\\</kbd>     | Delete all spaces around cursor.
+<kbd>M-LEFT</kbd> and <kbd>M-RIGHT</kbd> | Move cursor by semantic units (use <kbd>C-LEFT</kbd> and <kbd>C-RIGHT</kbd> to move by words).
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region by semantic units.
+<kbd>M-C-=</kbd>    | Contract region by semantic units.
 <kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
 
+Keybinding                         | Description
+-----------------------------------|----------------------------------------------------------
+<kbd>C-x C-\\</kbd>                | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
+<kbd>C-x C-&#124;</kbd>            | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
+<kbd>C-c j</kbd> or <kbd>C-'</kbd> | Goto visible word or subword (`avy-goto-word-or-subword-1`). It first asks for the first character of the word, then annotates all words starting with that character with a unique touch-type friendly code.
+<kbd>C-c s</kbd>                   | Push point onto position stack (e.g. bookmarks).
+<kbd>C-c b</kbd>                   | Pop point from position stack.
+
+Window manager:
+
 Keybinding              | Description
 ------------------------|----------------------------------------------------------
-<kbd>C-x C-\\</kbd>     | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
-<kbd>C-x C-&#124;</kbd> | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
-<kbd>C-c s</kbd>        | Push point onto position stack (e.g. bookmarks).
-<kbd>C-c b</kbd>        | Pop point from position stack.
+<kbd>C-c ARROW</kbd>    | Move cursor between windows.
+<kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
 
 Auto-complete:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-.</bkd>     | Force trigger auto-complete.
+<kbd>C-.</kbd>     | Force trigger auto-complete.
 <kbd>ESC</kbd>     | Abort auto-complete.
+
+Tip: if you are looking for a particular key and you know it starts with a
+given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
+the list of keys starting with that prefix. For example <kbd>C-c C-h</kbd> lists
+all the keys starting with <kbd>C-c</kbd>.
 
 ## Projectile
 
@@ -151,13 +179,14 @@ knows about; this list is created by scanning the project root directory. The
 main usage is to jump to a file using a partial name without having to remember
 in which directory it is, but it also supports grep/ack and replace in
 project. Projectile works with Helm or IDO, so you can use either one with
-different keys.
+different keys. Alternatively, you can always use Helm by setting
+`exordium-helm-everywhere` to true.
 
 Here is an example: <kbd>C-c h</kbd> shows the list of buffers and files in the
 current project using Helm; to find a file you just need to type a few letters and the
 list shrinks as it performs fuzzy matching:
 
-![Helm](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/helm.png)
+![Helm](https://raw.github.com/philippe-grenet/exordium/master/doc/helm.png)
 
 ### Setting up projects
 
@@ -190,7 +219,7 @@ patterns to ignore are then applied to that set. Refer to the
 
 Now you need to teach Projectile where your projects are. You can do that by:
 
-1\. Simply opening the project's root dir in dired, and then pretending to
+1\. Simply opening the project's root dir in Dired, and then pretending to
   search a file with Helm (<kbd>C-c h</kbd>), or switching project with IDO
   (<kbd>C-c p p</kbd>). The top of the Helm buffer should show the list of
   projects including yours.
@@ -214,41 +243,93 @@ Now you need to teach Projectile where your projects are. You can do that by:
 
 ### Using Projectile
 
-To open a file with Projectile using Helm, type <kbd>C-c h</kbd>. This will
-display the Helm buffer, displaying initially just the list of projects at the
-top. Choose your project with the arrow keys and press enter; Helm will now
-display all indexed files in the project. Start typing a partial name to narrow
-the selection until you find what you were looking for.
+The name of the current project is displayed in the mode line, between square
+brackets. There are only 2 keys to remember:
+
+* To open a file in the current project using Helm, type <kbd>C-c h</kbd>. This
+  will display the Helm buffer. Start typing for a partial name to narrow the
+  selection until you find what you were looking for. Note that it performs
+  fuzzy matching.
+* If you want to open a file from a different project, type <kbd>C-c M-h</kbd>
+  instead. The Helm buffer will initially display just the list of
+  projects. Choose your project and press enter; Helm will now display all
+  indexed files in that project.
 
 <kbd>C-c p C-h</kbd> displays the list of keys for Projectile. Below are the
 most important ones.
 
-Keybinding           | Description
----------------------|---------------------------------------------------------
-<kbd>C-c h</kbd> or <kbd>C-c C-f</kbd>  | Helm: find file in current project
-<kbd>C-c C-h</kbd>   | Same but first select project
-<kbd>C-c p p</kbd>   | IDO: switch project
-<kbd>C-c p f</kbd>   | IDO: find file in current project
-<kbd>C-c p s g</kbd> | Grep in current project
-<kbd>C-c p s a</kbd> | Same but using ack
-<kbd>C-c p r</kbd>   | Interactive query-replace on all files in project
+Keybinding                             | Description
+---------------------------------------|--------------------------------------------------
+<kbd>C-c h</kbd>                       | Find file in current project with helm
+<kbd>C-c M-h</kbd> or <kbd>C-c H</kbd> | Same, but first select project
+<kbd>C-c p p</kbd>                     | IDO: switch project (alternative: Helm)
+<kbd>C-c p f</kbd>                     | IDO: find file in current project (alternative Helm)
+<kbd>C-c p s g</kbd>                   | Grep in current project
+<kbd>C-c p s a</kbd>                   | Same but using ack
+<kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project
+<kbd>C-c p i</kbd>                     | Invalidate the cache
 
-See [Projectile](https://github.com/bbatsov/projectile) doc for other keys.
+See [Projectile](https://github.com/bbatsov/projectile) documentation for other
+keys.
+
+### Project Explorer
 
 Projectile is linked with
 [Project Explorer](https://github.com/sabof/project-explorer) which displays
-the project directory structure on the left side.
+the project directory structure on the left side:
+
+![Project Explorer](https://raw.github.com/philippe-grenet/exordium/master/doc/project_explorer.png)
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open project explorer on the left side. <kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open file. <kbd>w</kbd> Show path and copy it to clipboard.
+<kbd>C-c e</kbd>    | Open project explorer on the left side.
+
+With the cursor in the Project Explorer window, you can use these keys:
+<kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to
+toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open
+file. <kbd>w</kbd> Show path and copy it to clipboard.
+
+### Helm
+
+Helm can be set up as a primary completion and selection narrowing framework
+for most commonly used functions. You can achieve that by setting
+`exordium-helm-everywhere` to true. The following keys will use Helm:
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c p p</kbd>  | Select project and open file with projectile.
+<kbd>C-c p f</kbd>  | Open file with projectile.
+<kbd>C-x C-r</kbd>  | Open recent file.
+<kbd>M-x</kbd>      | Execute command.
+<kbd>M-y</kbd>      | Select yank pop.
+<kbd>C-x b</kbd>    | Switch buffer.
+<kbd>C-x C-f</kbd>  | Find file.
+
+#### Other Helm tools
+
+Helm is a pretty good when you need quickly scan search results. The below commands
+will start different search modes. By default, they will use symbol under the point.
+However if it is not there just start typing text: the Helm window shows all
+matching lines, and you can jump from one to another using the arrow keys.
+
+Some of them will use  [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop) while
+the reminder will use [Silver Searcher](https://github.com/ggreer/the_silver_searcher).
+The latter, abbreviated `Ag`, being substitute to `grep` and `ack` has support for regular
+expressions.
+
+* <kbd>C-S-a</kbd>: Ag search for text in current projectile project.
+* <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: Swoop search for text in current buffer.
+* <kbd>C-S-d</kbd>: Ag search for text, but ask for directory to start first.
+* <kbd>C-S-f</kbd>: Ag search for text in current buffer (similar to Swoop).
+* <kbd>C-S-r</kbd>: Ag search starting from project root.
+* <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
 ## Git
 
 All git-related keys use prefix <kbd>C-c g</kbd> plus one more key. For example
 <kbd>C-c g s</kbd> runs [Magit](http://magit.github.io) status:
 
-![magit](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/magit.png)
+![magit](https://raw.github.com/philippe-grenet/exordium/master/doc/magit.png)
 
 The bottom window shows the current git status. Use the <kbd>tab</kbd> key on
 any file to fold or unfold its diff. Use the <kbd>s</kbd> key to stage or
@@ -268,28 +349,34 @@ Magit keys:
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g s</bkd>    | Open git status (`magit-status`).
-<kbd>C-c g l</bkd>    | Open git log (`magit-log`).
+<kbd>C-c g s</kbd>    | Open git status (`magit-status`).
+<kbd>C-c g l</kbd>    | Open git log (`magit-log`).
 <kbd>C-c g f</kbd>    | Open git file log (`magit-file-log`).
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
+<kbd>C-c g g</kbd>    | Git grep (`vc-git-grep`).
 
 Git gutter keys:
 
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
-<kbd>C-c g down</bkd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
-<kbd>C-c g up</bkd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
-<kbd>C-c g d</bkd>    | Diff the current hunk (`git-gutter:popup-diff`).
-<kbd>C-c g r</bkd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
+<kbd>C-c g down</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
+<kbd>C-c g up</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
+<kbd>C-c g d</kbd>    | Diff the current hunk (`git-gutter:popup-diff`).
+<kbd>C-c g r</kbd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
+
+Git Timemachine key   | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c g t</kbd>    | Enter the git time machine (`git-timemachine-toggle`)
 
 ## C++
 
 ### Utilities
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-TAB</kbd>   | Alternate between header file and source file.
-<kbd>C-c ;</kbd>   | Rename variable under cursor (non-RTags).
+Keybinding           | Description
+---------------------|-----------------------------------------------------------
+<kbd>C-TAB</kbd>     | Alternate between header file and source file.
+<kbd>C-u C-TAB</kbd> | Alternate between source/header file and BDE test driver.
+<kbd>C-c ;</kbd>     | Rename variable under cursor (but see also RTags, which is a better solution).
 
 Keys for formatting code according to the
 [BDE](https://github.com/bloomberg/bde) style:
@@ -318,7 +405,7 @@ this in your `after-init.el`:
 ```
 
 Snippets are stored in `~/.emacs.d/snippets/c++-mode`. Here are
-[the snippets](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/snippets.md).
+[the snippets](https://github.com/philippe-grenet/exordium/blob/master/doc/snippets.md).
 
 Note that variable `*bde-component-author*` defines the default author for a
 header file template (see `modules/init-yasnippet.el`). You can set it to your
@@ -327,17 +414,18 @@ name in `after-init.el`.
 ### RTags
 
 [RTags](https://github.com/Andersbakken/rtags) is a LLVM-based C++ indexer
-which provides a deamon called "rdm" that maintains an in-memory index, and a
-command-line client called "rc". RTags uses a single index for all symbols, but
-it allows for loading and unloading projects individually.
+which provides a daemon called "rdm" that maintains a persistent (memory
+mapped) file-based index. The client for "rdm" is command-line client called
+"rc". RTags uses a single index for all symbols, but it allows for loading and
+unloading projects individually.
 
-To use it, first start the deamon:
+To use it, first start the daemon:
 
 ```bash
 $ rdm
 ```
 
-This will start the deamon on the foreground, using a number of concurrent "rp"
+This will start the daemon on the foreground, using a number of concurrent "rp"
 jobs that is function of the number of CPUs on the local machine. It starts by
 reading the saved project indices in `~/.rtags` if any. By default it logs to
 the console but you can make it log to a file instead with `-L file` or make it
@@ -397,7 +485,7 @@ rtags-create-compilation-database</kbd>. But before you do, it needs a little he
 you need to tell it what `clang++` command to use to compile any file, with all
 the `-I` directives that are necessary for your project.
 
-The command uses a file `compile_includes` in the project root dir, which
+The command uses a file `compile_includes` in the project root directory, which
 specifies how to generate `compilation_database.json` for your project. It is a
 simple text file indicating where are all the source files and all the include
 files. The "src" directives indicate where to find the source files to put in
@@ -435,6 +523,9 @@ either absolute or relative to the project root. Here is an example:
   # the "excludesrc" directive. For example this will exclude all test
   # drivers:
   excludesrc \.t\.cpp$
+
+  # -D macros, if any:
+  macro BDE_BUILD_TARGET_SAFE
 ```
 
 In addition, the creation of a compilation database uses these variables:
@@ -464,7 +555,7 @@ $ rc -J
 Check the output of rdm for any compilation errors and adjust your compilation
 database accordingly.
 
-The rdm deamon should automatically re-compile any file you edit in Emacs as
+The rdm daemon should automatically re-compile any file you edit in Emacs as
 soon as you save it or otherwise touch it.
 
 #### Using the index
@@ -474,7 +565,7 @@ While RTags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
 such as <kbd>M-C-g</kbd> to display the list of symbols from the current buffer
 using Helm:
 
-![Rtags Helm](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_helm.png)
+![Rtags Helm](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_helm.png)
 
 Navigation keys:
 
@@ -486,15 +577,15 @@ Keybinding                           | Description
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
 <kbd>C-c r v</kbd>                   | Find all implementations of virtual function.
 <kbd>C-c r S</kbd>                   | Show symbol summary in tooltip (`rtags-display-summary`).
-<kbd>M-C-g</kbd>                     | Find symbol in file usign Helm.
+<kbd>M-C-g</kbd>                     | Find symbol in file using Helm.
 <kbd>C-c r ;</kbd>                   | `rtags-find-file` using partial name (non IDO).
 
 Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
-Keybinding                            | Description
---------------------------------------|---------------------------------------
-<kbd>C-{</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>C-}</kbd> or <kbd>C-c r ]</kbd>  | Go forward to next location.
+Keybinding                                   | Description
+---------------------------------------------|---------------------------------
+<kbd>C-c r LEFT</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-c r RIGHT</kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 
@@ -513,7 +604,7 @@ Debugging utilities:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-c r l</kbd> | Show the rdm log buffer.
+<kbd>C-c r l</kbd> | Show/hide the rdm log buffer.
 <kbd>C-c r U</kbd> | Show what rdm knows about a symbol.
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.
@@ -522,11 +613,11 @@ Keybinding         | Description
 
 The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
 process to receive compilation warnings and errors from rdm. They are displayed
-into diagnostics buffer which works with flymake to put highlighting on code
+into diagnostics buffer which works with Flymake to put highlighting on code
 with warnings and errors. By default Powerline displays the name of the buffer
 in green if the project compiles and in red if there are errors:
 
-![RTags diagnostics](https://raw.github.com/philippe-grenet/dot.emacs/master/doc/rtags_diagnostics.png)
+![RTags diagnostics](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_diagnostics.png)
 
 Click on the highlighted symbol in your code to view the error message. Click
 on the error line in the diagnostics buffer to jump to the error location.
@@ -550,7 +641,7 @@ You can use RTags as source for auto-complete suggestions. Notes:
   disabled. The reasoning being that surely Clang must be more accurate.
 * This feature requires RTags diagnostics to be turned on.
 
-To enable it automatically, set the variable `*init-rtags-auto-complete*` to
+To enable it automatically, set the variable `exordium-rtags-auto-complete` to
 true in your `prefs.el`. Note that auto-complete for `#include` header files
 does not work in this case, because it does not know what project you are in.
 
@@ -572,28 +663,34 @@ Coming soon: Emacs Lisp, Common Lisp and Clojure.
 
 ## Customization
 
-The main file of the config is `init.el`. It looks like this:
+The main file of the configuration is `init.el`. It looks like this:
 
 ```lisp
-;;; 1. Load before-init.el if it exists
-(when (file-exists-p "~/.emacs.d/before-init.el")
-  (load "~/.emacs.d/before-init.el"))
+;;; 1. Load all before-init.el files. The ~/.emacs.d/before-init.el
+;;; comes first (if exists), followed by any existing before-init.el
+;;; file from all ~/.emacs.d/taps/subdirs.
+(dolist (tapped-file exordium-tapped-before-init-files)
+  (load tapped-file))
 
 ;;; 2. Define the list of Melpa packages that we need, and load any missing
 ;;; one. Note that they are NOT updated automatically.
 
-;;; 3. Local preferences: load prefs.el if it exists.
+;;; 3. Local preferences: load all prefs.el. The ~/.emacs.d/prefs.el
+;;; comes first (if exists), followed by any existing prefs.el
+;;; file from all ~/.emacs.d/taps/subdirs.
 (require 'init-prefs)       ; defines variables that prefs.el can override
-(when (file-exists-p "~/.emacs.d/prefs.el")
-  (load "~/.emacs.d/prefs.el"))
+(dolist (tapped-file exordium-tapped-prefs-files)
+  (load tapped-file))
 
 ;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
 
 ;;; 5. Load the default theme in ~/.emacs.d/themes.
 
-;;; 6. Load after-init.el if it exists
-(when (file-exists-p "~/.emacs.d/after-init.el")
-  (load "~/.emacs.d/after-init.el"))
+;;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el
+;;; comes first (if exists), followed by any existing after-init.el
+;;; file from all ~/.emacs.d/taps/subdirs.
+(dolist (tapped-file exordium-tapped-after-init-files)
+  (load tapped-file))
 ```
 
 Modules can be individually commented out if needed:
@@ -607,17 +704,21 @@ Modules can be individually commented out if needed:
 (require 'init-linum)           ; line numbers
 
 ;;; Usability
+(require 'init-window-manager)  ; navigate between windows
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
-(require 'init-autocomplete)    ; auto-completion
-(when *init-helm-projectile*    ; find files anywhere in project
+(require 'init-highlight)       ; highlighting current line, symbol under point
+(when exordium-auto-complete
+  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+(when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
+(require 'init-helm)            ; setup helm
 
 ;;; Magit and git gutter
 (require 'init-git)
 
 ;;; Themes
-(if *environment-nw*
+(if exordium-nw
     (set-face-background 'highlight nil)
   ;; Using Emacs with GUI:
   (require 'init-themes)
@@ -639,7 +740,7 @@ Modules can be individually commented out if needed:
 ```
 
 If you are looking for a specific feature or key binding,
-[this page](https://github.com/philippe-grenet/dot.emacs/blob/master/doc/code-organization.md)
+[this page](https://github.com/philippe-grenet/exordium/blob/master/doc/code-organization.md)
 explains the code organization. Each module starts with a commentary including
 all key bindings.
 
@@ -650,9 +751,30 @@ configuration for the local machine:
 
 File name        | Usage
 -----------------|-------------------------------------------------------
-`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el).
+`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
 `after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
+
+### Taps
+
+The idea is inspired by taps from [Homebrew](http://brew.sh). You can clone any
+git repository into `~/.emacs.d/taps/` directory (as a subdirectory of the
+latter). It is going to be called `tap`. Anything below `taps` subdirectory is
+not tracked by Exordium, although each `tap` can be a repository itself,
+allowing for tracked customisation.
+
+When Exordium is initialised, it searches for the three special
+[Local files](#local-files) in each `tap`. Files are then added to the tapped
+lists: before, prefs, and after. `tap`s are searched in alphabetical order of
+their respective names in `~/.emacs.d/taps` directory (`string-lessp` to be
+exact). This order determines the order of files in each tapped list. This lets
+you influence the order of processing within each tapped list, i.e., you can
+rename your tapped repositories (clones). The [Local files](#local-files) from
+your `~/.emacs.d` are always first in each respective tapped list. Each tapped
+list is processed (each file from it is loaded) as a replacement for a
+respective [Local file](#local-files).
+
+Exordium-specific emacs functions are WIP.
 
 ### Preferences
 
@@ -661,55 +783,109 @@ File name        | Usage
 
 ```lisp
 ;; Fonts + size in order of preference. First available one will be picked.
-(setq *init-prefered-fonts* '("Monospace" . 120) ("Mono" . 120))
+(setq exordium-preferred-fonts '("Monospace" . 120) ("Mono" . 120))
 
 ;; Default Emacs frame size in chars
-(setq *init-preferred-frame-width* 120
-*init-preferred-frame-height* 65)
+(setq exordium-preferred-frame-width  120
+      exordium-preferred-frame-height 65)
 
 ;; Show line numbers (default t)
-(setq *init-display-line-numbers* t)
+(setq exordium-display-line-numbers t)
 
 ;; Highlight current line (default t)
-(setq *init-line-mode* t)
+(setq exordium-line-mode t)
 
 ;; Don't set ESC key to C-g (quit/abort)
-(setq *init-keyboard-escape* nil)
+(setq exordium-keyboard-escape nil)
 
 ;; Disable electric-pair (automatically inserts a closing parenthese,
 ;; curly brace, etc.)
-(setq *init-enable-electric-pair-mode* nil)
+(setq exordium-enable-electric-pair-mode nil)
 
-;; Available themes (default tomorrow-night):
+;; Don't use Powerline (may cause Emacs to crash on startup sometimes)
+(setq exordium-enable-powerline nil)
+```
+
+There are more options, see
+[init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
+
+### Themes
+
+Exordium includes several themes that are integrated with Powerline and that
+should work well in -nw mode. Use <kbd>M-x switch-theme</kbd> to change the
+theme. Otherwise, setting your favorite theme in `prefs.el` like the
+following will give you this:
+
+```lisp
+;; Available themes (default is tomorrow-night):
 ;; - tomorrow-night, tomorrow-night-bright, tomorrow-night-blue,
 ;;   tomorrow-night-eighties, tomorrow-day
 ;; - solarized-dark, solarized-light
 ;; - monokai
-(setq *init-theme* 'solarized-light)
+;; - zenburn
+;; - material
+(setq exordium-theme 'material)
 
-;; Don't use powerline (may cause Emacs to crash on startup sometimes)
-(setq *init-enable-powerline* nil)
+;; Powerline theme:
+(setq exordium-powerline-theme :wave)
 ```
 
-There are more options, see
-[init-prefs.el](https://github.com/philippe-grenet/dot.emacs/blob/master/modules/init-prefs.el).
+![Material](https://raw.github.com/philippe-grenet/exordium/master/doc/material.png)
+
+### Local modules
+
+You can create a directory `~/.emacs.d/local` for your own local modules (this
+directory is ignored in git). In that case you should use `require` forms in
+`after-init.el` to load them.
+
+Here is an example. Create a file named `~/.emacs.d/local/init-test-local.el`
+with this content:
+
+```lisp
+;;;; Test local module
+
+(message "**** This test local module is loaded! ****")
+
+(provide 'init-test-local)
+```
+
+Then create a file `~/.emacs.d/after-init.el` with this content:
+
+```lisp
+;;;; Local stuff
+
+(message "**** after_init ****")
+
+(require 'init-test-local)
+```
+
+Restart Emacs. The message buffer should show two lines:
+
+```text
+**** after_init ****
+**** This test local module is loaded! ****
+```
+
+Local modules files can be named anything as long as the file name, the symbol
+in `provide` and the symbol in `require` are the same.
 
 ## Troubleshooting
 
 ### Bugs
 
 * Powerline may cause Emacs to crash on startup because of a race condition
-  inside Emacs. One trick to fix it is to make powerline be the last thing you
-  enable in your config. For this, add `(setq *init-enabled-powerline* nil)` in
-  your `pref.el`, and add `(require 'init-powerline)` in your
-  `after-init.el`. If this still does not work, keep Powerline disabled and start
-  it manually with this function in your `after-init.el`:
+  inside Emacs. A solution is to make it display after one second of idle time
+  in order to guarantee that Emacs has finished initializing. For this, add
+  `(setq exordium-display-powerline-after-idle-time 1)` in your
+  `prefs.el`. Another solution is to enable powerline manually using a function
+  like this:
 
 ```lisp
 (defun powerline ()
-  "Enable powerline. On some platforms you may have to click somewhere
-to make it display"
+  "Enable powerline."
   (interactive)
+  (require 'powerline)
+  (powerline-set-selected-window)
   (require 'init-powerline)
   (redraw-display))
 ```
@@ -717,12 +893,42 @@ to make it display"
 * Sometimes a random bug may occur that displays this error:
   `fringe-helper-modification-func: Invalid search bound (wrong side of
   point)`. I'm pretty sure this is a bug in `git-gutter-fringe` which display
-  git diff icons in the left-side fringe. There are two ways to work around it:
-  either add `(setq *init-git-gutter* nil)` if your `prefs.el` to disable this
-  feature entirely, or add `(setq *init-git-gutter-non-fringe* t)` in your
-  `prefs.el` to display git diffs on the left side of line numbers, e.g. not in
-  the fringe. Note that the latter disables the highighting of the current line
-  number for now.
+  git diff icons in the left-side fringe.
+
+  There are two ways to work around it: either add `(setq exordium-git-gutter
+  nil)` if your `prefs.el` to disable this feature entirely, or add `(setq
+  exordium-git-gutter-non-fringe t)` in your `prefs.el` to display git diffs on
+  the left side of line numbers, e.g. not in the fringe. Note that the latter
+  disables the highlighting of the current line number for now.
+
+* Editing large comment blocks in C++ can be slow as hell. Unfortunately this
+  is a problem with
+  [CC-mode](http://www.gnu.org/software/emacs/manual/html_node/ccmode/Performance-Issues.html)
+  and not with this config. A simple solution is to turn off font lock
+  temporarily with <kbd>M-x font-lock-mode</kbd>. Do it again to re-enable font
+  lock after you're done editing your large component-level comment.
+
+* `exordium-preferred-fonts` does not work with `emacs --daemon`. This is
+  annoying if you start Emacs as a server and then only use `emacsclient`
+  afterwards. The problem is that functions like `font-family-list` return nil
+  in Emacs server, so there is no good way to verify what fonts are available
+  in the server process (believe me I tried). The solution is to put something
+  like `(setq default-frame-alist '((font . "Inconsolata-12")))` in your
+  `pref.el` (you need to know exactly what font and size you want for
+  your local machine).
+
+* Sometimes weird bugs may happen after an upgrade or during development on a
+  module. Exordium recompiles any `.el` file for which the corresponding `.elc`
+  files is older on startup, but does not try to force any `.el` file to be
+  compiled.  Two functions are useful in this case: `M-x uncompile-modules`
+  removes all `.elc` files (if you restart Emacs it will not compile
+  anything). `M-x force-recompile-modules` recompiles everything.
+
+* RTags now uses memory mapped files instead of loading projects into
+  memory. It may be slow if your home directory is NFS-mounted, since by
+  default the index is stored in `~/.rtags`. The solution is to store the index
+  on a local drive, preferably an SSD. You do this by creating a file
+  `~/.rdmrc` with a content like this: `--data-dir=/local/drive/.rtags`.
 
 ### Configuration profiling
 

@@ -1,4 +1,8 @@
-;;;; JavaScript modes
+;;;; JavaScript mode
+
+(require 'js)
+(require 'js2-mode)
+(require 'init-prefs)
 
 ;;; Activate js2-mode and ac-js2 for auto-complete.
 
@@ -11,17 +15,25 @@
 ;;; js2-mark-defun selects the current function,â¦ You can use the command
 ;;; apropos-command to list all js2 commands.
 
-;; js2-mode provides 4 level of syntax highlighting. They are * 0 or a negative
-;; value means none. * 1 adds basic syntax highlighting. * 2 adds highlighting
-;; of some Ecma built-in properties. * 3 adds highlighting of many Ecma
-;; built-in functions.
+;; js2-mode provides 4 level of syntax highlighting. They are:
+;; - 0 or a negative value means none.
+;; - 1 adds basic syntax highlighting.
+;; - 2 adds highlighting of some Ecma built-in properties.
+;; - 3 adds highlighting of many Ecma built-in functions.
 
-(setq js2-highlight-level 3)
+(if exordium-font-lock
+    (setq js2-highlight-level 3)
+  (setq js2-highlight-level -1))
 
 ;; Open JSON files with j2 modes by default, instead of the built-in javascript
 ;; mode.
 
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+
+;;; Bind M-C-g to helm-imenu (lists functions and variables in buffer)
+(when (fboundp 'js2-imenu-extras-mode)
+  (js2-imenu-extras-mode)
+  (define-key js-mode-map [(meta control g)] 'helm-imenu))
 
 
 ;;; Define some RDEL symbols
@@ -31,16 +43,6 @@
                              debug
                              assert
                              activebase)))
-
-
-;;; Font lock changes
-
-;;; Display TODO: and FIXME: and TBD: in red
-(font-lock-add-keywords
- 'js-mode
- '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
 
 
 (provide 'init-javascript)

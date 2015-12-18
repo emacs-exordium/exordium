@@ -19,10 +19,21 @@
 (require 'magit)
 
 ;;; Keys
-(define-key global-map [(control c)(g)(s)] (function magit-status))
-(define-key global-map [(control c)(g)(l)] (function magit-log))
-(define-key global-map [(control c)(g)(f)] (function magit-file-log))
-(define-key global-map [(control c)(g)(b)] (function magit-blame-mode))
+(define-prefix-command 'exordium-git-map nil)
+(define-key exordium-git-map (kbd "s") (function magit-status))
+(define-key exordium-git-map (kbd "l")
+  (if (fboundp 'magit-log-current)
+      (function magit-log-current)
+    (function magit-log)))
+(define-key exordium-git-map (kbd "f")
+  (if (fboundp 'magit-log-buffer-file)
+      (function magit-log-buffer-file)
+    (function magit-file-log)))
+(define-key exordium-git-map (kbd "b")
+  (if (fboundp 'magit-blame)
+      (function magit-blame)
+    (function magit-blame-mode)))
+(global-set-key (kbd "C-c g") 'exordium-git-map)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
@@ -47,28 +58,51 @@
 (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
 ;;; Don't show "MRev" in the modeline
-(diminish 'magit-auto-revert-mode)
+(when (bound-and-true-p magit-auto-revert-mode)
+  (diminish 'magit-auto-revert-mode))
+
+
+;;; Turn off the horrible warning about magit auto-revert of saved buffers
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 
-(when *init-git-gutter-non-fringe*
-  (setq *init-git-gutter* nil)
+(when exordium-git-gutter-non-fringe
+  (setq exordium-git-gutter nil)
   (require 'git-gutter)
   (global-git-gutter-mode t)
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
-(when (and *init-git-gutter* (not *init-git-gutter-non-fringe*))
+(when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   (require 'git-gutter-fringe)
   (global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 
-;; keys
-(when (or *init-git-gutter* *init-git-gutter-non-fringe*)
-  (define-key global-map [(control c)(g)(down)] 'git-gutter:next-hunk)
-  (define-key global-map [(control c)(g)(up)] 'git-gutter:previous-hunk)
-  (define-key global-map [(control c)(g)(d)] 'git-gutter:popup-diff)
-  (define-key global-map [(control c)(g)(r)] 'git-gutter:revert-hunk))
+;; Keys
+(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
+  (define-key exordium-git-map (kbd "<down>") 'git-gutter:next-hunk)
+  (define-key exordium-git-map (kbd "<up>") 'git-gutter:previous-hunk)
+  (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
+  (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
 
+;; Automatically update git gutter after staging or unstaging with magit (magit
+;; runs this hook for all buffers in the repo after all operations, if
+;; `magit-auto-revert-mode' is enabled -- the default).
+(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
+  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook))
+
+
+;;; Git Timemachine
+
+(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
+
+
+;;; Git Grep
+
+(define-key exordium-git-map (kbd "g") (function vc-git-grep))
+
+
+
 (provide 'init-git)

@@ -4,15 +4,18 @@
 ;; (setq command-line-default-directory "~/")
 ;; (setq-default default-directory "~/")
 
-(defun toggle-fullscreen ()
-  "Toggle full screen"
-  (interactive)
-  (set-frame-parameter
-   nil 'fullscreen
-   (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+(require 'init-environment)
 
-;; Give focus to emacs window at startup
-(x-focus-frame nil)
+(unless exordium-nw
+  (defun toggle-fullscreen ()
+    "Toggle full screen"
+    (interactive)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+
+  ;; Give focus to emacs window at startup
+  (x-focus-frame nil))
 
 ;; Make $PATH available in shell mode
 (exec-path-from-shell-initialize)

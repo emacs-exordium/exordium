@@ -33,82 +33,86 @@ pull. For example you can put something like this in your *prefs.el*:
 ```lisp
 ;;; List of font names and sizes, in order of preference. Emacs will pick
 ;;; the first one that exists.
-(setq *init-preferred-fonts* '(("Monospace" . 120)
-                               ("Mono" . 120)))
+(setq exordium-preferred-fonts '(("Monospace" . 120)
+                                 ("Mono" . 120)))
 
 ;;; If you don't want to current line to be highlighted:
-(setq *init-line-mode* nil)
+(setq exordium-line-mode nil)
 
 ;;; Choose another theme:
-(setq *init-theme* 'monokai)
+(setq exordium-theme 'zenburn)
 ```
 
 ## Modules
 
 ### Lib, environment and preferences
 
-* [init-lib.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-lib.el)
+* [init-lib.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-lib.el)
   defines utility functions used by other modules: things like file loading,
   string manipulation etc.
-* [init-environment.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-environment.el)
+* [init-environment.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-environment.el)
   defines environment global variables, such as "are we on OSX".
-* [init-prefs.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-prefs.el)
+* [init-prefs.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-prefs.el)
   defines preferences variables for all modules. It can be edited to change a
-  preference, or alternatively you can create a file *init-local-prefs.el* (in
+  preference, or alternatively you can create a file *prefs.el* (in
   the main directory) to override the variables in *init-prefs.el*.
 
 ### Look and feel
 
-* [init-look-and-feel.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-look-and-feel.el):
+* [init-look-and-feel.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-look-and-feel.el):
   * Basic UI of Emacs. Fonts, frame size, tool bar, menu bar, scroll bar,
     cursor, font lock, electric stuff etc.
   * Keybindings: zoom, navigate between buffers etc.
   * Basic behavior: delete trailing spaces upon save, no backup files, prefer
     spaces over tabs.
-* [init-util.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-util.el):
+* [init-util.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-util.el):
   utility functions and keys like goto matching parenthese, duplicate a line,
   delete words, display an 80 column ruler (FCI), expand the region.
+* [init-highlight.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-highlight.el):
+  Highlight the current line and the symbol under the cursor. The latter can
+  be done automatically after a small delay (turned off by default), or on
+  demand using a key (C-c C-space by default).
 
 ### Usability
 
-* [init-ido.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-ido.el):
+* [init-ido.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-ido.el):
   configures IDO and find recent files.
-* [init-autocomplete.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-autocomplete.el):
+* [init-autocomplete.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-autocomplete.el):
   configures autocomplete with default sources (non-RTags).
-* [init-helm-projectile.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-helm-projectile.el):
+* [init-helm-projectile.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-helm-projectile.el):
   configures Helm and Projectile.
-* [init-git.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-git.el):
+* [init-git.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-git.el):
   everything git-related.
 
 ### Modes
 
-* [init-markdown.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-markdown.el)
-* [init-org.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-org.el)
+* [init-markdown.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-markdown.el)
+* [init-org.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-org.el)
 
 ### OS X
 
-* [init-osx.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-osx.el)
+* [init-osx.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-osx.el)
 
 ### C++
 
-* [init-cpp.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-cpp.el):
+* [init-cpp.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-cpp.el):
   basic C++ features such as swap between header and implementation.
-* [init-bde-style.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-bde-style.el):
+* [init-bde-style.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-bde-style.el):
   an attempt to make the BDE style fit easier into Emacs.
-* [init-yassnippet.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-yasnippet.el):
+* [init-yassnippet.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-yasnippet.el):
   configuration of YASnippet.
-* [init-cedet.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-cedet.el):
+* [init-cedet.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-cedet.el):
   configuration of CEDET (not used anymore and should probably be removed).
-* [init-rtags.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-rtags.el):
+* [init-rtags.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-rtags.el):
   configuration of RTags.
-* [init-header-autocomplete.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-header-autocomplete.el):
+* [init-header-autocomplete.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-header-autocomplete.el):
   experimental autocomplete for header file names (which RTags does not do).
 
 ### Other languages
 
-* [init-javascript.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-javascript.el)
-* [init-python.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-python.el)
-* [init-clojure.el](https://raw.github.com/philippe-grenet/dot.emacs/master/modules/init-clojure.el)
+* [init-javascript.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-javascript.el)
+* [init-python.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-python.el)
+* [init-clojure.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-clojure.el)
 
 ## Themes
 

@@ -7,7 +7,7 @@
 (setq cider-popup-stacktraces t)
 (setq cider-repl-popup-stacktraces t)
 (setq cider-auto-select-error-buffer t)
-(setq cider-repl-history-file "~/.emacs.d/cider-history")
+(setq cider-repl-history-file (locate-user-emacs-file "cider-history"))
 (setq cider-repl-wrap-history t)
 
 (add-hook 'cider-repl-mode-hook 'subword-mode)

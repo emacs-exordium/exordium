@@ -77,7 +77,7 @@
 
 ;; User variables
 
-(defvar profile-dotemacs-file "~/.emacs.d/init.el"
+(defvar profile-dotemacs-file (locate-user-emacs-file "init.el")
   "File to be profiled.")
 
 (defvar profile-dotemacs-low-percentage 3
@@ -196,5 +196,7 @@ grayed out.")
    percentage
    (car timings) (nth 1 timings) (nth 2 timings)))
 
-
+;; Local Variables:
+;; no-byte-compile: t
+;; End:
 ;; profile-dotemacs.el ends here

@@ -14,24 +14,26 @@
 ;;; C-c a          `bde-align-functions-arguments'
 ;;; C-c f          `bde-align-funcall'
 ;;; C-c m          `bde-align-class-members'
+;;; (no key)       `bde-repunctuate'
+;;; -------------- -------------------------------------------------------
 ;;;
-;;; Aligh right after point:
+;;; `bde-aligh-right-after-point':
 ;;; Before (cursor anywhere after semi-colon):
 ;;;     return x; // RETURN
 ;;; After:
 ;;;     return x;                                     // RETURN
 ;;;
-;;; Insert redundant include guard (cursor must be on the line, or region with
-;;; one or more includes must be selected):
-;;; Before:
+;;; `bde-insert-redundant-include-guard':
+;;; Before (cursor must be on the line, or region with one or more includes
+;;; must be selected):
 ;;;     #include <bsl_iostream.h>
 ;;; After:
 ;;;     #ifndef INCLUDED_BSL_IOSTREAM
 ;;;     #include <bsl_iostream.h>
 ;;;     #endif
 ;;;
-;;; Align function arguments (cursor must be inside the argument list):
-;;; Before:
+;;; `bde-align-functions-arguments': align function signature
+;;; Before (cursor must be inside the argument list):
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
 ;;;             const bsl::vector<int>& accounts,
@@ -45,8 +47,8 @@
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
 ;;; TODO: apparently default values should be aligned too.
 ;;;
-;;; Align function call arguments (cursor must be inside the argument list):
-;;; Before:
+;;; `bde-align-funcall': align function call arguments
+;;; Before (cursor must be inside the argument list):
 ;;;    bslma::ManagedPtr<BufferedMessage> message(
 ;;;       groupInfo->bufferedMessages()[0], &d_bufferedMessagePool);
 ;;; After:
@@ -55,8 +57,8 @@
 ;;;                                           &d_bufferedMessagePool);
 ;;; TODO: currently does not work well with comments.
 ;;;
-;;; Align class members (region must be selected):
-;;; Before:
+;;; `bde-align-class-members'
+;;; Before (region must be selected):
 ;;;    bslma::Allocator *d_allocator_p; // held not owned
 ;;;    bool d_started;
 ;;;    bdet_TimeInterval d_idleCheckInterval; // Delay between 2 checks for
@@ -70,8 +72,16 @@
 ;;;                                        // Delay between 2 checks for
 ;;;                                        // idle sessions. Default is 0,
 ;;;                                        // meaning this feature is not used.
+;;;
+;;; `bde-repunctuate': puts two spaces at the end of each sentence in selected
+;;; region or comment block.
+;;; TODO: the regex should be fixed for words like "e.g." or "i.e.".
 
 (with-no-warnings (require 'cl))
+(require 'cc-defs)
+(require 'cc-vars)
+(require 'cc-mode)
+(require 'init-lib)
 
 
 ;;; Utility functions
@@ -355,7 +365,8 @@ backspace, delete, left or right."
     (if (> num-spaces 0)
         (dotimes (i num-spaces)
           (insert " "))
-      (message "Sorry, not enough space..."))))
+      (message "Sorry, not enough space...")))
+  (move-end-of-line nil))
 
 ;;; Ctrl-> to right-aligh the text after point
 (global-set-key [(control >)] 'bde-aligh-right)
@@ -462,6 +473,13 @@ guard around it"
          (star2-pos     (string-match "\\*\\*[\\s-]*" before-var))
          (type          (pg/string-trim
                          (substring before-var 0 (or star-pos var-pos)))))
+    ;; Remove possible spaces between type and &:
+    (when (string-match "\\(\\.*\\)[[:blank:]]+&" type)
+      (let ((ampersand (match-string 0 type)))
+        (when ampersand
+          (setq type (concat
+                      (substring type 0 (- (length type) (length ampersand)))
+                      "&")))))
     (list type
           (cond (star2-pos (concat "**" var))
                 (star-pos  (concat "*" var))
@@ -473,7 +491,8 @@ guard around it"
 
 (defun bde-align-functions-arguments ()
   "Assuming the cursor is within the argument list of a function
-declaration or definition, align the type and variable names"
+declaration or definition, align the type and variable names
+according to the BDE style."
   (interactive)
   ;; Get a list of the arguments. Note that the external parentheses are included
   (let ((args (split-string (thing-at-point 'list) ","))
@@ -491,7 +510,7 @@ declaration or definition, align the type and variable names"
     (backward-up-list)
     (push-mark)
     (forward-list)
-    (kill-region (region-beginning) (region-end))
+    (delete-region (region-beginning) (region-end))
     (insert
      (with-temp-buffer
        (insert "(")
@@ -518,9 +537,11 @@ declaration or definition, align the type and variable names"
        (insert ")")
        (buffer-string)))
     ;; Reindent
-    (push-mark)
-    (backward-list)
-    (indent-region (region-beginning) (region-end))
+    (save-restriction
+      (widen)
+      (push-mark)
+      (backward-list)
+      (indent-region (region-beginning) (region-end)))
     ;; If some lines exceed the dreadful 79th column, insert a new line before
     ;; the first line and reindent, with longest line to the right edge
     (save-excursion
@@ -551,8 +572,8 @@ declaration or definition, align the type and variable names"
 
 (defun bde-align-funcall ()
   "Assuming the cursor is within the list of arguments of a
-  function call, align the arguments. It puts one argument per
-  line and aligns to the right"
+  function call, align the arguments according the the BDE
+  style. It puts one argument per line and aligns to the right."
   (interactive)
   ;; Get the argument string (remove the external parentheses)
   (let ((arglist (thing-at-point 'list)))
@@ -560,55 +581,63 @@ declaration or definition, align the type and variable names"
       (setq arglist (substring arglist 1)))
     (when (pg/string-ends-with arglist ")")
       (setq arglist (substring arglist 0 (1- (length arglist)))))
-    ;; Extract the list of arguments
-    (let ((args (split-string arglist ","))
-          (parsed-args ()))
-      (dolist (arg args)
-        (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
-                                              (substring arg 1)
-                                            arg))))
-          (setq parsed-args (cons parsed-arg parsed-args))))
-      (setq parsed-args (reverse parsed-args))
-      ;; Cut the argument list and edit it into a temporary buffer
-      (backward-up-list)
-      (push-mark)
-      (forward-list)
-      (delete-region (region-beginning) (region-end))
-      (insert
-       (with-temp-buffer
-         (insert "(")
-         (let ((i 1))
-           (dolist (arg parsed-args)
-             (insert arg)
-             (unless (>= i (length parsed-args))
-               (insert ",")
-               (newline))
-             (incf i)))
-         (insert ")")
-         (buffer-string)))
-      ;; Reindent
+    (if (string= "" (pg/string-trim arglist))
+        (message "There are no arguments")
+      ;; Extract the list of arguments
+      (let ((args (split-string arglist ","))
+            (parsed-args ()))
+        (dolist (arg args)
+          (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
+                                                (substring arg 1)
+                                              arg))))
+            (setq parsed-args (cons parsed-arg parsed-args))))
+        (setq parsed-args (reverse parsed-args))
+        ;; Cut the argument list and edit it into a temporary buffer
+        (backward-up-list)
+        (push-mark)
+        (forward-list)
+        (delete-region (region-beginning) (region-end))
+        (insert
+         (with-temp-buffer
+           (insert "(")
+           (let ((i 1))
+             (dolist (arg parsed-args)
+               (insert arg)
+               (unless (>= i (length parsed-args))
+                 (insert ",")
+                 (newline))
+               (incf i)))
+           (insert ")")
+           (buffer-string)))
+        ;; Reindent
+    (save-restriction
+      (widen)
       (push-mark)
       (backward-list)
-      (indent-region (region-beginning) (region-end))
-      ;; If some lines exceed the dreadful 79th column, insert a new line before
-      ;; the first line and reindent, with longest line to the right edge
-      (save-excursion
-        (let ((start-col (1+ (current-column)))
-              (max-col (bde-max-column-in-region)))
-          (when (> max-col 79)
-            (backward-list)
-            (forward-char)
-            (newline)
-            (backward-char 2)
-            (push-mark)
-            (forward-list)
-            (let ((longest-length (- max-col start-col)))
-              (if (<= longest-length 79)
-                  (indent-region (region-beginning) (region-end)
-                                 (- 79 longest-length))
-                ;; We cannot indent correctly, some lines are too long
-                (indent-region (region-beginning) (region-end))
-                (message "Longest line is %d chars" longest-length)))))))))
+      (indent-region (region-beginning) (region-end)))
+        ;; If some lines exceed the dreadful 79th column, insert a new line before
+        ;; the first line and reindent, with longest line to the right edge
+        (save-excursion
+          (let ((start-col (1+ (current-column)))
+                (max-col (bde-max-column-in-region)))
+            (when (> max-col 79)
+              (backward-list)
+              (forward-char)
+              (newline)
+              (backward-char 2)
+              (push-mark)
+              (forward-list)
+              (let ((longest-length (- max-col start-col)))
+                (if (<= longest-length 79)
+                    (indent-region (region-beginning) (region-end)
+                                   (- 79 longest-length))
+                  ;; We cannot indent correctly, some lines are too long
+                  (indent-region (region-beginning) (region-end))
+                  (message "Longest line is %d chars" longest-length))))))))
+    ;; Leave the cursor after the closing parenthese instead of on the opening
+    ;; one, since most likely we want to add code after the arg list.
+    (when (looking-at "\\s\(")
+      (forward-list 1))))
 
 (define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
 
@@ -689,7 +718,7 @@ include semicolons."
       (indent-according-to-mode)
       (setq n (current-indentation))
       (beginning-of-line)
-      (kill-line))
+      (delete-region (point) (line-end-position)))
     n))
 
 (defun bde-align-class-members ()
@@ -762,6 +791,77 @@ start at column 40."
          (message "No region"))))
 
 (define-key c-mode-base-map [(control c)(m)] 'bde-align-class-members)
+
+
+;;; Repunctuate: the BDE comment style requires 2 spaces at the end of each
+;;; sentence, which is both annoying and debatable:
+;;; http://en.wikipedia.org/wiki/Sentence_spacing
+;;; Fortunately Emacs can take care of that for us.
+
+(defun bde-in-comment-p ()
+  "Predicate returning non-nil if the cursor is within a C++ comment."
+  (let ((syntax (if (boundp 'c-syntactic-context)
+                    ;; Use `c-syntactic-context' in the same way as
+                    ;; `c-indent-line', to be consistent.
+                    c-syntactic-context
+                  (c-save-buffer-state nil
+                    (c-guess-basic-syntax)))))
+    ;; `syntax' is c-syntactic-context and contains 'comment-intro if
+    ;; we are within a comment block.
+    (assq 'comment-intro syntax)))
+
+(defun bde-comment-beginning ()
+  "Return the position of the beginning of a comment block, at
+the beginning of the first line, or nil if not found. It is safer
+to use this function in conjunction with `bde-in-comment-p'. Note
+that this function only considers lines that only contain a
+comment."
+  (loop
+   (beginning-of-line)
+   (cond ((= (point) (point-min))
+          (return nil))
+         ((re-search-forward "^ *//" (point-at-eol) t)
+          ;; looking at a comment line
+          (forward-line -1))
+         (t
+          (forward-line 1)
+          (return (point))))))
+
+(defun bde-comment-end ()
+  "Return the position of the end of a comment block, at the end
+of the last line, or nil if not found. It is safer to use this
+function in conjunction with `bde-in-comment-p'. Note that this
+function only considers lines that only contain a comment."
+  (loop
+   (beginning-of-line)
+   (cond ((= (point) (point-min))
+          (return nil))
+         ((re-search-forward "^ *//" (point-at-eol) t)
+          ;; looking at a comment line
+          (forward-line 1))
+         (t
+          (forward-line -1)
+          (end-of-line)
+          (return (point))))))
+
+(defun bde-repunctuate ()
+  "Put two spaces at the end of sentences in the selected region
+or comment block. See also `repunctuate-sentences'."
+  (interactive)
+  (let (beginning end)
+    (cond ((region-active-p)
+           (setq beginning (region-beginning)
+                 end (region-end)))
+          ((bde-in-comment-p)
+           (setq beginning (bde-comment-beginning)
+                 end (bde-comment-end))))
+    (if (and beginning end)
+        (save-excursion
+          (goto-char beginning)
+          (while (re-search-forward "\\([]\"')]?\\)\\([.?!]\\)\\([]\"')]?\\) +" end t)
+            (replace-match "\\1\\2\\3  " nil nil))
+          (fill-paragraph))
+      (message "No region or comment"))))
 
 
 (provide 'init-bde-style)

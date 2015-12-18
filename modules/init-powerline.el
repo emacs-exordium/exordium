@@ -2,110 +2,108 @@
 
 (require 'powerline)
 (require 'init-themes)
+(require 'init-prefs)
 
-;;; Fix the grapphical bug with Emacs24.4 on OSX
-;;; See https://github.com/milkypostman/powerline/issues/54
-(when *environment-osx*
+;;; Fix the graphical bug with Emacs24.4 on OS-X (the angles in powerline are
+;;; not rendered correctly); see
+;;; https://github.com/milkypostman/powerline/issues/54
+;;;
+;;; You may not want to use it with the zenburn theme because it makes all
+;;; colors a bit washed up; see
+;;; http://emacsredux.com/blog/2013/08/21/color-themes-redux/
+;;; Basically you should use Emacs from brew or port instead of Emacs for OS-X.
+
+(when (and exordium-osx
+           exordium-fix-powerline-osx-bug)
+  (message "Fixing OS-X powerline bug")
   (setq ns-use-srgb-colorspace nil))
 
-(cond ((featurep 'color-theme-tomorrow)
-       (with-tomorrow-colors
-        (tomorrow-mode-name)
-        ;; These faces are already defined in themes/powerline.el
-        (set-face-attribute 'powerline-active1 nil :background selection)
-        (set-face-attribute 'powerline-active2 nil :background current-line)
-        (set-face-attribute 'powerline-inactive1 nil
-                            :background current-line :foreground comment)
-        (set-face-attribute 'powerline-inactive2 nil
-                            :background background :foreground comment)
-        (defface powerline-active3
-          `((t (:background ,purple :foreground ,background)))
-          "Powerline face 3 (buffer name)"
-          :group 'powerline)
-        (defface powerline-active4
-          `((t (:background ,red :foreground ,background)))
-          "Powerline face 4 (buffer name when errors)"
-          :group 'powerline)
-        (defface powerline-active5
-          `((t (:background ,green :foreground ,background)))
-          "Powerline face 5 (buffer name sans errors)"
-          :group 'powerline)))
-      ((featurep 'color-theme-monokai)
-       (with-monokai-colors
-        'default
-        ;; These faces are already defined in themes/powerline.el
-        (set-face-attribute 'powerline-active1 nil :background monokai-hl)
-        (set-face-attribute 'powerline-active2 nil :background monokai-hl-line)
-        (set-face-attribute 'powerline-inactive1 nil :background monokai-hl-line)
-        (set-face-attribute 'powerline-inactive2 nil :background monokai-bg)
-        (defface powerline-active3
-          `((t (:background ,violet :foreground ,monokai-bg)))
-          "Powerline face 3 (buffer name)"
-          :group 'powerline)
-        (defface powerline-active4
-          `((t (:background ,red :foreground ,monokai-bg)))
-          "Powerline face 4 (buffer name when errors)"
-          :group 'powerline)
-        (defface powerline-active5
-          `((t (:background ,green :foreground ,monokai-bg)))
-          "Powerline face 5 (buffer name sans errors)"
-          :group 'powerline)))
-      ((featurep 'color-theme-solarized)
-       ;; These faces are already defined in themes/powerline.el
-       (set-face-attribute 'powerline-active1 nil
-                           :background (second (assoc 'base01 solarized-colors))
-                           :foreground (second (assoc 'base2 solarized-colors)))
-       (set-face-attribute 'powerline-active2 nil
-                           :background (second (assoc 'base02 solarized-colors))
-                           :foreground (second (assoc 'base01 solarized-colors)))
-       (set-face-attribute 'powerline-inactive1 nil
-                           :background (second (assoc 'base02 solarized-colors)))
-       (set-face-attribute 'powerline-inactive2 nil
-                           :background (second (assoc 'base02 solarized-colors)))
-       (defface powerline-active3
-         `((t (:background ,(second (assoc 'base02 solarized-colors))
-               :foreground ,(second (assoc 'cyan solarized-colors)))))
-         "Powerline face 3 (buffer name)"
-         :group 'powerline)
-       (defface powerline-active4
-         `((t (:background ,(second (assoc 'base02 solarized-colors))
-               :foreground ,(second (assoc 'red solarized-colors)))))
-         "Powerline face 4 (buffer name when errors)"
-         :group 'powerline)
-       (defface powerline-active5
-         `((t (:background ,(second (assoc 'base02 solarized-colors))
-               :foreground ,(second (assoc 'green solarized-colors)))))
-         "Powerline face 5 (buffer name sans errors)"
-         :group 'powerline)))
 
-(defun my-powerline-theme-buffer-face ()
+;;; Colorize the name of the current project in the modeline.
+
+(defface exordium-project-name '((t (:inherit mode-line)))
+  "Face for the name of the current project in the modeline"
+  :group 'exordium)
+
+(when (featurep 'init-helm-projectile)
+  (eval-after-load "projectile"
+    `(setq projectile-mode-line
+           `(:eval (list " ["
+                         (propertize (projectile-project-name)
+                                     'face 'exordium-project-name)
+                         "]")))))
+
+
+;;; Faces for our powerline theme. They are defined here and customized within
+;;; each theme.
+
+(defface exordium-powerline-active1 '((t (:inherit mode-line)))
+  "Powerline active face 1."
+  :group 'exordium)
+
+(defface exordium-powerline-active2 '((t (:inherit mode-line)))
+  "Powerline active face 1."
+  :group 'exordium)
+
+(defface exordium-powerline-active3 '((t (:inherit mode-line)))
+  "Powerline active face 3 (buffer name)"
+  :group 'exordium)
+
+(defface exordium-powerline-active4 '((t (:inherit mode-line)))
+  "Powerline active face 4 (RTags buffer name with errors)"
+  :group 'exordium)
+
+(defface exordium-powerline-active5 '((t (:inherit mode-line)))
+  "Powerline active face 5 (RTags buffer name without error)"
+  :group 'exordium)
+
+(defface exordium-powerline-inactive1 '((t (:inherit mode-line-inactive)))
+  "Powerline inactive face 1"
+  :group 'exordium)
+
+(defface exordium-powerline-inactive2 '((t (:inherit mode-line-inactive)))
+  "Powerline inactive face 2"
+  :group 'exordium)
+
+(defface exordium-powerline-inactive3 '((t (:inherit mode-line-inactive)))
+  "Powerline inactive face 3 (buffer name)"
+  :group 'exordium)
+
+;;; Our Powerline theme.
+
+(defun exordium-powerline-buffer-face (active)
   "Return the face to use for the buffer name"
-  (cond ((and (eq major-mode 'c++-mode)
+  (cond ((not active)
+         ;; Gray
+         'exordium-powerline-inactive3)
+        ((and (eq major-mode 'c++-mode)
               (featurep 'rtags)
               (rtags-has-diagnostics))
          ;; Green or red
          (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
            (if (and diag-buff (> (buffer-size diag-buff) 0))
-               'powerline-active4
-             'powerline-active5)))
+               'exordium-powerline-active4
+             'exordium-powerline-active5)))
         (t
          ;; Purple
-         'powerline-active3)))
+         'exordium-powerline-active3)))
 
-(defun my-powerline-theme ()
+(defun exordium-powerline-theme ()
   "Setup the default mode-line."
   (interactive)
+  (when (eq exordium-powerline-theme :wave)
+    (setq-default powerline-default-separator 'wave))
   (setq-default
    mode-line-format
    '("%e"
      (:eval
       (let* ((active (powerline-selected-window-active))
              (mode-line (if active 'mode-line 'mode-line-inactive))
-             (face1 (if active 'powerline-active1 'powerline-inactive1))
-             (face2 (if active 'powerline-active2 'powerline-inactive2))
-             (face3 (if *init-powerline-shows-rtags-diagnostics*
-                        (my-powerline-theme-buffer-face)
-                      'powerline-active3))
+             (face1 (if active 'exordium-powerline-active1 'exordium-powerline-inactive1))
+             (face2 (if active 'exordium-powerline-active2 'exordium-powerline-inactive2))
+             (face3 (if exordium-powerline-shows-rtags-diagnostics
+                        (exordium-powerline-buffer-face active)
+                      (if active 'exordium-powerline-active3 'exordium-powerline-inactive3)))
              (separator-left (intern
                               (format "powerline-%s-%s"
                                       powerline-default-separator
@@ -118,7 +116,11 @@
                         (powerline-raw "%b " face3 'l)
                         (when (and (boundp 'which-func-mode) which-func-mode)
                           (powerline-raw which-func-format nil 'l))
-                        (funcall separator-left face3 mode-line)
+                        (funcall (if (eq exordium-powerline-theme :wave)
+                                     separator-right
+                                   separator-left)
+                                 face3 mode-line)
+                        ;;(funcall separator-left face3 face2)
                         (when (boundp 'erc-modified-channels-object)
                           (powerline-raw erc-modified-channels-object face1 'l))
                         (powerline-major-mode face1 'l)
@@ -127,7 +129,6 @@
                         (powerline-narrow face1 'l)
                         (powerline-raw " " face1)
                         (funcall separator-left face1 face2)
-                        ;;(powerline-raw '(:eval (my-test)) face2) ; TODO: test
                         (powerline-vc face2 'r)))
              (rhs (list (powerline-raw global-mode-string face2 'r)
                         (funcall separator-right face2 face1)
@@ -136,12 +137,28 @@
                         (powerline-raw "%3c" face1 'r)
                         (funcall separator-right face1 mode-line)
                         (powerline-raw " ")
-                        (powerline-raw "%6p" nil 'r)
-                        (powerline-hud face2 face1))))
+                        (powerline-raw "%6p" nil 'r))))
         (concat (powerline-render lhs)
                 (powerline-fill face2 (powerline-width rhs))
                 (powerline-render rhs)))))))
 
-(my-powerline-theme)
+(defun display-powerline ()
+  "(Re)Displays Powerline"
+  (powerline-set-selected-window)
+  (exordium-powerline-theme)
+  (redraw-display))
+
+;; Depending on the preferences, either display powerline immediately or after
+;; a number of seconds of idle time. This is a fix for Emacs crashing on some
+;; environments.
+(if (eq exordium-display-powerline-after-idle-time 0)
+    (exordium-powerline-theme)
+  (run-with-idle-timer exordium-display-powerline-after-idle-time nil
+                       #'display-powerline))
 
 (provide 'init-powerline)
+
+;; Local Variables:
+;; no-byte-compile: t
+;; indent-tabs-mode: nil
+;; End:

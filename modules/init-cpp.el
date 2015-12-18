@@ -11,6 +11,7 @@
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
 (require 'cc-mode)
+(require 'init-lib)
 
 ;;; Open a header file in C++ mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -22,15 +23,13 @@
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
 
-;;; Turn on FCI automatically
-(add-hook 'c++-mode-hook 'fci-mode)
-
 
 ;;; Highlight dead code between #if 0 and #endif
 
+(require 'cpp)
 (defun cpp-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
-  (let ((color (face-background 'region)))
+  (let ((color (face-background 'shadow)))
     (setq cpp-known-face 'default)
     (setq cpp-unknown-face 'default)
     (setq cpp-known-writable 't)
@@ -49,51 +48,57 @@
 
 ;;; Switch between .h <--> .cpp
 
-(defconst *cpp-header-switches* '(("h" .   ("cpp" "c"))
-                                  ("cpp" . ("h"))
-                                  ("c" .   ("h"))))
+(defconst exordium-cpp-header-switches
+  '(("t.cpp" . ("h" "cpp"))
+    ("h"     . ("cpp" "cc" "t.cpp" "c"))
+    ("cpp"   . ("h" "t.cpp"))
+    ("cc"    . ("h" "t.cc"))
+    ("c"     . ("h")))
+  "A-list of extension -> list of matching extensions")
 
-(defun cpp-switch-h-cpp ()
-  "Switch .h and .cpp file."
-  (interactive)
-  (let* ((ext (file-name-extension (buffer-file-name)))
-         (base-name (pg/string-without-last (buffer-name) (length ext)))
-         (base-path (pg/string-without-last (buffer-file-name) (length ext)))
-         (count-ext (cdr (pg/find-if (lambda (i)
-                                       (string= (car i) ext))
-                                     *cpp-header-switches*))))
-    (cond (count-ext
-           (catch 'found
-             ;; first look into the existing buffers
-             (let ((buffers (mapcar (lambda (i)
-                                      (concat base-name i))
-                                    count-ext)))
-               (dolist (buff buffers)
-                 (when (bufferp (get-buffer buff))
-                   (switch-to-buffer buff)
-                   (throw 'found nil))))
-             ;; if not such buffer, look into the files in the same dir
-             (let ((files (mapcar (lambda (count-ext)
-                                    (concat base-path count-ext))
-                                  count-ext)))
-               (dolist (file files)
-                 (when (file-exists-p file)
-                   (find-file file)
-                   (throw 'found nil))))))
-          (t (message "This is not a C/C++ file")))))
+(defun bde-file-name-extension (file-name)
+  "Like `file-name-extension' but returning '.t.cpp' for a
+  BDE-style test driver"
+  (if (pg/string-ends-with file-name ".t.cpp")
+      "t.cpp"
+    (file-name-extension file-name)))
+
+(defun cpp-switch-h-cpp (arg)
+  "Switch between .h and .cpp buffer or file. Look first into the
+ open buffers, and look into the current directory if no matching
+ buffer was found.
+ With argument, switch to the second choice. For example, from a
+ .h or a .cpp open the .t.cpp, or from a .t.cpp open the .cpp."
+  (interactive "P")
+  (let ((ext (bde-file-name-extension (buffer-file-name))))
+    (let ((base-name    (pg/string-without-last (buffer-name) (length ext)))
+          (base-path    (pg/string-without-last (buffer-file-name) (length ext)))
+          (matching-ext (cdr (pg/find-if (lambda (i)
+                                           (string= (car i) ext))
+                                         exordium-cpp-header-switches))))
+      (when (and arg matching-ext)
+        (setq matching-ext (cdr matching-ext)))
+      (cond (matching-ext
+             (unless (catch 'found
+                       (dolist (candidate-ext matching-ext)
+                         ;; Look for a buffer matching candidate-ext
+                         (let ((buff (concat base-name candidate-ext)))
+                           (when (bufferp (get-buffer buff))
+                             (switch-to-buffer buff)
+                             (throw 'found t)))
+                         ;; No buffer => look for a file
+                         (let ((file (concat base-path candidate-ext)))
+                           (when (file-exists-p file)
+                             (find-file file)
+                             (throw 'found t))))
+                       ;; No buffer or file for any matching-ext
+                       nil)
+               (message "No matching buffer or file")))
+            (t (message "This is not a C/C++ file"))))))
 
 ;;; Ctrl-Tab to switch between .h and .cpp
 (define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
 
-
-;;; Font lock changes
-
-;;; Display TODO: and FIXME: and TBD: in red
-(font-lock-add-keywords
- 'c++-mode
- '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TBD\\):" 1 font-lock-warning-face prepend)
-   ("\\<\\(TODO\\):" 1 font-lock-warning-face prepend)))
 
 
 (provide 'init-cpp)

@@ -20,12 +20,12 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-for-lein)
 
-(add-to-list 'load-path "~/.emacs.d/vendor")
+(add-to-list 'load-path (locate-user-emacs-file "vendor"))
 
 ;;; Flyspell often slows down editing so it's turned off
 (remove-hook 'text-mode-hook 'turn-on-flyspell)
 
-(load "~/.emacs.d/vendor/clojure.el")
+(load "clojure.el")
 
 ;;; Hippie expand - don't try to complete with file names
 (setq hippie-expand-try-functions-list

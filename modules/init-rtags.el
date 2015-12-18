@@ -196,6 +196,7 @@
 (require 'rtags)
 (require 'rtags-ac)
 (require 'auto-complete-c-headers)
+(require 'projectile)
 
 
 ;;; Key bindings
@@ -205,19 +206,52 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-;; Alias for C-c r .
+(defun pg/rtags-find-symbol-at-point (&optional prefix)
+  "Redefinition of `rtags-find-symbol-at-point' that returns t on
+success and nil if not found. This implementation comes from
+https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
+  (interactive "P")
+  (rtags-delete-rtags-windows)
+  (rtags-location-stack-push)
+  (let ((arg (rtags-current-location))
+        (tagname (or (rtags-current-symbol) (rtags-current-token)))
+        (fn (buffer-file-name))
+        (found-it nil))
+    (rtags-reparse-file-if-needed)
+    (with-current-buffer (rtags-get-buffer)
+      (rtags-call-rc :path fn :path-filter prefix "-f" arg)
+      (cond ((or (not rtags-follow-symbol-try-harder)
+                 (= (length tagname) 0))
+             (setq found-it (rtags-handle-results-buffer nil nil fn)))
+            ((setq found-it (rtags-handle-results-buffer nil t fn)))
+            (t
+             (erase-buffer)
+             (rtags-call-rc :path fn "-F" tagname "--definition-only" "-M" "1" "--dependency-filter" fn :path-filter prefix
+                            (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
+                            (when rtags-symbolnames-case-insensitive "-I"))
+             (unless (setq found-it (rtags-handle-results-buffer nil nil fn))
+               (erase-buffer)
+               (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
+                              (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
+                              (when rtags-symbolnames-case-insensitive "-I"))
+               (setq found-it (rtags-handle-results-buffer nil nil fn))))))
+    found-it))
+
+
+;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
   (lambda ()
     (interactive)
-    (rtags-find-symbol-at-point)
-    (recenter-top-bottom)))
+    (when (pg/rtags-find-symbol-at-point)
+      (recenter))))
+
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
 
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control {)] (function rtags-location-stack-back))
+(define-key c-mode-base-map [(control c) (r) (left)] (function rtags-location-stack-back))
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control })] (function rtags-location-stack-forward))
+(define-key c-mode-base-map [(control c) (r) (right)] (function rtags-location-stack-forward))
 
 (define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
 
@@ -237,26 +271,81 @@ buffer"
   (let ((buffer (get-buffer-create "*RTags rdm*")))
     (switch-to-buffer buffer)
     (rtags-rdm-mode)
+    (read-only-mode)
     (let ((process (start-process "rdm" buffer "rdm")))
       (message "Started rdm - PID %d" (process-id process)))))
 
 (defun rtags-show-rdm-buffer ()
-  "Show the rdm log buffer"
+  "Show/hide the rdm log buffer"
   (interactive)
-  (let ((buffer-name "*RTags rdm*"))
-    (if (get-buffer buffer-name)
-        (display-buffer buffer-name)
-      (message "Rtags rdm is not running (use M-x rtags-start-rdm)"))))
+  (let* ((buffer-name "*RTags rdm*")
+         (buffer (get-buffer buffer-name))
+         (window (and buffer (get-buffer-window buffer))))
+    (cond (window
+           (bury-buffer buffer)
+           (delete-window window))
+          (buffer
+           (display-buffer buffer))
+          (t
+           (message "Rtags rdm is not running (use M-x rtags-start-rdm)")))))
 
 (define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
+
+(defun rtags-quit-all ()
+  "Stop both RTags diagnostics and rdm, if they are running."
+  (interactive)
+  ;; Stop RTags Diagnostics and kill its buffer without prompt
+  (when (and rtags-diagnostics-process
+             (not (eq (process-status rtags-diagnostics-process) 'exit)))
+    (kill-process rtags-diagnostics-process))
+  (when (get-buffer "*RTags Diagnostics*")
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer "*RTags Diagnostics*")))
+  ;; Stop rdm and kill its buffer without prompt
+  (rtags-quit-rdm)
+  (when (get-buffer "*RTags rdm*")
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer "*RTags rdm*"))))
 
 ;; Mode for rdm log output
 ;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
 
+(defsubst rtags-rdm-record-search-forward (&optional regexp bound)
+  "Search forward from point for a log line matching REGEXP.
+Set point to the end of the occurrence found, and return point.
+An optional second argument BOUND bounds the search: the match
+found must not extend after that position. This function also
+sets `match-data' to the entire match."
+  (let ((org-pos (point)))
+    (block while-loop
+      ;; While there are more matches for REGEXP
+      (while (re-search-forward regexp bound t)
+        (if (re-search-backward "^" org-pos t)
+            (let ((begin-pos (point)))
+              ;; If we found a matching log line, set match data and return
+              (if (re-search-forward "$" bound t)
+                  (progn
+                    (set-match-data (list begin-pos (point)))
+                    (return-from while-loop (point)))
+                (return-from while-loop))))))))
+
+(defun rtags-rdm-match-record-error (bound)
+  "Search forward from point to BOUND for error."
+  (rtags-rdm-record-search-forward "\\(error:\\)" bound))
+
+(defun rtags-rdm-match-record-warning (bound)
+  "Search forward from point to BOUND for warning."
+  (rtags-rdm-record-search-forward "\\(warning:\\)" bound))
+
+(defun rtags-rdm-match-record-note (bound)
+  "Search forward from point to BOUND for note."
+  (rtags-rdm-record-search-forward "\\(note:\\)" bound))
+
 (defconst rtags-rdm-mode-keywords
-  ;; Words and associated face.
-  `((,(regexp-opt '("error" "warn")    'words) . font-lock-warning-face)
-    (,(regexp-opt '("Jobs" "Restored") 'words) . font-lock-string-face)))
+  (list '(rtags-rdm-match-record-error 0 'compilation-error)
+        '(rtags-rdm-match-record-warning 0 'compilation-warning)
+        '(rtags-rdm-match-record-note 0 'compilation-info))
+  "Describes how to syntax highlight keywords in rtags-rdm-mode.")
 
 (defconst rtags-rdm-mode-syntax-table
   ;; Defines a "comment" as anything that starts with a square bracket, e.g.
@@ -271,7 +360,7 @@ buffer"
   "Mode for viewing rdm logs"
   :syntax-table rtags-rdm-mode-syntax-table
   ;; Syntax highlighting:
-  (setq font-lock-defaults '((rtags-rdm-mode-keywords))))
+  (setq font-lock-defaults '(rtags-rdm-mode-keywords t t)))
 
 
 ;;; Display the diagnostics buffer without force reparsing
@@ -280,19 +369,21 @@ buffer"
   "Show/hide the diagnostics buffer in a dedicated
 window (similar to `rtags-diagnostics' but without reparsing)."
   (interactive)
-  (let ((buffer-name "*RTags Diagnostics*"))
-    (cond ((get-buffer-window (get-buffer buffer-name))
-           (bury-buffer (get-buffer buffer-name))
-           (delete-window (get-buffer-window (get-buffer buffer-name))))
-          ((get-buffer buffer-name)
-           (display-buffer buffer-name)
-           (other-window 1)
-           (beginning-of-buffer)
-           (fit-window-to-buffer (get-buffer-window (current-buffer)) 10 2)
-           (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
-           (other-window -1))
-          (t
-           (message "Rtags diagnostics is not running (use C-c r D)")))))
+  (if (rtags-has-diagnostics)
+      (let* ((buffer-name "*RTags Diagnostics*")
+             (buffer (get-buffer buffer-name))
+             (window (get-buffer-window buffer)))
+        (cond (window
+               (bury-buffer buffer)
+               (delete-window window))
+              (buffer
+               (display-buffer buffer-name)
+               (other-window 1)
+               (goto-char (point-min))
+               (fit-window-to-buffer (get-buffer-window (current-buffer)) 10 2)
+               (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
+               (other-window -1))))
+    (message "Rtags diagnostics is not running (use C-c r D)")))
 
 (define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
 
@@ -327,42 +418,30 @@ window (similar to `rtags-diagnostics' but without reparsing)."
   "If non-nil, base directory to use for all relative paths in
   `compile_include'. Use nil for absolute paths.")
 
-;; Do not set these variables in your .emacs, they are generated:
-
-(defvar *rtags-project-source-dirs* ()
-  "List of directories containing the source and header files of
-  the current project. We scan these directories for .cpp files
-  to put into the compilation database.")
-
-(defvar *rtags-project-include-dirs* ()
-  "List of directories to include for compiling the current
-  project (e.g. third party libraries). We use these directories
-  to generate -I directives that the clang compilation command
-  needs.")
-
-(defvar *rtags-project-exclude-files* ()
-  "List of regex to exclude while searching for .cpp files for
-  the current project.")
+;;; Functions
 
 (defun rtags-load-compile-includes-file-content (compile-includes-file)
   "Read and parse the specified compile-includes file, and return
-a list of 4 sublists:
-- The list of src directives,
-- The list of include directives,
-- The list of exclude directives,
-- The list of excludesrc directives."
+a list of five sublists:
+- The list of `src' directives,
+- The list of `include' directives,
+- The list of `exclude' directives,
+- The list of `excludesrc' directives,
+- The list of `macro' directives."
   (let ((line-number      1)
         (value            nil)
         (src-list         ())
         (include-list     ())
         (exclude-list     ())
-        (exclude-src-list ()))
+        (exclude-src-list ())
+        (macro-list       ()))
     (dolist (record (pg/read-file-lines compile-includes-file))
       (incf line-number)
       (setq value (second (split-string record " ")))
       (cond ((or (eq "" record)
                  (pg/string-starts-with record "#"))
-             nil) ; comment or empty string; skip it
+             ;; Comment or empty string; skip it
+             nil)
             ((pg/string-starts-with record "src")
              (when value
                (setq src-list (cons value src-list))))
@@ -375,9 +454,12 @@ a list of 4 sublists:
             ((pg/string-starts-with record "exclude")
              (when value
                (setq exclude-list (cons value exclude-list))))
+            ((pg/string-starts-with record "macro")
+             (when value
+               (setq macro-list (cons value macro-list))))
             (t
              (error "Syntax error line %d: %s" line-number record))))
-    (list src-list include-list exclude-list exclude-src-list)))
+    (list src-list include-list exclude-list exclude-src-list macro-list)))
 
 (defun rtags-is-excluded-p (path excluded-regexs)
   "Return non-nil if the specified path matches any regex in
@@ -388,7 +470,7 @@ the list of excluded regexs"
         (throw 'return t)))
     (throw 'return nil)))
 
-(defun rtags-scan-include-directories (dir excluded-regexs)
+(defun rtags-scan-subdirectories (dir excluded-regexs)
   "Return a list of subdirectories under the specified root dir,
 excluding any that match any regex in the specified excluded
 regex list."
@@ -400,122 +482,129 @@ regex list."
 
 (defun rtags-load-compile-includes-file (dir)
   "Loads the `compile_includes' file from the specified directory
-and sets up the project's source dirs and include dirs. Return
-true on success. Normally you should not use this function
-directly: use `rtags-create-compilation-database' instead"
-  (interactive "DProject root: ")
+and returns its content as a property list, or nil if the file
+could not be loaded. The property list looks like this:
+'(:src-dirs (...)
+  :include-dirs (...)
+  :exclude-src (...)
+  :macros (...))"
   (let ((compile-includes-file (concat (file-name-as-directory dir)
                                        "compile_includes")))
     (cond ((file-exists-p compile-includes-file)
            ;; Parse the file and return 3 lists: src, include, exclude
            (let ((directives (rtags-load-compile-includes-file-content
                               compile-includes-file)))
-             (setq *rtags-project-source-dirs*   ()
-                   *rtags-project-include-dirs*  ()
-                   *rtags-project-exclude-files* ())
-             (let ((source-dirs (first directives))
+             (let ((src-dirs    (first directives))
                    (incl-dirs   (second directives))
-                   (excl-regexs (third directives)))
-               ;; Set the source exclude patterns
-               (setq *rtags-project-exclude-files* (fourth directives))
+                   (excl-regexs (third directives))
+                   (excl-src    (fourth directives))
+                   (macros      (fifth directives))
+                   (result      ()))
                ;; Scan src to get all subdirs that do not match the excludes
-               (dolist (path source-dirs)
-                 (unless (file-name-absolute-p path)
-                   (setq path (expand-file-name path
-                                                (or *rtags-compile-includes-base-dir*
-                                                    dir))))
-                 (message "Scanning source dir: %s ..." path)
-                 (setq *rtags-project-source-dirs*
-                       (append *rtags-project-source-dirs*
-                               (rtags-scan-include-directories path excl-regexs))))
+               (let (dirs)
+                 (dolist (path src-dirs)
+                   (unless (file-name-absolute-p path)
+                     (setq path (expand-file-name path
+                                                  (or *rtags-compile-includes-base-dir*
+                                                      dir))))
+                   (message "Scanning source dir: %s ..." path)
+                   (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
+                 (setq result (list :src-dirs dirs)))
                ;; Same with includes
-               (dolist (path incl-dirs)
-                 (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
-                 (message "Scanning include dir: %s ..." path)
-                 (setq *rtags-project-include-dirs*
-                       (append *rtags-project-include-dirs*
-                               (rtags-scan-include-directories path excl-regexs))))
+               (let (dirs)
+                 (dolist (path incl-dirs)
+                   (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
+                   (message "Scanning include dir: %s ..." path)
+                   (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
+                 (setq result (nconc result (list :include-dirs dirs))))
+               ;; Add exclude-src and macros into the result
+               (setq result (nconc result (list :exclude-src excl-src
+                                                :macros macros)))
                ;; Done
                (message "Project has %d source dirs and %d include dirs"
-                        (length *rtags-project-source-dirs*)
-                        (length *rtags-project-include-dirs*))))
-           t)
+                        (length (plist-get result :src-dirs))
+                        (length (plist-get result :include-dirs)))
+               result)))
           (t
            (message "No compilation_includes file")
            nil))))
 
-(defun rtags-create-compilation-command ()
-  "Return a string containing the clang compilation command to
-use for the compilation database, using the content of
-`*rtags-project-source-dirs*' and `*rtags-project-include-dirs*'"
-  (assert *rtags-project-source-dirs*)
+(defun rtags-create-compilation-command (plist)
+  "Returns a string containing the clang compilation command to
+use for the compilation database, using the content of PLIST."
   (let ((command *rtags-clang-command-prefix*))
-    (dolist (path *rtags-project-source-dirs*)
+    ;; -D options:
+    (dolist (m (plist-get plist :macros))
+      (setq command (concat command " -D" m)))
+    ;; -I options
+    (dolist (path (plist-get plist :src-dirs))
       (setq command (concat command " -I" path)))
-    (dolist (path *rtags-project-include-dirs*)
+    (dolist (path (plist-get plist :include-dirs))
       (setq command (concat command " -I" path)))
     (concat command *rtags-clang-command-suffix*)))
 
 (defun rtags-prompt-compilation-database-dir ()
-  "Prompt the user for the directory where to generate the
+  "Prompts the user for the directory where to generate the
 compilation database. If we're in a projectile project, propose
 the project root first, and prompt for a dir if the user
-declines."
+declines. Returns the directory string."
   (let ((project-root (and (featurep 'projectile)
                            (projectile-project-root))))
-    (let ((dir (if (and project-root
-                        (y-or-n-p (format "Create at project root (%s)?" project-root)))
-                   project-root
-                 (read-directory-name "Project root: "))))
-      dir)))
+    (if (and project-root
+             (y-or-n-p (format "Create at project root (%s)?" project-root)))
+        project-root
+      (read-directory-name "Project root: "))))
 
 (defun rtags-create-compilation-database (dir)
   "Regenerates `compile_commands.json' in the specified
 directory"
   (interactive (list (rtags-prompt-compilation-database-dir)))
-  ;;(interactive "DProject root: ")
-  (when (rtags-load-compile-includes-file dir)
-    (let ((dbfilename (concat (file-name-as-directory dir)
-                              "compile_commands.json"))
-          (compile-command (rtags-create-compilation-command))
-          (num-files 0))
-      (with-temp-buffer
-        (insert "[")
-        (newline)
-        ;; Note: dynamic bunding of default-directory
-        (dolist (default-directory *rtags-project-source-dirs*)
-          (message "Processing directory: %s ..." default-directory)
-          (let ((files (file-expand-wildcards "*.cpp"))
-                ;; rdm does not like directories starting with "~/"
-                (dirname (if (pg/string-starts-with default-directory "~/")
-                             (substitute-in-file-name
-                              (concat "$HOME/" (substring default-directory 2)))
-                           default-directory)))
-            (dolist (file files)
-              (unless (rtags-is-excluded-p file *rtags-project-exclude-files*)
-                (incf num-files)
-                (insert "  { \"directory\": \"" dirname "\",")
-                (newline)
-                (insert "    \"command\":   \""
-                        compile-command
-                        (file-name-sans-extension file) ".o "
-                        file "\",")
-                (newline)
-                (insert "    \"file\":      \"" file "\" },")
-                (newline)))))
-        (insert "];")
-        (newline)
-        (write-region (buffer-string) nil dbfilename))
-      (when (yes-or-no-p
-             (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
-        (rtags-call-rc :path t :output nil "-J" dir)
-        (message "Reloaded (check rdm's logs)")))))
+  (let ((plist (rtags-load-compile-includes-file dir)))
+    (when plist
+      (let ((dbfilename (concat (file-name-as-directory dir)
+                                "compile_commands.json"))
+            (compile-command (rtags-create-compilation-command plist))
+            (exclude-files (plist-get plist :exclude-src))
+            (num-files 0))
+        (with-temp-buffer
+          (insert "[")
+          (newline)
+          ;; Note: dynamic binding of variable default-directory
+          (dolist (default-directory (plist-get plist :src-dirs))
+            (message "Processing directory: %s ..." default-directory)
+            (let ((files (file-expand-wildcards "*.cpp"))
+                  ;; rdm does not like directories starting with "~/"
+                  (dirname (if (pg/string-starts-with default-directory "~/")
+                               (substitute-in-file-name
+                                (concat "$HOME/" (substring default-directory 2)))
+                             default-directory)))
+              (dolist (file files)
+                (unless (rtags-is-excluded-p file exclude-files)
+                  (incf num-files)
+                  (insert "  { \"directory\": \"" dirname "\",")
+                  (newline)
+                  (insert "    \"command\":   \""
+                          compile-command
+                          (file-name-sans-extension file) ".o "
+                          file "\",")
+                  (newline)
+                  (insert "    \"file\":      \"" file "\" },")
+                  (newline)))))
+          (insert "];")
+          (newline)
+          (write-region (buffer-string) nil dbfilename))
+        (when (yes-or-no-p
+               (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
+          ;; FIXME: rtags-call-rc does not work if you don't specify a current buffer?
+          ;; That seems broken.
+          (rtags-call-rc :path t :output nil :unsaved (current-buffer) "-J" dir)
+          (message "Reloaded (check rdm's logs)"))))))
 
 ;; Mode for compile_includes
 
 (defconst rtags-compile-includes-mode-keywords
   ;; Words and associated face.
-  `((,(regexp-opt '("src" "include" "exclude" "excludesrc") 'words)
+  `(( "\\(^src\\|^include\\|^excludesrc\\|^exclude\\|^macro\\)"
      . font-lock-keyword-face)))
 
 (defconst rtags-compile-includes-mode-syntax-table
@@ -536,7 +625,7 @@ directory"
              '("compile_includes" . rtags-compile-includes-mode))
 
 
-;;; RTags auto-complete
+;;; RTags auto-complete (EXPERIMENTAL)
 
 ;;; AC source for #include
 
@@ -605,11 +694,11 @@ for this to be effective."
   (unless rtags-diagnostics-process
     (rtags-diagnostics))
   ;; Create an auto-complete source for headers using compile_includes
-  (rtags-load-compile-includes-file (projectile-project-root))
-  (dolist (dir *rtags-project-source-dirs*)
-    (add-to-list 'achead:include-directories dir))
-  (dolist (dir *rtags-project-include-dirs*)
-    (add-to-list 'achead:include-directories dir))
+  (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
+    (dolist (dir (plist-get plist :src-dirs))
+      (add-to-list 'achead:include-directories dir))
+    (dolist (dir (plist-get plist :include-dirs))
+      (add-to-list 'achead:include-directories dir)))
   ;; Turn on RTags auto-complete
   (setq rtags-completions-enabled t)
   (add-hook 'c++-mode-hook

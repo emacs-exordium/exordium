@@ -8,52 +8,66 @@
 ;;; ESC               Quit (= Ctrl-G)
 ;;; M-g               Goto line
 ;;; C-z               Undo
-;;; C-ESC             Delete other windows
 ;;; C-`               Kill current buffer (= C-x k)
 ;;;
 ;;; RETURN            Return or Return + indent, depending on init-prefs
 ;;; S-RETURN          The opposite
 ;;;
-;;; M-ARROW           Move between windows (= Ctrl-x o)
 ;;; M-C-l             Switch to last buffer
 ;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
 ;;; C- +/-            Zoom
+
+;;; C-=               Expand region by semantic units
+;;; M-C-=             Contract region by semantic units
 ;;;
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 
 (with-no-warnings (require 'cl))
+(require 'init-prefs)
 
 
 ;;; Font
 
-(defun init-set-font ()
-  "Find the preferred fonts that are available and choose the first one."
-  (let* ((available-fonts (font-family-list))
-         (available-preferred-fonts
-          (remove-if-not (lambda (font-and-size)
-                           (member (car font-and-size) available-fonts))
-                         *init-preferred-fonts*)))
-    (when available-preferred-fonts
-      (let ((preferred-font (caar available-preferred-fonts))
-            (preferred-size (cdar available-preferred-fonts)))
-        (message "Setting font: %s %d" preferred-font preferred-size)
-        (set-face-attribute 'default nil
-                            :family preferred-font
-                            :height preferred-size
-                            :weight 'normal)))))
+(defvar exordium-available-preferred-fonts
+  (remove-if-not (lambda (font-and-size)
+                   (member (car font-and-size) (font-family-list)))
+                 exordium-preferred-fonts))
 
-(when *init-preferred-fonts*
-  (init-set-font))
+(defvar exordium-font-size
+  (when exordium-available-preferred-fonts
+    (cdar exordium-available-preferred-fonts)))
+
+(defvar exordium-font-name
+  (when exordium-available-preferred-fonts
+    (caar exordium-available-preferred-fonts)))
+
+(defun exordium-set-font (&optional font size)
+  "Find the preferred fonts that are available and choose the first one."
+  (interactive
+   (list (completing-read (format "Font (default %s): " exordium-font-name)
+                          exordium-available-preferred-fonts nil nil nil nil exordium-font-name)
+         (read-number "Size: " exordium-font-size)))
+  (let ((font (or font exordium-font-name))
+        (size (or size exordium-font-size)))
+    (when (and font size)
+      (message "Setting font family: %s, height: %s" font size)
+      (set-face-attribute 'default nil
+                          :family font
+                          :height size
+                          :weight 'normal))))
+
+(when exordium-preferred-fonts
+  (exordium-set-font))
 
 
 ;;; User interface
 
 ;;; Default frame size
-(when (and *init-preferred-frame-width*
-           *init-preferred-frame-height*)
-  (setq default-frame-alist `((width  . ,*init-preferred-frame-width*)
-                              (height . ,*init-preferred-frame-height*))))
+(when (and exordium-preferred-frame-width
+           exordium-preferred-frame-height)
+  (setq default-frame-alist `((width  . ,exordium-preferred-frame-width)
+                              (height . ,exordium-preferred-frame-height))))
 
 ;;; Remove the toolbar
 (when (fboundp 'tool-bar-mode)
@@ -73,10 +87,6 @@
 ;;; Display column number in the modebar
 (column-number-mode 1)
 
-;;; Highlight the line where the cursor is
-(when *init-line-mode*
-  (global-hl-line-mode 1))
-
 ;;; Smooth scrolling
 (setq scroll-step 1)
 (setq scroll-margin 0
@@ -85,34 +95,10 @@
       scroll-down-aggressively 0.01
       scroll-preserve-screen-position t)
 
-;;; Scrollbar on the right
-;;(setq scroll-bar-mode-explicit t)
-;;(set-scroll-bar-mode `right)
-
-;;; Syntax highlighing
-(global-font-lock-mode 1)
-(setq font-lock-maximum-decoration
-      '((emacs-lisp-mode . t)
-        (c-mode . t)
-        (C++-mode . 1) ;; t or 1 or 2
-        (t . t)))
-
-;; Lazy font-lock to avoid the bug in Emacs 24
-(cond ((fboundp 'jit-lock-mode)
-       (setq jit-lock-chunk-size 5000
-             jit-lock-context-time 0.2
-             jit-lock-defer-time .1
-             jit-lock-stealth-nice 0.2
-             jit-lock-stealth-time 5
-             jit-lock-stealth-verbose nil)
-       (jit-lock-mode t))
-      ((fboundp 'turn-on-lazy-shot)
-       (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot))
-      ((fboundp 'turn-on-lazy-lock)
-       (add-hook 'font-lock-mode-hook 'turn-on-lazy-lock)
-       (setq lazy-lock-stealth-time 10)
-       (setq lazy-lock-minimum-size 10000)))
-;;(fci-always-use-textual-rule t)
+;;; Scrollbar
+(if exordium-scroll-bar
+    (set-scroll-bar-mode `right)
+  (set-scroll-bar-mode nil))
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))
@@ -129,8 +115,13 @@
 ;;; Mouse selection
 (setq x-select-enable-clipboard t)
 
+;;; http://www.reddit.com/r/emacs/comments/30g5wo/the_kill_ring_and_the_clipboard/
+(setq save-interprogram-paste-before-kill t)
+
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
-(when *init-enable-electric-pair-mode*
+;;; `electric-pair-open-newline-between-pairs'.
+(when exordium-enable-electric-pair-mode
+  (setq electric-pair-open-newline-between-pairs t)
   (electric-pair-mode))
 
 ;;; Indent with spaces, not tabs
@@ -143,22 +134,15 @@
 ;;; Wordwrap at word boundadies
 ;;;(global-visual-line-mode 1)
 
-;;; Display page breaks with an horizontal line instead of ^L.
-;;; Note: To insert a page break: C-q C-l
-;;;       To jump to the previous/next page break: C-x [ and C-x ]
-(require 'page-break-lines)
-(global-page-break-lines-mode 1)
-(diminish 'page-break-lines-mode)
-
 ;; Show only 1 window on startup (useful if you open multiple files)
 (add-hook 'emacs-startup-hook (lambda () (delete-other-windows)) t)
 
 
 ;;; Keyboard preferences
 
-;; Use ESC as Control-G (default requires ESC ESC ESC)
-;;(when *init-keyboard-escape*
-;;  (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+;; Use ESC as Control-G
+(when exordium-keyboard-escape
+  (global-set-key (kbd "<escape>") 'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -166,63 +150,63 @@
 ;;; Delete selection when typing
 (delete-selection-mode t)
 
+;;; Let me scroll the buffer while searching, without exiting the search.
+;;; This allows for using C-l during isearch.
+(when (boundp 'isearch-allow-scroll)
+  (setq isearch-allow-scroll t))
+
+
 ;;; Shortcut keys
-(global-set-key [(meta g)] 'goto-line)
-(define-key global-map [(control z)] 'undo)
-(global-set-key [(control escape)] 'delete-other-windows)
-(global-set-key [(control ?`)] 'kill-this-buffer)
 
-;;; The return key
-(cond (*init-enable-newline-and-indent*
-       (global-set-key "\C-m" 'newline-and-indent)
-       (global-set-key [(shift return)] 'newline))
-      (t
-       (global-set-key [(shift return)] 'newline-and-indent)))
+(global-set-key [(meta g)] (function goto-line))
+(define-key global-map [(control z)] (function undo))
+(global-set-key [(control ?`)] (function kill-this-buffer))
 
-;;; Winmove:  Meta-Shift-arrow = move the focus between visible buffers
-(require 'windmove)
-(global-set-key [(meta left)] 'windmove-left)
-(global-set-key [(meta right)] 'windmove-right)
-(global-set-key [(meta up)] 'windmove-up)
-(global-set-key [(meta down)] 'windmove-down)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
   "Alternates between the two most recent buffers"
   (interactive)
   (switch-to-buffer (other-buffer)))
-(define-key global-map [(meta control l)] 'switch-to-other-buffer)
+
+(define-key global-map [(meta control l)] (function switch-to-other-buffer))
 
 ;;; C-x C-b = ibuffer (better than list-buffers)
-(define-key global-map [(control x)(control b)] 'ibuffer)
+(define-key global-map [(control x)(control b)] (function ibuffer))
 
 ;;; Zoom
-(define-key global-map [(control +)] 'text-scale-increase)
-(define-key global-map [(control -)] 'text-scale-decrease)
+(define-key global-map [(control +)] (function text-scale-increase))
+(define-key global-map [(control -)] (function text-scale-decrease))
+(define-key global-map [(control mouse-4)] (function text-scale-increase))
+(define-key global-map [(control mouse-5)] (function text-scale-decrease))
 
-;;; Project explorer
-(define-key global-map [(control c)(e)] 'project-explorer-open)
-
-;;; CUA
+;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
 ;;; Adding shift or doubling the Ctrl-* makes it switch back to Emacs keys.
 ;;; It also has a nice feature: C-RET for selecting rectangular regions.
-;;; If *init-enable-cua-mode* is nil, only the rectangular regions are enabled.
-
-(cond ((eq *init-enable-cua-mode* :region)
+;;; If exordium-enable-cua-mode is nil, only the rectangular regions are enabled.
+(cond ((eq exordium-enable-cua-mode :region)
        (cua-selection-mode t))
-      (*init-enable-cua-mode*
+      (exordium-enable-cua-mode
        (cua-mode t)))
+
+
+;;; Cool extensions
 
 ;;; Expand region
 (require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-=") (function er/expand-region))
+(global-set-key (kbd "M-C-=") (function er/contract-region))
 
 
 ;;; File saving and opening
 
 ;; Warn when opening files bigger than 100MB (use nil to disable it entirely)
 (setq large-file-warning-threshold 100000000)
+
+;; Propose vlf (Very Large File) as a choice when opening large files
+;; (otherwise one can open a file using M-x vlf):
+(require 'vlf-setup)
 
 ;; Remove trailing blanks on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -232,11 +216,10 @@
   "Disable creation of backup files"
   (interactive)
   (setq make-backup-files nil))
-(no-backup-files)
 
-;; Reduce the frequency of garbage collection by making it happen on
-;; each 50MB of allocated data (the default is on every 0.76MB)
-;;(setq gc-cons-threshold 50000000)
+(unless exordium-backup-files
+  (no-backup-files))
+
 
 
 (provide 'init-look-and-feel)
