@@ -1,9 +1,5 @@
 ;;;; Preferences at Bloomberg
 
-(setq *init-preferred-fonts* nil
-      *init-preferred-frame-width* nil
-      *init-preferred-frame-height* nil)
-
 (setq default-frame-alist
       (append `(;;(font . ,(choose-frame-font))
                 ;;(font . "Monospace 13")
@@ -20,16 +16,11 @@
                 (horizontal-scroll-bars . t))
               default-frame-alist))
 
-(setq *init-enable-powerline* nil)
-
-(setq *init-rtags-auto-complete* nil)
-
-(setq *init-helm-projectile* t)
-(setq *init-enable-electric-pair-mode* nil)
-;(setq *init-theme* 'tomorrow-night-eighties)
-;; (setq *init-line-mode* nil)
+(setq exordium-helm-projectile t)
+(setq exordium-enable-electric-pair-mode nil)
 (setq exordium-enable-org-export nil)
-
+(setq exordium-spell-check nil)
+(setq exordium-powerline-theme :wave)
 ;;
 ;; Now, colorize, accessorize
 ;;
