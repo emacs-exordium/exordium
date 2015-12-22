@@ -33,7 +33,7 @@
 ;;
 ;; Now, colorize, accessorize
 ;;
-(setq exordium-theme 'tomorrow-night-bright)
+(setq exordium-theme 'tomorrow-night-awsome)
 ;(setq exordium-theme 'solarized-dark)
 ;(setq exordium-theme 'material)
 ;(setq exordium-theme 'tomorrow-night)

@@ -97,8 +97,9 @@
 
 ;;; Scrollbar
 (if exordium-scroll-bar
-    (set-scroll-bar-mode `right)
-  (set-scroll-bar-mode nil))
+    (when (featurep 'set-scroll-bar)
+      (set-scroll-bar-mode `right)
+      (set-scroll-bar-mode nil)))
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))

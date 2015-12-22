@@ -87,6 +87,20 @@ Inspired by the apropospriate-theme."
         (aqua         . "#70c0b1")
         (blue         . "#7aa6da")
         (purple       . "#c397d8")
+        (black        . "#000000")))
+    (night-awsome
+     . ((background   . "#000000")
+        (current-line . "#2a2a2a")
+        (selection    . "#424242")
+        (foreground   . "#eaeaea")
+        (comment      . "#969896")
+        (red          . "#d54e53")
+        (orange       . "#e78c45")
+        (yellow       . "#e7c547")
+        (green        . "#b9ca4a")
+        (aqua         . "#70c0b1")
+        (blue         . "#7aa6da")
+        (purple       . "#ff0066")
         (black        . "#000000")))))
 
 ;;; Theme definition
@@ -515,6 +529,13 @@ names to which it refers are bound."
   (interactive)
   (with-tomorrow-colors
    'night-bright
+   (apply 'custom-set-faces (tomorrow-face-specs))))
+
+(defun set-colors-tomorrow-night-awsome ()
+  "Sets the colors to the tomorrow night awsome theme"
+  (interactive)
+  (with-tomorrow-colors
+   'night-awsome
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night-eighties ()
