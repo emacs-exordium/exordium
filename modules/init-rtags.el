@@ -198,6 +198,14 @@
 (require 'auto-complete-c-headers)
 (require 'projectile)
 
+;;; Customizable variables (see also init-prefs.el)
+(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
+  "List of source file extension patterns for creating a
+  compilation database using command
+  `rtags-create-compilation-database'"
+  :group 'exordium
+  :type  'sexp)
+
 
 ;;; Key bindings
 
@@ -572,7 +580,8 @@ directory"
           ;; Note: dynamic binding of variable default-directory
           (dolist (default-directory (plist-get plist :src-dirs))
             (message "Processing directory: %s ..." default-directory)
-            (let ((files (file-expand-wildcards "*.cpp"))
+            (let ((files (mapcan #'file-expand-wildcards
+                                 exordium-rtags-source-file-extensions))
                   ;; rdm does not like directories starting with "~/"
                   (dirname (if (pg/string-starts-with default-directory "~/")
                                (substitute-in-file-name
