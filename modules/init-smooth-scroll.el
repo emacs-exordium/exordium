@@ -33,11 +33,13 @@
 
 (defcustom smooth-scroll-weight 10
   "Number of scroll steps with decreasing motion"
-  :group 'exordium)
+  :group 'exordium
+  :type  'integer)
 
 (defcustom smooth-scroll-drift 5
   "Number of scroll steps with very slow motion (1 line or column at a time)"
-  :group 'exordium)
+  :group 'exordium
+  :type  'integer)
 
 (defcustom smooth-scroll-criteria ()
   "User-defined list of conditions disabling smooth scroll. This should
@@ -46,7 +48,8 @@ scrolling will be disabled. For example:
 '((or (not (boundp 'cua--rectangle)) (not cua--rectangle))
   (or (not (boundp 'multiple-cursors-mode)) (not multiple-cursors-mode))
   (not (eq major-mode 'shell-mode)))"
-  :group 'exordium)
+  :group 'exordium
+  :type  'sexp)
 
 
 ;;; Private variables
