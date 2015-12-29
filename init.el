@@ -262,6 +262,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
 (require 'init-font-lock)       ; enables/disables font-lock globally.
 (require 'init-linum)           ; line numbers
+(when exordium-smooth-scroll    ; smooth scroll
+  (require 'init-smooth-scroll)
+  (smooth-scroll-mode 1))
 
 (update-progress-bar)
 
