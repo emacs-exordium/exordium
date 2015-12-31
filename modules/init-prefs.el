@@ -137,6 +137,14 @@ i.e., with git pull."
   :type  'boolean)
 
 
+;;; Smooth scroll - see init-smooth-scroll.el
+
+(defcustom exordium-smooth-scroll nil
+  "Whether smooth scroll is enabled or not."
+  :group 'exordium
+  :type  'boolean)
+
+
 ;;; Autocomplete -- see init-autocomplete.el
 
 (defcustom exordium-auto-complete t
