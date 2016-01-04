@@ -1,5 +1,30 @@
 ;;;; Markdown
 ;;; See http://jblevins.org/projects/markdown-mode/
+;;;
+;;; This module provide a minor mode "impatient markdown mode", which similar
+;;; to impatient-mode but for markdown buffers as opposed to HTML buffers. It
+;;; is actually implemented with the impatient-mode itself.
+;;;
+;;; When you type command `impatient-markdown-mode' in a markdown buffer, Emacs
+;;; starts an embedded HTTP server listening to port 8080 (by default), and it
+;;; will direct your favorite web browser to URL
+;;; "http://localhost:8080/imp/live/<buffer-name.md>"
+;;;
+;;; Any change you make in the buffer from that point is automatically rendered
+;;; in real-time in the web browser. To stop the HTTP server, run
+;;; `impatient-markdown-mode' again. Note that Emacs will complain if you quit
+;;; before stopping the server.
+;;;
+;;; Before you can use it, you need to set the variable `markdown-command' to
+;;; the command to execute to render a markdown file into HTML.  To use the
+;;; GitHub command, clone https://github.com/github/markup and set
+;;; `markdown-command' to the path of bin/github-markup in your after-init.el.
+;;; Other options include Pandoc or RedCarpet.
+;;;
+;;; Note: you can change the variable `httpd-port' if 8080 does not work in
+;;; your environment. Also the current implementation uses a temporary file
+;;; whose path is defined in `exordium-markdown-file' which can also be
+;;; changed.
 
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -15,57 +40,71 @@
          (cons "\\<\\(TODO\\|FIXME\\|TBD\\):" '(1 font-lock-warning-face)))))
 
 
-;;; Render a markdown buffer.
-;;;
-;;; Before you can use the functions below, you need to set the variable
-;;; `markdown-command' to the command to execute to render a markdown file into
-;;; HTML.
-;;;
-;;; To use the GitHub command, clone https://github.com/github/markup and set
-;;; `markdown-command' to the path of bin/github-markup in your after-init.el.
-;;; Then use M-x preview-github-markdown.
-;;;
-;;; Daring Fireball has this: https://daringfireball.net/projects/markdown.
-;;; Use M-x preview-markdown.
-;;;
-;;; The difference between the 2 functions is that preview-github-markdown
-;;; saves the buffer before running `markdown-command', because the GH command
-;;; requires this.
+;;; Impatient markdown mode
 
-(unless (version< emacs-version "24.4")
-  (require 'shr)
-  (require 'eww)
+(require 'impatient-mode)
 
-  (defun preview-markdown ()
-    "Render the current markdown buffer using
-`markdown-command' (which must be set to the path of your local
-command) in HTML and display it with eww. This function works
-only if the markdown command accepts standard input."
-    (interactive)
-    (let* ((buf-md (buffer-name (current-buffer)))
-           (buf-html (get-buffer-create
-                      (format "*preview %s*" buf-md))))
-      (markdown-other-window (buffer-name buf-html))
-      (shr-render-buffer buf-html)
-      (eww-mode)
-      (kill-buffer buf-html)))
+(define-minor-mode impatient-markdown-mode
+  "Markdown rendering for people who lack patience"
+  :group 'exordium
+  :lighter "" ;; impatient-mode already has a modeline marker "imp"
+  :keymap nil
+  :global nil
+  ;; Body
+  (cond (impatient-markdown-mode
+         (start-imp-markdown))
+        (t
+         (stop-imp-markdown))))
 
-  (defun preview-github-markdown ()
-    "Save the current markdown buffer and render the file using
-`markdown-command' (which must be set to the path of your local
-command) in HTML and display it with eww. This function is
-intended to be used with github-markup which requires a file on
-disk."
-    (interactive)
-    (save-buffer)
-    (let* ((buf-md (buffer-name (current-buffer)))
-           (buf-html (get-buffer-create
-                      (format "*preview %s*" buf-md)))
-           (markdown-command (concat markdown-command " " (buffer-file-name))))
-      (markdown-other-window (buffer-name buf-html))
-      (shr-render-buffer buf-html)
-      (eww-mode)
-      (kill-buffer buf-html)))
-  ) ; unless
+(defcustom exordium-markdown-file "/tmp/imp-markdown-temp.md"
+  "Temporary file for markdown rendering"
+  :group 'exordium
+  :type  'string)
+
+(defun markdown-to-html (buffer)
+  (let ((md-file exordium-markdown-file))
+    (unwind-protect
+        (progn
+          (with-temp-file md-file
+            (kill-region (point-min) (point-max))
+            (insert (with-current-buffer buffer (buffer-string))))
+          (shell-command-to-string
+           (concat markdown-command " " md-file)))
+      (delete-file md-file))))
+
+(defun imp-markdown-visit-buffer ()
+  "Visit the buffer in a browser."
+  (browse-url
+   (format "http://localhost:%d/imp/live/%s/"
+           httpd-port (url-hexify-string (buffer-name)))))
+
+(defun start-imp-markdown ()
+  "Start the impatient mode for markdown and opens the rendering
+in the user's default web browser. Note that if the web browser
+wasn't running, Emacs starts it - you may want to close the
+browser before Emacs in this case (Emacs will complain at quit
+time otherwise)"
+  (httpd-start)
+  (impatient-mode 1)
+  ;; Save the old function
+  (unless (fboundp 'imp--send-state-old)
+    (defalias 'imp--send-state-old (symbol-function 'imp--send-state)))
+  ;; Define a new function
+  (defun imp--send-state (proc)
+    (let ((id (number-to-string imp-last-state))
+          (buffer (current-buffer)))
+      (with-temp-buffer
+        (insert (markdown-to-html buffer))
+        (httpd-send-header proc "text/html" 200
+                           :Cache-Control "no-cache"
+                           :X-Imp-Count id))))
+  (imp-markdown-visit-buffer))
+
+(defun stop-imp-markdown ()
+  "Stop the impatient mode for markdown"
+  (impatient-mode 0)
+  (httpd-stop)
+  ;; Restore the old function
+  (defalias 'imp--send-state 'imp--send-state-old))
 
 (provide 'init-markdown)
