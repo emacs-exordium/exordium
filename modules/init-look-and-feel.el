@@ -209,7 +209,8 @@
 (require 'vlf-setup)
 
 ;; Remove trailing blanks on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(when exordium-delete-trailing-whitespace
+  (add-hook 'before-save-hook 'delete-trailing-whitespace))
 
 ;;; Disable backup files (e.g. file~)
 (defun no-backup-files ()
