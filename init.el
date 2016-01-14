@@ -338,6 +338,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when (and exordium-theme exordium-enable-powerline)
   (require 'init-powerline))
 
+(setq default-buffer-file-coding-system 'utf-8-unix)
+
 ;;; Greetings
 (setq initial-scratch-message
       (let ((current-user (split-string (user-full-name) " ")))

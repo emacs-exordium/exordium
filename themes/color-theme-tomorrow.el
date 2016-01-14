@@ -92,7 +92,7 @@ Inspired by the apropospriate-theme."
      . ((background   . "#000000")
         (current-line . "#2a2a2a")
         (selection    . "#424242")
-        (foreground   . "#eaeaea")
+        (foreground   . "#ff7e00")
         (comment      . "#969896")
         (red          . "#d54e53")
         (orange       . "#e78c45")
