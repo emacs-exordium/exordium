@@ -20,6 +20,11 @@
   :group 'rtags
   :type 'boolean)
 
+(when exordium-helm-everywhere
+  (setq rtags-helm-show-variables t)
+  (setq rtags-helm-show-enums t)
+  (setq rtags-use-helm t))
+
 (defun rtags-helm-sort-list (pairs)
   (sort pairs #'(lambda (p1 p2) (< (cdr p1) (cdr p2)))))
 
