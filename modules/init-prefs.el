@@ -74,7 +74,7 @@ saving a buffer. This is the default because it is generally a
 good practice. Set this variable to to nil if you work on legacy
 projects that have a lot of trailing whitespaces"
   :group 'exordium
-  :type 'boolean)
+  :type  'boolean)
 
 (defcustom exordium-enable-electric-pair-mode t
   "Enables electric-pair-mode."
@@ -271,6 +271,12 @@ Disables flyspell if set to nil."
 
 (defcustom exordium-git-gutter t
   "Whether a git status icon is displayed in the left-side fringe or not."
+  :group 'exordium
+  :type  'boolean)
+
+;;; See init-cpp.el
+(defcustom exordium-enable-c++11-keywords t
+  "Enables syntax highlighting for the new keywords introduced in C++11"
   :group 'exordium
   :type  'boolean)
 

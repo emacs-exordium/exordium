@@ -99,6 +99,25 @@
 ;;; Ctrl-Tab to switch between .h and .cpp
 (define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
 
+
+;;; C++11 keywords
+
+(require 'init-prefs)
+(with-no-warnings (require 'cl))
+
+(defconst exordium-extra-c++-keywords
+  (remove-if #'null
+             (list
+              ;; This can be completed with other things later (C++17?)
+              (when exordium-enable-c++11-keywords
+                '("\\<\\(alignas\\|alignof\\|char16_t\\|char32_t\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face))))
+  "A-list of pairs (regex . face) for highlighting extra keywords in C++ mode")
+
+(when exordium-extra-c++-keywords
+  (add-hook 'c++-mode-hook
+            #'(lambda()
+                (font-lock-add-keywords nil exordium-extra-c++-keywords))
+            t))
 
 
 (provide 'init-cpp)
