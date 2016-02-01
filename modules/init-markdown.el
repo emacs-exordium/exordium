@@ -26,13 +26,19 @@
 ;;; whose path is defined in `exordium-markdown-file' which can also be
 ;;; changed.
 
+(require 'init-prefs)
+(require 'markdown-mode)
+
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 
+;;; FIXME: quick workaround for a bug in markdown-mode 2.1 (font lock is broken)
+(when (and (boundp 'markdown-mode-version)
+           (equal markdown-mode-version "2.1"))
+  (add-hook 'markdown-mode-hook 'font-lock-mode))
+
 ;;; Loud face for TODOs in markdown documents
-(require 'init-prefs)
-(require 'markdown-mode)
 (when exordium-font-lock
   (setq markdown-mode-font-lock-keywords-core
         (list
