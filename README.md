@@ -26,6 +26,7 @@ might want to check these links:
   * [Snippets](#snippets)
   * [RTags](#rtags)
 * [Lisp](#lisp)
+* [Markdown](#markdown)
 * [Customization](#customization)
 * [Troubleshooting](#troubleshooting)
 
@@ -660,6 +661,33 @@ Possible issues:
 ## Lisp
 
 Coming soon: Emacs Lisp, Common Lisp and Clojure.
+
+## Markdown
+
+<kbd>M-x impatient-markdown-mode</kbd> starts a minor mode that provides a live
+preview of a markdown buffer in your favorite web browser. The web page is
+updated as you type (this feature is implemented with the
+[impatient mode](https://github.com/skeeto/impatient-mode)). Before you can use
+it, you need to set the variable `markdown-command` to the command to execute
+to render a markdown file into HTML.  For example, to use the GitHub command,
+clone [markup](https://github.com/github/markup) and set `markdown-command` to
+the path of `bin/github-markup` in your `after-init.el`.  Other options include
+Pandoc or RedCarpet.
+
+Note that [markdown-mode](http://jblevins.org/projects/markdown-mode/) itself
+provides a few keys to render into HTML, and it does not need an external
+renderer to be installed:
+
+| Key                  | Behavior                                   |
+| -------------------- | ------------------------------------------ |
+| <kbd>C-c C-c v</kbd> | Render and open in web browser             |
+| <kbd>C-c C-c m</kbd> | Render and open in another buffer          |
+| <kbd>C-c C-c l</kbd> | Live preview in EWW (the internal browser) |
+
+Another interesting feature is <kbd>M-x orgtbl-mode</kbd>, a minor mode for
+editing tables: it works like org tables but it uses the GitHub-flavored
+format. Use the tab key to switch to the next cell and reformat the whole
+table.
 
 ## Customization
 
