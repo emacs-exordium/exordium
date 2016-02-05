@@ -516,10 +516,10 @@ names to which it refers are bound."
      (org-hide ((t (:foreground ,zenburn-bg-1))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,zenburn-green+2)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
      (org-level-1 ((t
                     ,(append `(:foreground ,zenburn-orange)
-                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
      (org-level-2 ((t (:foreground ,zenburn-green+4))))
      (org-level-3 ((t (:foreground ,zenburn-blue-1))))
      (org-level-4 ((t (:foreground ,zenburn-yellow-2))))

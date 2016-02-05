@@ -189,10 +189,10 @@ names to which it refers are bound."
      (org-delegated-kwd-face ((t (:foreground ,cyan :background ,base03))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,cyan)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
      (org-level-1 ((t
                     ,(append `(:foreground ,base0)
-                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
 
      ;; outline
      (outline-1 ((t (:foreground ,blue))))

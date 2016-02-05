@@ -183,9 +183,10 @@ use underline waves."
   :group 'exordium
   :type  'boolean)
 
-(defcustom exordium-theme-use-big-org-fonts t
-  "Whether Org mode uses big fonts for titles and top-level
-  items."
+(defcustom exordium-theme-use-big-font t
+  "Whether the theme uses big fonts for titles and top-level
+  items. This applies to modes like org or markdown. Set it to
+  nil if you do not want to have variable-sized font."
   :group 'exordium
   :type  'boolean)
 
