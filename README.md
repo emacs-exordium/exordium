@@ -159,7 +159,7 @@ Keybinding              | Description
 ------------------------|----------------------------------------------------------
 <kbd>C-c ARROW</kbd>    | Move cursor between windows.
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
-<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycles between them.
+<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
 
 Auto-complete:
 
@@ -310,7 +310,7 @@ Keybinding          | Description
 
 #### Other Helm tools
 
-Helm is a pretty good when you need quickly scan search results. The below commands
+Helm is a pretty good when you need quickly scan search results. The commands below
 will start different search modes. By default, they will use symbol under the point.
 However if it is not there just start typing text: the Helm window shows all
 matching lines, and you can jump from one to another using the arrow keys.
