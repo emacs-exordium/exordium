@@ -41,8 +41,9 @@ might want to check these links:
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
   (80-character column marker);
   [Project Explorer](https://github.com/sabof/project-explorer) (directory
-  tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
-  3 key-strokes); etc.
+  tree); [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3
+  key-strokes); [ace-window](https://github.com/abo-abo/ace-window) (quick jump
+  between windows).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.github.io) (git UI);
@@ -158,6 +159,7 @@ Keybinding              | Description
 ------------------------|----------------------------------------------------------
 <kbd>C-c ARROW</kbd>    | Move cursor between windows.
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
+<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycles between them.
 
 Auto-complete:
 

@@ -5,6 +5,9 @@
 ;;; ----------------- ---------------------------------------------------------
 ;;; C-c <arrow>       Move cursor between windows (similar to C-x o).
 ;;; C-c shift-<arrow> Move the windows themselves, e.g. swap them.
+;;; M-p <number>      Ace-window: M-p displays a number in each window, and you
+;;;                   just have to type the number you want. If there are only 2
+;;;                   windows, it cycles between them.
 ;;;
 ;;; Simple test:
 ;;; - C-x 2           split the screen between 2 windows one on top of the other
@@ -97,5 +100,11 @@
 
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
 (define-key global-map [pause] 'toggle-window-dedicated)
+
+
+;;; Ace-window
+
+(require 'ace-window)
+(global-set-key (kbd "M-p") #'ace-window)
 
 (provide 'init-window-manager)

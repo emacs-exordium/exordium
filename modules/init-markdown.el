@@ -45,6 +45,11 @@
          (cons markdown-regex-italic '(2 markdown-italic-face))
          (cons "\\<\\(TODO\\|FIXME\\|TBD\\):" '(1 font-lock-warning-face)))))
 
+;;; Markdown-mode uses M-p to go to the previous link, which is useless and
+;;; conflicts with ace-window, so let's change this:
+(when (fboundp 'ace-window)
+  (define-key markdown-mode-map (kbd "M-p") #'ace-window))
+
 
 ;;; Impatient markdown mode
 
