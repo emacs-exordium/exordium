@@ -415,6 +415,9 @@ names to which it refers are bound."
      (paren-face-mismatch ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
      (paren-face-no-match ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
 
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,background))))
+     (eval-sexp-fu-flash-error ((t (:background ,deep-orange-200 :foreground ,background))))
+
      ;; Rainbow-delimiters
      (rainbow-delimiters-depth-1-face ((t (:foreground ,foreground))))
      (rainbow-delimiters-depth-2-face ((t (:foreground ,light-blue-200))))

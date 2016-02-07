@@ -11,6 +11,10 @@
 ;;;       To jump to the previous/next page break: C-x [ and C-x ]
 (require 'page-break-lines)
 
+;;; Animation when evaluating a defun or a region:
+(require 'highlight)
+(require 'eval-sexp-fu)
+
 (defun exordium-elisp-mode-hook ()
   "Hook for elisp mode. Enables `page-break-lines' mode and
 enables line truncation as well to prevent a rendering bug (page

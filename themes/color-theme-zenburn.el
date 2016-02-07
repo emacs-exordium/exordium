@@ -615,6 +615,10 @@ names to which it refers are bound."
         (:underline ,zenburn-green))))
      (slime-highlight-face ((t (:inherit highlight))))
 
+     ;; Emacs lisp
+     (eval-sexp-fu-flash ((t (:background ,zenburn-orange :foreground ,zenburn-bg))))
+     (eval-sexp-fu-flash-error ((t (:background ,zenburn-red :foreground ,zenburn-bg))))
+
      ;; speedbar
      (speedbar-button-face ((t (:foreground ,zenburn-green+2))))
      (speedbar-directory-face ((t (:foreground ,zenburn-cyan))))

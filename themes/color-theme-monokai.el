@@ -530,6 +530,10 @@ names to which it refers are bound."
      (slime-repl-inputed-output-face
       ((t (:foreground ,red))))
 
+     ;; Emacs Lisp
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,monokai-bg))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,monokai-bg))))
+
      ;; speedbar
      (speedbar-button-face
       ((t (:inherit ,s-variable-pitch :foreground ,monokai-comments))))

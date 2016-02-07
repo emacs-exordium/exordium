@@ -414,6 +414,8 @@ names to which it refers are bound."
       ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
 
      ;; TODO: Lisp programming faces
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,background))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,background))))
 
      ;; Clojure
      (clojure-test-failure-face ((t (:background nil :inherit flymake-warnline))))

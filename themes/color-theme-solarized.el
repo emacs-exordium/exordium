@@ -284,6 +284,10 @@ names to which it refers are bound."
      (whitespace-trailing ((t (:weight bold :foreground ,red :background ,base02))))
      (whitespace-highlight-face ((t (:foreground ,red :background ,blue))))
      (whitespace-line ((t (:foreground ,magenta :background ,base03))))
+
+     ;; Emacs Lisp
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,back))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,back))))
      )))
 
 (defmacro define-solarized-theme (mode)
