@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: t -*-
 # name: header
 # key: .h
-# condition: (pg/string-ends-with (buffer-file-name) ".h")
+# condition: (string-suffix-p ".h" (buffer-file-name))
 # type: command
 # --
 ;; Top line

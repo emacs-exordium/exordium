@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: t -*-
 # name: implementation
 # key: .cpp
-# condition: (pg/string-ends-with (buffer-file-name) ".cpp")
+# condition: (string-suffix-p ".cpp" (buffer-file-name))
 # type: command
 # --
 ;; Top line

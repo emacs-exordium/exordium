@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: t -*-
 # name: test-driver
 # key: .t.cpp
-# condition: (pg/string-ends-with (buffer-file-name) ".t.cpp")
+# condition: (string-suffix-p ".t.cpp" (buffer-file-name))
 # type: command
 # --
 ;; Top line

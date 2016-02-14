@@ -10,6 +10,7 @@
 ;;; - Open .h files in C++ mode by default
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
+(with-no-warnings (require 'cl))
 (require 'cc-mode)
 (require 'init-lib)
 
@@ -59,7 +60,7 @@
 (defun bde-file-name-extension (file-name)
   "Like `file-name-extension' but returning '.t.cpp' for a
   BDE-style test driver"
-  (if (pg/string-ends-with file-name ".t.cpp")
+  (if (string-suffix-p ".t.cpp" file-name)
       "t.cpp"
     (file-name-extension file-name)))
 
@@ -71,11 +72,11 @@
  .h or a .cpp open the .t.cpp, or from a .t.cpp open the .cpp."
   (interactive "P")
   (let ((ext (bde-file-name-extension (buffer-file-name))))
-    (let ((base-name    (pg/string-without-last (buffer-name) (length ext)))
-          (base-path    (pg/string-without-last (buffer-file-name) (length ext)))
-          (matching-ext (cdr (pg/find-if (lambda (i)
-                                           (string= (car i) ext))
-                                         exordium-cpp-header-switches))))
+    (let ((base-name    (string-truncate (buffer-name) (length ext)))
+          (base-path    (string-truncate (buffer-file-name) (length ext)))
+          (matching-ext (cdr (find-if (lambda (i)
+                                        (string= (car i) ext))
+                                      exordium-cpp-header-switches))))
       (when (and arg matching-ext)
         (setq matching-ext (cdr matching-ext)))
       (cond (matching-ext
@@ -121,3 +122,6 @@
 
 
 (provide 'init-cpp)
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:

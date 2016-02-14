@@ -7,7 +7,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-c =          `bde-insert-define-class-header'
 ;;; C-c -          `bde-insert-declare-class-header'
-;;; C->            `bde-aligh-right-after-point': align text after point
+;;; C->            `bde-align-right': align text after point
 ;;;                to the right. If line ends with a comment such as // RETURN
 ;;;                or // LOCK, align the comment.
 ;;; C-c i          `bde-insert-redundant-include-guard'
@@ -17,7 +17,7 @@
 ;;; (no key)       `bde-repunctuate'
 ;;; -------------- -------------------------------------------------------
 ;;;
-;;; `bde-aligh-right-after-point':
+;;; `bde-align-right':
 ;;; Before (cursor anywhere after semi-colon):
 ;;;     return x; // RETURN
 ;;; After:
@@ -81,6 +81,7 @@
 (require 'cc-defs)
 (require 'cc-vars)
 (require 'cc-mode)
+(require 'subr-x)
 (require 'init-lib)
 
 
@@ -90,7 +91,7 @@
   "Return the name of the component for the current buffer"
   (let ((name (file-name-sans-extension
                (file-name-nondirectory (buffer-file-name)))))
-    (if (pg/string-ends-with name ".t")
+    (if (string-suffix-p ".t" name)
         (substring name 0 (- (length name) 2))
       name)))
 
@@ -123,6 +124,8 @@
 ;;; character position in the buffer for each of them. More details in M-x
 ;;; info, then CC mode, then Interactive Customization.
 ;;; See cc-align.el for examples of line-up functions.
+
+(eval-when-compile (defvar c-syntactic-context))
 
 (defun bde-comment-offset (element)
   "Custom line-up function for BDE comments.
@@ -381,7 +384,7 @@ guard around it"
   (let ((current-line (thing-at-point 'line)))
     (cond ((string-match "^#include <[_\.a-z0-9]+>$" current-line)
            (let ((file-name (substring current-line 10 -2)))
-             (when (pg/string-ends-with file-name ".h")
+             (when (string-suffix-p ".h" file-name)
                (setq file-name (substring file-name 0 -2)))
              (save-excursion
                (beginning-of-line)
@@ -407,8 +410,8 @@ guard around it"
             (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
-                (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
-                          (pg/string-starts-with (thing-at-point 'line) "#endif"))
+                (when (or (string-prefix-p "#ifndef" (thing-at-point 'line))
+                          (string-prefix-p "#endif" (thing-at-point 'line)))
                   (kill-whole-line))
                 (setq more-lines (= 0 (forward-line 1)))))
             ;; Delete all blank lines
@@ -454,25 +457,24 @@ guard around it"
   - the default value expression or nil.
   For example 'int* p = 0' will return ('int' '*p' '= 0').
   All these strings are trimmed."
-  (when (pg/string-starts-with argument "(")
+  (when (string-prefix-p "(" argument)
     (setq argument (substring argument 1)))
-  (when (pg/string-ends-with argument ")")
+  (when (string-suffix-p ")" argument)
     (setq argument (substring argument 0 (1- (length argument)))))
   (let* ((assign-pos    (string-match "=" argument))
          (assign        (when assign-pos
-                          (pg/string-trim (substring argument assign-pos))))
+                          (string-trim (substring argument assign-pos))))
          (before-assign (if assign-pos
                             (substring argument 0 assign-pos)
                           argument))
          (var-pos       (or (string-match "[_a-z]+[0-9]*$"
-                                          (pg/string-trim-end before-assign))
+                                          (string-trim-right before-assign))
                             0))
-         (var           (pg/string-trim (substring before-assign var-pos)))
+         (var           (string-trim (substring before-assign var-pos)))
          (before-var    (substring argument 0 var-pos))
          (star-pos      (string-match "\\*[\\s-]*" before-var))
          (star2-pos     (string-match "\\*\\*[\\s-]*" before-var))
-         (type          (pg/string-trim
-                         (substring before-var 0 (or star-pos var-pos)))))
+         (type          (string-trim (substring before-var 0 (or star-pos var-pos)))))
     ;; Remove possible spaces between type and &:
     (when (string-match "\\(\\.*\\)[[:blank:]]+&" type)
       (let ((ampersand (match-string 0 type)))
@@ -577,19 +579,19 @@ according to the BDE style."
   (interactive)
   ;; Get the argument string (remove the external parentheses)
   (let ((arglist (thing-at-point 'list)))
-    (when (pg/string-starts-with arglist "(")
+    (when (string-prefix-p "(" arglist)
       (setq arglist (substring arglist 1)))
-    (when (pg/string-ends-with arglist ")")
+    (when (string-suffix-p ")" arglist)
       (setq arglist (substring arglist 0 (1- (length arglist)))))
-    (if (string= "" (pg/string-trim arglist))
+    (if (string= "" (string-trim arglist))
         (message "There are no arguments")
       ;; Extract the list of arguments
       (let ((args (split-string arglist ","))
             (parsed-args ()))
         (dolist (arg args)
-          (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
-                                                (substring arg 1)
-                                              arg))))
+          (let ((parsed-arg (string-trim (if (string-prefix-p "\n" arg)
+                                        (substring arg 1)
+                                      arg))))
             (setq parsed-args (cons parsed-arg parsed-args))))
         (setq parsed-args (reverse parsed-args))
         ;; Cut the argument list and edit it into a temporary buffer
@@ -657,7 +659,7 @@ There can be more than one comment string in a sublist if comments
 include semicolons."
   (cl-flet ((trim (s)
               ;; Returns a trimed 's' or nil if 's' becomes empty
-              (let ((trimmed (pg/string-trim s)))
+              (let ((trimmed (string-trim s)))
                 (if (string= "" trimmed) nil (list trimmed)))))
     ;; Split the text around semicolons, and trim all elements.
     ;; An element will be like 'int d_count' or
@@ -671,21 +673,21 @@ include semicolons."
                (before-var (substring element 0 var-pos))
                (star-pos   (string-match "\\*[\\s-]*" before-var))
                (star2-pos  (string-match "\\*\\*[\\s-]*" before-var))
-               (type       (pg/string-trim
+               (type       (string-trim
                             (substring before-var 0 (or star-pos var-pos))))
                (comment    nil))
           (when (and members ; e.g. not the first element
-                     (pg/string-starts-with element "//"))
+                     (string-prefix-p "//" element))
             ;; If the element starts with //, there is a comment that belongs
             ;; to the previous element. Also the type must be re-guessed to
             ;; remove any line starting with //
             (let ((type-lines (mapcan #'trim (split-string type "\n"))))
               (setq type (mapconcat #'(lambda (s)
-                                        (if (pg/string-starts-with s "//") "" s))
+                                        (if (string-prefix-p "//" s) "" s))
                                     type-lines
                                     "")
                     comment (mapconcat #'(lambda (s)
-                                           (if (pg/string-starts-with s "//")
+                                           (if (string-prefix-p "//" s)
                                                (substring s 2)
                                              ""))
                                        (mapcan #'trim (split-string element "\n"))
@@ -865,3 +867,6 @@ or comment block. See also `repunctuate-sentences'."
 
 
 (provide 'init-bde-style)
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:

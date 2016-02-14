@@ -192,6 +192,7 @@
 ;;; forcing a reparsing of the current file.
 ;;; M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
+(with-no-warnings (require 'cl))
 (require 'init-lib)
 (require 'rtags)
 (require 'rtags-ac)
@@ -214,7 +215,7 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-(defun pg/rtags-find-symbol-at-point (&optional prefix)
+(defun exordium-rtags-find-symbol-at-point (&optional prefix)
   "Redefinition of `rtags-find-symbol-at-point' that returns t on
 success and nil if not found. This implementation comes from
 https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
@@ -250,7 +251,7 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
 (define-key c-mode-base-map "\M-."
   (lambda ()
     (interactive)
-    (when (pg/rtags-find-symbol-at-point)
+    (when (exordium-rtags-find-symbol-at-point)
       (recenter))))
 
 ;; Alias for C-c r ,
@@ -443,26 +444,26 @@ a list of five sublists:
         (exclude-list     ())
         (exclude-src-list ())
         (macro-list       ()))
-    (dolist (record (pg/read-file-lines compile-includes-file))
+    (dolist (record (exordium-read-file-lines compile-includes-file))
       (incf line-number)
       (setq value (second (split-string record " ")))
       (cond ((or (eq "" record)
-                 (pg/string-starts-with record "#"))
+                 (string-prefix-p "#" record))
              ;; Comment or empty string; skip it
              nil)
-            ((pg/string-starts-with record "src")
+            ((string-prefix-p "src" record)
              (when value
                (setq src-list (cons value src-list))))
-            ((pg/string-starts-with record "include")
+            ((string-prefix-p "include" record)
              (when value
                (setq include-list (cons value include-list))))
-            ((pg/string-starts-with record "excludesrc")
+            ((string-prefix-p "excludesrc" record)
              (when value
                (setq exclude-src-list (cons value exclude-src-list))))
-            ((pg/string-starts-with record "exclude")
+            ((string-prefix-p "exclude" record)
              (when value
                (setq exclude-list (cons value exclude-list))))
-            ((pg/string-starts-with record "macro")
+            ((string-prefix-p "macro" record)
              (when value
                (setq macro-list (cons value macro-list))))
             (t
@@ -483,7 +484,7 @@ the list of excluded regexs"
 excluding any that match any regex in the specified excluded
 regex list."
   (let ((result ()))
-    (dolist (subdir (cons dir (pg/directory-tree dir)))
+    (dolist (subdir (cons dir (exordium-directory-tree dir)))
       (unless (rtags-is-excluded-p subdir excluded-regexs)
         (setq result (cons subdir result))))
     result))
@@ -583,7 +584,7 @@ directory"
             (let ((files (mapcan #'file-expand-wildcards
                                  exordium-rtags-source-file-extensions))
                   ;; rdm does not like directories starting with "~/"
-                  (dirname (if (pg/string-starts-with default-directory "~/")
+                  (dirname (if (string-prefix-p "~/" default-directory)
                                (substitute-in-file-name
                                 (concat "$HOME/" (substring default-directory 2)))
                              default-directory)))
@@ -719,3 +720,6 @@ for this to be effective."
 
 
 (provide 'init-rtags)
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:
