@@ -11,8 +11,8 @@
 ;;;                to the right. If line ends with a comment such as // RETURN
 ;;;                or // LOCK, align the comment.
 ;;; C-c i          `bde-insert-redundant-include-guard'
-;;; C-c a          `bde-align-functions-arguments'
-;;; C-c f          `bde-align-funcall'
+;;; C-c a          `bde-align-fundecl': align arguments in function declaration
+;;; C-c f          `bde-align-funcall': align arguments in function call
 ;;; C-c m          `bde-align-class-members'
 ;;; (no key)       `bde-repunctuate'
 ;;; -------------- -------------------------------------------------------
@@ -32,7 +32,7 @@
 ;;;     #include <bsl_iostream.h>
 ;;;     #endif
 ;;;
-;;; `bde-align-functions-arguments': align function signature
+;;; `bde-align-fundecl': align function signature
 ;;; Before (cursor must be inside the argument list):
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
@@ -382,10 +382,8 @@ backspace, delete, left or right."
 guard around it"
   (interactive)
   (let ((current-line (thing-at-point 'line)))
-    (cond ((string-match "^#include <[_\.a-z0-9]+>$" current-line)
-           (let ((file-name (substring current-line 10 -2)))
-             (when (string-suffix-p ".h" file-name)
-               (setq file-name (substring file-name 0 -2)))
+    (cond ((string-match "^#include <\\([_\.a-z0-9]+\\)\.h>$" current-line)
+           (let ((file-name (match-string 1 current-line)))
              (save-excursion
                (beginning-of-line)
                (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
@@ -430,6 +428,7 @@ guard around it"
                 (setq more-lines (= 0 (forward-line 1)))))
             (buffer-string))))
         (t
+         ;; No region: just insert one guard for the current line
          (bde-insert-redundant-include-guard))))
 
 (define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
@@ -491,7 +490,7 @@ guard around it"
                 (t         0))
           assign)))
 
-(defun bde-align-functions-arguments ()
+(defun bde-align-fundecl ()
   "Assuming the cursor is within the argument list of a function
 declaration or definition, align the type and variable names
 according to the BDE style."
@@ -568,7 +567,7 @@ according to the BDE style."
     (when (looking-at "\\s\(")
       (forward-list 1))))
 
-(define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
+(define-key c-mode-base-map [(control c)(a)] 'bde-align-fundecl)
 
 ;;; Align arguments in a function call
 
