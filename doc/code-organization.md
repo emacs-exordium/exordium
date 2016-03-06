@@ -77,17 +77,21 @@ pull. For example you can put something like this in your *prefs.el*:
 
 * [init-ido.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-ido.el):
   configures IDO and find recent files.
+* [init-helm.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-helm.el):
+  configures Helm.
 * [init-autocomplete.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-autocomplete.el):
   configures autocomplete with default sources (non-RTags).
 * [init-helm-projectile.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-helm-projectile.el):
-  configures Helm and Projectile.
+  configures Helm when used with Projectile.
 * [init-git.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-git.el):
   everything git-related.
 
 ### Modes
 
 * [init-markdown.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-markdown.el)
+  Utilities for markdown mode.
 * [init-org.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-org.el)
+  Utilities for org-mode.
 
 ### OS X
 
