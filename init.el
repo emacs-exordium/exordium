@@ -134,7 +134,7 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (let ((package-pinned-packages (append '(
                                          (diminish                . "melpa-pinned")
                                          (highlight-symbol        . "melpa-pinned")
-                                         (magit                   . "melpa-pinned")
+;;                                         (magit                   . "melpa-pinned")
                                          (git-timemachine         . "melpa-pinned")
                                          (git-gutter              . "melpa-pinned")
                                          (git-gutter-fringe       . "melpa-pinned")
@@ -279,7 +279,7 @@ the .elc exists. Also discard .elc without corresponding .el"
 (update-progress-bar)
 
 (require 'init-dired)           ; enable dired+ and wdired permission editing
-(require 'init-git)             ; Magit and git gutter
+;;(require 'init-git)             ; Magit and git gutter
 ;;(require 'init-git-visit-diffs) ; visit diffs in successive narrowed buffers
 (require 'init-flb-mode)        ; frame-local buffers
 
