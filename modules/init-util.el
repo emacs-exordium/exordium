@@ -432,5 +432,21 @@ afterwards."
                       (locate-user-emacs-file "before-init.el")
                       't))
 
+(defun config-status ()
+  "Check if the configuration is up to date and display a
+  message"
+  (interactive)
+  (message "Checking...")
+  (let ((dir user-emacs-directory))
+    (shell-command (concat "cd " dir " && git remote update"))
+    (let ((output (shell-command-to-string (concat "cd " dir " && git st -uno"))))
+      (cond ((string-match ".+\nYour branch is behind 'origin/master' by \\([0-9]+\\) commits" output)
+             (message "Your version of Exordium is %s commits behind" (match-string 1 output)))
+            ((string-match ".+\nYour branch is up-to-date" output)
+             (message "Your version of Exordium is up-to-date"))
+            (t
+             (message "Can't tell (are you on the master branch?)"))))))
+
+
 
 (provide 'init-util)
