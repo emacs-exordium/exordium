@@ -437,7 +437,8 @@ afterwards."
   message"
   (interactive)
   (cl-flet ((sh (cmd)
-              ;; Execute cmd in dir and return output
+                ;; Execute cmd in dir and return output
+              (message "Running: %s" cmd)
               (shell-command-to-string (concat "cd " user-emacs-directory " && " cmd))))
     (if (> (length (sh "git diff --shortstat")) 0)
         (message (propertize "Exordium repo is not clean" 'face 'error))
@@ -447,12 +448,12 @@ afterwards."
         (cond ((string-match ".+\nYour branch is behind 'origin/master' by \\([0-9]+\\) commits" st)
                (message (propertize
                          (format "Exordium is %s commit(s) behind" (match-string 1 st))
-                         'face 'error))
+                         'face 'error)))
                ((string-match ".+\nYour branch is up-to-date" st)
                 (message (propertize "Your version of Exordium is up-to-date"
                                      'face 'success)))
                (t
-                (message "Can't tell (are you on the master branch?)"))))))))
+                (message "Can't tell (are you on the master branch?)")))))))
 
 
 
