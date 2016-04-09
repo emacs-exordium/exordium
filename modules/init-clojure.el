@@ -5,7 +5,7 @@
 ;;;; - rainbow-delimiters
 ;;;; - paredit
 ;;;; And you need 'lein' from leiningen.org in your path.
-;;;; Note that clojure.el is in subdir 'vendor'.
+;;;; Note that clojure.el is in subdir 'extensions'.
 ;;;;
 ;;;; Usage:
 ;;;;   M-x cider-jack-in
@@ -19,8 +19,6 @@
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-for-lein)
-
-(add-to-list 'load-path (locate-user-emacs-file "vendor"))
 
 ;;; Flyspell often slows down editing so it's turned off
 (remove-hook 'text-mode-hook 'turn-on-flyspell)
