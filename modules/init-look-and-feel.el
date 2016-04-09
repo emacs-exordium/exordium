@@ -145,7 +145,8 @@
   (global-set-key (kbd "<escape>") 'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
-(fset 'yes-or-no-p 'y-or-n-p)
+(when exordium-enable-y-or-n
+  (fset 'yes-or-no-p 'y-or-n-p))
 
 ;;; Delete selection when typing
 (delete-selection-mode t)

@@ -62,6 +62,11 @@ available font names by evaluating (font-family-list)."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-enable-y-or-n t
+  "Use y or n answers instead of full words yes or no"
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-enable-newline-and-indent t
   "If t, binds the return key to newline-and-indent, and
 shift-return for just newline.  If nil, do the opposite."
