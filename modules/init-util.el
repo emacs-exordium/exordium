@@ -436,16 +436,23 @@ afterwards."
   "Check if the configuration is up to date and display a
   message"
   (interactive)
-  (message "Checking...")
-  (let ((dir user-emacs-directory))
-    (shell-command (concat "cd " dir " && git remote update"))
-    (let ((output (shell-command-to-string (concat "cd " dir " && git st -uno"))))
-      (cond ((string-match ".+\nYour branch is behind 'origin/master' by \\([0-9]+\\) commits" output)
-             (message "Your version of Exordium is %s commits behind" (match-string 1 output)))
-            ((string-match ".+\nYour branch is up-to-date" output)
-             (message "Your version of Exordium is up-to-date"))
-            (t
-             (message "Can't tell (are you on the master branch?)"))))))
+  (cl-flet ((sh (cmd)
+              ;; Execute cmd in dir and return output
+              (shell-command-to-string (concat "cd " user-emacs-directory " && " cmd))))
+    (if (> (length (sh "git diff --shortstat")) 0)
+        (message (propertize "Exordium repo is not clean" 'face 'error))
+      (let ((st (progn
+                  (sh "git remote update")
+                  (sh "git status -uno"))))
+        (cond ((string-match ".+\nYour branch is behind 'origin/master' by \\([0-9]+\\) commits" st)
+               (message (propertize
+                         (format "Exordium is %s commit(s) behind" (match-string 1 st))
+                         'face 'error))
+               ((string-match ".+\nYour branch is up-to-date" st)
+                (message (propertize "Your version of Exordium is up-to-date"
+                                     'face 'success)))
+               (t
+                (message "Can't tell (are you on the master branch?)"))))))))
 
 
 
