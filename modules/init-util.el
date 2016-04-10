@@ -450,7 +450,7 @@ afterwards."
                          (format "Exordium is %s commit(s) behind" (match-string 1 st))
                          'face 'error)))
                ((string-match ".+\nYour branch is up-to-date" st)
-                (message (propertize "Your version of Exordium is up-to-date"
+                (message (propertize "Exordium is up-to-date"
                                      'face 'success)))
                (t
                 (message "Can't tell (are you on the master branch?)")))))))
