@@ -445,7 +445,7 @@ afterwards."
       (let ((st (progn
                   (sh "git remote update")
                   (sh "git status -uno"))))
-        (cond ((string-match ".+\nYour branch is behind 'origin/master' by \\([0-9]+\\) commits" st)
+        (cond ((string-match ".+\n.+ behind 'origin/master' by \\([0-9]+\\) commit" st)
                (message (propertize
                          (format "Exordium is %s commit(s) behind" (match-string 1 st))
                          'face 'error)))
