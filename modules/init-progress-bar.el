@@ -14,7 +14,7 @@
 
 ;;; Set this constant to the number of times `update-progress-bar' is called in
 ;;; init.el:
-(defconst exordium-loading-step-count 4)
+(defconst exordium-loading-step-count 6)
 
 ;;; Don't change any of these:
 (defconst exordium-loading-step-size
