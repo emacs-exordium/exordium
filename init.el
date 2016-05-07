@@ -345,6 +345,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when (and exordium-theme exordium-enable-powerline)
   (require 'init-powerline))
 
+(update-progress-bar)
+
 ;;; Greetings
 (setq initial-scratch-message
       (let ((current-user (split-string (user-full-name) " ")))
