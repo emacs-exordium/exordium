@@ -169,12 +169,12 @@
 ;;;   excludesrc \.t\.cpp$
 ;;;
 ;;; In addition, the creation of a compilation database uses these variables:
-;;; * `*rtags-compile-includes-base-dir*': set this to your workspace path
+;;; * `rtags-compile-includes-base-dir': set this to your workspace path
 ;;;   if you want to use relative paths in `compile_includes' (by default any
 ;;;   relative path in this file is relative to the project root dir).
-;;; * `*rtags-clang-command-prefix*': default is "/usr/bin/clang++ -Irelative"
+;;; * `rtags-clang-command-prefix': default is "/usr/bin/clang++ -Irelative"
 ;;;   (Note that rtags ignores the clang++ command because it uses libclang).
-;;; * `*rtags-clang-command-suffix*': default is "-c -o".
+;;; * `rtags-clang-command-suffix': default is "-c -o".
 ;;;
 ;;; Once you have created the `compile_includes' file, run the command
 ;;; M-x `rtags-create-compilation-database'. It will:
@@ -412,17 +412,17 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 
 ;; Override these variables in your .emacs as needed:
 
-(defvar *rtags-clang-command-prefix*
+(defvar rtags-clang-command-prefix
   "/usr/bin/clang++ -Irelative "
   "Compilation command prefix to use for creating compilation
   databases. Override this variable for your local environment.")
 
-(defvar *rtags-clang-command-suffix*
+(defvar rtags-clang-command-suffix
   " -c -o "
   "Compilation command suffix to use for creating compilation
   databases. Override this variable for you local environment.")
 
-(defvar *rtags-compile-includes-base-dir*
+(defvar rtags-compile-includes-base-dir
   nil
   "If non-nil, base directory to use for all relative paths in
   `compile_include'. Use nil for absolute paths.")
@@ -514,7 +514,7 @@ could not be loaded. The property list looks like this:
                  (dolist (path src-dirs)
                    (unless (file-name-absolute-p path)
                      (setq path (expand-file-name path
-                                                  (or *rtags-compile-includes-base-dir*
+                                                  (or rtags-compile-includes-base-dir
                                                       dir))))
                    (message "Scanning source dir: %s ..." path)
                    (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
@@ -522,7 +522,7 @@ could not be loaded. The property list looks like this:
                ;; Same with includes
                (let (dirs)
                  (dolist (path incl-dirs)
-                   (setq path (expand-file-name path *rtags-compile-includes-base-dir*))
+                   (setq path (expand-file-name path rtags-compile-includes-base-dir))
                    (message "Scanning include dir: %s ..." path)
                    (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
                  (setq result (nconc result (list :include-dirs dirs))))
@@ -541,7 +541,7 @@ could not be loaded. The property list looks like this:
 (defun rtags-create-compilation-command (plist)
   "Returns a string containing the clang compilation command to
 use for the compilation database, using the content of PLIST."
-  (let ((command *rtags-clang-command-prefix*))
+  (let ((command rtags-clang-command-prefix))
     ;; -D options:
     (dolist (m (plist-get plist :macros))
       (setq command (concat command " -D" m)))
@@ -550,7 +550,7 @@ use for the compilation database, using the content of PLIST."
       (setq command (concat command " -I" path)))
     (dolist (path (plist-get plist :include-dirs))
       (setq command (concat command " -I" path)))
-    (concat command *rtags-clang-command-suffix*)))
+    (concat command rtags-clang-command-suffix)))
 
 (defun rtags-prompt-compilation-database-dir ()
   "Prompts the user for the directory where to generate the

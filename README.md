@@ -535,9 +535,9 @@ In addition, the creation of a compilation database uses these variables:
 
 Variable                            | Description
 ------------------------------------|------------------------------------------
-`*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` that are not relative to the project's root directory (the default).
-`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
-`*rtags-clang-command-suffix*`      | Default is "-c -o".
+`rtags-compile-includes-base-dir  ` | Set this to your workspace path if you want to use relative paths in `compile_includes` that are not relative to the project's root directory (the default).
+`rtags-clang-command-prefix  `      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
+`rtags-clang-command-suffix  `      | Default is "-c -o".
 
 Once you have created the `compile_includes` file, run the command <kbd>M-x
 rtags-create-compilation-database</kbd>. It will:
