@@ -413,7 +413,7 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 ;; Override these variables in your .emacs as needed:
 
 (defvar rtags-clang-command-prefix
-  "/usr/bin/clang++ -Irelative "
+  "/usr/bin/clang++ "
   "Compilation command prefix to use for creating compilation
   databases. Override this variable for your local environment.")
 
@@ -479,13 +479,19 @@ the list of excluded regexs"
         (throw 'return t)))
     (throw 'return nil)))
 
+(defun rtags-directory-contains-sources-p (path)
+  "Return non-nil if the specified path contains any C/C++ source
+  or header file"
+  (directory-files path nil ".*\\.\\(c\\|cpp\\|h\\|hpp\\)$" nil))
+
 (defun rtags-scan-subdirectories (dir excluded-regexs)
   "Return a list of subdirectories under the specified root dir,
 excluding any that match any regex in the specified excluded
 regex list."
   (let ((result ()))
     (dolist (subdir (cons dir (exordium-directory-tree dir)))
-      (unless (rtags-is-excluded-p subdir excluded-regexs)
+      (when (and (rtags-directory-contains-sources-p subdir)
+                 (not (rtags-is-excluded-p subdir excluded-regexs)))
         (setq result (cons subdir result))))
     result))
 
@@ -565,8 +571,8 @@ declines. Returns the directory string."
       (read-directory-name "Project root: "))))
 
 (defun rtags-create-compilation-database (dir)
-  "Regenerates `compile_commands.json' in the specified
-directory"
+  "Regenerates `compile_commands.json' from `compile_includes' in
+the specified directory."
   (interactive (list (rtags-prompt-compilation-database-dir)))
   (let ((plist (rtags-load-compile-includes-file dir)))
     (when plist

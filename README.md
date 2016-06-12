@@ -505,11 +505,9 @@ either absolute or relative to the project root. Here is an example:
 
 ```
   # 'compile_includes' file for project foo
-  # Patterns to exclude in -I directives and while looking for sources:
+  # Patterns to exclude in -I directives and while looking for sources.
+  # Here we explicitly don't want to index the tests:
   exclude /test$
-  exclude /doc$
-  exclude /group$
-  exclude /package$
 
   # Where are the source files (there could be multiple directories).
   # We will scan recursively any subdirectories that do not match any
@@ -524,7 +522,7 @@ either absolute or relative to the project root. Here is an example:
 
   # If any file name pattern must be excluded from the "src" files, use
   # the "excludesrc" directive. For example this will exclude all test
-  # drivers:
+  # drivers (file.t.cpp):
   excludesrc \.t\.cpp$
 
   # -D macros, if any:
