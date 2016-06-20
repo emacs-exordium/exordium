@@ -91,7 +91,22 @@
                          (let ((file (concat base-path candidate-ext)))
                            (when (file-exists-p file)
                              (find-file file)
-                             (throw 'found t))))
+                             (throw 'found t)))
+                         ;; No file in current dir => look in test subdirectory
+                         (when arg
+                           (let ((base-dir (file-name-directory (buffer-file-name)))
+                                 (test-path (concat "test/" base-name candidate-ext)))
+                             (let ((file (concat base-dir test-path)))
+                               (when (file-exists-p file)
+                                 (find-file file)
+                                 (throw 'found t)))
+                             (let ((file
+                                    (concat (file-name-directory
+                                             (directory-file-name base-dir))
+                                            test-path)))
+                               (when (file-exists-p file)
+                                 (find-file file)
+                                 (throw 'found t))))))
                        ;; No buffer or file for any matching-ext
                        nil)
                (message "No matching buffer or file")))
