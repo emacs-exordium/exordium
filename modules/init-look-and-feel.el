@@ -160,7 +160,8 @@
 ;;; Shortcut keys
 
 (global-set-key [(meta g)] (function goto-line))
-(define-key global-map [(control z)] (function undo))
+(when exordium-keyboard-ctrl-z-undo
+  (define-key global-map [(control z)] (function undo)))
 (global-set-key [(control ?`)] (function kill-this-buffer))
 
 

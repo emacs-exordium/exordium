@@ -62,6 +62,11 @@ available font names by evaluating (font-family-list)."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-keyboard-ctrl-z-undo t
+  "Whether Ctrl-z is rebound to Undo, like most other applications."
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-enable-y-or-n t
   "Use y or n answers instead of full words yes or no"
   :group 'exordium
