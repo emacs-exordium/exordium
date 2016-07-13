@@ -211,8 +211,20 @@
 (require 'vlf-setup)
 
 ;; Remove trailing blanks on save
+(define-minor-mode delete-trailing-whitespace-mode
+  "Remove trailing whitespace upon saving a buffer"
+  :lighter nil
+  (if delete-trailing-whitespace-mode
+      (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
+    (remove-hook 'before-save-hook #'delete-trailing-whitespace t)))
+
+(define-globalized-minor-mode global-delete-trailing-whitespace-mode
+  delete-trailing-whitespace-mode
+  (lambda ()
+    (delete-trailing-whitespace-mode t)))
+
 (when exordium-delete-trailing-whitespace
-  (add-hook 'before-save-hook 'delete-trailing-whitespace))
+  (global-delete-trailing-whitespace-mode t))
 
 ;;; Disable backup files (e.g. file~)
 (defun no-backup-files ()
