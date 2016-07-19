@@ -367,6 +367,10 @@ names to which it refers are bound."
      (js2-instance-member ((t (:foreground ,blue))))
      (js2-private-function-call ((t (:foreground ,red))))
 
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
+
      ;; nxml
      (nxml-name-face
       ((t (:foreground unspecified :inherit font-lock-constant-face))))

@@ -308,6 +308,18 @@ names to which it refers are bound."
      (ediff-even-diff-C ((t (:background ,monokai-comments :foreground ,monokai-fg ))))
      (ediff-odd-diff-C ((t (:background ,monokai-comments :foreground ,monokai-bg ))))
 
+     ;; js2-mode
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
+     (js2-external-variable ((t (:foreground ,violet))))
+     (js2-function-param ((t (:foreground ,blue))))
+     (js2-instance-member ((t (:foreground ,blue))))
+     (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
+
      ;; flymake
      (flymake-errline
       ((,(append '((supports :underline (:style wave))) class)

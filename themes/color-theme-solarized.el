@@ -208,6 +208,18 @@ names to which it refers are bound."
      (flymake-errline ((t (:weight bold :foreground ,red :background ,back))))
      (flymake-warnline ((t (:weight bold :foreground ,orange :background ,back))))
 
+     ;; js2-mode
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
+     (js2-external-variable ((t (:foreground ,violet))))
+     (js2-function-param ((t (:foreground ,blue))))
+     (js2-instance-member ((t (:foreground ,blue))))
+     (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
+
      ;; git-gutter
      (git-gutter:modified ((t (:foreground ,violet))))
      (git-gutter:added ((t (:foreground ,green))))

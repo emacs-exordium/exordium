@@ -406,13 +406,17 @@ names to which it refers are bound."
      (iedit-occurrence ((t (:background ,zenburn-bg+2 :weight bold))))
 
      ;; js2-mode
-     (js2-warning ((t (:underline ,zenburn-orange))))
-     (js2-error ((t (:foreground ,zenburn-red :weight bold))))
+     (js2-warning ((t (:underline ,zenburn-orange :style wave))))
+     (js2-error ((t (:underline ,zenburn-red :style wave))))
      (js2-jsdoc-tag ((t (:foreground ,zenburn-green-1))))
      (js2-jsdoc-type ((t (:foreground ,zenburn-green+2))))
      (js2-jsdoc-value ((t (:foreground ,zenburn-green+3))))
      (js2-function-param ((t (:foreground ,zenburn-green+3))))
      (js2-external-variable ((t (:foreground ,zenburn-orange))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,zenburn-orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,zenburn-red :style wave)))))
 
      ;; linum-mode
      (linum ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))

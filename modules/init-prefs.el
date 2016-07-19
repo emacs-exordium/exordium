@@ -181,7 +181,8 @@ otherwise use one of the following:
   tomorrow-night-blue, tomorrow-night-eighties
 - monokai
 - solarized-light, solarized-dark
-- zenburn"
+- zenburn
+- material"
   :group 'exordium
   :type  'symbol)
 

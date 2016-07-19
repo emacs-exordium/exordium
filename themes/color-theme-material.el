@@ -363,12 +363,16 @@ names to which it refers are bound."
                                         (if exordium-theme-use-big-font '(:height 1.2)) nil))))
 
      ;; js2-mode
-     (js2-warning ((t (:underline ,orange))))
-     (js2-error ((t (:foreground nil :underline ,red))))
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
      (js2-external-variable ((t (:foreground ,purple))))
      (js2-function-param ((t (:foreground ,blue))))
      (js2-instance-member ((t (:foreground ,blue))))
      (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
 
      ;; nxml
      (nxml-name-face ((t (:foreground unspecified :inherit font-lock-constant-face))))
