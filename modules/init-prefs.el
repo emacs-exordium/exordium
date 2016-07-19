@@ -287,10 +287,11 @@ Disables flyspell if set to nil."
   :type  'boolean)
 
 ;;; See init-cpp.el
-(defcustom exordium-enable-c++11-keywords t
-  "Enables syntax highlighting for the new keywords introduced in C++11"
+(defcustom exordium-enable-c++11-keywords :simple
+  "Enables syntax highlighting for the new keywords introduced in C++11 if set
+to :simple. Enables modern-cpp-font-lock when set to :modern."
   :group 'exordium
-  :type  'boolean)
+  :type  'symbol)
 
 ;;; See init-clojure.el
 (defcustom exordium-clojure nil
