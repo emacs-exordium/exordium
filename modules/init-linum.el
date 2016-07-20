@@ -27,7 +27,7 @@
 
 (cond ((and (fboundp 'global-nlinum-mode)
             (eq exordium-display-line-numbers :nlinum))
-       ;; Enable nlinum
+       ;; Use nlinum - a lazy, faster mode for line numbers
        (let ((min-version "24.5"))
          (when (version< emacs-version min-version)
            ;; Workaround a bug in Emacs causing emacsclient to display
@@ -35,12 +35,24 @@
            ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2015-01/msg00079.html
            (fset 'nlinum--setup-window 'nlinum--setup-window-fudge)))
 
+       ;; Make line numbers display correctly when user zooms with C-+/C--
+       (let ((h (face-attribute 'default :height)))
+         (set-face-attribute 'linum nil :height h))
+
        (global-nlinum-mode t))
 
       ((and (fboundp 'global-linum-mode)
             exordium-display-line-numbers t)
+       ;; Use linum - non-lazy mode for line numbers
+
+       ;; Make line numbers display correctly when user zooms with C-+/C--
+       (let ((h (face-attribute 'default :height)))
+         (set-face-attribute 'linum nil :height h)
+         (set-face-attribute 'linum-highlight-face nil :height h))
+
        (global-linum-mode t)
 
+       ;; Do not enable linum for specific modes
        (defvar linum-mode-inhibit-modes-list
          '(eshell-mode
            shell-mode
