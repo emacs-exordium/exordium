@@ -946,6 +946,8 @@ in `provide` and the symbol in `require` are the same.
   your local machine). The code below works for both Emacs and `emacsclient`:
 
 ```lisp
+;; ~/.emacs.d/prefs.el
+
 ;; Font and initial frame size
 (cond ((daemonp)
        (message "Setting prefs for emacsclient")
