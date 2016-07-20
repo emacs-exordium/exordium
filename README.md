@@ -943,7 +943,28 @@ in `provide` and the symbol in `require` are the same.
   in the server process (believe me I tried). The solution is to put something
   like `(setq default-frame-alist '((font . "Inconsolata-12")))` in your
   `pref.el` (you need to know exactly what font and size you want for
-  your local machine).
+  your local machine). The code below works for both Emacs and `emacsclient`:
+
+```lisp
+;; Font and initial frame size
+(cond ((daemonp)
+       (message "Setting prefs for emacsclient")
+       (setq exordium-preferred-frame-width nil
+             exordium-preferred-frame-height nil)
+       (setq default-frame-alist
+             (append '((font   . "Consolas 13")
+                       (top    . 0)
+                       (left   . 50)
+                       (width  . 110)
+                       (height . 71))
+                     default-frame-alist)))
+      (t
+       (message "Setting prefs for emacs")
+       (setq exordium-preferred-frame-width 110
+             exordium-preferred-frame-height 71)
+       (setq exordium-preferred-fonts '(("Consolas" . 120)
+                                        ("Monaco"   . 120)))))
+```
 
 * Sometimes weird bugs may happen after an upgrade or during development on a
   module. Exordium recompiles any `.el` file for which the corresponding `.elc`
