@@ -199,14 +199,6 @@
 (require 'auto-complete-c-headers)
 (require 'projectile)
 
-;;; Customizable variables (see also init-prefs.el)
-(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
-  "List of source file extension patterns for creating a
-  compilation database using command
-  `rtags-create-compilation-database'"
-  :group 'exordium
-  :type  'sexp)
-
 
 ;;; Key bindings
 
@@ -273,16 +265,50 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
 
 ;;; Start rdm as a subprocess, with output in a buffer
 
+(defun exordium-rtags-start-rdm-maybe ()
+  "Start rdm if not already running. Return t if started and nil
+otherwise."
+  (unless (exordium-rtags-rdm-running-p)
+    (exordium-rtags-start-rdm-impl nil)
+    t))
+
+(defun exordium-rtags-rdm-running-p ()
+  "Predicate testing if rdm is running"
+  (let ((process (get-process "rdm")))
+    (or
+     ;; Rdm runs in a process started from Emacs
+     (and (processp process)
+          (not (eq (process-status process) 'exit))
+          (not (eq (process-status process) 'signal)))
+     ;; User has started rdm outside of Emacs
+     ;; Note: sadly this does not work on macOS
+     (let ((uuid (user-uid)))
+       (dolist (pid (reverse (list-system-processes)))
+         (let* ((attrs (process-attributes pid))
+                (pname (cdr (assoc 'comm attrs)))
+                (puid  (cdr (assoc 'euid attrs))))
+           (when (and (eq puid uuid)
+                      (string= pname "rdm"))
+              (return t))))))))
+
+(defun exordium-rtags-start-rdm-impl (&optional open-buffer)
+  "Start rdm in a subprocess. Open the rdm log buffer if
+open-buffer is true."
+  (let ((buffer (get-buffer-create "*RTags rdm*")))
+    (when open-buffer
+      (switch-to-buffer buffer))
+    (rtags-rdm-mode)
+    (read-only-mode)
+    (let ((process (if exordium-rtags-rdm-args
+                       (start-process "rdm" buffer "rdm" exordium-rtags-rdm-args)
+                       (start-process "rdm" buffer "rdm"))))
+      (message "Started rdm - PID %d" (process-id process)))))
+
 (defun rtags-start-rdm ()
   "Start the rdm deamon in a subprocess and display output in a
 buffer"
   (interactive)
-  (let ((buffer (get-buffer-create "*RTags rdm*")))
-    (switch-to-buffer buffer)
-    (rtags-rdm-mode)
-    (read-only-mode)
-    (let ((process (start-process "rdm" buffer "rdm")))
-      (message "Started rdm - PID %d" (process-id process)))))
+  (exordium-rtags-start-rdm-impl t))
 
 (defun rtags-show-rdm-buffer ()
   "Show/hide the rdm log buffer"
@@ -642,6 +668,7 @@ the specified directory."
 
 
 ;;; RTags auto-complete (EXPERIMENTAL)
+;;; FIXME: this is broken, need to revisit the whole thing.
 
 ;;; AC source for #include
 
@@ -709,17 +736,20 @@ for this to be effective."
   ;; Start RTags diagnostics
   (unless rtags-diagnostics-process
     (rtags-diagnostics))
+  ;; FIXME: this is broken, should not depend on compile_includes
   ;; Create an auto-complete source for headers using compile_includes
-  (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
-    (dolist (dir (plist-get plist :src-dirs))
-      (add-to-list 'achead:include-directories dir))
-    (dolist (dir (plist-get plist :include-dirs))
-      (add-to-list 'achead:include-directories dir)))
+  ;; (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
+  ;;   (dolist (dir (plist-get plist :src-dirs))
+  ;;     (add-to-list 'achead:include-directories dir))
+  ;;   (dolist (dir (plist-get plist :include-dirs))
+  ;;     (add-to-list 'achead:include-directories dir)))
   ;; Turn on RTags auto-complete
   (setq rtags-completions-enabled t)
   (add-hook 'c++-mode-hook
             (lambda ()
-              (setq ac-sources '(ac-source-my-rtags ac-source-my-c-headers)))))
+              (setq ac-sources '(ac-source-my-rtags
+                                 ;;ac-source-my-c-headers
+                                 )))))
 
 (define-key c-mode-base-map [(control c)(r)(A)]
   'rtags-diagnostics-auto-complete)

@@ -34,6 +34,10 @@ dirs. Input is a string and output is a list of strings."
     (insert-file-contents file)
     (buffer-string)))
 
+(defun exordium-parent-directory (dir)
+  "Return the path of the dir's parent directory"
+  (file-name-directory (directory-file-name dir)))
+
 
 ;;; String manipulation functions
 

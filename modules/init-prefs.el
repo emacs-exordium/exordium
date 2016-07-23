@@ -252,12 +252,6 @@ Disables flyspell if set to nil."
   :group 'exordium
   :type  'symbol)
 
-;;; See init-rtags.el
-(defcustom exordium-rtags-auto-complete nil
-  "Whether RTags is used as the source for auto-complete in C++ mode."
-  :group 'exordium
-  :type  'boolean)
-
 ;;; See init-yasnippet.el
 (defcustom exordium-yasnippet t
   "Whether YASnippet is enabled or not."
@@ -298,6 +292,40 @@ to :simple. Enables modern-cpp-font-lock when set to :modern."
   "Whether the development environment for Clojure is enabled or not."
   :group 'exordium
   :type  'boolean)
+
+
+;;; RTags
+
+;;; See init-rtags.el
+(defcustom exordium-rtags-rdm-args nil
+  "Command-line arguments passed to rdm, if needed. This should
+be a list of strings."
+  :group 'exordium
+  :type  'sexp)
+
+(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
+  "List of source file extension patterns for creating a
+  compilation database using command
+  `rtags-create-compilation-database'. Not needed for CMake projects."
+  :group 'exordium
+  :type  'sexp)
+
+(defcustom exordium-rtags-auto-complete nil
+  "Whether RTags is used as the source for auto-complete in C++ mode."
+  :group 'exordium
+  :type  'boolean)
+
+;;; See init-rtags-cmake.el
+(defcustom exordium-rtags-cmake nil
+  "Whether RTags is used automatically for CMake-enabled projects"
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-rtags-cmake-build-dir "cmake.bld/<arch>"
+  "Relative path of the build directory inside a CMake-enabled
+  repo. '<arch>' is replaced by the local machine's architecture."
+  :group 'exordium
+  :type  'string)
 
 
 ;;; See init-helm.el

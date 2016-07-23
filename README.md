@@ -438,7 +438,7 @@ arguments.
 
 Alternatively you can run rdm as an Emacs subprocess: <kbd>M-x
 rtags-start-rdm</kbd>, with logs going into a buffer (in color!). Stop it with
-<kbd>M-x rtags-quit-rdm</kbd>.
+<kbd>M-x rtags-quit-rdm</kbd> or <kbd>M-x rtags-quit-all</kbd>.
 
 #### Controlling rdm
 
@@ -450,7 +450,7 @@ Command            | Description
 `rc -w`            | List projects in the index.
 `rc -w proj`       | Switch to project "proj" (a regex).
 `rc -W proj`       | Unload and delete project "proj".
-`rc -J`            | Reload the compilation DB from the current directory.
+`rc -J .`          | Reload the compilation DB from the current directory.
 `rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
 `rc -T sourcefile.cpp` | Say whether this file is indexed or not.
 `rc -q`            | Shutdown rdm.
@@ -473,9 +473,10 @@ Then you need to tell rdm how to compile your project, by creating a
 in a file named `compile_commands.json`. The compilation database contains one
 entry for each file to compile, like the following (simplified for clarity):
 
-```javascript
+```
 { "directory": "/home/phil/workspaces/foo/",
-  "command":   "/usr/bin/clang++ -Irelative
+  "command":   "/usr/bin/clang++
+                -D_POSIX_PTHREAD_SEMANTICS -D_REENTRANT
                 -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
                 -I/home/phil/workspaces/bde/groups/bsl/bslma
                 -I/home/phil/workspaces/bde/groups/bsl/bsls
@@ -483,10 +484,43 @@ entry for each file to compile, like the following (simplified for clarity):
    "file":      "bar.cpp" }
 ```
 
-You can generate this compilation database with the command <kbd>M-x
-rtags-create-compilation-database</kbd>. But before you do, it needs a little help:
-you need to tell it what `clang++` command to use to compile any file, with all
-the `-I` directives that are necessary for your project.
+Basically the compilation database contains the list of files to compile and
+the exact command to compile them.
+
+#### CMake projects
+
+If your project compiles with CMake, you're in luck: CMake generates this
+compilation database for you every time you build. Adding this line in your
+`~/.emacs.d/prefs.el` will make RTags work automagically:
+
+```lisp
+(setq exordium-rtags-cmake t)
+```
+
+Note that Exordium assumes that your build directory is in the project root
+with a name like `cmake.bld/<arch>` where `<arch>` is the `uname` of your
+OS. If this is not the case you can change it like so in `~/.emacs.d/prefs.el`:
+
+```lisp
+(setq exordium-rtags-cmake-build-dir "build")
+```
+
+With that, Exordium will automatically detect if your project is CMake-enabled
+when you open a C++ file, by looking for `CMakeLists.txt` files along the path
+from the root of your project to the location of the file you open. If this is
+a CMake project, Exordium will start rdm if it is not running, and index the
+project using the CMake-generated compilation database in the build
+directory. It should just work out of the box.
+
+Note: what it does not do yet is to rebuild the compilation DB when you add a
+new file from Emacs.
+
+#### Non-CMake projects
+
+You can generate the compilation database with the command
+<kbd>M-x rtags-create-compilation-database</kbd>. But before you do, it needs
+a little help: you need to tell it what `clang++` command to use to compile
+any file, with all the `-I` directives that are necessary for your project.
 
 The command uses a file `compile_includes` in the project root directory, which
 specifies how to generate `compilation_database.json` for your project. It is a
@@ -612,11 +646,17 @@ Keybinding         | Description
 
 #### Using Flymake
 
-The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
-process to receive compilation warnings and errors from rdm. They are displayed
-into diagnostics buffer which works with Flymake to put highlighting on code
-with warnings and errors. By default Powerline displays the name of the buffer
-in green if the project compiles and in red if there are errors:
+"Rtags diagnostics" is a way to get compilation warnings and errors from rdm,
+and display them using Flymake in buffers. You an enable it by default by
+adding this line in `~/.emacs.d/prefs.el`:
+
+```lisp
+(setq rtags-autostart-diagnostics t)
+```
+
+Otherwise you can turn it on manually with `M-z rtags-diagnostics` bound to
+<kbd>C-c r D</kbd>. By default Powerline displays the name of the buffer in
+green if the project compiles and in red if there are errors:
 
 ![RTags diagnostics](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_diagnostics.png)
 
