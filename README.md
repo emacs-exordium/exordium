@@ -442,8 +442,10 @@ rtags-start-rdm</kbd>, with logs going into a buffer (in color!). Stop it with
 
 #### Controlling rdm
 
-rdm stores project indices into a directory `~/.rtags` and reloads them as
-needed. rc and rdm communicate with each other using a socket file `~/.rdm`.
+rdm stores project indices into a directory `~/.rtags` by default, and reloads
+them as needed. You can change the location using `~/.rdmrc` and it is
+recommended to store it into an SSD drive. By default rc and rdm communicate
+with each other using a socket file `~/.rdm`.
 
 Command            | Description
 -------------------|-----------------------------------------------------------
@@ -458,19 +460,9 @@ Command            | Description
 Note that a job may crash while trying to index a file. If it does, rdm will
 retry a few times and then give up with the file it cannot parse.
 
-#### Setting up your project
-
-If the project root directory does not contain a `.git` or `.svn` repo, you
-need to create a file `.rtags-config` in the root directory with the specified
-content:
-
-```
-project: /path/to/project
-```
-
-Then you need to tell rdm how to compile your project, by creating a
-[compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html)
-in a file named `compile_commands.json`. The compilation database contains one
+rdm knows how to compile your project with a CLang
+[compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html),
+which is a file named `compile_commands.json`. The compilation database contains one
 entry for each file to compile, like the following (simplified for clarity):
 
 ```
@@ -507,10 +499,11 @@ OS. If this is not the case you can change it like so in `~/.emacs.d/prefs.el`:
 
 With that, Exordium will automatically detect if your project is CMake-enabled
 when you open a C++ file, by looking for `CMakeLists.txt` files along the path
-from the root of your project to the location of the file you open. If this is
-a CMake project, Exordium will start rdm if it is not running, and index the
-project using the CMake-generated compilation database in the build
-directory. It should just work out of the box.
+from the root of your project to the location of the file you open (your
+project must be a git repo). If this is a CMake project, Exordium will start
+rdm if it is not running, and index the project using the CMake-generated
+compilation database in the build directory. It should just work out of the
+box.
 
 Note: what it does not do yet is to rebuild the compilation DB when you add a
 new file from Emacs.
