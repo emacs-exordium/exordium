@@ -514,9 +514,9 @@ compilation database for you every time you build. Adding this line in your
 
 In addition you may set the following variables:
 
-* Exordium assumes that your build directory is in the project root with a name
-  like `cmake.bld/<arch>` where `<arch>` is the `uname` of your OS. If this is
-  not the case you can change it like so in `~/.emacs.d/prefs.el`:
+* Exordium assumes that your build directory is named like `cmake.bld/<arch>`,
+  relative to the project root, where `<arch>` is the `uname` of your OS. If
+  this is not the case you can change it like so in `~/.emacs.d/prefs.el`:
 
     ```lisp
     (setq exordium-rtags-cmake-build-dir "build")
@@ -527,8 +527,12 @@ In addition you may set the following variables:
 
     ```lisp
     (setq exordium-rtags-rdm-args
-          '("--isystem" "/opt/bb/lib64/clang/3.6.2/include -DBAS_NOBBENV"))
+          '("--isystem /opt/bb/lib64/clang/3.6.2/include" "-DBAS_NOBBENV"))
     ```
+
+You can also specify where the build directory is using a `.rtags` file at the
+root of your project with a content like `build /path/to/my/build`; it takes
+precedence over `exordium-rtags-cmake-build-dir`.
 
 Exordium will automatically detect if your project is CMake-enabled when you
 open a C++ file, by looking for `CMakeLists.txt` files along the path from the
