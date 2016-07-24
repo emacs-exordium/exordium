@@ -538,11 +538,15 @@ Exordium will automatically detect if your project is CMake-enabled when you
 open a C++ file, by looking for `CMakeLists.txt` files along the path from the
 root of your project to the location of the file you open (your project must be
 a git repo). If this is a CMake project, Exordium will start rdm if it is not
-running, and index the project using the CMake-generated compilation database
-in the build directory. It should just work out of the box.
+running, and ask rdm to index the project using the CMake-generated compilation
+database in the build directory. If the project was already indexed, it is
+simply reloaded and RTags commands work immediately. Otherwise rdm compiles the
+index, and you can see the progress with <kbd>C-c r l</kbd> (rerun to dismiss).
 
-Note: what it does not do yet is to rebuild the compilation DB when you add a
-new file from Emacs.
+If you need to add or remove components from your project, just rebuild it
+(e.g. "make" in the build directory) and CMake will update the compilation
+database accordingly. Because rdm watches for changes to the compilation
+database file, it will pick up the changes automatically.
 
 #### Non-CMake projects
 
@@ -568,9 +572,6 @@ either absolute or relative to the project root. Here is an example:
 
 ```
   # 'compile_includes' file for project foo
-  # Patterns to exclude in -I directives and while looking for sources.
-  # Here we explicitly don't want to index the tests:
-  exclude /test$
 
   # Where are the source files (there could be multiple directories).
   # We will scan recursively any subdirectories that do not match any
@@ -583,12 +584,16 @@ either absolute or relative to the project root. Here is an example:
   include /Users/phil/Code/cpp/include/bsl
   include /Users/phil/Code/cpp/include/bdl
 
-  # If any file name pattern must be excluded from the "src" files, use
-  # the "excludesrc" directive. For example this will exclude all test
-  # drivers (file.t.cpp):
+  # Optional: patterns to exclude in -I directives and while looking for
+  # sources. Here we explicitly don't want to index the tests subdir:
+  exclude /test$
+
+  # Optional: if any file name pattern must be excluded from the "src" files,
+  use the "excludesrc" directive. For example this will exclude all test
+  # drivers (extension .t.cpp):
   excludesrc \.t\.cpp$
 
-  # -D macros, if any:
+  # Optional: -D macros, if any:
   macro BDE_BUILD_TARGET_SAFE
 ```
 
