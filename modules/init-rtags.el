@@ -27,8 +27,9 @@
 ;;; C-}
 ;;;
 ;;; ---------- ----------------------------------------------------------------
-;;;            `rtags-start-rdm' in a subprocess.
-;;;            `rtags-quit-rdm' kill rdm subprocess.
+;;;            `rtags-start': start rdm in a subprocess and start RTags
+;;;            diagnostics.
+;;;            `rtags-stop': kill rdm subprocess and RTags diagnostics.
 ;;; C-c r l    `rtags-show-rdm-buffer' show rdm log buffer.
 ;;;            `rtags-set-current-project' switch between projects
 ;;; C-c r e    `rtags-reparse-file' force recompile current buffer.
@@ -48,9 +49,6 @@
 ;;; C-c r P    `rtags-print-dependencies' show all includes
 ;;; C-c r T    `rtags-taglist' show all tags in a window on left side
 ;;;
-;;; ---------- ----------------------------------------------------------------
-;;;            `rtags-create-compilation-database' see doc below
-;;; ------- -------- ----------------------------------------------------------
 ;;;
 ;;; Building rtags
 ;;; ==============
@@ -72,17 +70,13 @@
 ;;;     the project root.
 ;;; `compile_commands.json' (optional, located in project root dir)
 ;;;     Compilation database for a given project, containing for each file the
-;;;     clang command to build it. Not needed if you use the compiler wrapper
-;;;     scripts. Use `rtags-create-compilation-database' to generate it.
-;;; `compile_includes' (optional, located in project root dir)
-;;;     Directives to create a compilation database with
-;;;     `rtags-create-compilation-database'.
+;;;     clang command to build it. Not needed if you use RTags's compiler
+;;;     wrapper scripts.
 ;;;
-;;; Running rdm
-;;; ===========
-;;; If you don't want to run rdm as an Emacs subprocess, run `rdm' in a
-;;; separate window or in the background. Use -L to specify a log file. Use
-;;; --help for the list of options. You can stop it gracefully with "rc -q".
+;;; Running rdm in a shell
+;;; ======================
+;;; Run `rdm' in a shell or in the background. Use -L to specify a log file.
+;;; Use --help for the list of options. You can stop it gracefully with: rc -q
 ;;;
 ;;; You can control rdm with the rc client (use --help to see all options):
 ;;; $ rc -w
@@ -100,100 +94,37 @@
 ;;; $ rc -q
 ;;;     Shutdown rdm.
 ;;;
-;;; There are 2 ways to create an index:
-;;;
-;;; 1. Building the project using the compiler wrapper scripts.
-;;;    The wrapper will tell rdm to parse and index each compilation unit
-;;;    before it gets compiled.
-;;;    Advantage: the easiest way; all you need to do is to build.
-;;;    Inconvenient: you need to build before you can use the latest index,
-;;;    and any unused header won't be indexed.
-;;;
-;;; 2. Create a compilation database JSON file in the project root dir.
-;;;    See `http://clang.llvm.org/docs/JSONCompilationDatabase.html'.
-;;;    use "rc -J" to reload it.
-;;;
-;;; The rest of this documentation assumes we use a compilation database with
-;;; one or multiple projects.
-;;;
 ;;; Running rdm in Emacs
 ;;; ====================
-;;; M-x `rtags-start-rdm'. A buffer will be created with rdm logs; you can show
+;;; M-x `rtags-start'. A buffer will be created with rdm logs; you can show
 ;;; it with "C-c r l".
-;;; M-x `rtags-quit-rdm' to kill it.
+;;; M-x `rtags-stop' to kill it.
 ;;;
 ;;; Setting up a new project
 ;;; ========================
 ;;; 1. If the project root dir does not contain a .git or .svn repo, create a
-;;; file `.rtags-config' in the root dir with the specified content: project:
-;;; /path/to/project
+;;;    file `.rtags-config' in the root dir with the specified content:
+;;;    project: /path/to/project
 ;;;
 ;;; 2. The next step is to create the compilation database
-;;; `compile_commands.json', which tells rdm how to compile each individual
-;;; file in your project. Each entry in the file looks like this (simplified
-;;; for clarity):
-;;;
-;;;   { "directory": "/home/phil/workspaces/foo/",
-;;;     "command":   "/usr/bin/clang++ -Irelative
-;;;                   -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
-;;;                   -I/home/phil/workspaces/bde/groups/bsl/bslma
-;;;                   -I/home/phil/workspaces/bde/groups/bsl/bsls
-;;;                   -c -o bar.o bar.cpp",
-;;;     "file":      "bar.cpp" },
-;;;
-;;; First, create a file `compile_includes' in the project root dir, which
-;;; specifies how to compile your project and in particular where are all the
-;;; source files and all the include files. For example:
-;;;
-;;;   # Compile_includes files for project foo
-;;;   # Pattern to exclude in -I directives and for looking for sources:
-;;;   exclude /test$
-;;;   exclude /doc$
-;;;   exclude /group$
-;;;   exclude /package$
-;;;
-;;;   # Where are the source files (there could be multiple directories).
-;;;   # We will scan recursively any subdirectories that do not match any
-;;;   # 'exclude' regex.
-;;;   src .
-;;;
-;;;   # What to put in -I directives (in addition to the source files above).
-;;;   # We will scan recursively any subdirectories that do not match any
-;;;   # 'exclude' regex.
-;;;   include /Users/phil/Code/cpp/include/bsl
-;;;   include /Users/phil/Code/cpp/include/bdl
-;;;
-;;;   # If any file name pattern must be excluded from the "src" files, use
-;;;   # the "excludesrc" directive. For example this will exclude all test
-;;;   # drivers:
-;;;   excludesrc \.t\.cpp$
-;;;
-;;; In addition, the creation of a compilation database uses these variables:
-;;; * `rtags-compile-includes-base-dir': set this to your workspace path
-;;;   if you want to use relative paths in `compile_includes' (by default any
-;;;   relative path in this file is relative to the project root dir).
-;;; * `rtags-clang-command-prefix': default is "/usr/bin/clang++ -Irelative"
-;;;   (Note that rtags ignores the clang++ command because it uses libclang).
-;;; * `rtags-clang-command-suffix': default is "-c -o".
-;;;
-;;; Once you have created the `compile_includes' file, run the command
-;;; M-x `rtags-create-compilation-database'. It will:
-;;; - Prompt for the project root dir
-;;; - Scan all source dirs and include dirs
-;;; - Create `compilation_database.json' (it overwrites without asking)
-;;; - Ask if you want to reload it (if rdm is running).
+;;;    `compile_commands.json'. For that, use CMake or use module
+;;;     init-rtags-cdb.el.
 ;;;
 ;;; Diagnostics mode
 ;;; ================
-;;; "C-c r D" or M-x `rtags-diagnostics' starts a subprocess that highlight
-;;; compilation errors and warnings in the code (using flymake). Click on a
-;;; highlighted region to view the error message. Use "C-c r d" (lowercase d)
-;;; to display the diagnostics buffer containing the error messages without
-;;; forcing a reparsing of the current file.
-;;; M-x `rtags-stop-diagnostics' to terminate the subprocess.
+;;; RTags diagnostics is a subprocess that highlight compilation errors and
+;;; warnings in the code (using flymake). Click on a highlighted region to view
+;;; the error message. Use "C-c r d" (lowercase d) to display the diagnostics
+;;; buffer containing the error messages without forcing a reparsing of the
+;;; current file.
+;;;
+;;; It is started by default, but you can control it with:
+;;; - "C-c r D" or M-x `rtags-diagnostics' to start,
+;;; - "C.c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
 (with-no-warnings (require 'cl))
 (require 'init-lib)
+(require 'init-prefs)
 (require 'rtags)
 (require 'rtags-ac)
 (require 'auto-complete-c-headers)
@@ -237,7 +168,6 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
                               (when rtags-symbolnames-case-insensitive "-I"))
                (setq found-it (rtags-handle-results-buffer nil nil fn))))))
     found-it))
-
 
 ;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
@@ -304,29 +234,14 @@ open-buffer is true."
                        (start-process "rdm" buffer "rdm"))))
       (message "Started rdm - PID %d" (process-id process)))))
 
-(defun rtags-start-rdm ()
+(defun rtags-start ()
   "Start the rdm deamon in a subprocess and display output in a
-buffer"
+buffer. Also start the RTag diagostics mode."
   (interactive)
+  (setq rtags-autostart-diagnostics t)
   (exordium-rtags-start-rdm-impl t))
 
-(defun rtags-show-rdm-buffer ()
-  "Show/hide the rdm log buffer"
-  (interactive)
-  (let* ((buffer-name "*RTags rdm*")
-         (buffer (get-buffer buffer-name))
-         (window (and buffer (get-buffer-window buffer))))
-    (cond (window
-           (bury-buffer buffer)
-           (delete-window window))
-          (buffer
-           (display-buffer buffer))
-          (t
-           (message "Rtags rdm is not running (use M-x rtags-start-rdm)")))))
-
-(define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
-
-(defun rtags-quit-all ()
+(defun rtags-stop ()
   "Stop both RTags diagnostics and rdm, if they are running."
   (interactive)
   ;; Stop RTags Diagnostics and kill its buffer without prompt
@@ -342,8 +257,25 @@ buffer"
     (let ((kill-buffer-query-functions nil))
       (kill-buffer "*RTags rdm*"))))
 
-;; Mode for rdm log output
-;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
+(defun rtags-show-rdm-buffer ()
+  "Show/hide the rdm log buffer"
+  (interactive)
+  (let* ((buffer-name "*RTags rdm*")
+         (buffer (get-buffer buffer-name))
+         (window (and buffer (get-buffer-window buffer))))
+    (cond (window
+           (bury-buffer buffer)
+           (delete-window window))
+          (buffer
+           (display-buffer buffer))
+          (t
+           (message "Rtags rdm is not running (use M-x rtags-start)")))))
+
+(define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
+
+
+;;; Mode for rdm log output
+;;; See http://ergoemacs.org/emacs/elisp_syntax_coloring.html
 
 (defsubst rtags-rdm-record-search-forward (&optional regexp bound)
   "Search forward from point for a log line matching REGEXP.
@@ -398,7 +330,7 @@ sets `match-data' to the entire match."
   (setq font-lock-defaults '(rtags-rdm-mode-keywords t t)))
 
 
-;;; Display the diagnostics buffer without force reparsing
+;;; Using the diagnostics buffer
 
 (defun rtags-show-diagnostics-buffer ()
   "Show/hide the diagnostics buffer in a dedicated
@@ -432,239 +364,6 @@ window (similar to `rtags-diagnostics' but without reparsing)."
              (not (eq (process-status rtags-diagnostics-process) 'signal)))
         (> (buffer-size diag-buff) 0)
       nil)))
-
-
-;;; Create a compilation database
-
-;; Override these variables in your .emacs as needed:
-
-(defvar rtags-clang-command-prefix
-  "/usr/bin/clang++ "
-  "Compilation command prefix to use for creating compilation
-  databases. Override this variable for your local environment.")
-
-(defvar rtags-clang-command-suffix
-  " -c -o "
-  "Compilation command suffix to use for creating compilation
-  databases. Override this variable for you local environment.")
-
-(defvar rtags-compile-includes-base-dir
-  nil
-  "If non-nil, base directory to use for all relative paths in
-  `compile_include'. Use nil for absolute paths.")
-
-;;; Functions
-
-(defun rtags-load-compile-includes-file-content (compile-includes-file)
-  "Read and parse the specified compile-includes file, and return
-a list of five sublists:
-- The list of `src' directives,
-- The list of `include' directives,
-- The list of `exclude' directives,
-- The list of `excludesrc' directives,
-- The list of `macro' directives."
-  (let ((line-number      1)
-        (value            nil)
-        (src-list         ())
-        (include-list     ())
-        (exclude-list     ())
-        (exclude-src-list ())
-        (macro-list       ()))
-    (dolist (record (exordium-read-file-lines compile-includes-file))
-      (incf line-number)
-      (setq value (second (split-string record " ")))
-      (cond ((or (eq "" record)
-                 (string-prefix-p "#" record))
-             ;; Comment or empty string; skip it
-             nil)
-            ((string-prefix-p "src" record)
-             (when value
-               (setq src-list (cons value src-list))))
-            ((string-prefix-p "include" record)
-             (when value
-               (setq include-list (cons value include-list))))
-            ((string-prefix-p "excludesrc" record)
-             (when value
-               (setq exclude-src-list (cons value exclude-src-list))))
-            ((string-prefix-p "exclude" record)
-             (when value
-               (setq exclude-list (cons value exclude-list))))
-            ((string-prefix-p "macro" record)
-             (when value
-               (setq macro-list (cons value macro-list))))
-            (t
-             (error "Syntax error line %d: %s" line-number record))))
-    (list src-list include-list exclude-list exclude-src-list macro-list)))
-
-(defun rtags-is-excluded-p (path excluded-regexs)
-  "Return non-nil if the specified path matches any regex in
-the list of excluded regexs"
-  (catch 'return
-    (dolist (excluded excluded-regexs)
-      (when (string-match excluded path)
-        (throw 'return t)))
-    (throw 'return nil)))
-
-(defun rtags-directory-contains-sources-p (path)
-  "Return non-nil if the specified path contains any C/C++ source
-  or header file"
-  (directory-files path nil ".*\\.\\(c\\|cpp\\|h\\|hpp\\)$" nil))
-
-(defun rtags-scan-subdirectories (dir excluded-regexs)
-  "Return a list of subdirectories under the specified root dir,
-excluding any that match any regex in the specified excluded
-regex list."
-  (let ((result ()))
-    (dolist (subdir (cons dir (exordium-directory-tree dir)))
-      (when (and (rtags-directory-contains-sources-p subdir)
-                 (not (rtags-is-excluded-p subdir excluded-regexs)))
-        (setq result (cons subdir result))))
-    result))
-
-(defun rtags-load-compile-includes-file (dir)
-  "Loads the `compile_includes' file from the specified directory
-and returns its content as a property list, or nil if the file
-could not be loaded. The property list looks like this:
-'(:src-dirs (...)
-  :include-dirs (...)
-  :exclude-src (...)
-  :macros (...))"
-  (let ((compile-includes-file (concat (file-name-as-directory dir)
-                                       "compile_includes")))
-    (cond ((file-exists-p compile-includes-file)
-           ;; Parse the file and return 3 lists: src, include, exclude
-           (let ((directives (rtags-load-compile-includes-file-content
-                              compile-includes-file)))
-             (let ((src-dirs    (first directives))
-                   (incl-dirs   (second directives))
-                   (excl-regexs (third directives))
-                   (excl-src    (fourth directives))
-                   (macros      (fifth directives))
-                   (result      ()))
-               ;; Scan src to get all subdirs that do not match the excludes
-               (let (dirs)
-                 (dolist (path src-dirs)
-                   (unless (file-name-absolute-p path)
-                     (setq path (expand-file-name path
-                                                  (or rtags-compile-includes-base-dir
-                                                      dir))))
-                   (message "Scanning source dir: %s ..." path)
-                   (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
-                 (setq result (list :src-dirs dirs)))
-               ;; Same with includes
-               (let (dirs)
-                 (dolist (path incl-dirs)
-                   (setq path (expand-file-name path rtags-compile-includes-base-dir))
-                   (message "Scanning include dir: %s ..." path)
-                   (setq dirs (nconc dirs (rtags-scan-subdirectories path excl-regexs))))
-                 (setq result (nconc result (list :include-dirs dirs))))
-               ;; Add exclude-src and macros into the result
-               (setq result (nconc result (list :exclude-src excl-src
-                                                :macros macros)))
-               ;; Done
-               (message "Project has %d source dirs and %d include dirs"
-                        (length (plist-get result :src-dirs))
-                        (length (plist-get result :include-dirs)))
-               result)))
-          (t
-           (message "No compilation_includes file")
-           nil))))
-
-(defun rtags-create-compilation-command (plist)
-  "Returns a string containing the clang compilation command to
-use for the compilation database, using the content of PLIST."
-  (let ((command rtags-clang-command-prefix))
-    ;; -D options:
-    (dolist (m (plist-get plist :macros))
-      (setq command (concat command " -D" m)))
-    ;; -I options
-    (dolist (path (plist-get plist :src-dirs))
-      (setq command (concat command " -I" path)))
-    (dolist (path (plist-get plist :include-dirs))
-      (setq command (concat command " -I" path)))
-    (concat command rtags-clang-command-suffix)))
-
-(defun rtags-prompt-compilation-database-dir ()
-  "Prompts the user for the directory where to generate the
-compilation database. If we're in a projectile project, propose
-the project root first, and prompt for a dir if the user
-declines. Returns the directory string."
-  (let ((project-root (and (featurep 'projectile)
-                           (projectile-project-root))))
-    (if (and project-root
-             (y-or-n-p (format "Create at project root (%s)?" project-root)))
-        project-root
-      (read-directory-name "Project root: "))))
-
-(defun rtags-create-compilation-database (dir)
-  "Regenerates `compile_commands.json' from `compile_includes' in
-the specified directory."
-  (interactive (list (rtags-prompt-compilation-database-dir)))
-  (let ((plist (rtags-load-compile-includes-file dir)))
-    (when plist
-      (let ((dbfilename (concat (file-name-as-directory dir)
-                                "compile_commands.json"))
-            (compile-command (rtags-create-compilation-command plist))
-            (exclude-files (plist-get plist :exclude-src))
-            (num-files 0))
-        (with-temp-buffer
-          (insert "[")
-          (newline)
-          ;; Note: dynamic binding of variable default-directory
-          (dolist (default-directory (plist-get plist :src-dirs))
-            (message "Processing directory: %s ..." default-directory)
-            (let ((files (mapcan #'file-expand-wildcards
-                                 exordium-rtags-source-file-extensions))
-                  ;; rdm does not like directories starting with "~/"
-                  (dirname (if (string-prefix-p "~/" default-directory)
-                               (substitute-in-file-name
-                                (concat "$HOME/" (substring default-directory 2)))
-                             default-directory)))
-              (dolist (file files)
-                (unless (rtags-is-excluded-p file exclude-files)
-                  (incf num-files)
-                  (insert "  { \"directory\": \"" dirname "\",")
-                  (newline)
-                  (insert "    \"command\":   \""
-                          compile-command
-                          (file-name-sans-extension file) ".o "
-                          file "\",")
-                  (newline)
-                  (insert "    \"file\":      \"" file "\" },")
-                  (newline)))))
-          (insert "];")
-          (newline)
-          (write-region (buffer-string) nil dbfilename))
-        (when (yes-or-no-p
-               (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
-          ;; FIXME: rtags-call-rc does not work if you don't specify a current buffer?
-          ;; That seems broken.
-          (rtags-call-rc :path t :output nil :unsaved (current-buffer) "-J" dir)
-          (message "Reloaded (check rdm's logs)"))))))
-
-;; Mode for compile_includes
-
-(defconst rtags-compile-includes-mode-keywords
-  ;; Words and associated face.
-  `(( "\\(^src\\|^include\\|^excludesrc\\|^exclude\\|^macro\\)"
-     . font-lock-keyword-face)))
-
-(defconst rtags-compile-includes-mode-syntax-table
-  ;; Defines a "comment" as anything that starts with hash tag
-  (let ((synTable (make-syntax-table)))
-    (modify-syntax-entry ?\# "< b" synTable)
-    (modify-syntax-entry ?\n "> b" synTable)
-    synTable))
-
-(define-derived-mode rtags-compile-includes-mode fundamental-mode
-  "compile-includes"
-  "Mode for editing compile_includes files"
-  :syntax-table rtags-compile-includes-mode-syntax-table
-  ;; Syntax highlighting:
-  (setq font-lock-defaults '((rtags-compile-includes-mode-keywords))))
-
-(add-to-list 'auto-mode-alist
-             '("compile_includes" . rtags-compile-includes-mode))
 
 
 ;;; RTags auto-complete (EXPERIMENTAL)

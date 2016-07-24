@@ -314,11 +314,14 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-yasnippet
   (require 'init-yasnippet))
 (require 'init-gdb)
+
+;;; RTags
 (require 'init-rtags)
 (when exordium-rtags-auto-complete
   (rtags-auto-complete))
 (require 'init-rtags-helm)
 (require 'init-rtags-cmake)
+(require 'init-rtags-cdb)
 
 (update-progress-bar)
 

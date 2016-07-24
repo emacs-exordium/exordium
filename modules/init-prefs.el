@@ -303,19 +303,19 @@ be a list of strings."
   :group 'exordium
   :type  'sexp)
 
-(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
-  "List of source file extension patterns for creating a
-  compilation database using command
-  `rtags-create-compilation-database'. Not needed for CMake projects."
-  :group 'exordium
-  :type  'sexp)
-
 (defcustom exordium-rtags-auto-complete nil
   "Whether RTags is used as the source for auto-complete in C++ mode."
   :group 'exordium
   :type  'boolean)
 
-;;; See init-rtags-cmake.el
+;;; See init-rtags-helm.el
+(defcustom exordium-rtags-helm-everywhere t
+  "Whether RTags uses Helm to display list of results, rather
+  than its own UI"
+  :group 'exordium
+  :type  'boolean)
+
+;;; see init-rtags-cmake.el
 (defcustom exordium-rtags-cmake nil
   "Whether RTags is used automatically for CMake-enabled projects"
   :group 'exordium
@@ -326,6 +326,14 @@ be a list of strings."
   repo. '<arch>' is replaced by the local machine's architecture."
   :group 'exordium
   :type  'string)
+
+;;; See init-rtags-cdb.el
+(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
+  "List of source file extension patterns for creating a
+  compilation database using command
+  `rtags-create-compilation-database'. Not needed for CMake projects."
+  :group 'exordium
+  :type  'sexp)
 
 
 ;;; See init-helm.el

@@ -9,6 +9,7 @@
 
 (require 'rtags)
 (require 'helm)
+(require 'init-prefs)
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"
@@ -20,7 +21,7 @@
   :group 'rtags
   :type 'boolean)
 
-(when exordium-helm-everywhere
+(when (or exordium-helm-everywhere exordium-rtags-helm-everywhere)
   (setq rtags-helm-show-variables t)
   (setq rtags-helm-show-enums t)
   (setq rtags-use-helm t))

@@ -422,45 +422,7 @@ mapped) file-based index. The client for "rdm" is command-line client called
 "rc". RTags uses a single index for all symbols, but it allows for loading and
 unloading projects individually.
 
-To use it, first start the daemon:
-
-```bash
-$ rdm
-```
-
-This will start the daemon on the foreground, using a number of concurrent "rp"
-jobs that is function of the number of CPUs on the local machine. It starts by
-reading the saved project indices in `~/.rtags` if any. By default it logs to
-the console but you can make it log to a file instead with `-L file` or make it
-silent with `-S`. There are many options; use `--help` to see the list.  You
-can also create a file `~/.rdmrc` containing the default command line
-arguments.
-
-Alternatively you can run rdm as an Emacs subprocess: <kbd>M-x
-rtags-start-rdm</kbd>, with logs going into a buffer (in color!). Stop it with
-<kbd>M-x rtags-quit-rdm</kbd> or <kbd>M-x rtags-quit-all</kbd>.
-
-#### Controlling rdm
-
-rdm stores project indices into a directory `~/.rtags` by default, and reloads
-them as needed. You can change the location using `~/.rdmrc` and it is
-recommended to store it into an SSD drive. By default rc and rdm communicate
-with each other using a socket file `~/.rdm`.
-
-Command            | Description
--------------------|-----------------------------------------------------------
-`rc -w`            | List projects in the index.
-`rc -w proj`       | Switch to project "proj" (a regex).
-`rc -W proj`       | Unload and delete project "proj".
-`rc -J .`          | Reload the compilation DB from the current directory.
-`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
-`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
-`rc -q`            | Shutdown rdm.
-
-Note that a job may crash while trying to index a file. If it does, rdm will
-retry a few times and then give up with the file it cannot parse.
-
-rdm knows how to compile your project with a CLang
+The rdm daemon knows how to compile your project with a CLang
 [compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html),
 which is a file named `compile_commands.json`. The compilation database contains one
 entry for each file to compile, like the following (simplified for clarity):
@@ -477,7 +439,68 @@ entry for each file to compile, like the following (simplified for clarity):
 ```
 
 Basically the compilation database contains the list of files to compile and
-the exact command to compile them.
+the exact command to compile them. There are several ways to generate this
+file:
+
+* RTags provides compiler wrapper scripts which tell rdm to parse and index
+  each compilation unit before it gets compiled. While this is the easiest way
+  (all you need to do is to build), the inconvenient is that you need to build
+  before you can use the latest index, and any unused header won't be indexed.
+* You can build with CMake: it generates a compilation database for you each
+  time you build.
+* Exordium provides a command to generate the compilation database by scanning
+  source directories. It requires you to write a simple text file indicating
+  where these source directories are.
+
+The first thing you need to do is to build and install RTags: refer to the
+RTags documentation. The sections below explain how to use it.
+
+#### Using RTags from the shell
+
+First start the daemon:
+
+```bash
+$ rdm
+```
+
+This will start the daemon on the foreground, using a number of concurrent "rp"
+jobs that is function of the number of CPUs on the local machine. By default it
+logs to the console but you can make it log to a file instead with `-L file` or
+make it silent with `-S`. There are many options; use `--help` to see the list.
+
+RTags stores project indices into a directory `~/.rtags` by default, and
+reloads them as needed. It watches for file changes using *inotify* and
+refreshes the index automatically. Note that you can change the location of the
+`.rtags` directory with a `~/.rdmrc` file; it is recommended to store it into a
+local SSD drive and avoid NFS-mounted directories.
+
+By default rc and rdm communicate with each other using a socket file `~/.rdm`,
+but there are other ways: refer to the RTags documentation.
+
+The main commands are:
+
+Command            | Description
+-------------------|-----------------------------------------------------------
+`rc -w`            | List projects in the index.
+`rc -w proj`       | Switch to project "proj" (a regex).
+`rc -W proj`       | Unload and delete project "proj".
+`rc -J .`          | Reload the compilation DB from the current directory.
+`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
+`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
+`rc -q`            | Shutdown rdm.
+
+Note that a job may crash while trying to index a file. If it does, rdm will
+retry a few times and then give up with the file it cannot parse.
+
+#### Using RTags from Emacs
+
+Alternatively you can run rdm as an Emacs subprocess. The logs will go into a
+buffer (in color!).
+
+Command                    | Description
+---------------------------|---------------------------------------------------
+<kbd>M-x rtags-start</kbd> | Start rdm and RTags diagnostics.
+<kbd>M-x rtags-stop</kbd>  | Stop rdm and Rtags diagnostics.
 
 #### CMake projects
 
@@ -489,21 +512,30 @@ compilation database for you every time you build. Adding this line in your
 (setq exordium-rtags-cmake t)
 ```
 
-Note that Exordium assumes that your build directory is in the project root
-with a name like `cmake.bld/<arch>` where `<arch>` is the `uname` of your
-OS. If this is not the case you can change it like so in `~/.emacs.d/prefs.el`:
+In addition you may set the following variables:
 
-```lisp
-(setq exordium-rtags-cmake-build-dir "build")
-```
+* Exordium assumes that your build directory is in the project root with a name
+  like `cmake.bld/<arch>` where `<arch>` is the `uname` of your OS. If this is
+  not the case you can change it like so in `~/.emacs.d/prefs.el`:
 
-With that, Exordium will automatically detect if your project is CMake-enabled
-when you open a C++ file, by looking for `CMakeLists.txt` files along the path
-from the root of your project to the location of the file you open (your
-project must be a git repo). If this is a CMake project, Exordium will start
-rdm if it is not running, and index the project using the CMake-generated
-compilation database in the build directory. It should just work out of the
-box.
+    ```lisp
+    (setq exordium-rtags-cmake-build-dir "build")
+    ```
+
+* Exordium runs rdm with no argument by default. You can add arguments by
+  setting this variable in `~/.emacs.d/prefs.el`:
+
+    ```lisp
+    (setq exordium-rtags-rdm-args
+          '("--isystem" "/opt/bb/lib64/clang/3.6.2/include -DBAS_NOBBENV"))
+    ```
+
+Exordium will automatically detect if your project is CMake-enabled when you
+open a C++ file, by looking for `CMakeLists.txt` files along the path from the
+root of your project to the location of the file you open (your project must be
+a git repo). If this is a CMake project, Exordium will start rdm if it is not
+running, and index the project using the CMake-generated compilation database
+in the build directory. It should just work out of the box.
 
 Note: what it does not do yet is to rebuild the compilation DB when you add a
 new file from Emacs.
@@ -640,15 +672,11 @@ Keybinding         | Description
 #### Using Flymake
 
 "Rtags diagnostics" is a way to get compilation warnings and errors from rdm,
-and display them using Flymake in buffers. You an enable it by default by
-adding this line in `~/.emacs.d/prefs.el`:
+and display them using Flymake in buffers. It is enabled by default if you run
+rdm from Emacs. Otherwise you can turn it on manually with `M-x
+rtags-diagnostics` bound to <kbd>C-c r D</kbd>.
 
-```lisp
-(setq rtags-autostart-diagnostics t)
-```
-
-Otherwise you can turn it on manually with `M-z rtags-diagnostics` bound to
-<kbd>C-c r D</kbd>. By default Powerline displays the name of the buffer in
+By default Powerline displays the name of the buffer in
 green if the project compiles and in red if there are errors:
 
 ![RTags diagnostics](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_diagnostics.png)
