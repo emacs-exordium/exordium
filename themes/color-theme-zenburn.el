@@ -304,6 +304,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,zenburn-green :foreground ,zenburn-bg)
                                   `(:underline (:color ,zenburn-green :style wave))))))
+     (rtags-skippedline ((t (:background ,zenburn-bg+1))))
 
      ;; flyspell
      (flyspell-duplicate

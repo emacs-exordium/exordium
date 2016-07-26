@@ -174,6 +174,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,green :foreground ,back)
                                   `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,base01))))
 
      ;; Org
      (org-hide ((t (:foreground ,base03))))

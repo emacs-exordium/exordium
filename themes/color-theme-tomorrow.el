@@ -124,7 +124,7 @@ names to which it refers are bound."
      (bold-italic ((t (:slant italic :weight bold))))
      (underline ((t (:underline t))))
      (italic ((t (:slant italic))))
-     (shadow ((t (:background ,current-line))))
+     (shadow ((t (:background ,black))))
      (success ((t (:foreground ,green))))
      (error ((t (:foreground ,red))))
      (warning ((t (:foreground ,orange))))
@@ -266,7 +266,8 @@ names to which it refers are bound."
                                  `(:underline (:color ,orange :style wave))))))
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,green :foreground ,background)
-                                  `(:underline (:color ,green :style wave))))))
+                             `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,black))))
 
      ;; Magit
      (magit-branch ((t (:foreground ,green))))

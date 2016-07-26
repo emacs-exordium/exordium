@@ -223,6 +223,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,green :foreground ,monokai-bg)
                                   `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,monokai-hl-line))))
 
      ;; cua
      (cua-global-mark ((t (:background ,yellow :foreground ,monokai-bg))))
