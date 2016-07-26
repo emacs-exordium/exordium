@@ -527,7 +527,7 @@ In addition you may set the following variables:
 
     ```lisp
     (setq exordium-rtags-rdm-args
-          '("--isystem /opt/bb/lib64/clang/3.6.2/include" "-DBAS_NOBBENV"))
+          "--isystem /opt/bb/lib64/clang/3.6.2/include -DBAS_NOBBENV")
     ```
 
 You can also specify where the build directory is using a `.rtags` file at the

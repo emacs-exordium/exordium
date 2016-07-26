@@ -227,8 +227,9 @@ open-buffer is true."
   (let ((buffer (get-buffer-create "*RTags rdm*")))
     (when open-buffer
       (switch-to-buffer buffer))
-    (rtags-rdm-mode)
-    (read-only-mode)
+    (with-current-buffer buffer
+      (rtags-rdm-mode)
+      (read-only-mode))
     (let ((process (if exordium-rtags-rdm-args
                        (start-process "rdm" buffer "rdm" exordium-rtags-rdm-args)
                        (start-process "rdm" buffer "rdm"))))
