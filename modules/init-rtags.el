@@ -309,10 +309,15 @@ sets `match-data' to the entire match."
   "Search forward from point to BOUND for note."
   (rtags-rdm-record-search-forward "\\(note:\\)" bound))
 
+(defun rtags-rdm-match-record-done (bound)
+  "Search forward from point to BOUND for Jobs."
+  (rtags-rdm-record-search-forward "\\(Jobs\\)" bound))
+
 (defconst rtags-rdm-mode-keywords
   (list '(rtags-rdm-match-record-error 0 'compilation-error)
         '(rtags-rdm-match-record-warning 0 'compilation-warning)
-        '(rtags-rdm-match-record-note 0 'compilation-info))
+        '(rtags-rdm-match-record-note 0 'compilation-info)
+        '(rtags-rdm-match-record-done 0 'underline))
   "Describes how to syntax highlight keywords in rtags-rdm-mode.")
 
 (defconst rtags-rdm-mode-syntax-table
