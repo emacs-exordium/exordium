@@ -182,7 +182,8 @@ otherwise use one of the following:
 - monokai
 - solarized-light, solarized-dark
 - zenburn
-- material"
+- material
+- atom-one"
   :group 'exordium
   :type  'symbol)
 

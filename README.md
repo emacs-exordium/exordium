@@ -922,6 +922,7 @@ following will give you this:
 ;; - monokai
 ;; - zenburn
 ;; - material
+;; - atom-one
 (setq exordium-theme 'material)
 
 ;; Powerline theme:
