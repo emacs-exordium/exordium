@@ -95,7 +95,6 @@ names to which it refers are bound."
      (font-lock-constant-face ((t (:foreground ,light-green-500))))
      (font-lock-doc-face ((t (:foreground ,comment
                                    :slant ,(if exordium-material-italics 'italic 'normal)))))
-     (font-lock-doc-string-face ((t (:foreground ,comment))))
      (font-lock-function-name-face ((t (:foreground ,light-blue-100))))
      (font-lock-keyword-face ((t (:foreground ,yellow))))
      (font-lock-negation-char-face ((t (:foreground ,blue))))
@@ -162,7 +161,7 @@ names to which it refers are bound."
      ;; Search
      (match ((t (:foreground ,blue :background ,background :inverse-video t))))
      (isearch ((t (:foreground ,yellow :background ,background :inverse-video t :inherit nil))))
-     (isearch-lazy-highlight-face
+     (lazy-highlight
       ((t (:foreground ,light-blue-200 :background ,background :inverse-video t))))
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))

@@ -144,7 +144,6 @@ names to which it refers are bound."
      (font-lock-comment-face ((t (:foreground ,comment :slant italic))))
      (font-lock-constant-face ((t (:foreground ,aqua))))
      (font-lock-doc-face ((t (:foreground ,comment :slant italic))))
-     (font-lock-doc-string-face ((t (:foreground ,yellow))))
      (font-lock-function-name-face ((t (:foreground ,blue :weight bold))))
      (font-lock-keyword-face ((t (:foreground ,purple :weight bold))))
      (font-lock-negation-char-face ((t (:foreground ,green))))
@@ -215,7 +214,7 @@ names to which it refers are bound."
      ;; Search
      (match ((t (:foreground ,blue :background ,background :inverse-video t))))
      (isearch ((t (:foreground ,yellow :background ,background :inverse-video t))))
-     (isearch-lazy-highlight-face
+     (lazy-highlight
       ((t (:foreground ,aqua :background ,background :inverse-video t))))
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))
@@ -235,9 +234,9 @@ names to which it refers are bound."
 
      ;; Helm
      (helm-header ((t (:foreground ,green :background ,background
-                            :underline nil :box nil))))
+                       :underline nil :box nil))))
      (helm-source-header ((t (:foreground ,background :background ,purple
-                                   :underline nil :weight bold :box nil))))
+                              :underline nil :weight bold :box nil))))
      (helm-selection ((t (:background ,selection :underline nil))))
      (helm-selection-line ((t (:background ,selection))))
      (helm-visible-mark ((t (:foreground ,background :background ,yellow))))
@@ -252,20 +251,20 @@ names to which it refers are bound."
      ;; Compilation (most faces politely inherit from 'success, 'error, 'warning etc.)
      (compilation-column-number ((t (:foreground ,yellow))))
      (compilation-line-number ((t (:foreground ,yellow))))
-     (compilation-message-face ((t (:foreground ,blue))))
+     (compilation-message-face ((t (:foreground ,blue)))) ; TODO: does not exist
      (compilation-mode-line-exit ((t (:foreground ,green))))
      (compilation-mode-line-fail ((t (:foreground ,red))))
      (compilation-mode-line-run ((t (:foreground ,blue))))
 
      ;; Rtags
      (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,red :foreground ,background)
-                                `(:underline (:color ,red :style wave))))))
+                             `(:background ,red :foreground ,background)
+                           `(:underline (:color ,red :style wave))))))
      (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,orange :foreground ,background)
-                                 `(:underline (:color ,orange :style wave))))))
+                              `(:background ,orange :foreground ,background)
+                            `(:underline (:color ,orange :style wave))))))
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,green :foreground ,background)
+                               `(:background ,green :foreground ,background)
                              `(:underline (:color ,green :style wave))))))
      (rtags-skippedline ((t (:background ,black))))
 
@@ -383,7 +382,7 @@ names to which it refers are bound."
       ((t (:foreground unspecified :inherit font-lock-keyword-face))))
      (nxml-delimited-data-face
       ((t (:foreground unspecified :inherit font-lock-string-face))))
-     (rng-error-face ((t (:underline ,red))))
+     (rng-error-face ((t (:underline ,red))))  ; TODO: does not exist
 
      ;;; Deft
      (deft-title-face ((t (:foreground ,green :weight bold))))

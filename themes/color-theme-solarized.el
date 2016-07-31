@@ -81,7 +81,6 @@ names to which it refers are bound."
      (font-lock-variable-name-face ((t (:foreground ,blue))))
      (font-lock-warning-face ((t (:foreground ,red :weight bold))))
      (font-lock-doc-face ((t (:foreground ,base01 :slant italic))))
-     (font-lock-doc-string-face ((t (:foreground ,base01 :slant italic))))
      (font-lock-color-constant-face ((t (:foreground ,green))))
      (font-lock-comment-delimiter-face ((t (:foreground ,base01 :slant italic))))
      (font-lock-preprocessor-face ((t (:foreground ,orange))))
