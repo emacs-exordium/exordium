@@ -110,6 +110,8 @@ names to which it refers are bound."
      (link ((t (:foreground ,atom-one-dark-blue :underline t :weight bold))))
      (link-visited ((t (:foreground ,atom-one-dark-blue :underline t :weight normal))))
 
+     (menu (t ((:foreground ,atom-one-dark-fg :background ,atom-one-dark-bg-1))))
+
      (query-replace ((t (:inherit (isearch)))))
      (minibuffer-prompt ((t (:foreground ,atom-one-dark-silver))))
 
