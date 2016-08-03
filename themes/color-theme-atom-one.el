@@ -418,6 +418,8 @@ names to which it refers are bound."
      (highlight-80+ ((t (:background ,atom-one-dark-bg-hl))))
 
      ;; TODO: Lisp
+     (eval-sexp-fu-flash ((t (:background ,atom-one-dark-orange-1 :foreground ,atom-one-dark-bg))))
+     (eval-sexp-fu-flash-error ((t (:background ,atom-one-dark-red-1 :foreground ,atom-one-dark-bg))))
 
      ;; Auto-complete
      (ac-completion-face ((t (:background ,atom-one-dark-bg-1))))
