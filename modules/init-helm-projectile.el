@@ -33,6 +33,14 @@
    'projectile-find-file 'helm-projectile
    projectile-mode-map))
 
+;; Prevent Projectile from indexing the build directory.
+(when exordium-rtags-cmake-build-dir
+  (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
+    ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
+    (when top-level
+      (setq projectile-globally-ignored-directories
+            (cons top-level projectile-globally-ignored-directories)))))
+
 
 ;;; Do not show these files in helm buffer
 (add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
