@@ -20,6 +20,7 @@
 (require 'helm-projectile)
 (require 'helm-swoop)
 (require 'project-explorer)
+(require 'init-prefs)
 
 (projectile-global-mode)
 (global-set-key [(control c)(h)] (function helm-projectile))
