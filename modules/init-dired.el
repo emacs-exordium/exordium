@@ -1,15 +1,20 @@
 ;;;; Configuration of dired, dired+, and wdired
 
+(require 'dired)
+(require 'wdired)
+(require 'dired-x)
+(require 'init-lib)
+
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
 
 (autoload 'dired-jump-other-window "dired-x"
   "Like \\[dired-jump] (dired-jump) but in other window." t)
 
+;; FIXME: exordium-define-key does not work with those:
 (define-key global-map "\C-x\C-j" 'dired-jump)
 (define-key global-map "\C-x4\C-j" 'dired-jump-other-window)
 
-(require 'wdired)
 (add-hook 'dired-load-hook
           (lambda ()
             ;; Set dired-x global variables here.  For example:

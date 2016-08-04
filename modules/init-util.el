@@ -120,8 +120,8 @@
 ;;; Goto last change
 
 (require 'goto-chg)
-(define-key global-map [(control x)(control \\)] 'goto-last-change)
-(define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
+(exordium-define-key global-map 'goto-last-change)
+(exordium-define-key global-map  'goto-last-change-reverse)
 
 
 ;;; Insert date/time
@@ -225,7 +225,7 @@ With argument, do this that many times."
   (interactive "p")
   (delete-region (point) (progn (forward-word arg) (point))))
 
-(define-key global-map [(meta d)] 'delete-word)
+(exordium-define-key global-map 'delete-word)
 
 (defun backward-delete-word (arg)
   "Delete characters backward until encountering the end of a word.
@@ -233,7 +233,7 @@ With argument, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(define-key global-map [(meta backspace)] 'backward-delete-word)
+(exordium-define-key global-map 'backward-delete-word)
 
 
 ;;; Moving between words
@@ -245,16 +245,18 @@ With argument, do this that many times."
 ;;; necessarily bring you back where you started. Here we redefine M-left
 ;;; and M-right to move following the syntax: the motion is slower but
 ;;; symetrical. C-Left and C-Right are left unchanged (move by words).
+(defun exordium-right-word (arg)
+  "Equivalent of `right-word' but following syntax."
+  (interactive "p")
+  (forward-same-syntax arg))
 
-(define-key global-map [(meta right)]
-  #'(lambda (arg)
-    (interactive "p")
-    (forward-same-syntax arg)))
+(defun exordium-left-word (arg)
+  "Equivalent of `left-word' but following syntax."
+  (interactive "p")
+  (forward-same-syntax (- arg)))
 
-(define-key global-map [(meta left)]
-  #'(lambda (arg)
-      (interactive "p")
-      (forward-same-syntax (- arg))))
+(exordium-define-key global-map 'exordium-right-word)
+(exordium-define-key global-map 'exordium-left-word)
 
 
 ;;; FCI: 80-column ruler bound to Ctrl-|
@@ -272,10 +274,12 @@ With argument, do this that many times."
     (setq fci-dash-pattern 0.5))
   (setq fci-rule-width 1)
 
-  (define-key global-map [(control |)]
-    #'(lambda ()
-        (interactive)
-        (fci-mode (if fci-mode 0 1))))
+  (defun exordium-toggle-fci ()
+    "Turn the fill-column indicator on and off"
+    (interactive)
+    (fci-mode (if fci-mode 0 1)))
+
+  (exordium-define-key global-map 'exordium-toggle-fci)
 
   (when (eq exordium-fci-mode :always)
     (define-globalized-minor-mode global-fci-mode fci-mode
@@ -322,8 +326,7 @@ With argument, do this that many times."
 ;;; C-c j => asks for a character, then one or 2 keys to jump.
 ;;; Note: Avy has other commands, this is the most useful.
 
-(global-set-key [(control c)(j)] #'avy-goto-word-or-subword-1)
-(global-set-key [(control ?\')] 'avy-goto-word-or-subword-1)
+(exordium-define-key global-map 'avy-goto-word-or-subword-1)
 
 
 ;;; Finding lines that are too long (according to some code styles).

@@ -17,6 +17,7 @@
 
 ;;; Magit
 (require 'magit)
+(require 'init-lib)
 
 ;;; Keys
 (define-prefix-command 'exordium-git-map nil)

@@ -1,6 +1,7 @@
 ;; Shared prog-mode configuration
 
 (require 'init-prefs)
+(require 'init-lib)
 
 (define-minor-mode exordium-show-trailing-whitespace-mode
   "Enables `show-trailing-whitespace'."
@@ -40,12 +41,11 @@
 ;;; Fill comments, comment regions
 (require 'newcomment)
 (setq comment-auto-fill-only-comments 1)
-(define-key prog-mode-map (kbd "\C-c\C-c") (function comment-region))
-
+(exordium-define-key prog-mode-map 'comment-region)
 
 ;;; Step through compile errors
-(global-set-key (quote [f10]) (quote next-error))
-(global-set-key (quote [(control f10)]) (quote previous-error))
+(exordium-define-key global-map 'next-error)
+(exordium-define-key global-map 'previous-error)
 
 
 

@@ -21,11 +21,12 @@
 (require 'helm-swoop)
 (require 'project-explorer)
 (require 'init-prefs)
+(require 'init-lib)
 
 (projectile-global-mode)
-(global-set-key [(control c)(h)] (function helm-projectile))
-(global-set-key [(control c)(H)] (function helm-projectile-switch-project))
-(global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
+(exordium-define-key global-map 'helm-projectile)
+(exordium-define-key global-map 'helm-projectile-switch-project)
+
 (when exordium-helm-everywhere
   (substitute-key-definition
    'projectile-switch-project 'helm-projectile-switch-project
@@ -54,10 +55,10 @@
 ;;; Other usages of Helm:
 
 ;;; C-h b = describe keybindings using Helm
-(define-key global-map [(control h)(b)] (function helm-descbinds))
+(exordium-define-key global-map 'helm-descbinds)
 
 ;;; C-S-s = helm-swoop
-(define-key global-map [(control shift s)] (function helm-swoop))
+(exordium-define-key global-map 'helm-swoop)
 
 ;; TODO: work in progress
 ;; The intent is to improve the readability of the helm swoop selection line
@@ -76,7 +77,7 @@
 ;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
 
 ;;; C-e = Project explorer
-(define-key global-map [(control c)(e)] (function project-explorer-open))
+(exordium-define-key global-map 'project-explorer-open)
 
 
 ;;; Use fuzzy matching for helm-projectile when requested

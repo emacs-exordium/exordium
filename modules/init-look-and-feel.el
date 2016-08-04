@@ -25,6 +25,7 @@
 
 (with-no-warnings (require 'cl))
 (require 'init-prefs)
+(require 'init-lib)
 
 
 ;;; Font
@@ -140,10 +141,6 @@
 
 ;;; Keyboard preferences
 
-;; Use ESC as Control-G
-(when exordium-keyboard-escape
-  (global-set-key (kbd "<escape>") 'keyboard-quit))
-
 ;;; Use "y or n" answers instead of full words "yes or no"
 (when exordium-enable-y-or-n
   (fset 'yes-or-no-p 'y-or-n-p))
@@ -159,28 +156,23 @@
 
 ;;; Shortcut keys
 
-(global-set-key [(meta g)] (function goto-line))
-(when exordium-keyboard-ctrl-z-undo
-  (define-key global-map [(control z)] (function undo)))
-(global-set-key [(control ?`)] (function kill-this-buffer))
-
+(exordium-define-key global-map 'goto-line)
+(exordium-define-key global-map 'undo)
+(exordium-define-key global-map 'kill-this-buffer)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
   "Alternates between the two most recent buffers"
   (interactive)
   (switch-to-buffer (other-buffer)))
-
-(define-key global-map [(meta control l)] (function switch-to-other-buffer))
+(exordium-define-key global-map 'switch-to-other-buffer)
 
 ;;; C-x C-b = ibuffer (better than list-buffers)
-(define-key global-map [(control x)(control b)] (function ibuffer))
+(exordium-define-key global-map 'ibuffer)
 
 ;;; Zoom
-(define-key global-map [(control +)] (function text-scale-increase))
-(define-key global-map [(control -)] (function text-scale-decrease))
-(define-key global-map [(control mouse-4)] (function text-scale-increase))
-(define-key global-map [(control mouse-5)] (function text-scale-decrease))
+(exordium-define-key global-map 'text-scale-increase)
+(exordium-define-key global-map 'text-scale-decrease)
 
 ;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
@@ -197,8 +189,8 @@
 
 ;;; Expand region
 (require 'expand-region)
-(global-set-key (kbd "C-=") (function er/expand-region))
-(global-set-key (kbd "M-C-=") (function er/contract-region))
+(exordium-define-key global-map 'er/expand-region)
+(exordium-define-key global-map 'er/contract-region)
 
 
 ;;; File saving and opening

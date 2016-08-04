@@ -4,6 +4,27 @@
 ;;; loaded before any other module.
 
 (with-no-warnings (require 'cl))
+(require 'init-prefs)
+
+
+;;; Key bindings
+(defun exordium-define-key (mode-map fn)
+  "Binds the keys defined in p-list `exordium-key-bindings' to
+  the function FN in MODE-MAP. Does nothing if there is no
+  definition for FN in this p-list, or if the FN is associated to
+  nil in the p-list."
+  (let ((key-binding (plist-get exordium-key-bindings fn)))
+    (unless key-binding (error ">>> Not found: %s" fn)) ;; FIXME: remove
+    (when key-binding
+      (cl-flet ((do-set-key (mode-map binding fn)
+                  ;;(message ">>> Binding %s => %s" binding fn) ;; FIXME: comment out
+                  (when (stringp binding)
+                    (setq binding (kbd binding)))
+                  (define-key mode-map binding fn)))
+        (if (listp key-binding)
+            (dolist (b key-binding)
+              (do-set-key mode-map b fn))
+          (do-set-key mode-map key-binding fn))))))
 
 
 ;;; Files

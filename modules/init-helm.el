@@ -15,18 +15,19 @@
 (require 'helm)
 (require 'helm-projectile)
 (require 'helm-ag)
+(require 'init-lib)
 
 
-(global-set-key (kbd "C-S-r") 'helm-ag-project-root)
-(global-set-key (kbd "C-S-d") 'helm-do-ag)
-(global-set-key (kbd "C-S-f") 'helm-do-ag-this-file)
-(global-set-key (kbd "C-S-a") 'helm-projectile-ag)
+(exordium-define-key global-map 'helm-ag-project-root)
+(exordium-define-key global-map 'helm-do-ag)
+(exordium-define-key global-map 'helm-do-ag-this-file)
+(exordium-define-key global-map 'helm-projectile-ag)
 
 (when exordium-helm-everywhere
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") 'helm-mini))
+  (exordium-define-key global-map 'helm-M-x)
+  (exordium-define-key global-map 'helm-find-files)
+  (exordium-define-key global-map 'helm-show-kill-ring)
+  (exordium-define-key global-map 'helm-mini))
 
 (when exordium-helm-fuzzy-match
   (setq helm-M-x-fuzzy-match t

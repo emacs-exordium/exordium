@@ -68,7 +68,7 @@ highlighted using different colors at one time."
            (setq exordium-highlighted-symbols (cons regex exordium-highlighted-symbols))
            (hi-lock-face-symbol-at-point)))))
 
-(global-set-key (kbd "C-c C-SPC") #'exordium-highlight-symbol)
+(exordium-define-key global-map 'exordium-highlight-symbol)
 
 
 ;;; Highlight color name and Hex values in buffer.

@@ -341,8 +341,8 @@ backspace, delete, left or right."
   (bde-insert-class-header ?-))
 
 ;;; Ctrl-C = and Ctrl-C - for class header
-(global-set-key [(control c)(=)] 'bde-insert-define-class-header)
-(global-set-key [(control c)(-)] 'bde-insert-declare-class-header)
+(exordium-define-key c-mode-base-map 'bde-insert-define-class-header)
+(exordium-define-key c-mode-base-map 'bde-insert-declare-class-header)
 
 
 ;;; BDE's right style comments such as // RETURN or // LOCK
@@ -431,7 +431,7 @@ guard around it"
          ;; No region: just insert one guard for the current line
          (bde-insert-redundant-include-guard))))
 
-(define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
+(exordium-define-key c-mode-base-map 'bde-insert-redundant-include-guard-region)
 
 
 ;;; Align stuff
@@ -567,7 +567,7 @@ according to the BDE style."
     (when (looking-at "\\s\(")
       (forward-list 1))))
 
-(define-key c-mode-base-map [(control c)(a)] 'bde-align-fundecl)
+(exordium-define-key c-mode-base-map 'bde-align-fundecl)
 
 ;;; Align arguments in a function call
 
@@ -640,7 +640,7 @@ according to the BDE style."
     (when (looking-at "\\s\(")
       (forward-list 1))))
 
-(define-key c-mode-base-map [(control c)(f)] 'bde-align-funcall)
+(exordium-define-key c-mode-base-map 'bde-align-funcall)
 
 ;;; Align members in a class
 
@@ -791,7 +791,7 @@ start at column 40."
         (t
          (message "No region"))))
 
-(define-key c-mode-base-map [(control c)(m)] 'bde-align-class-members)
+(exordium-define-key c-mode-base-map 'bde-align-class-members)
 
 
 ;;; Repunctuate: the BDE comment style requires 2 spaces at the end of each

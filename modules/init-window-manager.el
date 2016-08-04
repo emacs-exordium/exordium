@@ -24,10 +24,10 @@
 ;;; C-c arrow = move the focus between visible buffers
 
 (require 'windmove)
-(global-set-key [(control c) (left)]  (function windmove-left))
-(global-set-key [(control c) (right)] (function windmove-right))
-(global-set-key [(control c) (up)]    (function windmove-up))
-(global-set-key [(control c) (down)]  (function windmove-down))
+(exordium-define-key global-map 'windmove-left)
+(exordium-define-key global-map 'windmove-right)
+(exordium-define-key global-map 'windmove-up)
+(exordium-define-key global-map 'windmove-down)
 
 
 ;;; C-c shift-arrow = move buffers themselves (e.g. swap windows)
@@ -81,10 +81,10 @@
           (t
            (message "No window right from selected window")))))
 
-(global-set-key [(control c) (shift up)]    (function move-buffer-up))
-(global-set-key [(control c) (shift down)]  (function move-buffer-down))
-(global-set-key [(control c) (shift left)]  (function move-buffer-left))
-(global-set-key [(control c) (shift right)] (function move-buffer-right))
+(exordium-define-key global-map 'move-buffer-up)
+(exordium-define-key global-map 'move-buffer-down)
+(exordium-define-key global-map 'move-buffer-left)
+(exordium-define-key global-map 'move-buffer-right)
 
 
 
@@ -99,12 +99,12 @@
              (current-buffer))))
 
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
-(define-key global-map [pause] 'toggle-window-dedicated)
+(exordium-define-key global-map 'toggle-window-dedicated)
 
 
 ;;; Ace-window
 
 (require 'ace-window)
-(global-set-key (kbd "M-p") #'ace-window)
+(exordium-define-key global-map 'ace-window)
 
 (provide 'init-window-manager)

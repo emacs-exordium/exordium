@@ -14,6 +14,122 @@
   :group 'local)
 
 
+;;; Key bindings
+
+;;; This variable defines all the keys set by Exordium by default. For example,
+;;; C-z is set to undo, and M-g is set to kill-this-buffer. It is a property
+;;; list (p-list) where the keys are the functions to bind and the values are
+;;; the bindings. Bindings can be expressed as strings or vectors (same as
+;;; `define-key').
+;;;
+;;; To customize your keys, add this form into your ~/.emacs.d/prefs.el:
+;;;
+;;; (setq exordium-key-binding '( <the whole p-list> ))
+;;;
+;;; Then edit the p-list to either:
+;;; - Remove a line, causing the key binding to not happen.
+;;; - Change the key binding(s) associated with a line.
+;;;
+;;; Note that you cannot ADD anything in this list. You also cannot change the
+;;; modes for which these keys are defined, Exordium decides that.
+(defcustom exordium-key-bindings
+  '(;; init-look-and-feel.el
+    undo                                      "C-z"
+    goto-line                                 "M-g"
+    kill-this-buffer                          [(control ?`)]
+    switch-to-other-buffer                    "M-C-l"
+    ibuffer                                   "C-x C-b"
+    text-scale-increase                       ([(control +)]
+                                               [(control mouse-4)])
+    text-scale-decrease                       ([(control -)]
+                                               [(control mouse-5)])
+    er/expand-region                          "C-="
+    er/contract-region                        "M-C-="
+    keyboard-quit                             nil ; or "<escape>"
+    ;;
+    ;; init-util.el
+    goto-last-change                          [(control x)(control \\)]
+    goto-last-change-reverse                  [(control x)(control |)]
+    delete-word                               [(meta d)]
+    backward-delete-word                      [(meta d)]
+    exordium-right-word                       [(meta right)]
+    exordium-left-word                        [(meta left)]
+    exordium-toggle-fci                       [(control |)] ; 80-column marker
+    avy-goto-word-or-subword-1                ([(control c)(j)]
+                                               [(control ?\')])
+    ;;
+    ;; init-window-manager.el
+    windmove-left                             [(control c) (left)]
+    windmove-right                            [(control c) (right)]
+    windmove-up                               [(control c) (up)]
+    windmove-down                             [(control c) (down)]
+    move-buffer-up                            [(control c) (shift up)]
+    move-buffer-down                          [(control c) (shift down)]
+    move-buffer-left                          [(control c) (shift left)]
+    move-buffer-right                         [(control c) (shift right)]
+    toggle-window-dedicated                   [pause]
+    ace-window                                "M-p"
+    ;;
+    ;; init-auto-complete.el
+    auto-complete                             [(control .)]
+    ac-stop                                   "<escape>"
+    ac-complete                               [return]
+    ;;
+    ;; init-highlight.el
+    exordium-highlight-symbol                 "C-c C-SPC" ; or <f6>
+    ;;
+    ;; init-helm-projectile.el
+    helm-projectile                           [(control c)(h)]
+    helm-projectile-switch-project            [(control c)(meta h)]
+    helm-descbinds                            [(control h)(b)]
+    helm-swoop                                [(control shift s)]
+    project-explorer-open                     [(control c)(e)]
+    ;;
+    ;; init-helm.el
+    helm-ag-project-root                      "C-S-r"
+    helm-do-ag                                "C-S-d"
+    helm-do-ag-this-file                      "C-S-f"
+    helm-projectile-ag                        "C-S-a"
+    ;; Note: these ones are enabled with `exordium-helm-everywhere':
+    helm-M-x                                  "M-x"
+    helm-find-files                           "C-x C-f"
+    helm-show-kill-ring                       "M-y"
+    helm-mini                                 "C-x b"
+    ;;
+    ;; init-dired.el
+    ;;dired-jump                                "\C-x\C-j"
+    ;;dired-jump-other-window                   "\C-x4\C-j"
+    ;;
+    ;; init-git.el
+    ;;
+    ;; init-prog-mode.el
+    comment-region                            "\C-c\C-c"
+    next-error                                [f10]
+    previous-error                            [(control f10)]
+    ;;
+    ;; init-javascript.el
+    ;;
+    ;; init-bde-style.el
+    bde-insert-define-class-header            [(control c)(=)]
+    bde-insert-declare-class-header           [(control c)(-)]
+    bde-insert-redundant-include-guard-region [(control c)(i)]
+    bde-align-fundecl                         [(control c)(a)]
+    bde-align-funcall                         [(control c)(f)]
+    bde-align-class-members                   [(control c)(m)]
+    ;;
+    ;; init-rtags.el
+    ;;
+    ;; init-markdown.el
+    ;;
+    ;; init-yasnippet.el
+    )
+  "Property list of the keys defined by Exordium. Key bindings
+can be sstrings, vectors or list of strings or vector, in case a
+function is bound to multiple keys."
+  :group 'exordium
+  :type  'sexp)
+
+
 ;;; UI -- see init-look-and-feel.el
 
 (defcustom exordium-preferred-fonts
@@ -58,12 +174,8 @@ available font names by evaluating (font-family-list)."
 ;;; Keyboard
 
 (defcustom exordium-keyboard-escape nil
-  "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G."
-  :group 'exordium
-  :type  'boolean)
-
-(defcustom exordium-keyboard-ctrl-z-undo t
-  "Whether Ctrl-z is rebound to Undo, like most other applications."
+  "Whether the Escape key does keyboard quit e.g. the equivalent of Ctrl-G.
+DEPRECAED: use `exordium-key-bindings' instead."
   :group 'exordium
   :type  'boolean)
 
