@@ -314,6 +314,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-yasnippet
   (require 'init-yasnippet))
 (require 'init-gdb)
+;;; autocompletion through ycmd
+(when exordium-ycmd-auto-complete
+  (require 'init-emacs-ycmd))
 
 ;;; RTags
 (require 'init-rtags)
@@ -340,10 +343,6 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Clojure
 (when exordium-clojure
   (require 'init-clojure))
-
-;;; autocompletion through ycmd
-(when exordium-ycmd-auto-complete
-  (require 'init-emacs-ycmd))
 
 (update-progress-bar)
 
