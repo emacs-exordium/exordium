@@ -154,19 +154,19 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
       (rtags-call-rc :path fn :path-filter prefix "-f" arg)
       (cond ((or (not rtags-follow-symbol-try-harder)
                  (= (length tagname) 0))
-             (setq found-it (rtags-handle-results-buffer nil nil fn)))
-            ((setq found-it (rtags-handle-results-buffer nil t fn)))
+             (setq found-it (rtags-handle-results-buffer nil nil fn exordium-rtags-use-other-window)))
+            ((setq found-it (rtags-handle-results-buffer nil t fn exordium-rtags-use-other-window)))
             (t
              (erase-buffer)
              (rtags-call-rc :path fn "-F" tagname "--definition-only" "-M" "1" "--dependency-filter" fn :path-filter prefix
                             (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
                             (when rtags-symbolnames-case-insensitive "-I"))
-             (unless (setq found-it (rtags-handle-results-buffer nil nil fn))
+             (unless (setq found-it (rtags-handle-results-buffer nil nil fn exordium-rtags-use-other-window))
                (erase-buffer)
                (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
                               (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
                               (when rtags-symbolnames-case-insensitive "-I"))
-               (setq found-it (rtags-handle-results-buffer nil nil fn))))))
+               (setq found-it (rtags-handle-results-buffer nil nil fn exordium-rtags-use-other-window))))))
     found-it))
 
 ;; Alias for C-c r . This key recenters the buffer if needed.
