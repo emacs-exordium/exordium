@@ -336,6 +336,12 @@ be a list of strings."
   :group 'exordium
   :type  'sexp)
 
+;;; Use other window for rtags results
+(defcustom exordium-rtags-use-other-window nil
+  "Whether RTags should show results in other window."
+  :group 'exordium
+  :type  'boolean)
+
 
 ;;; See init-helm.el
 (defcustom exordium-helm-everywhere nil
