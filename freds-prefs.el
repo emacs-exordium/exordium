@@ -98,12 +98,12 @@ the column to wrap at to 72."
 (defun my-indent-region ()
 "Indent a region by 4 spaces"
   (interactive)
-  (indent-rigidly (mark) (point) 4))
+  (indent-rigidly (mark) (point) 2))
 
 (defun my-outdent-region ()
 "remove an indent region by 4 spaces"
   (interactive)
-  (indent-rigidly (mark) (point) -4))
+  (indent-rigidly (mark) (point) -2))
 
 
 ;;(setq debug-on-error t)          ;; turn off after libraries are loaded
