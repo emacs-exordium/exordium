@@ -110,6 +110,7 @@ names to which it refers are bound."
      (minibuffer-prompt ((t (:weight bold :foreground ,cyan))))
      (mode-line ((t (:foreground ,base1 :background ,base01 :box nil))))
      (mode-line-inactive ((t (:foreground ,base00 :background ,base02 :box nil))))
+     (which-func ((t (:foreground ,back :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,base01 :foreground ,back))))

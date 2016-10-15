@@ -672,7 +672,7 @@ names to which it refers are bound."
      (whitespace-space-after-tab ((t (:background ,zenburn-yellow :foreground ,zenburn-red))))
 
      ;; which-func-mode
-     (which-func ((t (:foreground ,zenburn-green+4))))
+     (which-func ((t (:foreground ,zenburn-bg-1))))
 
      ;; yascroll
      (yascroll:thumb-text-area ((t (:background ,zenburn-bg-1))))

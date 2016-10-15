@@ -120,7 +120,7 @@
              (lhs (list (powerline-raw "%*" face3 'l)
                         (powerline-raw "%b " face3 'l)
                         (when (and (boundp 'which-func-mode) which-func-mode)
-                          (powerline-raw which-func-format nil 'l))
+                          (powerline-raw which-func-format face3 'l))
                         (funcall (if (eq exordium-powerline-theme :wave)
                                      separator-right
                                    separator-left)

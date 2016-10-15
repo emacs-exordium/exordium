@@ -444,7 +444,7 @@ names to which it refers are bound."
      (ace-jump-face-foreground ((t (:foreground ,atom-one-dark-red-1 :background ,atom-one-dark-bg-1 :inverse-video nil))))
 
      ;; Others
-     (which-func ((t (:foreground ,atom-one-dark-blue :background nil :weight bold))))
+     (which-func ((t (:background nil :weight bold))))
      )))
 
 (defun define-atom-one-theme ()

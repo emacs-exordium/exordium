@@ -199,6 +199,7 @@ names to which it refers are bound."
      (mode-line-emphasis ((t (:foreground ,foreground :slant italic))))
      (mode-line-highlight ((t (:foreground ,purple :box nil :weight bold))))
      (minibuffer-prompt ((t (:foreground ,blue))))
+     (which-func ((t (:foreground ,background :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,selection))))

@@ -180,6 +180,7 @@ names to which it refers are bound."
                                    :foreground ,monokai-comments
                                    :background ,monokai-hl-line ; for powerline (previously monokai-bg)
                                    :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
+     (which-func ((t (:foreground ,monokai-bg :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,monokai-hl))))
