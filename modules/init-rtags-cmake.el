@@ -33,6 +33,9 @@
   pair is (project-dir . build-dir). Note that the build-dir
   contains the compilation database.")
 
+(defvar exordium-rtags-cmake-mode-enabled nil
+  "Whether cmake mode is enabled")
+
 (define-minor-mode rtags-cmake-mode
   "Minor mode for using RTags with zero-configuration, for CMake
 enabled projects."
@@ -56,10 +59,19 @@ enabled projects."
                 (c++-mode))))
           (exordium-rtags-cmake-index-project-maybe project-dir))))))
 
-(defun exordium-enable-rtags-cmake-mode ()
-  "Enable rtags-cmake-mode for C/C++ buffers."
-  (add-hook 'c-mode-hook   #'rtags-cmake-mode)
-  (add-hook 'c++-mode-hook #'rtags-cmake-mode))
+(defun exordium-toggle-rtags-cmake-mode ()
+  "Enable or disable rtags-cmake-mode for C/C++ buffers."
+  (interactive)
+  (cond (exordium-rtags-cmake-mode-enabled
+         (remove-hook 'c-mode-hook   #'rtags-cmake-mode)
+         (remove-hook 'c++-mode-hook #'rtags-cmake-mode)
+         (setq exordium-rtags-cmake-mode-enabled nil)
+         (message "rtags-cmake-mode is DISABLED"))
+        (t
+         (add-hook 'c-mode-hook   #'rtags-cmake-mode)
+         (add-hook 'c++-mode-hook #'rtags-cmake-mode)
+         (setq exordium-rtags-cmake-mode-enabled t)
+         (message "rtags-cmake-mode is ENABLED"))))
 
 ;;; Find the (CMake) project root directory
 
@@ -152,5 +164,6 @@ the specified key, or nil if no such key."
 
 (when exordium-rtags-cmake
   (setq rtags-autostart-diagnostics t)
-  (exordium-enable-rtags-cmake-mode))
+  (exordium-toggle-rtags-cmake-mode))
+
 (provide 'init-rtags-cmake)
