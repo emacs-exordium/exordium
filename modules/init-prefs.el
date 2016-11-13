@@ -98,6 +98,11 @@ IF nil, disables CUA completely."
   :group 'exordium
   :type  'symbol)
 
+(defcustom exordium-enable-evil-mode nil
+  "If set to t, enables EVIL mode."
+  :group 'exordium
+  :type  'boolean)
+
 ;;; Backup files (e.g. file~)
 (defcustom exordium-backup-files nil
   "Enables or disables backup files. Disabled by default, I can't

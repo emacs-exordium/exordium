@@ -156,6 +156,11 @@
 (when (boundp 'isearch-allow-scroll)
   (setq isearch-allow-scroll t))
 
+;;; Evil-mode
+(require 'evil)
+(when (and exordium-enable-evil-mode (fboundp 'evil-mode))
+  (evil-mode t))
+
 
 ;;; Shortcut keys
 
