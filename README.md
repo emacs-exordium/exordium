@@ -3,9 +3,10 @@
 # What is this repo
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
-Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
-and OS X including in -nw mode, but it should work on Windows as well. It is
-modular and customizable. It is not a starter kit, it is a hacker kit.
+Lisp/Clojure programming. It is only intended to work with Emacs version 24.4
+and above on Linux and OS X including in -nw mode, but it should work on
+Windows as well. It is modular and customizable. It is not a starter kit, it is
+a hacker kit.
 
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
