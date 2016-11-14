@@ -158,8 +158,11 @@
 
 ;;; Evil-mode
 (require 'evil)
-(when (and exordium-enable-evil-mode (fboundp 'evil-mode))
-  (evil-mode t))
+(if (and exordium-enable-evil-mode (fboundp 'evil-mode))
+    (evil-mode t)
+  ;; Evil mode depends in undo-tree, which thinks it should work by default
+  (when (boundp 'global-undo-tree-mode)
+    (global-undo-tree-mode -1)))
 
 
 ;;; Shortcut keys
