@@ -248,6 +248,12 @@ default color."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-powerline-enable-icons nil
+  "Whether Powerline displays icons for git branches and other
+  things."
+  :group 'exordium
+  :type  'boolean)
+
 
 ;;; Programming
 

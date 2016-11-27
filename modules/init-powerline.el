@@ -1,6 +1,7 @@
 ;;;; A theme for Powerline
 
 (require 'powerline)
+(require 'all-the-icons)
 (require 'init-themes)
 (require 'init-prefs)
 
@@ -93,6 +94,46 @@
          ;; Purple
          'exordium-powerline-active3)))
 
+(defun exordium-powerline-git (face)
+  "Return the git branch string to display including a branch
+icon, using the specified face."
+  (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+    (concat
+     ;; branch icon
+     (propertize (format " %s" (all-the-icons-octicon "git-branch"))
+                 'face `(:height 1.0
+                         :family ,(all-the-icons-octicon-family)
+                         :background ,(face-background face)))
+     ;; branch name
+     (format " %s" branch))))
+
+(defun exordium-powerline-svn (face)
+  "Return the SVN revision number string to display including a
+branch icon, using the specified face."
+  (let ((revision (cadr (split-string vc-mode "-"))))
+    (concat
+     ;; branch icon
+     (propertize (format " %s" (all-the-icons-octicon "git-branch"))
+                 'face `(:height 1.0
+                         :family ,(all-the-icons-octicon-family)
+                         :background ,(face-background face)))
+     ;; revision number
+     (format " %s" revision))))
+
+(defun exordium-powerline-vc (face)
+  "Return the version control string to display, using the
+specified face, or nil if the current buffer is not under version
+control"
+  (when vc-mode
+    (cond
+     ((string-match "Git[:-]" vc-mode)
+      (exordium-powerline-git face))
+     ((string-match "SVN-" vc-mode)
+      (exordium-powerline-svn face))
+     (t
+      ;; fallback
+      (format "%s" vc-mode)))))
+
 (defun exordium-powerline-theme ()
   "Setup the default mode-line."
   (interactive)
@@ -134,7 +175,9 @@
                         (powerline-narrow face1 'l)
                         (powerline-raw " " face1)
                         (funcall separator-left face1 face2)
-                        (powerline-vc face2 'r)))
+                        (if (and exordium-powerline-enable-icons window-system)
+                            (powerline-raw (exordium-powerline-vc face2) face2)
+                          (powerline-vc face2 'r))))
              (rhs (list (powerline-raw global-mode-string face2 'r)
                         (funcall separator-right face2 face1)
                         (powerline-raw "%4l" face1 'l)
