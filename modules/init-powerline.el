@@ -101,7 +101,7 @@ icon, using the specified face."
     (concat
      ;; branch icon
      (propertize (format " %s" (all-the-icons-octicon "git-branch"))
-                 'face `(:height 1.0
+                 'face `(:height 0.9
                          :family ,(all-the-icons-octicon-family)
                          :background ,(face-background face)))
      ;; branch name
@@ -114,7 +114,7 @@ branch icon, using the specified face."
     (concat
      ;; branch icon
      (propertize (format " %s" (all-the-icons-octicon "git-branch"))
-                 'face `(:height 1.0
+                 'face `(:height 0.9
                          :family ,(all-the-icons-octicon-family)
                          :background ,(face-background face)))
      ;; revision number
