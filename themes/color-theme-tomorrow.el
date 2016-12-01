@@ -162,6 +162,7 @@ names to which it refers are bound."
      (linum ((t (:background ,current-line :foreground ,foreground
                       :height 1.0
                       :inherit nil :weight normal :slant normal :underline nil))))
+     (linum-highlight-face ((t (:background ,current-line :foreground ,foreground))))
 
      (hl-line ((t (:background ,current-line :inherit nil))))
      (highlight ((t (:background ,green :foreground ,background)))) ;+:foreground
