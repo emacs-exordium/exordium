@@ -5,7 +5,7 @@
 (add-hook 'c++-mode-hook 'ycmd-mode)
 
 
-(set-variable 'ycmd-server-command '("python" "/home/abhijit/.emacs.d/taps/ycmd/ycmd_server"))
+(set-variable 'ycmd-server-command '("python" "-m" "/home/abhijit/.emacs.d/taps/ycmd"))
 ; (set-variable 'ycmd-global-config "/home/abhijit/.emacs/taps/ycmd/cpp/ycm/.ycm_extra_conf.py")
 
 ;; company-ycmd integration

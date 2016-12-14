@@ -142,6 +142,9 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (auto-complete           . "melpa-pinned")
                                          (company                 . "melpa-pinned")
                                          (rtags                   . "melpa-pinned")
+                                         (company-ycmd            . "melpa")
+                                         (ycmd                    . "melpa")
+                                         (flycheck-ycmd           . "melpa")
                                          (auto-complete-c-headers . "melpa")
                                          (yasnippet               . "melpa-pinned")
                                          (js2-mode                . "melpa-pinned")
@@ -325,6 +328,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-rtags-helm)
 (require 'init-rtags-cmake)
 (require 'init-rtags-cdb)
+
+;;; ycmd
 
 (update-progress-bar)
 
