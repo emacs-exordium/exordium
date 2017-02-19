@@ -36,7 +36,8 @@ might want to check these links:
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
   (completion engine, turned on by default);
   [Helm](http://tuhdo.github.io/helm-intro.html) (an alternative to IDO);
-  [Auto Complete](https://github.com/auto-complete/auto-complete);
+  [Auto Complete](https://github.com/auto-complete/auto-complete) and
+  [Company](http://http://company-mode.github.io) (completion engines)
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
@@ -162,12 +163,12 @@ Keybinding              | Description
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
 <kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
 
-Auto-complete:
+Auto-complete/Company:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-.</kbd>     | Force trigger auto-complete.
-<kbd>ESC</kbd>     | Abort auto-complete.
+<kbd>C-.</kbd>     | Force trigger auto-complete/company-complete.
+<kbd>ESC</kbd>     | Abort auto-complete/company-complete.
 
 Tip: if you are looking for a particular key and you know it starts with a
 given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
@@ -401,8 +402,8 @@ Keybinding         | Description
 which replaces a keyword by a template after you hit the trigger key. YASnippet
 is only enabled for C++ mode currently. The trigger key is set to <kbd>C-c
 y</kbd> because the default TAB key is already way overused between intention
-and auto-complete. You can easily use a function key if you prefer by adding
-this in your `after-init.el`:
+and auto-complete/company-complete. You can easily use a function key if you prefer
+by adding this in your `after-init.el`:
 
 ```lisp
 (define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
@@ -729,6 +730,12 @@ Possible issues:
 * Auto-complete for header files does not understand when you are switching
   project.
 
+#### Company
+
+As an alternative to `auto-complete` you can choose `company-mode`. You can
+do that by setting `exordium-complete-mode` to `:company`. It will use
+RTags as a completion engine when `rdm` is started.
+
 ## Lisp
 
 Coming soon: Emacs Lisp, Common Lisp and Clojure.
@@ -807,8 +814,10 @@ Modules can be individually commented out if needed:
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
 (require 'init-highlight)       ; highlighting current line, symbol under point
-(when exordium-auto-complete
-  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+(cond ((eq exordium-complete-mode :auto-complete)
+       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+      ((eq exordium-complete-mode :company)
+       (require 'init-company))) ; company mode (rtags are on by default)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 (require 'init-helm)            ; setup helm

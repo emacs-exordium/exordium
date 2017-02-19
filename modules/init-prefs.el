@@ -170,11 +170,12 @@ i.e., with git pull."
 
 ;;; Autocomplete -- see init-autocomplete.el
 
-(defcustom exordium-auto-complete t
-  "Whether auto-complete is turned on or off by default. See also
+(defcustom exordium-complete-mode :auto-complete
+  "Slect the completion engine for exordium. Possible values are
+  :auto-complete, :company, and nil. Default is :auto-complete. See also
   `exordium-rtags-auto-complete'."
   :group 'exordium
-  :type  'boolean)
+  :type  'symbol)
 
 
 ;;; Themes -- see themes directory

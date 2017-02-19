@@ -288,7 +288,7 @@ With argument, do this that many times."
 ;;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
 
 (when (and exordium-fci-mode
-           exordium-auto-complete
+           (eq exordium-complete-mode :auto-complete)
            exordium-fci-fix-autocomplete-bug)
   (require 'fill-column-indicator)
   (require 'popup)

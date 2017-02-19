@@ -233,7 +233,11 @@ open-buffer is true."
     (let ((process (if exordium-rtags-rdm-args
                        (start-process "rdm" buffer "rdm" exordium-rtags-rdm-args)
                        (start-process "rdm" buffer "rdm"))))
-      (message "Started rdm - PID %d" (process-id process)))))
+      (message "Started rdm - PID %d" (process-id process))))
+  ;; Add RTags to company backends
+  (when (and (eq exordium-complete-mode :company)
+             (not (member 'company-rtags company-backends)))
+    (push 'company-rtags company-backends)))
 
 (defun rtags-start ()
   "Start the rdm deamon in a subprocess and display output in a
@@ -245,6 +249,10 @@ buffer. Also start the RTag diagostics mode."
 (defun rtags-stop ()
   "Stop both RTags diagnostics and rdm, if they are running."
   (interactive)
+  ;; Remove RTags from company backends
+  (when (member 'company-rtags company-backends)
+    (message "rmoving rtags company mode")
+    (setq company-backends (delete 'company-rtags company-backends)))
   ;; Stop RTags Diagnostics and kill its buffer without prompt
   (when (and rtags-diagnostics-process
              (not (eq (process-status rtags-diagnostics-process) 'exit)))

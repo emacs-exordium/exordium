@@ -81,6 +81,8 @@ pull. For example you can put something like this in your *prefs.el*:
   configures Helm.
 * [init-autocomplete.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-autocomplete.el):
   configures autocomplete with default sources (non-RTags).
+* [init-company.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-company.el):
+  configures company mode with default sources and RTags.
 * [init-helm-projectile.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-helm-projectile.el):
   configures Helm when used with Projectile.
 * [init-git.el](https://raw.github.com/philippe-grenet/exordium/master/modules/init-git.el):
