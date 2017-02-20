@@ -187,6 +187,14 @@ names to which it refers are bound."
      (popup-scroll-bar-background-face ((t (:background ,zenburn-bg-1))))
      (popup-isearch-match ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
 
+     ;; company
+     (company-tooltip-common ((t (:background ,zenburn-bg+3 :foreground ,zenburn-bg-2))))
+     (company-tooltip-selection ((t (:background ,zenburn-blue-4 :foreground ,zenburn-fg))))
+     (company-tooltip ((t (:background ,zenburn-yellow-2 :foreground ,zenburn-bg-2))))
+     (company-scrollbar-fg ((t (:background ,zenburn-blue-5))))
+     (company-scrollbar-bg ((t (:background ,zenburn-bg-1))))
+     (company-tooltip-common-selection ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
+
      ;; diff
      (diff-added ((,class (:foreground ,zenburn-green+4 :background nil))
                   (t (:foreground ,zenburn-green-1 :background nil))))
