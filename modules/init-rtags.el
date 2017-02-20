@@ -250,8 +250,8 @@ buffer. Also start the RTag diagostics mode."
   "Stop both RTags diagnostics and rdm, if they are running."
   (interactive)
   ;; Remove RTags from company backends
-  (when (member 'company-rtags company-backends)
-    (message "rmoving rtags company mode")
+  (when (and (eq exordium-complete-mode :company)
+             (member 'company-rtags company-backends))
     (setq company-backends (delete 'company-rtags company-backends)))
   ;; Stop RTags Diagnostics and kill its buffer without prompt
   (when (and rtags-diagnostics-process
