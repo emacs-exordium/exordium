@@ -20,13 +20,8 @@
   (insert "#define INCLUDED_" guard-name)
   (newline 2))
 
-;; Ident and component comment
-(insert "#ifndef INCLUDED_BDES_IDENT
-#include <bdes_ident.h>
-#endif
-BDES_IDENT(\"$Id$ $CSID$\")
-
-//@PURPOSE:
+;; Component comment
+(insert "//@PURPOSE:
 //
 //@CLASSES:
 //
@@ -47,8 +42,8 @@ namespace " package-name " {
 // ============================================================================
 
 
-}  // close namespace " package-name "
-}  // close namespace BloombergLP")
+}  // close package namespace
+}  // close enterprise namespace")
   (newline 2))
 
 ;; Footer
@@ -66,6 +61,6 @@ namespace " package-name " {
 
 ;; Cursor position
 (beginning-of-buffer)
-(forward-line 9)
+(forward-line 4)
 (end-of-line)
 (insert " ")
