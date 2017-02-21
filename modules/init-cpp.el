@@ -47,22 +47,29 @@
 (add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
 
 
-;;; Switch between .h <--> .cpp
+;;; Switch between .h <--> .cpp <--> t.cpp
 
 (defconst exordium-cpp-header-switches
-  '(("t.cpp" . ("h" "cpp"))
-    ("h"     . ("cpp" "cc" "t.cpp" "c"))
-    ("cpp"   . ("h" "t.cpp"))
-    ("cc"    . ("h" "t.cc"))
-    ("c"     . ("h")))
+  '(("t.cpp"   . ("h" "cpp"))
+    ("u.t.cpp" . ("h" "cpp"))
+    ("i.t.cpp" . ("h" "cpp"))
+    ("h"       . ("cpp" "cc" "t.cpp" "u.t.cpp" "i.t.cpp" "c"))
+    ("cpp"     . ("h" "t.cpp" "u.t.cpp" "i.t.cpp"))
+    ("cc"      . ("h" "t.cc" "u.t.cc" "i.t.cc"))
+    ("c"       . ("h")))
   "A-list of extension -> list of matching extensions")
 
 (defun bde-file-name-extension (file-name)
-  "Like `file-name-extension' but returning '.t.cpp' for a
+  "Like `file-name-extension' but returning 't.cpp' for a
   BDE-style test driver"
-  (if (string-suffix-p ".t.cpp" file-name)
-      "t.cpp"
-    (file-name-extension file-name)))
+  (cond ((string-suffix-p "u.t.cpp" file-name)
+         "u.t.cpp")
+        ((string-suffix-p "i.t.cpp" file-name)
+         "i.t.cpp")
+        ((string-suffix-p ".t.cpp" file-name)
+         "t.cpp")
+        (t
+         (file-name-extension file-name))))
 
 (defun cpp-switch-h-cpp (arg)
   "Switch between .h and .cpp buffer or file. Look first into the
@@ -80,35 +87,48 @@
       (when (and arg matching-ext)
         (setq matching-ext (cdr matching-ext)))
       (cond (matching-ext
-             (unless (catch 'found
-                       (dolist (candidate-ext matching-ext)
-                         ;; Look for a buffer matching candidate-ext
-                         (let ((buff (concat base-name candidate-ext)))
-                           (when (bufferp (get-buffer buff))
-                             (switch-to-buffer buff)
-                             (throw 'found t)))
-                         ;; No buffer => look for a file
-                         (let ((file (concat base-path candidate-ext)))
+             (unless
+                 (catch 'found
+                   (flet ((when-exists-find-and-throw
+                           (file)
                            (when (file-exists-p file)
                              (find-file file)
-                             (throw 'found t)))
-                         ;; No file in current dir => look in test subdirectory
-                         (when arg
-                           (let ((base-dir (file-name-directory (buffer-file-name)))
-                                 (test-path (concat "test/" base-name candidate-ext)))
-                             (let ((file (concat base-dir test-path)))
-                               (when (file-exists-p file)
-                                 (find-file file)
-                                 (throw 'found t)))
-                             (let ((file
-                                    (concat (file-name-directory
-                                             (directory-file-name base-dir))
-                                            test-path)))
-                               (when (file-exists-p file)
-                                 (find-file file)
-                                 (throw 'found t))))))
-                       ;; No buffer or file for any matching-ext
-                       nil)
+                             (throw 'found t))))
+                     (dolist (candidate-ext matching-ext)
+                       ;; Look for a buffer matching candidate-ext
+                       (let ((buff (concat base-name candidate-ext)))
+                         (when (bufferp (get-buffer buff))
+                           (switch-to-buffer buff)
+                           (throw 'found t)))
+                       ;; No buffer => look for a file
+                       (when-exists-find-and-throw
+                        (concat base-path candidate-ext))
+                       ;; No file in current dir => look in test subdirectory
+                       (cond (arg
+                              (let ((base-dir (file-name-directory (buffer-file-name)))
+                                    (test-path (concat "test/" base-name candidate-ext)))
+                                (when-exists-find-and-throw
+                                 (concat base-dir test-path))
+                                (when-exists-find-and-throw
+                                 (concat (file-name-directory
+                                          (directory-file-name base-dir))
+                                         test-path))))
+                             ;; If test file => look in parent and group directories
+                             ((string-match ".*/test/.*\.t\.cpp$" (buffer-file-name))
+                              (let ((base-dir
+                                    (file-name-directory
+                                     (directory-file-name (file-name-directory
+                                                           (buffer-file-name))))))
+                                (when-exists-find-and-throw
+                                 (concat base-dir base-name candidate-ext))
+                                (when (string-match "^\\([a-z]+\\)_" base-name)
+                                  (when-exists-find-and-throw
+                                   (concat base-dir
+                                           (file-name-as-directory
+                                            (match-string 1 base-name))
+                                           base-name candidate-ext))))))))
+                   ;; No buffer or file for any matching-ext
+                   nil)
                (message "No matching buffer or file")))
             (t (message "This is not a C/C++ file"))))))
 
