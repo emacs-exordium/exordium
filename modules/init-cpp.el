@@ -51,10 +51,11 @@
 
 (defconst exordium-cpp-header-switches
   '(("t.cpp"   . ("h" "cpp"))
+    ("g.cpp"   . ("h" "cpp"))
     ("u.t.cpp" . ("h" "cpp"))
     ("i.t.cpp" . ("h" "cpp"))
-    ("h"       . ("cpp" "cc" "t.cpp" "u.t.cpp" "i.t.cpp" "c"))
-    ("cpp"     . ("h" "t.cpp" "u.t.cpp" "i.t.cpp"))
+    ("h"       . ("cpp" "cc" "t.cpp" "g.cpp" "u.t.cpp" "i.t.cpp" "c"))
+    ("cpp"     . ("h" "t.cpp" "g.cpp" "u.t.cpp" "i.t.cpp"))
     ("cc"      . ("h" "t.cc" "u.t.cc" "i.t.cc"))
     ("c"       . ("h")))
   "A-list of extension -> list of matching extensions")
@@ -68,6 +69,8 @@
          "i.t.cpp")
         ((string-suffix-p ".t.cpp" file-name)
          "t.cpp")
+        ((string-suffix-p ".g.cpp" file-name)
+         "g.cpp")
         (t
          (file-name-extension file-name))))
 
@@ -114,7 +117,7 @@
                                           (directory-file-name base-dir))
                                          test-path))))
                              ;; If test file => look in parent and group directories
-                             ((string-match ".*/test/.*\.t\.cpp$" (buffer-file-name))
+                             ((string-match ".*/test/.*\.[gt]\.cpp$" (buffer-file-name))
                               (let ((base-dir
                                     (file-name-directory
                                      (directory-file-name (file-name-directory
