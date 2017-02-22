@@ -109,15 +109,20 @@
                        ;; No file in current dir => look in test subdirectory
                        (cond (arg
                               (let ((base-dir (file-name-directory (buffer-file-name)))
-                                    (test-path (concat "test/" base-name candidate-ext)))
-                                (when-exists-find-and-throw
-                                 (concat base-dir test-path))
-                                (when-exists-find-and-throw
-                                 (concat (file-name-directory
-                                          (directory-file-name base-dir))
-                                         test-path))))
+                                    (test-dirs '("test" "tst")))
+                                (dolist (test-dir test-dirs)
+                                  (let ((test-path
+                                         (concat (file-name-as-directory test-dir)
+                                                 base-name candidate-ext)))
+                                    (when-exists-find-and-throw
+                                     (concat base-dir test-path))
+                                    (when-exists-find-and-throw
+                                     (concat (file-name-directory
+                                              (directory-file-name base-dir))
+                                             test-path))))))
                              ;; If test file => look in parent and group directories
-                             ((string-match ".*/test/.*\.[gt]\.cpp$" (buffer-file-name))
+                             ((string-match ".*/t\\(e\\)?st/.*\.[gt]\.cpp$"
+                                            (buffer-file-name))
                               (let ((base-dir
                                     (file-name-directory
                                      (directory-file-name (file-name-directory

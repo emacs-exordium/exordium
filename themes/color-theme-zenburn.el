@@ -188,12 +188,19 @@ names to which it refers are bound."
      (popup-isearch-match ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
 
      ;; company
-     (company-tooltip-common ((t (:background ,zenburn-bg+3 :foreground ,zenburn-bg-2))))
-     (company-tooltip-selection ((t (:background ,zenburn-blue-4 :foreground ,zenburn-fg))))
+     (company-echo-common ((t (:background ,zenburn-bg+3 :foreground ,zenburn-red-4))))
+     (company-preview ((t (:background ,zenburn-blue-5 :foreground ,zenburn-yellow-2))))
+     (company-preview-common ((t (:background ,zenburn-blue-5 :foreground ,zenburn-yellow-1))))
+     (company-preview-search ((t (:background ,zenburn-blue-4 :foreground ,zenburn-yellow))))
      (company-tooltip ((t (:background ,zenburn-yellow-2 :foreground ,zenburn-bg-2))))
+     (company-tooltip-annotation ((t (:background ,zenburn-yellow-2 :foreground ,zenburn-red-4))))
+     (company-tooltip-annotation-selection ((t (:background ,zenburn-blue-4 :foreground ,zenburn-red-1))))
+     (company-tooltip-common ((t (:background ,zenburn-yellow-2 :foreground ,zenburn-bg))))
+     (company-tooltip-common-selection ((t (:background ,zenburn-blue-4 :foreground ,zenburn-fg+1))))
+     (company-tooltip-mouse ((t (:background ,zenburn-blue-5 :foreground ,zenburn-fg+1))))
+     (company-tooltip-selection ((t (:background ,zenburn-blue-4 :foreground ,zenburn-fg))))
      (company-scrollbar-fg ((t (:background ,zenburn-blue-5))))
      (company-scrollbar-bg ((t (:background ,zenburn-bg-1))))
-     (company-tooltip-common-selection ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
 
      ;; diff
      (diff-added ((,class (:foreground ,zenburn-green+4 :background nil))
