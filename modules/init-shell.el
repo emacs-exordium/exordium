@@ -20,7 +20,10 @@
  '(comint-get-old-input (lambda () "")) ; what to run when I press enter on a
                                         ; line above the current prompt
  '(comint-input-ring-size 5000)         ; max shell history size
- '(protect-buffer-bury-p nil)
+ '(comint-process-echoes t)             ; sub-process echoes any input; delete
+                                        ; one copy of the input so that only
+                                        ; one copy eventually appears in the
+                                        ; buffer
 )
 
 ;;; Clear the buffer
