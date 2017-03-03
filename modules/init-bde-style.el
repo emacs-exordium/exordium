@@ -91,9 +91,12 @@
   "Return the name of the component for the current buffer"
   (let ((name (file-name-sans-extension
                (file-name-nondirectory (buffer-file-name)))))
-    (if (string-suffix-p ".t" name)
-        (substring name 0 (- (length name) 2))
-      name)))
+    (message name)
+    (cond ((string-match-p "\\.[gipu]\\.t$" name)
+           (substring name 0 (- (length name) 4)))
+          ((string-suffix-p ".t" name)
+           (substring name 0 (- (length name) 2)))
+          (t name))))
 
 (defun bde-package-name ()
   "Return the name of the package for the current buffer"
