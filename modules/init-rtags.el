@@ -173,8 +173,7 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
 (define-key c-mode-base-map "\M-."
   (lambda (other-window)
     (interactive "P")
-    (when (exordium-rtags-find-symbol-at-point nil other-window)
-      (recenter))))
+    (exordium-rtags-find-symbol-at-point nil other-window)))
 
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
