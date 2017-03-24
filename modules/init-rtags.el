@@ -166,15 +166,15 @@ https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
                (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
                               (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
                               (when rtags-symbolnames-case-insensitive "-I"))
-               (setq found-it (rtags-handle-results-buffer nil nil fn other-window))))))
+               (setq found-it (rtags-handle-results-buffer nil nil fn other-window)))))
+      (recenter))
     found-it))
 
 ;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
   (lambda (other-window)
     (interactive "P")
-    (when (exordium-rtags-find-symbol-at-point nil other-window)
-      (recenter))))
+    (exordium-rtags-find-symbol-at-point nil other-window)))
 
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
