@@ -9,7 +9,7 @@
 
 (require 'rtags)
 (require 'helm)
-(require 'rtags-helm)
+(require 'helm-rtags)
 (require 'init-prefs)
 
 (defcustom rtags-helm-show-variables nil
