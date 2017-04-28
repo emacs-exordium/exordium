@@ -57,7 +57,7 @@
                           :height size
                           :weight 'normal))))
 
-(when exordium-preferred-fonts
+(when exordium-available-preferred-fonts
   (exordium-set-font))
 
 
