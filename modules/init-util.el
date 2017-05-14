@@ -124,6 +124,7 @@
 (require 'goto-chg)
 (define-key global-map [(control x)(control \\)] 'goto-last-change)
 (define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
+(define-key global-map [(control x)(control /)] 'goto-last-change-reverse)
 
 
 ;;; Insert date/time
