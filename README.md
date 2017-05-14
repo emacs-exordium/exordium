@@ -150,7 +150,7 @@ Navigation:
 Keybinding                         | Description
 -----------------------------------|----------------------------------------------------------
 <kbd>C-x C-\\</kbd>                | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
-<kbd>C-x C-&#124;</kbd>            | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
+<kbd>C-x C-/</kbd>                 | Goto last change in reverse direction.
 <kbd>C-c j</kbd> or <kbd>C-'</kbd> | Goto visible word or subword (`avy-goto-word-or-subword-1`). It first asks for the first character of the word, then annotates all words starting with that character with a unique touch-type friendly code.
 <kbd>C-c s</kbd>                   | Push point onto position stack (e.g. bookmarks).
 <kbd>C-c b</kbd>                   | Pop point from position stack.
