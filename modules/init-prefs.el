@@ -349,6 +349,23 @@ be a list of strings."
   :type  'sexp)
 
 
+(defcustom exordium-iwyu-filter-args '("-fno-default-inline")
+  "List of flags that should be removed from the 'include-what-you-use'.
+  When `include-what-you-use' is called, all parameters after the first space
+  in JSON value of `command' property are passed. Use this list to remove
+  unsupported flags and arguments as well as compiler wrappers that are in
+  project's compilation database."
+  :group 'exordium
+  :type  'sexp)
+
+(defcustom exordium-iwyu-extra-args '()
+  "List of extra arguments that should be passed when calling
+   `include-what-you-use'. They are passed 'as is' to `include-what-you-use'
+   executable."
+  :group 'exordium
+  :type  'sexp)
+
+
 ;;; See init-helm.el
 (defcustom exordium-helm-everywhere nil
   "Whether Helm should be used as a substitute for common key bindings."
