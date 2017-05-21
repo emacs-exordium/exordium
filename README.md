@@ -56,6 +56,8 @@ might want to check these links:
     compilation errors in buffer, auto-complete etc.
   * Formatting keys and snippets for the
     [BDE](https://github.com/bloomberg/bde) code style.
+  * [include-what-you-use](https://include-what-you-use.org): a LLVM/Clang-based
+    tool for use with clang to analyze #includes in C and C++ source files.
 * JavaScript: [JS2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
@@ -735,6 +737,40 @@ Possible issues:
 As an alternative to `auto-complete` you can choose `company-mode`. You can
 do that by setting `exordium-complete-mode` to `:company`. It will use
 RTags as a completion engine when `rdm` is started.
+
+### include-what-you-use
+
+[include-what-you-use](https://include-what-you-use.org) is a tool for use
+with clang to analyze `#include`s in C and C++ source files. The main goal of
+`include-what-you-use` is to remove superfluous `#include`s. It does this both
+by figuring out what `#include`s are not actually needed for this file (for
+both `.cpp` and `.h` files), and suggesting fixes to `#include`s with
+forward-declares when possible. Please note that since this tool is not 100%
+accurate, Exordium support does not include automatic file modification.
+Instead it provides support to spawn the process and capture the suggestions
+in a diagnostic buffer that can be later checked by human.
+
+Similarly to RTags, `include-what-you-use` relies on the compilation database
+to be available in `compile_commands.json` file. It uses
+`exordium-rtags-cmake-build-dir` to locate the compilation database for the
+current project.
+
+On top of that two variables are available to customise the behavior:
+
+* `exordium-iwyu-filter-args`: a list of arguments that should be taken out of
+  the `include-what-you-use` invocation. This is useful, when project's
+  compilation database contains arguments specific to the compiler and those
+  arguments are not supported by LLVM/Clang.
+* `exordium-iwyu-filter-args`: a list of arguments that should be passed to the
+  `include-what-you-use` executable. This becomes useful, i.e., when LLVM/Clang
+  is not installed in the system directory and extra includes has to be passed.
+
+Exordium defines the following keybindings:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c w e</kbd>    | Run `include-what-you-use` for the current buffer.
+<kbd>C-c w d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
 
 ## Lisp
 
