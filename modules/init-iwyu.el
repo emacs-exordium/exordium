@@ -31,6 +31,31 @@ window (similar to `iwyu-reparse' but without reparsing)."
                  (other-window -1))))
       (message "IWYU has not been run for current buffer (Use C-c w e)"))))
 
+(defun iwyu-prepare-args (command)
+  "Returns the list of arguments extracted from the specified `command'. The
+first word (assumed: the compiler) is skipped. The 'backslash double quote'
+sequences of arguments are returned as single element."
+  (let* ((quote-match
+          #'(lambda (list start)
+              (cl-position-if
+               '(lambda (x) (string-match "\\\"" x))
+               list
+               :start start)))
+         (args (cdr (split-string command)))
+         (start (funcall quote-match args 0))
+         (end (funcall quote-match args
+                       (if start (+ start 1) (- (cl-list-length args) 1)))))
+    (while (and start end)
+      (setq args
+            (append
+             (cl-subseq args 0 start)
+             (list (mapconcat 'identity (cl-subseq args start (+ end 1)) " "))
+             (cl-subseq args (+ end 1))))
+      (setq start (funcall quote-match args (+ start 1)))
+      (setq end (funcall quote-match args
+                         (if start (+ start 1) (- (cl-list-length args) 1)))))
+    args))
+
 (defun iwyu-start-process-for (compile-commands-json file)
   "Start the `include-what-you-use' process and put its output into `*IWYU*'
 buffer. The buffer is cleared before starting the process. It search for the
@@ -65,7 +90,7 @@ arguments in `exordium-iwyu-extra-args'."
              (append
               exordium-iwyu-extra-args
               (remove-if '(lambda (x) (member x exordium-iwyu-filter-args))
-                         (cdr (split-string (plist-get entry :command))))))
+                         (iwyu-prepare-args (plist-get entry :command)))))
             (display-buffer buffer-name)
             (other-window 1)
             (set-window-dedicated-p (get-buffer-window (current-buffer)) t)
