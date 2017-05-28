@@ -771,6 +771,7 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c w e</kbd>    | Run `include-what-you-use` for the current buffer.
 <kbd>C-c w d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>g</kbd>          | Reparse recent file (in `IWYU-mode` buffer).
 
 ## Lisp
 
