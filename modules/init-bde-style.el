@@ -91,7 +91,6 @@
   "Return the name of the component for the current buffer"
   (let ((name (file-name-sans-extension
                (file-name-nondirectory (buffer-file-name)))))
-    (message name)
     (cond ((string-match-p "\\.[gipu]\\.t$" name)
            (substring name 0 (- (length name) 4)))
           ((string-suffix-p ".t" name)
@@ -102,7 +101,13 @@
   "Return the name of the package for the current buffer"
   (interactive)
   (let ((component-name (bde-component-name)))
-    (substring component-name 0 (string-match "_" component-name))))
+    (substring
+     component-name
+     0
+     (string-match "_" component-name
+                   (if (string-prefix-p "s_" component-name)
+                       2
+                     0)))))
 
 
 ;;; Indentation
