@@ -135,6 +135,18 @@
 
 (eval-when-compile (defvar c-syntactic-context))
 
+(defun bde-is-member-function-declaration ()
+  "Return whether the line ending resembles the member function declaration."
+  (re-search-forward
+   (concat ") *\\(const\\)?"
+           " *\\(noexcept\\|BSLS_CPP11_NOEXCEPT\\)?"
+           " *\\(\\(= *\\(0\\|de\\(fault\\|lete\\)\\)\\)"
+           "\\|BSLS_CPP11_DE\\(FAULT\\|LETED\\)"
+           "\\|override\\|BSLS_CPP11_OVERRIDE\\)?"
+           " *\\(&\\(&\\)?\\)?"
+           " *; *$")
+           (point-at-eol) t))
+
 (defun bde-comment-offset (element)
   "Custom line-up function for BDE comments.
 Return a symbol for the correct indentation level at the
@@ -165,8 +177,7 @@ current cursor position, if the cursor is within a class definition:
                  ;; looking at a comment line
                  (setq comment-column (- (current-column) 2))
                  (forward-line -1))
-                ((re-search-forward ") *\\(const\\)? *\\(= *0\\)? *; *$"
-                                    (point-at-eol) t)
+                ((bde-is-member-function-declaration)
                  ;; looking at end of method declaration
                  (return '+))
                 ((re-search-forward "} *$" (point-at-eol) t)
