@@ -63,6 +63,7 @@
            shell-mode
            help-mode
            compilation-mode
+           iwyu-mode
            Info-mode
            calendar-mode
            project-explorer-mode
