@@ -24,7 +24,7 @@ recent file (similar to `recompile' in `compilation-mode')."
       (3 font-lock-string-face)
       (4 font-lock-comment-face))
      (,(concat "\\(^\\|\\(for \\)\\)\\(\\(/[-[:alnum:]_\\.]+\\)+\\."
-               (regexp-opt '("h" "hh" "hpp" "c" "ccc" "cpp"))
+               (regexp-opt '("h" "hh" "hpp" "c" "cc" "cpp"))
                "\\)")
       (3 font-lock-function-name-face)))))
 
