@@ -106,8 +106,101 @@ is selected or not. Return the body return value."
                      (test-case-output tst)))))
 
 
-;; Tests for `bde-is-member-function-declaration'
+;; Tests for `bde-guess-class-name'
 
+(ert-deftest test-bde-guess-class-name-class-1 ()
+  (let ((tst (make-test-case :input "class TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-class-2 ()
+  (let ((tst (make-test-case :input "class TheName : public TheInterface {")))
+    (should (string= (with-test-casre-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-struct-1 ()
+  (let ((tst (make-test-case :input "struct TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "struct TheName"))))
+
+(ert-deftest test-bde-guess-class-name-class-2 ()
+  (let ((tst (make-test-case :input "struct TheName : OtherStruct {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "struct TheName"))))
+
+(ert-deftest test-bde-guess-class-name-not-class-1 ()
+  (let ((tst (make-test-case :input "enum TheName {")))
+    (should (not (with-test-case-return tst (bde-guess-class-name))))))
+
+(ert-deftest test-bde-guess-class-name-template-1 ()
+  (let ((tst (make-test-case :input "template<typename A>
+class TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-2 ()
+  (let ((tst (make-test-case :input "template <typename A>
+class TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-3 ()
+  (let ((tst (make-test-case :input "template <>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-4 ()
+  (let ((tst (make-test-case :input "template <class A>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-5 ()
+  (let ((tst (make-test-case :input "template <int A>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-6 ()
+  (let ((tst (make-test-case :input "template <int A
+class A>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-7 ()
+  (let ((tst (make-test-case :input "template <int A,
+         class A>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-8 ()
+  (let ((tst (make-test-case :input "template <typename <class> A>
+class TheName<int> {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-9 ()
+  (let ((tst (make-test-case :input "template <typename std::enable_if<std::is_class<T>{}, int>::type = 0>
+class TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+                     "class TheName"))))
+
+(ert-deftest test-bde-guess-class-name-template-10 ()
+  (let ((tst (make-test-case :input "template <typename <class> A
+class TheName<int> {")))
+    (should (not (with-test-case-return tst (bde-guess-class-name))))))
+
+(ert-deftest test-bde-guess-class-name-template-11 ()
+  (let ((tst (make-test-case :input "template <typename A>>
+class TheName {")))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
+            "class TheName"))))
+
+
+;; Tests for `bde-is-member-function-declaration'
 
 (ert-deftest test-bde-is-member-function-declaration-basic-1 ()
   (let ((tst (make-test-case :input "void foo();")))
