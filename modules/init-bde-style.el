@@ -322,9 +322,9 @@ switch(val) {
          (setq erase-hint nil))))))
 
 (defun bde-guess-class-name ()
-  "Return the name of the class or struct that is defined
-immediately after the cursor (skipping any previous spaces and
-newlines). Return nil if there isn't any struct or class defined."
+  "Return the name of the class or struct that is defined immediately after the
+cursor (skipping any previous templates, spaces, and newlines). Return nil if
+there isn't any struct or class defined."
   (save-excursion
     (beginning-of-line)
     (when (forward-word)
@@ -336,8 +336,7 @@ newlines). Return nil if there isn't any struct or class defined."
                 (if (string= (match-string 1) "<")
                     (setq level (+ level 1))
                   (setq level (- level 1)))
-              (setq level 0))
-            (message (format "TODO: debug only - delete: point %s level %s" (point) level))))
+              (setq level 0))))
         (forward-line))
       (when (re-search-forward "^\\(class\\|struct\\) " (point-at-eol) t)
         (concat (match-string 1) " " (current-word))))))
@@ -376,7 +375,7 @@ backspace, delete, left or right."
 
 ;;; BDE's right style comments such as // RETURN or // LOCK
 
-(defun bde-aligh-right ()
+(defun bde-align-right ()
   "Set the right amount of spaces around the point so the text
   after point is right-aligned (for things such as // RETURN). It
   works even if point is in a C++ comment."
@@ -401,7 +400,7 @@ backspace, delete, left or right."
   (move-end-of-line nil))
 
 ;;; Ctrl-> to right-aligh the text after point
-(global-set-key [(control >)] 'bde-aligh-right)
+(global-set-key [(control >)] 'bde-align-right)
 
 
 ;;; Insert redundant include guards
