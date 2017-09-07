@@ -48,7 +48,7 @@ might want to check these links:
   between windows).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
-* Git: [Magit](http://magit.github.io) (git UI);
+* Git: [Magit](http://magit.vc) (git UI);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
   * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
@@ -334,7 +334,7 @@ expressions.
 ## Git
 
 All git-related keys use prefix <kbd>C-c g</kbd> plus one more key. For example
-<kbd>C-c g s</kbd> runs [Magit](http://magit.github.io) status:
+<kbd>C-c g s</kbd> runs [Magit](http://magit.vc) status:
 
 ![magit](https://raw.github.com/philippe-grenet/exordium/master/doc/magit.png)
 
