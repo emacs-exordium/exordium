@@ -230,9 +230,8 @@ open-buffer is true."
     (with-current-buffer buffer
       (rtags-rdm-mode)
       (read-only-mode))
-    (let ((process (if exordium-rtags-rdm-args
-                       (start-process "rdm" buffer "rdm" exordium-rtags-rdm-args)
-                       (start-process "rdm" buffer "rdm"))))
+    (let ((process
+           (apply #'start-process "rdm" buffer "rdm" exordium-rtags-rdm-args)))
       (message "Started rdm - PID %d" (process-id process))))
   ;; Add RTags to company backends
   (when (and (eq exordium-complete-mode :company)
