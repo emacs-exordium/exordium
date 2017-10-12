@@ -51,6 +51,16 @@
   (define-key markdown-mode-map (kbd "M-p") #'ace-window))
 
 
+;;; Make backtick an electric pair
+(when exordium-enable-electric-pair-mode
+  (add-hook 'markdown-mode-hook
+            '(lambda ()
+               (setq-local electric-pair-pairs
+                           (append electric-pair-pairs '((?` . ?`))))
+               (setq-local electric-pair-text-pairs
+                           (append electric-pair-text-pairs '((?` . ?`)))))))
+
+
 ;;; Impatient markdown mode
 
 (require 'impatient-mode)
