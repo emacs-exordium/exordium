@@ -84,4 +84,14 @@ attention to case differences."
   (substring string 0 (max 0(- (length string) n))))
 
 
+;;; Add backtick to electric pair mode. It makes buffer local variable with
+;;; an extra back tick added
+(defun exordium-electric-mode-add-back-tick ()
+  (when exordium-enable-electric-pair-mode
+    (setq-local electric-pair-pairs
+                (append electric-pair-pairs '((?` . ?`))))
+    (setq-local electric-pair-text-pairs
+                (append electric-pair-text-pairs '((?` . ?`))))))
+
+
 (provide 'init-lib)

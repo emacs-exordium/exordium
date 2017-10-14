@@ -103,6 +103,11 @@
 
 (define-key exordium-git-map (kbd "g") (function vc-git-grep))
 
+
+;;; Make backtick an electric pair
+(require 'init-lib)
+
+(add-hook 'git-commit-mode-hook 'exordium-electric-mode-add-back-tick)
 
 
 (provide 'init-git)
