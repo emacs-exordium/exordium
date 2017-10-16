@@ -52,13 +52,9 @@
 
 
 ;;; Make backtick an electric pair
-(when exordium-enable-electric-pair-mode
-  (add-hook 'markdown-mode-hook
-            '(lambda ()
-               (setq-local electric-pair-pairs
-                           (append electric-pair-pairs '((?` . ?`))))
-               (setq-local electric-pair-text-pairs
-                           (append electric-pair-text-pairs '((?` . ?`)))))))
+(require 'init-lib)
+
+(add-hook 'markdown-mode-hook 'exordium-electric-mode-add-back-tick)
 
 
 ;;; Impatient markdown mode
