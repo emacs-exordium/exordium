@@ -145,6 +145,8 @@ Keybinding          | Description
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region by semantic units.
 <kbd>M-C-=</kbd>    | Contract region by semantic units.
+<kbd>M-<up></kbd>   | Move region one line up
+<kbd>M-<down></kbd> | Move region one line down
 <kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
