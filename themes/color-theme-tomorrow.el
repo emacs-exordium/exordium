@@ -162,7 +162,7 @@ names to which it refers are bound."
      (linum ((t (:background ,current-line :foreground ,foreground
                       :height 1.0
                       :inherit nil :weight normal :slant normal :underline nil))))
-     (linum-highlight-face ((t (:background ,current-line :foreground ,foreground))))
+     (linum-highlight-face ((t (:background ,foreground :foreground ,current-line))))
 
      (hl-line ((t (:background ,current-line :inherit nil))))
      (highlight ((t (:background ,green :foreground ,background)))) ;+:foreground
@@ -364,7 +364,7 @@ names to which it refers are bound."
      (markdown-header-face-4 ((t (:foreground ,blue :weight normal))))
      (markdown-header-face-5 ((t (:foreground ,blue :weight bold :slant italic))))
      (markdown-header-delimiter-face ((t (:foreground ,blue))))
-     (markdown-bold-face ((t (:foreground ,foreground :weight bold))))
+     (markdown-bold-face ((t (:foreground ,green :weight bold))))
      (markdown-italic-face ((t (:foreground ,foreground :weight normal :slant italic))))
      (markdown-list-face ((t (:foreground ,blue :weight normal))))
      (markdown-inline-code-face ((t (:foreground ,aqua :weight normal))))
