@@ -106,6 +106,116 @@ is selected or not. Return the body return value."
                      (test-case-output tst)))))
 
 
+;; Tests for `bde-align-fundecl'
+
+(ert-deftest test-bde-align-fundecl-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int>& a = {1, 2, 3},
+             std::map<int, int> &b = std::vector(2,2),
+             std::vector<int>* c = std::vector{1, 2, 3},
+             std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo(std::vector<int>&    a = {1, 2, 3},
+             std::map<int, int>&  b = std::vector(2,2),
+             std::vector<int>    *c = std::vector{1, 2, 3},
+             std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+(ert-deftest test-bde-align-fundecl-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int>& a = {1, 2, 3},
+             std::map<int, int> &b = std::vector(2,2),
+             std::vector<int>* c = std::vector{1, 2, 3},
+             std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo(std::vector<int>&    a = {1, 2, 3},
+             std::map<int, int>&  b = std::vector(2,2),
+             std::vector<int>    *c = std::vector{1, 2, 3},
+             std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+(ert-deftest test-bde-align-fundecl-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int>& a = {1, 2, 3},
+             std::map<int, int> &b = std::vector(2,2),
+             std::vector<int>* c = std::vector{1, 2, 3},
+             std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo(std::vector<int>&    a = {1, 2, 3},
+             std::map<int, int>&  b = std::vector(2,2),
+             std::vector<int>    *c = std::vector{1, 2, 3},
+             std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (+ 200 (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+(ert-deftest test-bde-align-fundecl-long-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(std::vector<int>& a = {1, 2, 3},
+             std::map<int, int> &b = std::vector(2,2),
+             std::vector<int>* c = std::vector{1, 2, 3},
+             std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(
+                                std::vector<int>&    a = {1, 2, 3},
+                                std::map<int, int>&  b = std::vector(2,2),
+                                std::vector<int>    *c = std::vector{1, 2, 3},
+                                std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+(ert-deftest test-bde-align-fundecl-long-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(
+std::vector<int>& a = {1, 2, 3},
+std::map<int, int> &b = std::vector(2,2),
+std::vector<int>* c = std::vector{1, 2, 3},
+std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(
+                                std::vector<int>&    a = {1, 2, 3},
+                                std::map<int, int>&  b = std::vector(2,2),
+                                std::vector<int>    *c = std::vector{1, 2, 3},
+                                std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (+ 80 (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+(ert-deftest test-bde-align-fundecl-long-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(std::vector<int>& a = {1, 2, 3},
+                                                       std::map<int, int> &b = std::vector(2,2),
+                                                       std::vector<int>* c = std::vector{1, 2, 3},
+                                                       std::map<int, int> *d = std::map<int, int>{});
+};"
+                             :output "struct A {
+    void foo_is_a_long_name_so_parameters_will_not_fit(
+                                std::vector<int>&    a = {1, 2, 3},
+                                std::map<int, int>&  b = std::vector(2,2),
+                                std::vector<int>    *c = std::vector{1, 2, 3},
+                                std::map<int, int>  *d = std::map<int, int>{});
+};"
+                             :cursor-pos (+ 200 (length "struct A {")))))
+    (should (string= (with-test-case-output tst (bde-align-fundecl))
+                     (test-case-output tst)))))
+
+
+
 ;; Tests for `bde-guess-class-name'
 
 (ert-deftest test-bde-guess-class-name-class-1 ()
@@ -513,6 +623,589 @@ class TheName {")))
 (ert-deftest test-bde-is-member-function-declaration-ref-7 ()
   (let ((tst (make-test-case :input "void foo() &&&;")))
     (should (not (with-test-case-return tst (bde-is-member-function-declaration))))))
+
+
+;; Tests for `bde-parse-argument'
+
+(ert-deftest test-bde-parse-argument-simple ()
+  (should (equal (bde-parse-argument "int a") '("int" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ptr ()
+  (should (equal (bde-parse-argument "int *a") '("int" "*a" 1 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ptr-fix ()
+  (should (equal (bde-parse-argument "int* a") '("int" "*a" 1 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ptr-ptr ()
+  (should (equal (bde-parse-argument "int **a") '("int" "**a" 2 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ptr-ptr-fix ()
+  (should (equal (bde-parse-argument "int** a") '("int" "**a" 2 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ref ()
+  (should (equal (bde-parse-argument "int& a") '("int&" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ref-fix ()
+  (should (equal (bde-parse-argument "int &a") '("int&" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ref-ref ()
+  (should (equal (bde-parse-argument "int&& a") '("int&&" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-simple-ref-ref-fix ()
+  (should (equal (bde-parse-argument "int &&a") '("int&&" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-assign-simple ()
+  (should (equal (bde-parse-argument "int a = 1") '("int" "a" 0 "= 1"))))
+
+(ert-deftest test-bde-parse-argument-assign-function ()
+  (should (equal (bde-parse-argument "int a = foo(1, 2)")
+                 '("int" "a" 0 "= foo(1, 2)"))))
+
+(ert-deftest test-bde-parse-argument-assign-with-eq ()
+  (should (equal (bde-parse-argument "Type<sizeof(int) == 4> a = foo(1, 2)")
+                 '("Type<sizeof(int) == 4>" "a" 0 "= foo(1, 2)"))))
+
+(ert-deftest test-bde-parse-argument-assign-with-gteq ()
+  (should (equal (bde-parse-argument "Type<sizeof(int) >= 4> a = foo(1, 2)")
+                 '("Type<sizeof(int) >= 4>" "a" 0 "= foo(1, 2)"))))
+
+(ert-deftest test-bde-parse-argument-assign-with-lteq ()
+  (should (equal (bde-parse-argument "Type<sizeof(int) <= 4> a = foo(1, 2)")
+                 '("Type<sizeof(int) <= 4>" "a" 0 "= foo(1, 2)"))))
+
+(ert-deftest test-bde-parse-argument-crazy-name1 ()
+  (should (equal (bde-parse-argument "int _A_cr4zyNam3")
+                 '("int" "_A_cr4zyNam3" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-crazy-name2 ()
+  (should (equal (bde-parse-argument "int lessCr4zyNam3")
+                 '("int" "lessCr4zyNam3" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-multi-ref-fix ()
+  (should (equal (bde-parse-argument "std::vector<int &, int &&> &&a")
+                 '("std::vector<int&, int&&>&&" "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-variadic ()
+  (should (equal (bde-parse-argument "T... a") '("T..." "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-variadic-ref ()
+  (should (equal (bde-parse-argument "T&&... a") '("T&&..." "a" 0 nil))))
+
+(ert-deftest test-bde-parse-argument-variadic-ref-fix ()
+  (should (equal (bde-parse-argument "T &&... a") '("T&&..." "a" 0 nil))))
+
+
+
+;; Tests for `exordium-bde-split-arglist'
+
+(ert-deftest test-exordium-bde-split-arglist-nil ()
+  (should (equal (exordium-bde-split-arglist nil) nil)))
+
+(ert-deftest test-exordium-bde-split-arglist-empty-string ()
+  (should (equal (exordium-bde-split-arglist "") nil)))
+
+(ert-deftest test-exordium-bde-split-arglist-empty ()
+  (should (equal (exordium-bde-split-arglist "()") nil)))
+
+(ert-deftest test-exordium-bde-split-arglist-single ()
+  (should (equal (exordium-bde-split-arglist "(int a)")
+                 '("int a"))))
+
+(ert-deftest test-exordium-bde-split-arglist-two ()
+  (should (equal (exordium-bde-split-arglist "(int a, int b)")
+                 '("int a" "int b"))))
+
+(ert-deftest test-exordium-bde-split-arglist-two-multiline ()
+  (should (equal (exordium-bde-split-arglist "(int a,\n    int b)")
+                 '("int a" "int b"))))
+
+(ert-deftest test-exordium-bde-split-arglist-commas-in-type ()
+  (should (equal (exordium-bde-split-arglist
+                  (concat "(std::map<int, int> a,\n"
+                          "std::conditional<X, A&, B&>::type b)"))
+                 '("std::map<int, int> a"
+                   "std::conditional<X, A&, B&>::type b"))))
+
+(ert-deftest test-exordium-bde-split-arglist-commas-in-assign ()
+  (should (equal (exordium-bde-split-arglist
+                  (concat "(std::vector<int> a = {1, 2, 3},\n"
+                          "std::vector<int> b = std::vector(2,2),\n"
+                          "std::vector<int> c = std::vector{1, 2, 3},\n"
+                          "std::map<int, int> d = std::map<int, int>{})"))
+                 '("std::vector<int> a = {1, 2, 3}"
+                   "std::vector<int> b = std::vector(2,2)"
+                   "std::vector<int> c = std::vector{1, 2, 3}"
+                   "std::map<int, int> d = std::map<int, int>{}"))))
+
+(ert-deftest test-exordium-bde-split-arglist-crazy-arglist ()
+  (should (equal (exordium-bde-split-arglist
+                  (concat "(std::vector<int> bar = fun<sizeof(int)>(),\n"
+                          "                  std::vector<int> = {1,2, 3},\n"
+                          "                  std::map<int & , int*> &&baZ2 = {},\n"
+                          "            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),\n"
+                          "            int (*(*xs)(int*, int &, std::vector<int&>&&))[3],\n"
+                          "            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},\n"
+                          "            T&&... ts)"))
+                  '("std::vector<int> bar = fun<sizeof(int)>()"
+                    "std::vector<int> = {1,2, 3}"
+                    "std::map<int & , int*> &&baZ2 = {}"
+                    "std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3)"
+                    "int (*(*xs)(int*, int &, std::vector<int&>&&))[3]"
+                    "TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr}"
+                    "T&&... ts"))))
+
+;; Tests for `exordium-bde-bounds-of-arglist-at-point'
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-simple-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b);
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 32)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-simple-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b);
+};"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 32)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-simple-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b);
+};"
+                             :cursor-pos (+ 15 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 32)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c);
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c);
+};"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c);
+};"
+                             :cursor-pos (+ 15 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-4 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c);
+};"
+                             :cursor-pos (+ 22 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+};"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+};"
+                             :cursor-pos (+ 25 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bo")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bool b,
+        int")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bool b,
+        int c);
+
+    templ")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 88 108)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-4 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void b")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 88 108)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-5 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 88 108)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-6 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        int c);
+};"
+                             :cursor-pos (1+ (length "struct A {
+    void foo(bool b,
+        int c);
+
+    template <typename T>
+    void bar(T t,
+        in")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 88 108)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-inline-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c) {}
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-inline-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c) {}
+};"
+                             :cursor-pos (+ 22 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-noexcept-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c) noexcept(noexcept(x));
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-noexcept-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c) noexcept(noexcept(x));
+};"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-noexcept-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(bool b, int c) noexcept(noexcept(x));
+};"
+                             :cursor-pos (+ 30 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 39)))))
+
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int fo")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int foo(
+        std::str")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-4 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int foo(
+        std::string *b")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-5 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int foo(
+        std::string *bar,
+        std::str")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-6 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int foo(
+        std::string *bar,
+        std::string *b")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-cont-conditions-7 ()
+  (let ((tst (make-test-case :input "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noexcept;
+};"
+                             :cursor-pos (1+ (length "struct A {
+    int foo(
+        std::string *bar,
+        std::string *baz)
+     noex")))))
+    (message (format "tst=%s" tst))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 23 76)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-type-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::map<int, int> a,
+             std::conditional<X, A&, B&>::type b);"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 96)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-type-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::map<int, int> a,
+             std::conditional<X, A&, B&>::type b);"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 96)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-type-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::map<int, int> a,
+             std::conditional<X, A&, B&>::type b);"
+                             :cursor-pos (+ 70 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 96)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-assign-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> a = {1, 2, 3},
+             std::vector<int> b = std::vector(2,2),
+             std::vector<int> c = std::vector{1, 2, 3},
+             std::map<int, int> d = std::map<int, int>{})
+{}"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 222)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-assign-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> a = {1, 2, 3},
+             std::vector<int> b = std::vector(2,2),
+             std::vector<int> c = std::vector{1, 2, 3},
+             std::map<int, int> d = std::map<int, int>{})
+{}"
+                             :cursor-pos (+ 11 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 222)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-assign-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> a = {1, 2, 3},
+             std::vector<int> b = std::vector(2,2),
+             std::vector<int> c = std::vector{1, 2, 3},
+             std::map<int, int> d = std::map<int, int>{})
+{}"
+                             :cursor-pos (+ 65 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 222)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-commas-in-assign-4 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> a = {1, 2, 3},
+             std::vector<int> b = std::vector(2,2),
+             std::vector<int> c = std::vector{1, 2, 3},
+             std::map<int, int> d = std::map<int, int>{})
+{}"
+                             :cursor-pos (+ 103 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 222)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-crazy-arglist-1 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> bar = fun<sizeof(int)>(),
+      std::vector<int> = {1,2, 3},
+                  std::map<int & , int*> &&baZ2 = {},
+            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),
+       int (*(*xs)(int*, int &, std::vector<int&>&&))[3],
+            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},
+            T&&... ts) = delete;"
+                             :cursor-pos (1+ (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 388)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-crazy-arglist-2 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> bar = fun<sizeof(int)>(),
+      std::vector<int> = {1,2, 3},
+                  std::map<int & , int*> &&baZ2 = {},
+            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),
+       int (*(*xs)(int*, int &, std::vector<int&>&&))[3],
+            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},
+            T&&... ts) = delete;"
+                             :cursor-pos (+ 10 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 388)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-crazy-arglist-3 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> bar = fun<sizeof(int)>(),
+      std::vector<int> = {1,2, 3},
+                  std::map<int & , int*> &&baZ2 = {},
+            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),
+       int (*(*xs)(int*, int &, std::vector<int&>&&))[3],
+            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},
+            T&&... ts) = delete;"
+                             :cursor-pos (+ 50 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 388)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-crazy-arglist-4 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> bar = fun<sizeof(int)>(),
+      std::vector<int> = {1,2, 3},
+                  std::map<int & , int*> &&baZ2 = {},
+            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),
+       int (*(*xs)(int*, int &, std::vector<int&>&&))[3],
+            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},
+            T&&... ts) = delete;"
+                             :cursor-pos (+ 100 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 388)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-crazy-arglist-5 ()
+  (let ((tst (make-test-case :input "struct A {
+    void foo(std::vector<int> bar = fun<sizeof(int)>(),
+      std::vector<int> = {1,2, 3},
+                  std::map<int & , int*> &&baZ2 = {},
+            std::vector<std::map<int, char>*> *qux = the_qux(1, 2, 3),
+       int (*(*xs)(int*, int &, std::vector<int&>&&))[3],
+            TYPE<sizeof(typename TYPE::value) == 0> * Qu2x = new TYPE{nullptr},
+            T&&... ts) = delete;"
+                             :cursor-pos (+ 200 (length "struct A {")))))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 24 388)))))
 
 ;; Local Variables:
 ;; no-byte-compile: t
