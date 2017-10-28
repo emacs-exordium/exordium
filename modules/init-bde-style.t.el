@@ -1207,6 +1207,29 @@ class TheName {")))
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 24 388)))))
 
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-too-long-function ()
+  (let ((tst (make-test-case :input (concat "struct A {
+    void f"
+
+                                            (make-string (* 80 25) ?o)
+                                            "(bool b,
+        int c);
+};")
+                             :cursor-pos (1+ (length "struct A {
+    void f")))))
+    (should-not (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-too-long-args ()
+  (let ((tst (make-test-case :input (concat "struct A {
+    void foo(b"
+                                            (make-string (* 80 25) ?o)
+                                            "l b,
+        int c);
+};")
+                             :cursor-pos (1+ (length "struct A {
+    void foo(b")))))
+    (should-not (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point)))))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
