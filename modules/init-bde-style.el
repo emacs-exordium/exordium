@@ -47,7 +47,6 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
-;;; TODO: apparently default values should be aligned too.
 ;;;
 ;;; `bde-align-funcall': align function call arguments
 ;;; Before (cursor must be inside the argument list):
@@ -693,7 +692,8 @@ according to the BDE style."
   (let ((args (exordium-bde-split-arglist (thing-at-point 'arglist t)))
         (parsed-args ())
         (max-type-length 0)
-        (max-stars 0))
+        (max-stars 0)
+        (max-var-length 0))
     (when args
       ;; Parse each argument and get the max type length
       (setq parsed-args
@@ -702,7 +702,10 @@ according to the BDE style."
                          (setq max-type-length (max max-type-length
                                                     (length (car parsed-arg)))
                                max-stars (max max-stars
-                                              (caddr parsed-arg)))
+                                              (caddr parsed-arg))
+                               max-var-length (max max-var-length
+                                                   (- (length (cadr parsed-arg))
+                                                      (caddr parsed-arg))))
                          parsed-arg))
                     args))
       (funcall '(lambda (bounds)
@@ -727,7 +730,11 @@ according to the BDE style."
                                       ?\s)))
                (insert var)
                (when assign
-                 (insert " " assign)))
+                 (insert (make-string (+ (- max-var-length
+                                            (- (length var) num-stars))
+                                         1) ; at least one space
+                                      ?\s))
+                 (insert assign)))
              (unless (>= i (length parsed-args))
                (insert ",")
                (newline))

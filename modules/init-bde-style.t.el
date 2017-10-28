@@ -111,15 +111,15 @@ is selected or not. Return the body return value."
 (ert-deftest test-bde-align-fundecl-1 ()
   (let ((tst (make-test-case :input "struct A {
     void foo(std::vector<int>& a = {1, 2, 3},
-             std::map<int, int> &b = std::vector(2,2),
+             std::map<int, int> &bb = std::vector(2,2),
              std::vector<int>* c = std::vector{1, 2, 3},
              std::map<int, int> *d = std::map<int, int>{});
 };"
                              :output "struct A {
-    void foo(std::vector<int>&    a = {1, 2, 3},
-             std::map<int, int>&  b = std::vector(2,2),
-             std::vector<int>    *c = std::vector{1, 2, 3},
-             std::map<int, int>  *d = std::map<int, int>{});
+    void foo(std::vector<int>&    a  = {1, 2, 3},
+             std::map<int, int>&  bb = std::vector(2,2),
+             std::vector<int>    *c  = std::vector{1, 2, 3},
+             std::map<int, int>  *d  = std::map<int, int>{});
 };"
                              :cursor-pos (1+ (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
@@ -130,13 +130,13 @@ is selected or not. Return the body return value."
     void foo(std::vector<int>& a = {1, 2, 3},
              std::map<int, int> &b = std::vector(2,2),
              std::vector<int>* c = std::vector{1, 2, 3},
-             std::map<int, int> *d = std::map<int, int>{});
+             std::map<int, int> **dd = std::map<int, int>{});
 };"
                              :output "struct A {
-    void foo(std::vector<int>&    a = {1, 2, 3},
-             std::map<int, int>&  b = std::vector(2,2),
-             std::vector<int>    *c = std::vector{1, 2, 3},
-             std::map<int, int>  *d = std::map<int, int>{});
+    void foo(std::vector<int>&     a  = {1, 2, 3},
+             std::map<int, int>&   b  = std::vector(2,2),
+             std::vector<int>     *c  = std::vector{1, 2, 3},
+             std::map<int, int>  **dd = std::map<int, int>{});
 };"
                              :cursor-pos (+ 11 (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
@@ -144,16 +144,16 @@ is selected or not. Return the body return value."
 
 (ert-deftest test-bde-align-fundecl-3 ()
   (let ((tst (make-test-case :input "struct A {
-    void foo(std::vector<int>& a = {1, 2, 3},
+    void foo(std::vector<int>& aa = {1, 2, 3},
              std::map<int, int> &b = std::vector(2,2),
              std::vector<int>* c = std::vector{1, 2, 3},
              std::map<int, int> *d = std::map<int, int>{});
 };"
                              :output "struct A {
-    void foo(std::vector<int>&    a = {1, 2, 3},
-             std::map<int, int>&  b = std::vector(2,2),
-             std::vector<int>    *c = std::vector{1, 2, 3},
-             std::map<int, int>  *d = std::map<int, int>{});
+    void foo(std::vector<int>&    aa = {1, 2, 3},
+             std::map<int, int>&  b  = std::vector(2,2),
+             std::vector<int>    *c  = std::vector{1, 2, 3},
+             std::map<int, int>  *d  = std::map<int, int>{});
 };"
                              :cursor-pos (+ 200 (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
@@ -162,16 +162,16 @@ is selected or not. Return the body return value."
 (ert-deftest test-bde-align-fundecl-long-1 ()
   (let ((tst (make-test-case :input "struct A {
     void foo_is_a_long_name_so_parameters_will_not_fit(std::vector<int>& a = {1, 2, 3},
-             std::map<int, int> &b = std::vector(2,2),
+             std::map<int, int> &bb = std::vector(2,2),
              std::vector<int>* c = std::vector{1, 2, 3},
              std::map<int, int> *d = std::map<int, int>{});
 };"
                              :output "struct A {
     void foo_is_a_long_name_so_parameters_will_not_fit(
-                                std::vector<int>&    a = {1, 2, 3},
-                                std::map<int, int>&  b = std::vector(2,2),
-                                std::vector<int>    *c = std::vector{1, 2, 3},
-                                std::map<int, int>  *d = std::map<int, int>{});
+                               std::vector<int>&    a  = {1, 2, 3},
+                               std::map<int, int>&  bb = std::vector(2,2),
+                               std::vector<int>    *c  = std::vector{1, 2, 3},
+                               std::map<int, int>  *d  = std::map<int, int>{});
 };"
                              :cursor-pos (1+ (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
@@ -183,14 +183,14 @@ is selected or not. Return the body return value."
 std::vector<int>& a = {1, 2, 3},
 std::map<int, int> &b = std::vector(2,2),
 std::vector<int>* c = std::vector{1, 2, 3},
-std::map<int, int> *d = std::map<int, int>{});
+std::map<int, int> **dd = std::map<int, int>{});
 };"
                              :output "struct A {
     void foo_is_a_long_name_so_parameters_will_not_fit(
-                                std::vector<int>&    a = {1, 2, 3},
-                                std::map<int, int>&  b = std::vector(2,2),
-                                std::vector<int>    *c = std::vector{1, 2, 3},
-                                std::map<int, int>  *d = std::map<int, int>{});
+                              std::vector<int>&     a  = {1, 2, 3},
+                              std::map<int, int>&   b  = std::vector(2,2),
+                              std::vector<int>     *c  = std::vector{1, 2, 3},
+                              std::map<int, int>  **dd = std::map<int, int>{});
 };"
                              :cursor-pos (+ 80 (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
@@ -198,17 +198,17 @@ std::map<int, int> *d = std::map<int, int>{});
 
 (ert-deftest test-bde-align-fundecl-long-3 ()
   (let ((tst (make-test-case :input "struct A {
-    void foo_is_a_long_name_so_parameters_will_not_fit(std::vector<int>& a = {1, 2, 3},
+    void foo_is_a_long_name_so_parameters_will_not_fit(std::vector<int>& aa = {1, 2, 3},
                                                        std::map<int, int> &b = std::vector(2,2),
                                                        std::vector<int>* c = std::vector{1, 2, 3},
                                                        std::map<int, int> *d = std::map<int, int>{});
 };"
                              :output "struct A {
     void foo_is_a_long_name_so_parameters_will_not_fit(
-                                std::vector<int>&    a = {1, 2, 3},
-                                std::map<int, int>&  b = std::vector(2,2),
-                                std::vector<int>    *c = std::vector{1, 2, 3},
-                                std::map<int, int>  *d = std::map<int, int>{});
+                               std::vector<int>&    aa = {1, 2, 3},
+                               std::map<int, int>&  b  = std::vector(2,2),
+                               std::vector<int>    *c  = std::vector{1, 2, 3},
+                               std::map<int, int>  *d  = std::map<int, int>{});
 };"
                              :cursor-pos (+ 200 (length "struct A {")))))
     (should (string= (with-test-case-output tst (bde-align-fundecl))
