@@ -684,12 +684,16 @@ Keybinding         | Description
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.
 
-#### Using Flymake
+#### Using syntax checker
 
 "Rtags diagnostics" is a way to get compilation warnings and errors from rdm,
-and display them using Flymake in buffers. It is enabled by default if you run
-rdm from Emacs. Otherwise you can turn it on manually with `M-x
-rtags-diagnostics` bound to <kbd>C-c r D</kbd>.
+and display them using Flymake or Flychek in buffers. Set the variable
+`exordium-rtags-syntax-checker` to `:flymake` (default) or to `:flycheck` to
+select the syntax-checker in use.
+
+The compilation warnings are  enabled by default if you run rdm from Emacs.
+Otherwise you can turn it on manually with `M-x rtags-diagnostics` bound
+to <kbd>C-c r D</kbd>.
 
 By default Powerline displays the name of the buffer in
 green if the project compiles and in red if there are errors:
@@ -703,6 +707,7 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd>    | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
 <kbd>C-c r d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>C-c r r</kbd>    | Run `helm-flycheck` to show errors in helm buffer (only with `:flycheck` syntax checker)
 <kbd>C-c r DOWN</kbd> | Goto next problem (`rtags-next-diag`).
 <kbd>C-c r UP</kbd>   | Goto previous problem.
 <kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")

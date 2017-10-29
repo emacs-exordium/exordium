@@ -321,6 +321,12 @@ be a list of strings."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-rtags-syntax-checker :flymake
+  "The syntax checker to be used with rtags. If set to :flycheck the
+`flycheck-rtags' will be used. Otherwise, the built-in flymake will be used."
+  :group 'exordium
+  :type  'symbol)
+
 ;;; See init-rtags-helm.el
 (defcustom exordium-rtags-helm-everywhere t
   "Whether RTags uses Helm to display list of results, rather
