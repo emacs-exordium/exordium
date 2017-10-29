@@ -33,7 +33,9 @@
 ;;;     #endif
 ;;;
 ;;; `bde-align-fundecl': align function signature
-;;; Before (cursor must be inside the argument list):
+;;; Before (cursor must be somewhere in the function declaration, but it
+;;;         sometimes doesn't work well if cursor is after the parenthesis
+;;;         closing the argument list):
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
 ;;;             const bsl::vector<int>& accounts,
@@ -45,7 +47,6 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
-;;; TODO: apparently default values should be aligned too.
 ;;;
 ;;; `bde-align-funcall': align function call arguments
 ;;; Before (cursor must be inside the argument list):
@@ -479,21 +480,23 @@ will be used instead of the currently selected region."
 
 (defun exordium-bde-arglist-at-point--open-paren-position
     (from &optional beginning-of-line)
-  "Return the position of the first function arguments list opening
-parenthesis after the specified `from'. When `beginning-of-line' is specified
-it starts search in the beginning of the line rather than from the `from'
-point. Return `nil' when no qualifying parenthesis has been found."
+  "Return the position of the first function arguments list opening parenthesis
+after the specified `from'. When `beginning-of-line' is specified it starts
+search in the beginning of the line rather than from the `from' point.
+Return `nil' when no qualifying parenthesis has been found within the first
+80 (columns) * 25 (rows) characters."
   (when from
     (save-excursion
       (if beginning-of-line
           (move-beginning-of-line nil)
         (goto-char from))
-      (let ((level 0))
+      (let ((level 0)
+            (bound (+ (point) (* 80 25))))
         (catch 'pos
           (while (re-search-forward (concat "\\(\\(<\\)\\|"  ;; 2: <
                                             "\\(>\\)\\|"     ;; 3: >
                                             "\\((\\)\\)")    ;; 4: (
-                                    nil t)
+                                    bound t)
             (cond ((match-string 2)
                    (setq level (+ level 1)))
                   ((match-string 3)
@@ -504,20 +507,22 @@ point. Return `nil' when no qualifying parenthesis has been found."
 (defun exordium-bde-arglist-at-point--close-paren-position (from)
   "Return the position of the function argument list closing parenthesis. The
 search starts from the `from' position and ends when semicolon, `inline-open',
-`defun-open', or `noexcept' has been encountered. Return `nil' when no
-qualifying parenthesis has been found."
+`defun-open', or `noexcept' has been encountered.
+Return `nil' when no qualifying parenthesis has been found withing the first
+80 (columns) * 25 (lines) characters."
   (when from
     (save-excursion
       (goto-char from)
       (let ((any-of-is-car-of #'(lambda (any-of elem-list)
                                   (cl-member (car elem-list) any-of)))
+            (bound (+ from (* 80 25)))
             (candidate nil))
         (catch 'pos
           (while (re-search-forward (concat "\\(\\()\\)\\|"      ;; 2: )
                                             "\\({\\)\\|"         ;; 3: {
                                             "\\(;\\|noexcept\\|" ;; 4: ; noexcept
                                             "BSLS_CPP11_NOEXCEPT\\)\\)") ;; 4...
-                                    nil t)
+                                    bound t)
             (cond ((match-string 2)
                    (setq candidate (point)))
                   ((match-string 3)
@@ -687,7 +692,8 @@ according to the BDE style."
   (let ((args (exordium-bde-split-arglist (thing-at-point 'arglist t)))
         (parsed-args ())
         (max-type-length 0)
-        (max-stars 0))
+        (max-stars 0)
+        (max-var-length 0))
     (when args
       ;; Parse each argument and get the max type length
       (setq parsed-args
@@ -696,7 +702,10 @@ according to the BDE style."
                          (setq max-type-length (max max-type-length
                                                     (length (car parsed-arg)))
                                max-stars (max max-stars
-                                              (caddr parsed-arg)))
+                                              (caddr parsed-arg))
+                               max-var-length (max max-var-length
+                                                   (- (length (cadr parsed-arg))
+                                                      (caddr parsed-arg))))
                          parsed-arg))
                     args))
       (funcall '(lambda (bounds)
@@ -721,7 +730,11 @@ according to the BDE style."
                                       ?\s)))
                (insert var)
                (when assign
-                 (insert " " assign)))
+                 (insert (make-string (+ (- max-var-length
+                                            (- (length var) num-stars))
+                                         1) ; at least one space
+                                      ?\s))
+                 (insert assign)))
              (unless (>= i (length parsed-args))
                (insert ",")
                (newline))
