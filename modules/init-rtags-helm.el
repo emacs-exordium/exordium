@@ -13,17 +13,16 @@
 (require 'helm-rtags)
 (require 'init-prefs)
 
- (when (eq exordium-rtags-syntax-checker :flycheck)
-   (require 'helm-flycheck)
-   (cl-flet ((flycheck-rtags-hook ()
-                                  (flycheck-mode)
-                                  (diminish 'flycheck-mode)
-                                  (define-key flycheck-mode-map
-                                    (kbd "C-c r r")
-                                    'helm-flycheck)))
-     (add-hook 'c-mode-hook #'flycheck-rtags-hook)
-     (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
-     (add-hook 'objc-mode-hook #'flycheck-rtags-hook)))
+(when (eq exordium-rtags-syntax-checker :flycheck)
+  (require 'helm-flycheck)
+  (define-key c-mode-base-map
+    (kbd "C-c r r")
+    (lambda ()
+      (interactive)
+      (unless flycheck-mode
+        (flycheck-mode)
+        (diminish 'flycheck-mode))
+      (helm-flycheck))))
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"
