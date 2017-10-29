@@ -570,16 +570,16 @@ argument list has been found."
                   t)
                  ;; the `arglist-cont' has only the `arglist-intro' position
                  ;; one extra jump is needed before an extraction
-                 (funcall '(lambda (pos)
-                             (when pos
-                               (save-excursion
-                                 (goto-char pos)
-                                 (nth 2
-                                      (car (cl-member '(arglist-intro
-                                                        arglist-cont-nonempty
-                                                        arglist-close)
-                                                      (c-guess-basic-syntax)
-                                                      :test any-of-is-car-of))))))
+                 (funcall #'(lambda (pos)
+                              (when pos
+                                (save-excursion
+                                  (goto-char pos)
+                                  (nth 2
+                                       (car (cl-member '(arglist-intro
+                                                         arglist-cont-nonempty
+                                                         arglist-close)
+                                                       (c-guess-basic-syntax)
+                                                       :test any-of-is-car-of))))))
                           (nth 1
                                (car (cl-member '(arglist-cont)
                                                basic-syntax
@@ -704,20 +704,20 @@ according to the BDE style."
     (when args
       ;; Parse each argument and get the max type length
       (setq parsed-args
-            (mapcar '(lambda (arg)
-                       (let ((parsed-arg (bde-parse-argument arg)))
-                         (setq max-type-length (max max-type-length
-                                                    (length (car parsed-arg)))
-                               max-stars (max max-stars
-                                              (caddr parsed-arg))
-                               max-var-length (max max-var-length
-                                                   (- (length (cadr parsed-arg))
-                                                      (caddr parsed-arg))))
-                         parsed-arg))
+            (mapcar #'(lambda (arg)
+                        (let ((parsed-arg (bde-parse-argument arg)))
+                          (setq max-type-length (max max-type-length
+                                                     (length (car parsed-arg)))
+                                max-stars (max max-stars
+                                               (caddr parsed-arg))
+                                max-var-length (max max-var-length
+                                                    (- (length (cadr parsed-arg))
+                                                       (caddr parsed-arg))))
+                          parsed-arg))
                     args))
-      (funcall '(lambda (bounds)
-                  (goto-char (car bounds))
-                  (delete-region (car bounds) (cdr bounds)))
+      (funcall #'(lambda (bounds)
+                   (goto-char (car bounds))
+                   (delete-region (car bounds) (cdr bounds)))
                (bounds-of-thing-at-point 'arglist))
       (insert
        (with-temp-buffer
@@ -751,8 +751,8 @@ according to the BDE style."
       ;; Reindent
       (save-restriction
         (widen)
-        (funcall '(lambda (bounds)
-                    (indent-region (car bounds) (cdr bounds)))
+        (funcall #'(lambda (bounds)
+                     (indent-region (car bounds) (cdr bounds)))
                  (bounds-of-thing-at-point 'arglist)))
 
       ;; If some lines exceed the dreadful 79th column, insert a new line before
@@ -760,9 +760,9 @@ according to the BDE style."
       (save-excursion
         (let* ((bounds (bounds-of-thing-at-point 'arglist))
                (start-col 0)
-               (max-col (funcall '(lambda (bounds)
-                                    (bde-max-column-in-region (car bounds)
-                                                              (cdr bounds)))
+               (max-col (funcall #'(lambda (bounds)
+                                     (bde-max-column-in-region (car bounds)
+                                                               (cdr bounds)))
                                  bounds)))
           (when (> max-col 79)
             (goto-char (car bounds))
@@ -771,14 +771,14 @@ according to the BDE style."
             (newline)
             (let ((longest-length (- max-col start-col)))
               (if (<= longest-length 79)
-                  (funcall '(lambda (bounds)
-                              (indent-region (car bounds)
-                                             (cdr bounds)
-                                             (- 79 longest-length)))
+                  (funcall #'(lambda (bounds)
+                               (indent-region (car bounds)
+                                              (cdr bounds)
+                                              (- 79 longest-length)))
                            (bounds-of-thing-at-point 'arglist))
                 ;; We cannot indent correctly, some lines are too long
-                (funcall '(lambda (bounds)
-                            (indent-region (car bounds) (cdr bounds)))
+                (funcall #'(lambda (bounds)
+                             (indent-region (car bounds) (cdr bounds)))
                          (bounds-of-thing-at-point 'arglist))
                 (message "Longest line is %d chars" longest-length))))))
       ;; Leave the cursor after the closing parenthese instead of on the opening
