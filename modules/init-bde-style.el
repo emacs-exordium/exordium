@@ -86,7 +86,13 @@
 (require 'init-lib)
 
 
-;;; Utility functions
+;;; Utility functions and constants
+
+(defconst exordium-bde-search-max-bound (* 80 25))
+;;   "Maximum point to search when searching for some regexp/string. Often
+;; the search is bound to the same line, however sometimes functionality needs to
+;; account for multi-line definitions. In here we assume 80 (columns) * 25 (lines)
+;; is enough for everyone.")
 
 (defun bde-component-name ()
   "Return the name of the component for the current buffer"
@@ -331,9 +337,10 @@ there isn't any struct or class defined."
     (when (forward-word)
       (backward-word)
       (when (re-search-forward "^template *<" (point-at-eol) t)
-        (let ((level 1))
+        (let ((level 1)
+              (bound (+ (point) exordium-bde-search-max-bound)))
           (while (> level 0)
-            (if (re-search-forward "\\(<\\|>\\)" nil t)
+            (if (re-search-forward "\\(<\\|>\\)" bound t)
                 (if (string= (match-string 1) "<")
                     (setq level (+ level 1))
                   (setq level (- level 1)))
@@ -491,7 +498,7 @@ Return `nil' when no qualifying parenthesis has been found within the first
           (move-beginning-of-line nil)
         (goto-char from))
       (let ((level 0)
-            (bound (+ (point) (* 80 25))))
+            (bound (+ (point) exordium-bde-search-max-bound)))
         (catch 'pos
           (while (re-search-forward (concat "\\(\\(<\\)\\|"  ;; 2: <
                                             "\\(>\\)\\|"     ;; 3: >
@@ -515,7 +522,7 @@ Return `nil' when no qualifying parenthesis has been found withing the first
       (goto-char from)
       (let ((any-of-is-car-of #'(lambda (any-of elem-list)
                                   (cl-member (car elem-list) any-of)))
-            (bound (+ from (* 80 25)))
+            (bound (+ from exordium-bde-search-max-bound))
             (candidate nil))
         (catch 'pos
           (while (re-search-forward (concat "\\(\\()\\)\\|"      ;; 2: )
