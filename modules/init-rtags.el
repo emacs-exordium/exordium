@@ -113,14 +113,14 @@
 ;;; Diagnostics mode
 ;;; ================
 ;;; RTags diagnostics is a subprocess that highlight compilation errors and
-;;; warnings in the code (using flymake). Click on a highlighted region to view
-;;; the error message. Use "C-c r d" (lowercase d) to display the diagnostics
-;;; buffer containing the error messages without forcing a reparsing of the
-;;; current file.
+;;; warnings in the code (using flymake or flycheck). Click on a highlighted
+;;; region to view the error message. Use "C-c r d" (lowercase d) to display
+;;; the diagnostics buffer containing the error messages without forcing a
+;;; reparsing of the current file.
 ;;;
 ;;; It is started by default, but you can control it with:
 ;;; - "C-c r D" or M-x `rtags-diagnostics' to start,
-;;; - "C.c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
+;;; - "C-c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
 (with-no-warnings (require 'cl))
 (require 'init-lib)
@@ -131,6 +131,18 @@
 (require 'projectile)
 
 
+;;; Turn on flycheck support when requested
+(when (eq exordium-rtags-syntax-checker :flycheck)
+  (require 'flycheck-rtags)
+  ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
+  (cl-flet ((flycheck-rtags-hook ()
+                                 (flycheck-select-checker 'rtags)
+                                 (setq-local flycheck-highlighting-mode nil)
+                                 (setq-local flycheck-check-syntax-automatically nil)))
+    (add-hook 'c-mode-hook #'flycheck-rtags-hook)
+    (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
+    (add-hook 'objc-mode-hook #'flycheck-rtags-hook)))
+
 ;;; Key bindings
 
 ;; Enable default keys from rtags with prefix "Ctrl-C r"".
