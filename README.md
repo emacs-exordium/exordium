@@ -707,6 +707,7 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd>    | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
 <kbd>C-c r d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>C-c r r</kbd>    | Run `helm-flycheck` to show errors in helm buffer (only with `:flycheck` syntax checker)
 <kbd>C-c r DOWN</kbd> | Goto next problem (`rtags-next-diag`).
 <kbd>C-c r UP</kbd>   | Goto previous problem.
 <kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")
