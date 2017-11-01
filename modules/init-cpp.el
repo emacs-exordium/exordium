@@ -163,7 +163,9 @@
                 (font-lock-add-keywords nil exordium-extra-c++-keywords))
             t))
 (when (eq exordium-enable-c++11-keywords :modern)
-  (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
+  (add-hook 'c++-mode-hook (lambda ()
+                             (modern-c++-font-lock-mode)
+                             (diminish 'modern-c++-font-lock-mode))))
 
 
 (provide 'init-cpp)
