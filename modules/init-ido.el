@@ -6,7 +6,8 @@
 ;;; C-x C-r        Open recent file with IDO or Helm.
 
 (require 'ido)
-(ido-mode 'both)
+(unless exordium-helm-everywhere
+  (ido-mode 'both))
 
 
 ;; Ignored files and buffers

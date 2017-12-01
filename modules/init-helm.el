@@ -23,10 +23,11 @@
 (global-set-key (kbd "C-S-a") 'helm-projectile-ag)
 
 (when exordium-helm-everywhere
+  (helm-mode)
+  (diminish 'helm-mode)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") 'helm-mini))
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring))
 
 (when exordium-helm-fuzzy-match
   (setq helm-M-x-fuzzy-match t
