@@ -548,6 +548,9 @@ names to which it refers are bound."
      (eval-sexp-fu-flash ((t (:background ,orange :foreground ,monokai-bg))))
      (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,monokai-bg))))
 
+     ;; treemacs
+     (treemacs-git-modified-face ((t (:foreground ,orange))))
+
      ;; speedbar
      (speedbar-button-face
       ((t (:inherit ,s-variable-pitch :foreground ,monokai-comments))))

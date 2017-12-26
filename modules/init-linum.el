@@ -66,7 +66,7 @@
            iwyu-mode
            Info-mode
            calendar-mode
-           project-explorer-mode
+           treemacs-mode
            org-mode
            rtags-rdm-mode
            rtags-diagnostics-mode

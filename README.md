@@ -42,10 +42,9 @@ might want to check these links:
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
   (80-character column marker);
-  [Project Explorer](https://github.com/sabof/project-explorer) (directory
-  tree); [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3
-  key-strokes); [ace-window](https://github.com/abo-abo/ace-window) (quick jump
-  between windows).
+  [Treemacs](https://github.com/Alexander-Miller/treemacs) (directory tree);
+  [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3 key-strokes);
+  [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
@@ -281,23 +280,6 @@ Keybinding                             | Description
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.
 
-### Project Explorer
-
-Projectile is linked with
-[Project Explorer](https://github.com/sabof/project-explorer) which displays
-the project directory structure on the left side:
-
-![Project Explorer](https://raw.github.com/philippe-grenet/exordium/master/doc/project_explorer.png)
-
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open project explorer on the left side.
-
-With the cursor in the Project Explorer window, you can use these keys:
-<kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to
-toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open
-file. <kbd>w</kbd> Show path and copy it to clipboard.
-
 ### Helm
 
 Helm can be set up as a primary completion and selection narrowing framework
@@ -332,6 +314,27 @@ expressions.
 * <kbd>C-S-f</kbd>: Ag search for text in current buffer (similar to Swoop).
 * <kbd>C-S-r</kbd>: Ag search starting from project root.
 * <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
+
+## Treemacs
+
+[Treemacs](https://github.com/Alexander-Miller/treemacs) is a tree layout file
+explorer for Emacs. It is linked with Projectile and Git, and it can display the
+project directory structure on the left side:
+
+![Treemacs](https://raw.github.com/philippe-grenet/exordium/master/doc/treemacs.png)
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c e</kbd>    | Open the current directory.
+<kbd>C-c E</kbd>    | Open the current project (projectile).
+
+Treemacs displays the git status of files (added, modified, ignored etc.) using
+different faces.
+
+With the cursor in the Treemacs window, you can use <kbd>TAB</kbd> to
+open/close directories, <kbd>RETURN</kbd> to open a file, and <kbd>q</kbd> to
+quit. Use <kbd>?</kbd> to view all the available keys. See the documentation of
+Treemacs for details.
 
 ## Git
 

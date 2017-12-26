@@ -406,6 +406,9 @@ names to which it refers are bound."
      (undo-tree-visualizer-active-branch-face ((t (:foreground ,red))))
      (undo-tree-visualizer-register-face ((t (:foreground ,yellow))))
 
+     ;; treemacs
+     (treemacs-git-modified-face ((t (:foreground ,orange))))
+
      ;; Trailing whitespaces
      (trailing-whitespace ((t (:background ,red :foreground ,yellow))))
      (whitespace-empty ((t (:foreground ,red :background ,yellow))))

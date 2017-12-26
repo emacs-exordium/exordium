@@ -19,7 +19,7 @@
 (require 'projectile)
 (require 'helm-projectile)
 (require 'helm-swoop)
-(require 'project-explorer)
+(require 'treemacs-projectile)
 (require 'init-prefs)
 
 (projectile-global-mode)
@@ -75,13 +75,18 @@
 
 ;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
 
-;;; C-e = Project explorer
-(define-key global-map [(control c)(e)] (function project-explorer-open))
-
 
 ;;; Use fuzzy matching for helm-projectile when requested
 (when exordium-helm-fuzzy-match
   (setq helm-projectile-fuzzy-match t))
+
+
+;;; File explorer (treemacs)
+
+;;; C-c e = Open treemacs in the current directory
+;;; C-c E = Open treemacs in the current projectile project
+(define-key global-map [(control c)(e)] (function treemacs))
+(define-key global-map [(control c)(E)] (function treemacs-projectile))
 
 
 
