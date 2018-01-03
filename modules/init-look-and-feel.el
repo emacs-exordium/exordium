@@ -172,8 +172,9 @@
   (interactive)
   (when (not (use-region-p))
     (let ((text (gui-get-selection)))
-      (push-mark (point))
-      (insert-for-yank text))))
+      (when text
+        (push-mark (point))
+        (insert-for-yank text)))))
 
 (when exordium-enable-insert-gui-primary-selection
   (global-set-key [(meta insert)] #'insert-gui-primary-selection))
