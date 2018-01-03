@@ -167,6 +167,17 @@
   (when (boundp 'global-undo-tree-mode)
     (global-undo-tree-mode -1)))
 
+(defun insert-gui-primary-selection ()
+  "If no region is selected, insert current gui selection at point."
+  (interactive)
+  (when (not (use-region-p))
+    (let ((text (gui-get-selection)))
+      (push-mark (point))
+      (insert-for-yank text))))
+
+(when exordium-enable-insert-gui-primary-selection
+  (global-set-key [(meta insert)] #'insert-gui-primary-selection))
+
 
 ;;; Shortcut keys
 
