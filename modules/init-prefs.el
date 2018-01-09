@@ -103,6 +103,12 @@ IF nil, disables CUA completely."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-enable-insert-gui-primary-selection nil
+  "If set to t, binds Meta-Insert to insert-gui-primary-selection.
+This makes it easier to paste text from the Windows clipboard."
+  :group 'exordium
+  :type  'boolean)
+
 ;;; Backup files (e.g. file~)
 (defcustom exordium-backup-files nil
   "Enables or disables backup files. Disabled by default, I can't
