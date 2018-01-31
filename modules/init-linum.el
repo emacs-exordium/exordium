@@ -47,11 +47,6 @@
            ;; "*ERROR*: Invalid face: linum".  See
            ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2015-01/msg00079.html
            (fset 'nlinum--setup-window 'nlinum--setup-window-fudge)))
-       ;;
-       ;; Make line numbers display correctly when user zooms with C-+/C--
-       (let ((h (face-attribute 'default :height)))
-         (set-face-attribute 'linum nil :height h))
-       ;;
 
        (exordium-global-nlinum-mode t))
 
