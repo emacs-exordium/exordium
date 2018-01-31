@@ -160,7 +160,9 @@ Set to `nil' to enable line numbers even in large buffers."
   "Controls whether line numbers shold be displayed in buffers that name
 starts with `*'.
 Set to `t' to don't display line numbers in buffers that name starts with `*'.
-Set to `nil' to display line numbers in buffers that name starts with `*'.")
+Set to `nil' to display line numbers in buffers that name starts with `*'."
+  :group 'exordium
+  :type 'boolean)
 
 
 ;;; Miscellaneous utilities -- see init-util.el
