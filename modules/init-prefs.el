@@ -150,8 +150,11 @@ line numbers WILL NOT be shown."
   :group 'exordium
   :type 'list)
 
-(defcustom exordium-inhibit-line-numbers-buffer-size (* 80 4000)
+(defcustom exordium-inhibit-line-numbers-buffer-size nil
   "The maximum buffer size that line numbers should be displayed.
+Set to some integer, to show line numbers only for buffers that are smaller
+than the specified size. I.e., `(* 512 1024)' will only display line numbers
+that are smaller than 0.5MiB (this is over 6.5k 80 character lines).
 Set to `nil' to enable line numbers even in large buffers."
   :group 'exordium
   :type 'integer)

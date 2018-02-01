@@ -26,10 +26,12 @@
                         (cdr (window-margins)))))
 
 (defun exordium-inhibit-line-numbers-p ()
-  (or (cl-member major-mode exordium-inhibit-line-numbers-modes)
+  (or (and exordium-inhibit-line-numbers-modes
+           (cl-member major-mode exordium-inhibit-line-numbers-modes))
       (and exordium-inhibit-line-numbers-star-buffers
            (eq 0 (string-match "*" (buffer-name))))
-      (> (buffer-size) exordium-inhibit-line-numbers-buffer-size)))
+      (and exordium-inhibit-line-numbers-buffer-size
+           (> (buffer-size) exordium-inhibit-line-numbers-buffer-size))))
 
 ;;;###autoload
 (define-globalized-minor-mode exordium-global-nlinum-mode nlinum-mode
