@@ -780,6 +780,20 @@ class TheName {")))
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 24 32)))))
 
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-simple-5 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b)
+: b{b} {}"
+                             :cursor-pos 2)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 17)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-simple-6 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b)
+: b{b} {}"
+                             :cursor-pos 12)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 17)))))
+
 (ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-1 ()
   (let ((tst (make-test-case :input "struct A {
     void foo(bool b, int c);
@@ -812,6 +826,20 @@ class TheName {")))
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 24 39)))))
 
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-5 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b, int c)
+: b{b} {}"
+                             :cursor-pos 2)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 24)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-arg-6 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b, int c)
+: b{b} {}"
+                             :cursor-pos 11)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 24)))))
+
 (ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-1 ()
   (let ((tst (make-test-case :input "struct A {
     void foo(bool b,
@@ -838,6 +866,23 @@ class TheName {")))
                              :cursor-pos (+ 25 (length "struct A {")))))
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 24 47)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-4 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b,
+int c)
+: b{b} {}"
+                             :cursor-pos 2)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 24)))))
+
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-4 ()
+  (let ((tst (make-test-case :input "Foo::Foo(bool b,
+int c)
+: b{b} {}"
+                             :cursor-pos 12)))
+    (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
+                   (cons 9 24)))))
+
 
 (ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-function-1 ()
   (let ((tst (make-test-case :input "struct A {

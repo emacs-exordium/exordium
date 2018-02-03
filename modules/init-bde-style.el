@@ -514,7 +514,7 @@ Return `nil' when no qualifying parenthesis has been found within the first
 (defun exordium-bde-arglist-at-point--close-paren-position (from)
   "Return the position of the function argument list closing parenthesis. The
 search starts from the `from' position and ends when semicolon, `inline-open',
-`defun-open', or `noexcept' has been encountered.
+`defun-open', `member-init-intro', or `noexcept' has been encountered.
 Return `nil' when no qualifying parenthesis has been found withing the first
 80 (columns) * 25 (lines) characters."
   (when from
@@ -526,14 +526,19 @@ Return `nil' when no qualifying parenthesis has been found withing the first
             (candidate nil))
         (catch 'pos
           (while (re-search-forward (concat "\\(\\()\\)\\|"      ;; 2: )
-                                            "\\({\\)\\|"         ;; 3: {
+                                            "\\({\\|:\\)\\|"     ;; 3: { :
                                             "\\(;\\|noexcept\\|" ;; 4: ; noexcept
                                             "BSLS_CPP11_NOEXCEPT\\)\\)") ;; 4...
                                     bound t)
             (cond ((match-string 2)
                    (setq candidate (point)))
                   ((match-string 3)
-                   (when (cl-member '(inline-open defun-open)
+                   ;; TODO: `member-init-intro' is for initializer list. The
+                   ;; latter could be in `topmost-intro' but simple adding that
+                   ;; breaks more functionality. It would require some support
+                   ;; in `bde-align-funcdecl', i.e., to move initializer list
+                   ;; after the c-tor arguments, before aligning.
+                   (when (cl-member '(inline-open defun-open member-init-intro)
                                     (c-guess-basic-syntax)
                                     :test any-of-is-car-of)
                      (throw 'pos candidate)))
