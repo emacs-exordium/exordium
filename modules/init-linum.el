@@ -25,6 +25,20 @@
     (set-window-margins nil (if nlinum-mode width)
                         (cdr (window-margins)))))
 
+(defun exordium-inhibit-line-numbers-p ()
+  (or (and exordium-inhibit-line-numbers-modes
+           (cl-member major-mode exordium-inhibit-line-numbers-modes))
+      (and exordium-inhibit-line-numbers-star-buffers
+           (eq 0 (string-match "*" (buffer-name))))
+      (and exordium-inhibit-line-numbers-buffer-size
+           (> (buffer-size) exordium-inhibit-line-numbers-buffer-size))))
+
+;;;###autoload
+(define-globalized-minor-mode exordium-global-nlinum-mode nlinum-mode
+  (lambda () (unless (or (minibufferp)
+                         (exordium-inhibit-line-numbers-p))
+               (nlinum-mode))))
+
 (cond ((and (fboundp 'global-nlinum-mode)
             (eq exordium-display-line-numbers :nlinum))
        ;; Use nlinum - a lazy, faster mode for line numbers
@@ -35,13 +49,8 @@
            ;; "*ERROR*: Invalid face: linum".  See
            ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2015-01/msg00079.html
            (fset 'nlinum--setup-window 'nlinum--setup-window-fudge)))
-       ;;
-       ;; Make line numbers display correctly when user zooms with C-+/C--
-       (let ((h (face-attribute 'default :height)))
-         (set-face-attribute 'linum nil :height h))
-       ;;
-       ;; Turn on nlinum
-       (global-nlinum-mode t))
+
+       (exordium-global-nlinum-mode t))
 
       ((and (fboundp 'global-linum-mode)
             (eq exordium-display-line-numbers t))
@@ -56,25 +65,10 @@
        ;;
        ;; Turn on linum
        (global-linum-mode t)
-       ;;
-       ;; Do not enable linum for specific modes
-       (defvar linum-mode-inhibit-modes-list
-         '(eshell-mode
-           shell-mode
-           help-mode
-           compilation-mode
-           iwyu-mode
-           Info-mode
-           calendar-mode
-           treemacs-mode
-           org-mode
-           rtags-rdm-mode
-           rtags-diagnostics-mode
-           eww-mode)
-         "List of modes for which we DO NOT want line numbers")
+
        (defadvice linum-on (around linum-on-inhibit-for-modes)
          "Stop the load of linum-mode for some major modes."
-         (unless (member major-mode linum-mode-inhibit-modes-list)
+         (unless (exordium-inhibit-line-numbers-p)
            ad-do-it))
        (ad-activate 'linum-on)))
 

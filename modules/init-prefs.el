@@ -124,9 +124,48 @@ This makes it easier to paste text from the Windows clipboard."
 Set to nil to disable line numbers.
 Set to t or :linum to enable line numbers using package `linum'.
 Set to :nlinum to enable line numbers using pakage `nlinum'
-which should be more efficient in particular for large buffers."
+which should be more efficient in particular for large buffers.
+
+When buffer matches either of the `exordium-inhibit-line-numbers-modes',
+`exordium-inhibit-line-numbers-buffer-size', or `exordium-inhibit-line-numbers-star-buffers'
+line numbers WILL NOT be shown."
   :group 'exordium
   :type  'symbol)
+
+(defcustom exordium-inhibit-line-numbers-modes '(eshell-mode
+                                                 shell-mode
+                                                 help-mode
+                                                 compilation-mode
+                                                 iwyu-mode
+                                                 Info-mode
+                                                 calendar-mode
+                                                 treemacs-mode
+                                                 org-mode
+                                                 rtags-rdm-mode
+                                                 rtags-diagnostics-mode
+                                                 eww-mode
+                                                 dired-mode
+                                                 image-mode)
+  "List of modes for which line numbers should not be displayed."
+  :group 'exordium
+  :type 'list)
+
+(defcustom exordium-inhibit-line-numbers-buffer-size nil
+  "The maximum buffer size that line numbers should be displayed.
+Set to some integer, to show line numbers only for buffers that are smaller
+than the specified size. I.e., `(* 512 1024)' will only display line numbers
+that are smaller than 0.5MiB (this is over 6.5k 80 character lines).
+Set to `nil' to enable line numbers even in large buffers."
+  :group 'exordium
+  :type 'integer)
+
+(defcustom exordium-inhibit-line-numbers-star-buffers nil
+  "Controls whether line numbers shold be displayed in buffers that name
+starts with `*'.
+Set to `t' to don't display line numbers in buffers that name starts with `*'.
+Set to `nil' to display line numbers in buffers that name starts with `*'."
+  :group 'exordium
+  :type 'boolean)
 
 
 ;;; Miscellaneous utilities -- see init-util.el
