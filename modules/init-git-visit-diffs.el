@@ -31,8 +31,10 @@
   (let ((beginning-position (line-beginning-position)))
     (next-line count)
     (narrow-to-region beginning-position (line-beginning-position))
-    (beginning-of-buffer)))
-
+    (beginning-of-buffer))
+  (let ((cur-len (length *blp-git-visit-current-hunk-list*))
+        (prev-len (length *blp-git-visit-previous-hunk-list*)))
+    (message (format "%d / %d" prev-len (+ cur-len prev-len)))))
 
 (defun blp-git-visit-get-hunk-list (dir ref)
   "Return a list of changes between the current working copy and a git ref"
