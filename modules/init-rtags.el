@@ -150,43 +150,13 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
-(defun exordium-rtags-find-symbol-at-point (&optional prefix other-window)
-  "Redefinition of `rtags-find-symbol-at-point' that returns t on
-success and nil if not found. This implementation comes from
-https://github.com/Andersbakken/rtags/blob/master/src/rtags.el c75467b"
-  (interactive "P")
-  (rtags-delete-rtags-windows)
-  (rtags-location-stack-push)
-  (let ((arg (rtags-current-location))
-        (tagname (or (rtags-current-symbol) (rtags-current-token)))
-        (fn (buffer-file-name))
-        (found-it nil))
-    (rtags-reparse-file-if-needed)
-    (with-current-buffer (rtags-get-buffer)
-      (rtags-call-rc :path fn :path-filter prefix "-f" arg)
-      (cond ((or (not rtags-follow-symbol-try-harder)
-                 (= (length tagname) 0))
-             (setq found-it (rtags-handle-results-buffer nil nil fn other-window)))
-            ((setq found-it (rtags-handle-results-buffer nil t fn other-window)))
-            (t
-             (erase-buffer)
-             (rtags-call-rc :path fn "-F" tagname "--definition-only" "-M" "1" "--dependency-filter" fn :path-filter prefix
-                            (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
-                            (when rtags-symbolnames-case-insensitive "-I"))
-             (unless (setq found-it (rtags-handle-results-buffer nil nil fn other-window))
-               (erase-buffer)
-               (rtags-call-rc :path fn "-F" tagname "-M" "1" "--dependency-filter" fn :path-filter prefix
-                              (when rtags-wildcard-symbol-names "--wildcard-symbol-names")
-                              (when rtags-symbolnames-case-insensitive "-I"))
-               (setq found-it (rtags-handle-results-buffer nil nil fn other-window)))))
-      (recenter))
-    found-it))
-
 ;; Alias for C-c r . This key recenters the buffer if needed.
 (define-key c-mode-base-map "\M-."
   (lambda (other-window)
     (interactive "P")
-    (exordium-rtags-find-symbol-at-point nil other-window)))
+    (let ((rtags-after-find-file-hook rtags-after-find-file-hook))
+      (add-hook 'rtags-after-find-file-hook #'(lambda () (recenter)))
+      (rtags-find-symbol-at-point other-window))))
 
 ;; Alias for C-c r ,
 (define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
