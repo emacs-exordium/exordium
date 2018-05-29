@@ -44,7 +44,7 @@
    'org-babel-load-languages
    '((perl       . t)
      (ruby       . t)
-     (sh         . t)
+     (shell      . t)
      (python     . t)
      (emacs-lisp . t)
      (C          . t)
