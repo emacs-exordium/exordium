@@ -13,6 +13,7 @@ local
 elpa
 
 # Caches
+.cache/
 cider-history
 semanticdb
 # CEDET's SRecode stores template files in Emacs install dir??
@@ -28,6 +29,7 @@ eshell
 ido.last
 recentf
 project-explorer-cache
+network-security.data
 
 # Desktop State
 .emacs.desktop
