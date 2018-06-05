@@ -319,6 +319,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Python
 (require 'init-python)
 
+;;; Lua
+(require 'init-lua)
+
 ;;; Ruby
 (require 'init-ruby)
 

@@ -316,6 +316,33 @@ just move point to the bottom of the buffer instead."
   (goto-char (point-min))
   (while (search-forward "\n" nil t) (replace-match "\r\n")))
 
+;;
+;; Sort ^X^b buffer list ...
+;;
+
+;; after list-buffers is called, switch to it
+(defadvice list-buffers (after jc-switch-to-other-win)
+  (if (not (equalp (buffer-name (current-buffer))
+                   "*Buffer List*"))
+      (other-window 1))
+  (goto-char (+ 4 (point))))
+
+;; emacs24 doesn't recognize Buffer-menu-sort-column so we do this
+;; nonsense: after list-buffers is called and we've switched to it,
+;; check whether the buffer matches what's stored in
+;; jc-buffer-menu. If it doesn't match, it means it's new, so call
+;; Buffer-menu-sort and update jc-buffer-menu so we don't sort again
+;; on subsequent calls.
+(when (>= emacs-major-version 24)
+  (setq jc-buffer-menu nil)
+  (defadvice list-buffers (after jc-buffer-menu-sort last)
+    (when (not (equal jc-buffer-menu (current-buffer)))
+      (setq jc-buffer-menu (current-buffer))
+      ;; for debugging:
+      ;;(message "sorting!")
+      (Buffer-menu-sort 6))))
+(ad-activate 'list-buffers)
+
 
 ;;
 ;;  Bloomberg specific setup
