@@ -3,4 +3,4 @@
 # key: sleep
 # binding: direct-keybinding
 # --
-bcemt_ThreadUtil::sleep(bdet_TimeInterval(1.0));
+bslmt::ThreadUtil::sleep(bsls::TimeInterval(1.0));

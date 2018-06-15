@@ -3,4 +3,4 @@
 # key: now
 # binding: direct-keybinding
 # --
-bdet_TimeInterval now = bdetu_SystemTime::now();
+bslmt::TimeInterval now = bsls::SystemTime::nowMonotonicClock();

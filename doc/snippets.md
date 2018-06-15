@@ -17,9 +17,9 @@ bind            | `bdef_BindUtil::bind`
 cerr            | `std::cerr`
 cout            | `std::cout`
 main            | main function
-now             | `bdetu_SystemTime::now`
+now             | `bslmt::SystemTime::nowMonotonicClock`
 return          | return statement
-sleep           | `bcemt_ThreadUtil::sleep`
+sleep           | `bslmt::ThreadUtil::sleep`
 lock            | lock guard
 unlock          | release a lock guard
 
