@@ -19,7 +19,7 @@
 
 ;; Namespaces
 (let ((package-name (bde-package-name)))
-  (insert "#include <bael_log.h>
+  (insert "#include <ball_log.h>
 
 namespace BloombergLP {
 namespace " package-name " {

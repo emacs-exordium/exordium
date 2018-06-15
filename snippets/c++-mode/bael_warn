@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: BAEL WARN
-# key: warn
-# binding: direct-keybinding
-# --
-BAEL_LOG_WARN << "$0" << BAEL_LOG_END;
