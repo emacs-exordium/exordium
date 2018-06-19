@@ -42,9 +42,11 @@
   ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((perl       . t)
+   `((perl       . t)
      (ruby       . t)
-     (shell      . t)
+     ,(if (version< org-version "9.0")
+         '(sh         . t)
+       '(shell      . t))
      (python     . t)
      (emacs-lisp . t)
      (C          . t)
