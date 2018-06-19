@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: BAEL TRACE
-# key: trace
+# name: BALL SET CATEGORY
+# key: cat
 # binding: direct-keybinding
 # --
-BAEL_LOG_TRACE << "$0" << BAEL_LOG_END;
+BALL_LOG_SET_CATEGORY(k_LOG_CATEGORY);
