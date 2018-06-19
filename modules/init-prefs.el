@@ -122,7 +122,7 @@ This makes it easier to paste text from the Windows clipboard."
 (defcustom exordium-display-line-numbers t
   "Whether line numbers are displayed or not.
 Set to nil to disable line numbers.
-Set to t or :linum to enable line numbers using package `linum'.
+Set to `t' to enable line numbers using `line-numbers' (or `linum' on pre 26.1 emacs).
 Set to :nlinum to enable line numbers using pakage `nlinum'
 which should be more efficient in particular for large buffers.
 
