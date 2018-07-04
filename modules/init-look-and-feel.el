@@ -99,9 +99,10 @@
       scroll-preserve-screen-position t)
 
 ;;; Scrollbar
-(if exordium-scroll-bar
-    (set-scroll-bar-mode `right)
-  (set-scroll-bar-mode nil))
+(when (fboundp 'set-scroll-bar-mode)
+  (if exordium-scroll-bar
+      (set-scroll-bar-mode `right)
+    (set-scroll-bar-mode nil)))
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))
