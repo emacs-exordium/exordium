@@ -288,6 +288,10 @@ names to which it refers are bound."
      (magit-log-head-label-remote ((t (:foreground ,green))))
      (magit-log-head-label-tags ((t (:foreground ,aqua :box nil :weight bold))))
      (magit-section-title ((t (:inherit diff-hunk-header))))
+     (magit-blame-summary ((t :background ,green :foreground ,background)))
+     (magit-blame-date ((t :background ,green :foreground ,background)))
+     (magit-blame-hash ((t :background ,green :foreground ,background)))
+     (magit-blame-heading ((t :background ,green :foreground ,background)))
 
      ;; Git gutter fringe
      (git-gutter-fr:added ((t (:foreground ,green :weight bold))))
@@ -370,6 +374,7 @@ names to which it refers are bound."
      (markdown-inline-code-face ((t (:foreground ,aqua :weight normal))))
      (markdown-markup-face ((t (:foreground ,blue))))
      (markdown-pre-face ((t (:foreground ,aqua))))
+     (markdown-gfm-checkbox-face ((t (:foreground ,red))))
 
      ;; js2-mode
      (js2-warning ((t (:underline (:color ,orange :style wave)))))
