@@ -35,8 +35,11 @@
            (eq 0 (string-match "*" (buffer-name))))
       (and exordium-inhibit-line-numbers-buffer-size
            (> (buffer-size) exordium-inhibit-line-numbers-buffer-size))
-      ;; taken from linum.el
-      (and (daemonp) (null (frame-parameter nil 'client)))))
+      ;; taken from linum.el, but only use pre 26.1. The new line numbers
+      ;; can be used by daemon when loading desktop
+      (and (version< emacs-version "26.1")
+           (daemonp)
+           (null (frame-parameter nil 'client)))))
 
 ;;;###autoload
 (define-globalized-minor-mode exordium-global-nlinum-mode
