@@ -45,3 +45,6 @@ extensions/*.elc
 
 # Taps
 taps/**
+
+# TRAMP cache
+tramp
