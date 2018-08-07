@@ -68,16 +68,26 @@
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 
+;;;###autoload
+(define-globalized-minor-mode exordium-global-git-gutter-mode
+  git-gutter-mode
+  (lambda () (when (let ((file-name (buffer-file-name)))
+                     (if exordium-git-gutter-for-remote-files
+                         file-name ;; enable for all files
+                       (and file-name ;; enable only for local files
+                            (not (file-remote-p file-name)))))
+               (git-gutter--turn-on))))
+
 (when exordium-git-gutter-non-fringe
   (setq exordium-git-gutter nil)
   (require 'git-gutter)
-  (global-git-gutter-mode t)
+  (exordium-global-git-gutter-mode t)
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
 (when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   (require 'git-gutter-fringe)
-  (global-git-gutter-mode t)
+  (exordium-global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 
 ;; Keys

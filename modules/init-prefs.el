@@ -338,6 +338,12 @@ Disables flyspell if set to nil."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-git-gutter-for-remote-files nil
+  "Whether a git status icon is displayed for the remote files, i.e.
+opened in TRAMP mode."
+  :group 'exordium
+  :type  'boolean)
+
 ;;; See init-cpp.el
 (defcustom exordium-enable-c++11-keywords :simple
   "Enables syntax highlighting for the new keywords introduced in C++11 if set
