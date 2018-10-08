@@ -242,7 +242,10 @@ names to which it refers are bound."
      (helm-selection ((t (:background ,selection :underline nil))))
      (helm-selection-line ((t (:background ,selection))))
      (helm-visible-mark ((t (:foreground ,background :background ,yellow))))
-     (helm-candidate-number ((t (:foreground ,green :background ,selection))))
+     (helm-ff-directory ((t (:foreground ,background :background ,green))))
+     (helm-ff-executable ((t (:foreground ,red :background ,background))))
+     (helm-ff-symlink ((t (:foreground ,yellow :background ,background))))
+     (helm-ff-executable ((t (:foreground ,foreground :background ,background))))
      (helm-swoop-target-line-face ((t (:foreground ,background :background ,yellow))))
      (helm-swoop-target-word-face ((t (:foreground ,background :background ,aqua))))
 
