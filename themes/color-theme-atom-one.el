@@ -320,7 +320,7 @@ names to which it refers are bound."
 
      ;; Org
      (org-level-1 ((t ,(append `(:foreground ,atom-one-dark-orange-1)
-                               (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                               (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,atom-one-dark-mono-1))))
      (org-level-3 ((t (:foreground ,atom-one-dark-mono-2))))
      (org-level-4 ((t (:foreground ,atom-one-dark-mono-3))))
@@ -337,7 +337,7 @@ names to which it refers are bound."
      (org-document-info-keyword ((t (:foreground ,atom-one-dark-green))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,atom-one-dark-orange-1)
-                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-todo ((t (:foreground ,atom-one-dark-red-1 :weight bold :box nil))))
      (org-done ((t (:foreground ,atom-one-dark-green :weight bold :box nil))))
      (org-checkbox ((t (:foreground ,atom-one-dark-orange-1 :weight bold))))
@@ -359,10 +359,10 @@ names to which it refers are bound."
      (markdown-link-face ((t (:foreground ,atom-one-dark-blue :underline nil :weight normal))))
      (markdown-header-face-1 ((t
                                ,(append `(:weight bold :foreground ,atom-one-dark-red-1)
-                                        (if exordium-theme-use-big-font '(:height 1.44)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
      (markdown-header-face-2 ((t
                                ,(append `(:weight bold :foreground ,atom-one-dark-red-1)
-                                        (if exordium-theme-use-big-font '(:height 1.2)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
      (markdown-header-face-3 ((t (:foreground ,atom-one-dark-red-1 :weight bold))))
      (markdown-header-face-4 ((t (:foreground ,atom-one-dark-red-1 :weight normal))))
      (markdown-header-face-5 ((t (:foreground ,atom-one-dark-red-1 :weight bold :slant italic))))

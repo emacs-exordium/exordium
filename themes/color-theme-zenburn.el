@@ -68,7 +68,9 @@
   `(let ((class '((class color) (min-colors 89)))
          ,@(mapcar (lambda (cons)
                      (list (car cons) (cdr cons)))
-                   zenburn-colors))
+                   zenburn-colors)
+         (exordium-variable-pitch (if exordium-use-variable-pitch
+                                      'variable-pitch 'default)))
      ,@body))
 
 (defmacro zenburn-face-specs ()
@@ -657,6 +659,27 @@ names to which it refers are bound."
      (magit-reflog-remote       ((t (:foreground ,zenburn-cyan))))
      (magit-reflog-other        ((t (:foreground ,zenburn-cyan))))
 
+     ;; Markdown
+     (markdown-url-face ((t (:inherit link :foreground ,zenburn-yellow :weight normal))))
+     (markdown-link-face ((t (:foreground ,zenburn-orange :underline t :weight bold))))
+     (markdown-header-face-1 ((t (:inherit :weight bold :foreground ,zenburn-orange
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-4))))))
+     (markdown-header-face-2 ((t (:inherit :weight bold :foreground ,zenburn-blue
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-2))))))
+     (markdown-header-face-3 ((t (:foreground ,zenburn-blue :weight bold))))
+     (markdown-header-face-4 ((t (:foreground ,zenburn-blue :weight normal))))
+     (markdown-header-face-5 ((t (:foreground ,zenburn-blue :weight bold :slant italic))))
+     (markdown-header-delimiter-face ((t (:foreground ,zenburn-blue))))
+     (markdown-bold-face ((t (:foreground ,zenburn-green :weight bold))))
+     (markdown-italic-face ((t (:foreground ,zenburn-fg :weight normal :slant italic))))
+     (markdown-list-face ((t (:foreground ,zenburn-blue :weight normal))))
+     (markdown-inline-code-face ((t (:foreground ,zenburn-green-2 :weight normal))))
+     (markdown-markup-face ((t (:foreground ,zenburn-blue))))
+     (markdown-pre-face ((t (:foreground ,zenburn-green-2))))
+     (markdown-gfm-checkbox-face ((t (:foreground ,zenburn-red))))
+
      ;; mic-paren
      (paren-face-match ((t (:foreground ,zenburn-cyan :background ,zenburn-bg :weight bold))))
      (paren-face-mismatch ((t (:foreground ,zenburn-bg :background ,zenburn-magenta :weight bold))))
@@ -676,19 +699,31 @@ names to which it refers are bound."
      (org-formula ((t (:foreground ,zenburn-yellow-2))))
      (org-headline-done ((t (:foreground ,zenburn-green+3))))
      (org-hide ((t (:foreground ,zenburn-bg-1))))
-     (org-document-title ((t
-                           ,(append `(:weight bold :foreground ,zenburn-green+2)
-                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
-     (org-level-1 ((t
-                    ,(append `(:foreground ,zenburn-orange)
-                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
-     (org-level-2 ((t (:foreground ,zenburn-green+4))))
-     (org-level-3 ((t (:foreground ,zenburn-blue-1))))
-     (org-level-4 ((t (:foreground ,zenburn-yellow-2))))
-     (org-level-5 ((t (:foreground ,zenburn-cyan))))
-     (org-level-6 ((t (:foreground ,zenburn-green+2))))
-     (org-level-7 ((t (:foreground ,zenburn-red-4))))
-     (org-level-8 ((t (:foreground ,zenburn-blue-4))))
+     (org-document-info ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue
+                                      ,@(when exordium-theme-use-big-font
+                                          (list :height exordium-height-plus-3))))))
+     (org-document-info-keyword ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green-2
+                                              ,@(when exordium-theme-use-big-font
+                                                  (list :height exordium-height-plus-3))))))
+     (org-document-title ((t (:inherit ,exordium-variable-pitch :weight bold :foreground ,zenburn-blue
+                                       ,@(when exordium-theme-use-big-font
+                                           (list :height exordium-height-plus-4))))))
+     (org-level-1 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-orange
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-4))))))
+     (org-level-2 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+4
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-3))))))
+     (org-level-3 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-1
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-2))))))
+     (org-level-4 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-yellow-2
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-1))))))
+     (org-level-5 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-cyan))))
+     (org-level-6 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+2))))
+     (org-level-7 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-red-4))))
+     (org-level-8 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-4))))
      (org-link ((t (:foreground ,zenburn-yellow-2 :underline t))))
      (org-scheduled ((t (:foreground ,zenburn-green+4))))
      (org-scheduled-previously ((t (:foreground ,zenburn-red))))
@@ -716,10 +751,18 @@ names to which it refers are bound."
      (org-ref-acronym-face ((t :underline t)))
 
      ;; outline
-     (outline-1 ((t (:foreground ,zenburn-orange))))
-     (outline-2 ((t (:foreground ,zenburn-green+4))))
-     (outline-3 ((t (:foreground ,zenburn-blue-1))))
-     (outline-4 ((t (:foreground ,zenburn-yellow-2))))
+     (outline-1 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-orange
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-4))))))
+     (outline-2 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+4
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-3))))))
+     (outline-3 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-1
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-2))))))
+     (outline-4 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-yellow-2
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-1))))))
      (outline-5 ((t (:foreground ,zenburn-cyan))))
      (outline-6 ((t (:foreground ,zenburn-green+2))))
      (outline-7 ((t (:foreground ,zenburn-red-4))))
