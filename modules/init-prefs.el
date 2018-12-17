@@ -300,6 +300,37 @@ default color."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-use-variable-pitch nil
+  "Allow variable pitch fonts"
+  :group 'exordium
+  :type 'boolean)
+
+(defcustom exordium-height-minus-1 0.8
+  "Font size -1."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-1 1.1
+  "Font size +1."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-2 1.2
+  "Font size +2."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-3 1.3
+  "Font size +3."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-4 1.4
+  "Font size +4."
+  :type 'number
+  :group 'exordium)
+
+
 
 ;;; Programming
 

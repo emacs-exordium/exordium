@@ -5,6 +5,7 @@
 ;;; is based.
 ;;; Inspired by the emacs theme by Bozhidar Batsov:
 ;;; https://github.com/bbatsov/zenburn-emacs
+;;; Additional modes merged from zenburn-emacs
 
 (require 'org)
 (require 'init-prefs)
@@ -25,23 +26,32 @@
     (zenburn-bg+1     . "#4F4F4F")
     (zenburn-bg+2     . "#5F5F5F")
     (zenburn-bg+3     . "#6F6F6F")
+    (zenburn-red+2    . "#ECB3B3")
     (zenburn-red+1    . "#DCA3A3")
     (zenburn-red      . "#CC9393")
     (zenburn-red-1    . "#BC8383")
     (zenburn-red-2    . "#AC7373")
     (zenburn-red-3    . "#9C6363")
     (zenburn-red-4    . "#8C5353")
+    (zenburn-red-5    . "#7C4343")
+    (zenburn-red-6    . "#6C3333")
     (zenburn-orange   . "#DFAF8F")
     (zenburn-yellow   . "#F0DFAF")
     (zenburn-yellow-1 . "#E0CF9F")
     (zenburn-yellow-2 . "#D0BF8F")
-    (zenburn-green-1  . "#5F7F5F")
+    (zenburn-green-5  . "#2F4F2F")
+    (zenburn-green-4  . "#3F5F3F")
+    (zenburn-green-3  . "#4F6F4F")
+    (zenburn-green-2  . "#5F7F5F")
+    (zenburn-green-1  . "#6F8F6F")
     (zenburn-green    . "#7F9F7F")
     (zenburn-green+1  . "#8FB28F")
     (zenburn-green+2  . "#9FC59F")
     (zenburn-green+3  . "#AFD8AF")
     (zenburn-green+4  . "#BFEBBF")
     (zenburn-cyan     . "#93E0E3")
+    (zenburn-blue+3   . "#BDE0F3")
+    (zenburn-blue+2   . "#ACE0E3")
     (zenburn-blue+1   . "#94BFF3")
     (zenburn-blue     . "#8CD0D3")
     (zenburn-blue-1   . "#7CB8BB")
@@ -58,7 +68,9 @@
   `(let ((class '((class color) (min-colors 89)))
          ,@(mapcar (lambda (cons)
                      (list (car cons) (cdr cons)))
-                   zenburn-colors))
+                   zenburn-colors)
+         (exordium-variable-pitch (if exordium-use-variable-pitch
+                                      'variable-pitch 'default)))
      ,@body))
 
 (defmacro zenburn-face-specs ()
@@ -107,16 +119,14 @@ names to which it refers are bound."
      (grep-match-face ((t (:foreground ,zenburn-orange :weight bold))))
      (match ((t (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight bold))))
 
+     ;; info
+     `(Info-quoted ((t (:inherit font-lock-constant-face))))
+
      ;; isearch
      (isearch ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg+2))))
      (isearch-fail ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
      (lazy-highlight ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg-05))))
 
-     ;; Hi-Lock
-     (hi-yellow ((t (:foreground ,zenburn-yellow-2 :background ,zenburn-bg :inverse-video t))))
-     (hi-pink ((t (:foreground ,zenburn-magenta :background ,zenburn-bg :inverse-video t))))
-     (hi-green ((t (:foreground ,zenburn-green :background ,zenburn-bg :inverse-video t))))
-     (hi-blue ((t (:foreground ,zenburn-cyan :background ,zenburn-bg :inverse-video t))))
 
      ;; UI
      (menu ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
@@ -134,6 +144,15 @@ names to which it refers are bound."
      (secondary-selection ((t (:background ,zenburn-bg+2))))
      (trailing-whitespace ((t (:background ,zenburn-red))))
      (vertical-border ((t (:foreground ,zenburn-fg))))
+
+     ;; Hi-Lock
+     (hi-blue    ((t (:background ,zenburn-cyan    :foreground ,zenburn-bg-1))))
+     (hi-green   ((t (:background ,zenburn-green+4 :foreground ,zenburn-bg-1))))
+     (hi-pink    ((t (:background ,zenburn-magenta :foreground ,zenburn-bg-1))))
+     (hi-yellow  ((t (:background ,zenburn-yellow  :foreground ,zenburn-bg-1))))
+     (hi-blue-b  ((t (:foreground ,zenburn-blue    :weight     bold))))
+     (hi-green-b ((t (:foreground ,zenburn-green+2 :weight     bold))))
+     (hi-red-b   ((t (:foreground ,zenburn-red     :weight     bold))))
 
      ;; font lock
      (font-lock-builtin-face ((t (:foreground ,zenburn-fg :weight bold))))
@@ -154,6 +173,37 @@ names to which it refers are bound."
 
      (c-annotation-face ((t (:inherit font-lock-constant-face))))
 
+     ;; line numbers (Emacs 26.1 and above)
+     (line-number ((t (:foreground ,zenburn-bg+3 :background ,zenburn-bg-05))))
+     (line-number-current-line ((t (:inherit line-number :foreground ,zenburn-yellow-2))))
+
+     ;; man
+     (Man-overstrike ((t (:inherit font-lock-keyword-face))))
+     (Man-underline  ((t (:inherit (font-lock-string-face underline)))))
+     ;; newsticker
+     (newsticker-date-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-default-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-enclosure-face ((t (:foreground ,zenburn-green+3))))
+     (newsticker-extra-face ((t (:foreground ,zenburn-bg+2 :height 0.8))))
+     (newsticker-feed-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-immortal-item-face ((t (:foreground ,zenburn-green))))
+     (newsticker-new-item-face ((t (:foreground ,zenburn-blue))))
+     (newsticker-obsolete-item-face ((t (:foreground ,zenburn-red))))
+     (newsticker-old-item-face ((t (:foreground ,zenburn-bg+3))))
+     (newsticker-statistics-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-treeview-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-treeview-immortal-face ((t (:foreground ,zenburn-green))))
+     (newsticker-treeview-listwindow-face ((t (:foreground ,zenburn-fg))))
+     (newsticker-treeview-new-face ((t (:foreground ,zenburn-blue :weight bold))))
+     (newsticker-treeview-obsolete-face ((t (:foreground ,zenburn-red))))
+     (newsticker-treeview-old-face ((t (:foreground ,zenburn-bg+3))))
+     (newsticker-treeview-selection-face ((t (:background ,zenburn-bg-1 :foreground ,zenburn-yellow))))
+     ;; woman
+     (woman-bold   ((t (:inherit font-lock-keyword-face))))
+     (woman-italic ((t (:inherit (font-lock-string-face italic)))))
+
+;;;; Third-party
+
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,zenburn-bg-1))))
      (exordium-powerline-active2 ((t (:background ,zenburn-bg-05))))
@@ -169,6 +219,24 @@ names to which it refers are bound."
      (powerline-active2 ((t (:background ,zenburn-bg+2 :inherit mode-line))))
      (powerline-inactive1 ((t (:background ,zenburn-bg+1 :inherit mode-line-inactive))))
      (powerline-inactive2 ((t (:background ,zenburn-bg+3 :inherit mode-line-inactive))))
+
+     ;; ace-jump
+     (ace-jump-face-background
+       ((t (:foreground ,zenburn-fg-1 :background ,zenburn-bg :inverse-video nil))))
+     (ace-jump-face-foreground
+       ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg :inverse-video nil))))
+
+     ;; ace-window
+     (aw-background-face
+       ((t (:foreground ,zenburn-fg-1 :background ,zenburn-bg :inverse-video nil))))
+     (aw-leading-char-face ((t (:inherit aw-mode-line-face))))
+
+     ;; android mode
+     (android-mode-debug-face ((t (:foreground ,zenburn-green+1))))
+     (android-mode-error-face ((t (:foreground ,zenburn-orange :weight bold))))
+     (android-mode-info-face ((t (:foreground ,zenburn-fg))))
+     (android-mode-verbose-face ((t (:foreground ,zenburn-green))))
+     (android-mode-warning-face ((t (:foreground ,zenburn-yellow))))
 
      ;; auctex
      (font-latex-bold-face ((t (:inherit bold))))
@@ -202,6 +270,31 @@ names to which it refers are bound."
      (company-scrollbar-fg ((t (:background ,zenburn-blue-5))))
      (company-scrollbar-bg ((t (:background ,zenburn-bg-1))))
 
+     ;; cider
+     (cider-result-overlay-face ((t (:background unspecified))))
+     (cider-enlightened-face ((t (:box (:color ,zenburn-orange :line-width -1)))))
+     (cider-enlightened-local-face ((t (:weight bold :foreground ,zenburn-green+1))))
+     (cider-deprecated-face ((t (:background ,zenburn-yellow-2))))
+     (cider-instrumented-face ((t (:box (:color ,zenburn-red :line-width -1)))))
+     (cider-traced-face ((t (:box (:color ,zenburn-cyan :line-width -1)))))
+     (cider-test-failure-face ((t (:background ,zenburn-red-4))))
+     (cider-test-error-face ((t (:background ,zenburn-magenta))))
+     (cider-test-success-face ((t (:background ,zenburn-green-2))))
+     (cider-fringe-good-face ((t (:foreground ,zenburn-green+4))))
+
+     ;; context-coloring
+     (context-coloring-level-0-face ((t :foreground ,zenburn-fg)))
+     (context-coloring-level-1-face ((t :foreground ,zenburn-cyan)))
+     (context-coloring-level-2-face ((t :foreground ,zenburn-green+4)))
+     (context-coloring-level-3-face ((t :foreground ,zenburn-yellow)))
+     (context-coloring-level-4-face ((t :foreground ,zenburn-orange)))
+     (context-coloring-level-5-face ((t :foreground ,zenburn-magenta)))
+     (context-coloring-level-6-face ((t :foreground ,zenburn-blue+1)))
+     (context-coloring-level-7-face ((t :foreground ,zenburn-green+2)))
+     (context-coloring-level-8-face ((t :foreground ,zenburn-yellow-2)))
+     (context-coloring-level-9-face ((t :foreground ,zenburn-red+1)))
+
+
      ;; diff
      (diff-added ((,class (:foreground ,zenburn-green+4 :background nil))
                   (t (:foreground ,zenburn-green-1 :background nil))))
@@ -217,6 +310,10 @@ names to which it refers are bound."
       ((,class (:background ,zenburn-bg+2 :foreground ,zenburn-fg :bold t))
        (t (:background ,zenburn-fg :foreground ,zenburn-bg :bold t))))
 
+     ;; diff-hl
+     (diff-hl-change ((,class (:foreground ,zenburn-blue :background ,zenburn-blue-2))))
+     (diff-hl-delete ((,class (:foreground ,zenburn-red+1 :background ,zenburn-red-1))))
+     (diff-hl-insert ((,class (:foreground ,zenburn-green+1 :background ,zenburn-green-2))))
 
      ;; dired+
      (diredp-display-msg ((t (:foreground ,zenburn-blue))))
@@ -243,6 +340,34 @@ names to which it refers are bound."
      (diredp-read-priv ((t (:foreground ,zenburn-green-1))))
      (diredp-symlink ((t (:foreground ,zenburn-yellow))))
      (diredp-write-priv ((t (:foreground ,zenburn-magenta))))
+
+     ;; dired-async
+     (dired-async-failures ((t (:foreground ,zenburn-red :weight bold))))
+     (dired-async-message ((t (:foreground ,zenburn-yellow :weight bold))))
+     (dired-async-mode-message ((t (:foreground ,zenburn-yellow))))
+
+     ;; diredfl
+     (diredfl-compressed-file-suffix ((t (:foreground ,zenburn-orange))))
+     (diredfl-date-time ((t (:foreground ,zenburn-magenta))))
+     (diredfl-deletion ((t (:foreground ,zenburn-yellow))))
+     (diredfl-deletion-file-name ((t (:foreground ,zenburn-red))))
+     (diredfl-dir-heading ((t (:foreground ,zenburn-blue :background ,zenburn-bg-1))))
+     (diredfl-dir-priv ((t (:foreground ,zenburn-cyan))))
+     (diredfl-exec-priv ((t (:foreground ,zenburn-red))))
+     (diredfl-executable-tag ((t (:foreground ,zenburn-green+1))))
+     (diredfl-file-name ((t (:foreground ,zenburn-blue))))
+     (diredfl-file-suffix ((t (:foreground ,zenburn-green))))
+     (diredfl-flag-mark ((t (:foreground ,zenburn-yellow))))
+     (diredfl-flag-mark-line ((t (:foreground ,zenburn-orange))))
+     (diredfl-ignored-file-name ((t (:foreground ,zenburn-red))))
+     (diredfl-link-priv ((t (:foreground ,zenburn-yellow))))
+     (diredfl-no-priv ((t (:foreground ,zenburn-fg))))
+     (diredfl-number ((t (:foreground ,zenburn-green+1))))
+     (diredfl-other-priv ((t (:foreground ,zenburn-yellow-1))))
+     (diredfl-rare-priv ((t (:foreground ,zenburn-red-1))))
+     (diredfl-read-priv ((t (:foreground ,zenburn-green-1))))
+     (diredfl-symlink ((t (:foreground ,zenburn-yellow))))
+     (diredfl-write-priv ((t (:foreground ,zenburn-magenta))))
 
      ;; ediff
      (ediff-current-diff-A ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
@@ -308,6 +433,7 @@ names to which it refers are bound."
         (:underline (:style wave :color ,zenburn-green)
                     :inherit unspecified :foreground unspecified :background unspecified))
        (t (:foreground ,zenburn-green-1 :weight bold :underline t))))
+
 
      ;; Rtags
      (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
@@ -429,6 +555,16 @@ names to which it refers are bound."
      (js2-jsdoc-value ((t (:foreground ,zenburn-green+3))))
      (js2-function-param ((t (:foreground ,zenburn-green+3))))
      (js2-external-variable ((t (:foreground ,zenburn-orange))))
+     ;; additional js2 mode attributes for better syntax highlighting
+     (js2-instance-member ((t (:foreground ,zenburn-green-2))))
+     (js2-jsdoc-html-tag-delimiter ((t (:foreground ,zenburn-orange))))
+     (js2-jsdoc-html-tag-name ((t (:foreground ,zenburn-red-1))))
+     (js2-object-property ((t (:foreground ,zenburn-blue+1))))
+     (js2-magic-paren ((t (:foreground ,zenburn-blue-5))))
+     (js2-private-function-call ((t (:foreground ,zenburn-cyan))))
+     (js2-function-call ((t (:foreground ,zenburn-cyan))))
+     (js2-private-member ((t (:foreground ,zenburn-blue-1))))
+     (js2-keywords ((t (:foreground ,zenburn-magenta))))
 
      ;; EnhRuby-mode
      (erm-syn-warnline ((t (:underline (:color ,zenburn-orange :style wave)))))
@@ -437,12 +573,17 @@ names to which it refers are bound."
      ;; linum-mode
      (linum ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))
 
-
 ;;;;; magit
 ;;;;;; headings and diffs
      (magit-section-highlight           ((t (:background ,zenburn-bg+05))))
      (magit-section-heading             ((t (:foreground ,zenburn-yellow :weight bold))))
      (magit-section-heading-selection   ((t (:foreground ,zenburn-orange :weight bold))))
+
+     (magit-diff-added ((t (:inherit diff-added))))
+     (magit-diff-added-highlight ((t (:inherit diff-refine-added))))
+     (magit-diff-removed ((t (:inherit diff-removed))))
+     (magit-diff-removed-highlight ((t (:inherit diff-refine-removed))))
+
      (magit-diff-file-heading           ((t (:weight bold))))
      (magit-diff-file-heading-highlight ((t (:background ,zenburn-bg+05  :weight bold))))
      (magit-diff-file-heading-selection ((t (:background ,zenburn-bg+05
@@ -459,7 +600,7 @@ names to which it refers are bound."
      (magit-diffstat-removed ((t (:foreground ,zenburn-red))))
 ;;;;;; popup
      (magit-popup-heading             ((t (:foreground ,zenburn-yellow  :weight bold))))
-     (magit-popup-key                 ((t (:foreground ,zenburn-green-1 :weight bold))))
+     (magit-popup-key                 ((t (:foreground ,zenburn-green-2 :weight bold))))
      (magit-popup-argument            ((t (:foreground ,zenburn-green   :weight bold))))
      (magit-popup-disabled-argument   ((t (:foreground ,zenburn-fg-1    :weight normal))))
      (magit-popup-option-value        ((t (:foreground ,zenburn-blue-2  :weight bold))))
@@ -503,6 +644,9 @@ names to which it refers are bound."
      (magit-signature-good      ((t (:foreground ,zenburn-green))))
      (magit-signature-bad       ((t (:foreground ,zenburn-red))))
      (magit-signature-untrusted ((t (:foreground ,zenburn-yellow))))
+     (magit-signature-expired   ((t (:foreground ,zenburn-orange))))
+     (magit-signature-revoked   ((t (:foreground ,zenburn-magenta))))
+     (magit-signature-error     ((t (:inherit    magit-signature-bad))))
      (magit-cherry-unmatched    ((t (:foreground ,zenburn-cyan))))
      (magit-cherry-equivalent   ((t (:foreground ,zenburn-magenta))))
      (magit-reflog-commit       ((t (:foreground ,zenburn-green))))
@@ -514,6 +658,27 @@ names to which it refers are bound."
      (magit-reflog-cherry-pick  ((t (:foreground ,zenburn-green))))
      (magit-reflog-remote       ((t (:foreground ,zenburn-cyan))))
      (magit-reflog-other        ((t (:foreground ,zenburn-cyan))))
+
+     ;; Markdown
+     (markdown-url-face ((t (:inherit link :foreground ,zenburn-yellow :weight normal))))
+     (markdown-link-face ((t (:foreground ,zenburn-orange :underline t :weight bold))))
+     (markdown-header-face-1 ((t (:inherit :weight bold :foreground ,zenburn-orange
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-4))))))
+     (markdown-header-face-2 ((t (:inherit :weight bold :foreground ,zenburn-blue
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-2))))))
+     (markdown-header-face-3 ((t (:foreground ,zenburn-blue :weight bold))))
+     (markdown-header-face-4 ((t (:foreground ,zenburn-blue :weight normal))))
+     (markdown-header-face-5 ((t (:foreground ,zenburn-blue :weight bold :slant italic))))
+     (markdown-header-delimiter-face ((t (:foreground ,zenburn-blue))))
+     (markdown-bold-face ((t (:foreground ,zenburn-green :weight bold))))
+     (markdown-italic-face ((t (:foreground ,zenburn-fg :weight normal :slant italic))))
+     (markdown-list-face ((t (:foreground ,zenburn-blue :weight normal))))
+     (markdown-inline-code-face ((t (:foreground ,zenburn-green-2 :weight normal))))
+     (markdown-markup-face ((t (:foreground ,zenburn-blue))))
+     (markdown-pre-face ((t (:foreground ,zenburn-green-2))))
+     (markdown-gfm-checkbox-face ((t (:foreground ,zenburn-red))))
 
      ;; mic-paren
      (paren-face-match ((t (:foreground ,zenburn-cyan :background ,zenburn-bg :weight bold))))
@@ -534,19 +699,31 @@ names to which it refers are bound."
      (org-formula ((t (:foreground ,zenburn-yellow-2))))
      (org-headline-done ((t (:foreground ,zenburn-green+3))))
      (org-hide ((t (:foreground ,zenburn-bg-1))))
-     (org-document-title ((t
-                           ,(append `(:weight bold :foreground ,zenburn-green+2)
-                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
-     (org-level-1 ((t
-                    ,(append `(:foreground ,zenburn-orange)
-                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
-     (org-level-2 ((t (:foreground ,zenburn-green+4))))
-     (org-level-3 ((t (:foreground ,zenburn-blue-1))))
-     (org-level-4 ((t (:foreground ,zenburn-yellow-2))))
-     (org-level-5 ((t (:foreground ,zenburn-cyan))))
-     (org-level-6 ((t (:foreground ,zenburn-green+2))))
-     (org-level-7 ((t (:foreground ,zenburn-red-4))))
-     (org-level-8 ((t (:foreground ,zenburn-blue-4))))
+     (org-document-info ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue
+                                      ,@(when exordium-theme-use-big-font
+                                          (list :height exordium-height-plus-3))))))
+     (org-document-info-keyword ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green-2
+                                              ,@(when exordium-theme-use-big-font
+                                                  (list :height exordium-height-plus-3))))))
+     (org-document-title ((t (:inherit ,exordium-variable-pitch :weight bold :foreground ,zenburn-blue
+                                       ,@(when exordium-theme-use-big-font
+                                           (list :height exordium-height-plus-4))))))
+     (org-level-1 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-orange
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-4))))))
+     (org-level-2 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+4
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-3))))))
+     (org-level-3 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-1
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-2))))))
+     (org-level-4 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-yellow-2
+                                ,@(when exordium-theme-use-big-font
+                                    (list :height exordium-height-plus-1))))))
+     (org-level-5 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-cyan))))
+     (org-level-6 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+2))))
+     (org-level-7 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-red-4))))
+     (org-level-8 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-4))))
      (org-link ((t (:foreground ,zenburn-yellow-2 :underline t))))
      (org-scheduled ((t (:foreground ,zenburn-green+4))))
      (org-scheduled-previously ((t (:foreground ,zenburn-red))))
@@ -566,11 +743,26 @@ names to which it refers are bound."
      (org-ellipsis ((t (:foreground ,zenburn-yellow-1 :underline t))))
      (org-footnote ((t (:foreground ,zenburn-cyan :underline t))))
 
+     ;; org-ref
+     (org-ref-ref-face ((t :underline t)))
+     (org-ref-label-face ((t :underline t)))
+     (org-ref-cite-face ((t :underline t)))
+     (org-ref-glossary-face ((t :underline t)))
+     (org-ref-acronym-face ((t :underline t)))
+
      ;; outline
-     (outline-1 ((t (:foreground ,zenburn-orange))))
-     (outline-2 ((t (:foreground ,zenburn-green+4))))
-     (outline-3 ((t (:foreground ,zenburn-blue-1))))
-     (outline-4 ((t (:foreground ,zenburn-yellow-2))))
+     (outline-1 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-orange
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-4))))))
+     (outline-2 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+4
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-3))))))
+     (outline-3 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-blue-1
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-2))))))
+     (outline-4 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-yellow-2
+                              ,@(when exordium-theme-use-big-font
+                                  (list :height exordium-height-plus-1))))))
      (outline-5 ((t (:foreground ,zenburn-cyan))))
      (outline-6 ((t (:foreground ,zenburn-green+2))))
      (outline-7 ((t (:foreground ,zenburn-red-4))))
@@ -594,6 +786,14 @@ names to which it refers are bound."
      (rainbow-delimiters-depth-10-face ((t (:foreground ,zenburn-orange))))
      (rainbow-delimiters-depth-11-face ((t (:foreground ,zenburn-green))))
      (rainbow-delimiters-depth-12-face ((t (:foreground ,zenburn-blue-5))))
+
+     ;; rst-mode
+     (rst-level-1-face ((t (:foreground ,zenburn-orange))))
+     (rst-level-2-face ((t (:foreground ,zenburn-green+1))))
+     (rst-level-3-face ((t (:foreground ,zenburn-blue-1))))
+     (rst-level-4-face ((t (:foreground ,zenburn-yellow-2))))
+     (rst-level-5-face ((t (:foreground ,zenburn-cyan))))
+     (rst-level-6-face ((t (:foreground ,zenburn-green-2))))
 
      ;; sh-mode
      (sh-hezenburn-redoc     ((t (:foreground ,zenburn-yellow :bold t))))

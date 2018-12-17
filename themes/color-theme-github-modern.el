@@ -883,7 +883,7 @@ names to which it refers are bound."
      (org-hide ((t (:foreground ,github-selection))))
      (org-level-1 ((t
                     ,(append `(:foreground ,github-text)
-                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,github-constant))))
      (org-level-3 ((t (:foreground ,github-constant))))
      (org-level-4 ((t (:foreground ,github-text))))
@@ -912,7 +912,7 @@ names to which it refers are bound."
      (org-document-title ((t (:foreground ,github-text))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,github-text)
-                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-document-info ((t (:foreground ,github-text))))
      (org-habit-ready-face ((t :background ,github-comment)))
      (org-habit-alert-face ((t :background ,github-text :foreground ,github-white)))
