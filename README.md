@@ -373,7 +373,9 @@ Git gutter keys:
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c g down</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
+<kbd>C-c g n</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
 <kbd>C-c g up</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
+<kbd>C-c g p</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
 <kbd>C-c g d</kbd>    | Diff the current hunk (`git-gutter:popup-diff`).
 <kbd>C-c g r</kbd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
 
