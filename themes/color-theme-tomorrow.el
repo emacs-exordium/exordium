@@ -242,7 +242,10 @@ names to which it refers are bound."
      (helm-selection ((t (:background ,selection :underline nil))))
      (helm-selection-line ((t (:background ,selection))))
      (helm-visible-mark ((t (:foreground ,background :background ,yellow))))
-     (helm-candidate-number ((t (:foreground ,green :background ,selection))))
+     (helm-ff-directory ((t (:foreground ,background :background ,green))))
+     (helm-ff-executable ((t (:foreground ,red :background ,background))))
+     (helm-ff-symlink ((t (:foreground ,yellow :background ,background))))
+     (helm-ff-executable ((t (:foreground ,foreground :background ,background))))
      (helm-swoop-target-line-face ((t (:foreground ,background :background ,yellow))))
      (helm-swoop-target-word-face ((t (:foreground ,background :background ,aqua))))
 
@@ -321,7 +324,7 @@ names to which it refers are bound."
      ;; Org
      (org-level-1 ((t
                     ,(append `(:foreground ,foreground)
-                             (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
      (org-level-4 ((t (:foreground ,comment))))
@@ -338,7 +341,7 @@ names to which it refers are bound."
      (org-document-info-keyword ((t (:foreground ,green))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,green)
-                                    (if exordium-theme-use-big-font '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-todo ((t (:foreground ,red :weight bold :box nil))))
      (org-done ((t (:foreground ,green :weight bold :box nil))))
      (org-checkbox ((t (:foreground ,yellow :weight bold))))
@@ -360,10 +363,10 @@ names to which it refers are bound."
      (markdown-link-face ((t (:foreground ,orange :underline t :weight bold))))
      (markdown-header-face-1 ((t
                                ,(append `(:weight bold :foreground ,blue)
-                                        (if exordium-theme-use-big-font '(:height 1.44)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
      (markdown-header-face-2 ((t
                                ,(append `(:weight bold :foreground ,blue)
-                                        (if exordium-theme-use-big-font '(:height 1.2)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
      (markdown-header-face-3 ((t (:foreground ,blue :weight bold))))
      (markdown-header-face-4 ((t (:foreground ,blue :weight normal))))
      (markdown-header-face-5 ((t (:foreground ,blue :weight bold :slant italic))))

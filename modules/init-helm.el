@@ -17,10 +17,11 @@
 (require 'helm-ag)
 
 
-(global-set-key (kbd "C-S-r") 'helm-ag-project-root)
-(global-set-key (kbd "C-S-d") 'helm-do-ag)
-(global-set-key (kbd "C-S-f") 'helm-do-ag-this-file)
-(global-set-key (kbd "C-S-a") 'helm-projectile-ag)
+(global-set-key (kbd "C-S-r")   'helm-ag-project-root)
+(global-set-key (kbd "C-S-d")   'helm-do-ag)
+(global-set-key (kbd "C-S-f")   'helm-do-ag-this-file)
+(global-set-key (kbd "C-S-a")   'helm-projectile-ag)
+(global-set-key (kbd "C-c p .") 'helm-projectile-find-file-dwim)
 
 (when exordium-helm-everywhere
   (helm-mode)

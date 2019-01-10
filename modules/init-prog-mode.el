@@ -51,7 +51,7 @@
 
 ;;; Font lock changes
 
-;;; Display TODO: and FIXME: and TBD: in red
+;;; Display TODO: and FIXME: and TBD: in warning face
 (when exordium-font-lock
   (defun add-keywords-for-todos ()
     (font-lock-add-keywords

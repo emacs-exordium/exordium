@@ -272,6 +272,7 @@ Keybinding                             | Description
 <kbd>C-c M-h</kbd> or <kbd>C-c H</kbd> | Same, but first select project
 <kbd>C-c p p</kbd>                     | IDO: switch project (alternative: Helm)
 <kbd>C-c p f</kbd>                     | IDO: find file in current project (alternative Helm)
+<kbd>C-c p .</kbd>                     | IDO: find file at point based on context (alternative Helm)
 <kbd>C-c p s g</kbd>                   | Grep in current project
 <kbd>C-c p s a</kbd>                   | Same but using ack
 <kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project

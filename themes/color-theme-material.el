@@ -287,13 +287,13 @@ names to which it refers are bound."
      (org-date ((t (:foreground ,teal-200 :underline t))))
      (org-document-info ((t
                           ,(append `(:foreground ,light-blue-200)
-                                   (if exordium-theme-use-big-font '(:height 1.35) nil)))))
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-document-info-keyword ((t
                                   ,(append `(:foreground ,light-green-500)
-                                           (if exordium-theme-use-big-font '(:height 1.35) nil)))))
+                                           (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,orange)
-                                    (if exordium-theme-use-big-font '(:height 1.35))))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4))))))
      (org-done ((t (:foreground ,light-green-500 :bold t :background ,green-900))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,light-blue-200))))
@@ -316,14 +316,14 @@ names to which it refers are bound."
                                       :foreground ,blue-gray-50
                                       :background ,blue-gray-700
                                       :weight bold)
-                                    (if exordium-theme-use-big-font '(:height 1.3) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-3) nil)))))
      (org-level-2 ((t ,(append `(:inherit nil
                                       :foreground ,light-blue-50
                                       :background "#21575b"
                                       :overline ,light-blue-50)
-                                    (if exordium-theme-use-big-font '(:height 1.2) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2) nil)))))
      (org-level-3 ((t ,(append `(:inherit nil :foreground ,green-200)
-                                    (if exordium-theme-use-big-font '(:height 1.1) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-1) nil)))))
      (org-level-4 ((t (:inherit nil :foreground ,orange-200))))
      (org-level-5 ((t (:inherit nil :foreground ,light-blue-100))))
      (org-level-6 ((t (:inherit nil :foreground ,cyan-a100))))
@@ -358,10 +358,10 @@ names to which it refers are bound."
      (markdown-link-face ((t (:foreground ,blue :underline t))))
      (markdown-header-face-1 ((t
                                ,(append `(:weight bold :foreground ,light-blue-100)
-                                        (if exordium-theme-use-big-font '(:height 1.44)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
      (markdown-header-face-2 ((t
                                ,(append `(:weight bold :foreground ,light-blue-100)
-                                        (if exordium-theme-use-big-font '(:height 1.2)) nil))))
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
 
      ;; js2-mode
      (js2-warning ((t (:underline ,orange :style wave))))
