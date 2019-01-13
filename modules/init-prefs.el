@@ -347,6 +347,13 @@ Disables flyspell if set to nil."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-yasnippet-author
+  (format "%s (%s)" user-full-name user-login-name)
+  "Author string for yasnippet expansion"
+  :group 'exordium
+  :type  'string)
+
+
 ;;; See init-helm-projectile.el
 (defcustom exordium-helm-projectile t
   "Whether Helm and Projectile are enabled or not."
