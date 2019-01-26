@@ -48,3 +48,6 @@ taps/**
 
 # TRAMP cache
 tramp
+
+# Default custom file
+emacs-custom.el

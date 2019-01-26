@@ -27,8 +27,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (defconst exordium-after-init "after-init.el"
   "name of the after init file")
 
-;; Save any custom set variable in after-init.el rather than at the end of init.el:
-(setq custom-file "~/.emacs.d/after-init.el")
+(defconst exordium-custom "emacs-custom.el"
+  "name of the customization file")
 
 ;; Use this file for HTTP proxy settings if needed for packages.  Also add
 ;; additional packages to exordium-extra-packages for packages to be
@@ -51,6 +51,12 @@ Check the warnings and messages buffers, or restart with --debug-init")
 
 (defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
   "location of the master after init file")
+
+(defconst exordium-custom-file (locate-user-emacs-file exordium-custom)
+  "location of the customization file")
+
+;; Save any custom set variable in exordium-custom-file rather than at the end of init.el:
+(setq custom-file exordium-custom-file)
 
 (defcustom exordium-extra-packages ()
   "Additional packages to auto load from elpa repositories"
@@ -107,6 +113,9 @@ Check the warnings and messages buffers, or restart with --debug-init")
 
 (when (file-readable-p exordium-after-init-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-after-init-file))
+
+(when (file-readable-p exordium-custom-file)
+  (add-to-list 'exordium-tapped-after-init-files exordium-custom-file))
 
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
