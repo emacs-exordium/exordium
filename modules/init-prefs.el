@@ -62,9 +62,27 @@ available font names by evaluating (font-family-list)."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-keyboard-ctrl-z-undo t
+  "Whether Ctrl-z is rebound to Undo, like most other applications."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-enable-y-or-n t
+  "Use y or n answers instead of full words yes or no"
+  :group 'exordium
+  :type  'boolean)
+
 (defcustom exordium-enable-newline-and-indent t
   "If t, binds the return key to newline-and-indent, and
 shift-return for just newline.  If nil, do the opposite."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-delete-trailing-whitespace t
+  "If t, deletes all trailing whitespaces on all lines before
+saving a buffer. This is the default because it is generally a
+good practice. Set this variable to to nil if you work on legacy
+projects that have a lot of trailing whitespaces"
   :group 'exordium
   :type  'boolean)
 
@@ -80,6 +98,17 @@ IF nil, disables CUA completely."
   :group 'exordium
   :type  'symbol)
 
+(defcustom exordium-enable-evil-mode nil
+  "If set to t, enables EVIL mode."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-enable-insert-gui-primary-selection nil
+  "If set to t, binds Meta-Insert to insert-gui-primary-selection.
+This makes it easier to paste text from the Windows clipboard."
+  :group 'exordium
+  :type  'boolean)
+
 ;;; Backup files (e.g. file~)
 (defcustom exordium-backup-files nil
   "Enables or disables backup files. Disabled by default, I can't
@@ -93,11 +122,50 @@ IF nil, disables CUA completely."
 (defcustom exordium-display-line-numbers t
   "Whether line numbers are displayed or not.
 Set to nil to disable line numbers.
-Set to t or :linum to enable line numbers using package `linum'.
+Set to `t' to enable line numbers using `line-numbers' (or `linum' on pre 26.1 emacs).
 Set to :nlinum to enable line numbers using pakage `nlinum'
-which should be more efficient in particular for large buffers."
+which should be more efficient in particular for large buffers.
+
+When buffer matches either of the `exordium-inhibit-line-numbers-modes',
+`exordium-inhibit-line-numbers-buffer-size', or `exordium-inhibit-line-numbers-star-buffers'
+line numbers WILL NOT be shown."
   :group 'exordium
   :type  'symbol)
+
+(defcustom exordium-inhibit-line-numbers-modes '(eshell-mode
+                                                 shell-mode
+                                                 help-mode
+                                                 compilation-mode
+                                                 iwyu-mode
+                                                 Info-mode
+                                                 calendar-mode
+                                                 treemacs-mode
+                                                 org-mode
+                                                 rtags-rdm-mode
+                                                 rtags-diagnostics-mode
+                                                 eww-mode
+                                                 dired-mode
+                                                 image-mode)
+  "List of modes for which line numbers should not be displayed."
+  :group 'exordium
+  :type 'list)
+
+(defcustom exordium-inhibit-line-numbers-buffer-size nil
+  "The maximum buffer size that line numbers should be displayed.
+Set to some integer, to show line numbers only for buffers that are smaller
+than the specified size. I.e., `(* 512 1024)' will only display line numbers
+that are smaller than 0.5MiB (this is over 6.5k 80 character lines).
+Set to `nil' to enable line numbers even in large buffers."
+  :group 'exordium
+  :type 'integer)
+
+(defcustom exordium-inhibit-line-numbers-star-buffers nil
+  "Controls whether line numbers shold be displayed in buffers that name
+starts with `*'.
+Set to `t' to don't display line numbers in buffers that name starts with `*'.
+Set to `nil' to display line numbers in buffers that name starts with `*'."
+  :group 'exordium
+  :type 'boolean)
 
 
 ;;; Miscellaneous utilities -- see init-util.el
@@ -137,13 +205,22 @@ i.e., with git pull."
   :type  'boolean)
 
 
-;;; Autocomplete -- see init-autocomplete.el
+;;; Smooth scroll - see init-smooth-scroll.el
 
-(defcustom exordium-auto-complete t
-  "Whether auto-complete is turned on or off by default. See also
-  `exordium-rtags-auto-complete'."
+(defcustom exordium-smooth-scroll nil
+  "Whether smooth scroll is enabled or not."
   :group 'exordium
   :type  'boolean)
+
+
+;;; Autocomplete -- see init-autocomplete.el
+
+(defcustom exordium-complete-mode :auto-complete
+  "Slect the completion engine for exordium. Possible values are
+  :auto-complete, :company, and nil. Default is :auto-complete. See also
+  `exordium-rtags-auto-complete'."
+  :group 'exordium
+  :type  'symbol)
 
 
 ;;; Themes -- see themes directory
@@ -155,7 +232,9 @@ otherwise use one of the following:
   tomorrow-night-blue, tomorrow-night-eighties
 - monokai
 - solarized-light, solarized-dark
-- zenburn"
+- zenburn
+- material
+- atom-one"
   :group 'exordium
   :type  'symbol)
 
@@ -167,9 +246,10 @@ use underline waves."
   :group 'exordium
   :type  'boolean)
 
-(defcustom exordium-theme-use-big-org-fonts t
-  "Whether Org mode uses big fonts for titles and top-level
-  items."
+(defcustom exordium-theme-use-big-font t
+  "Whether the theme uses big fonts for titles and top-level
+  items. This applies to modes like org or markdown. Set it to
+  nil if you do not want to have variable-sized font."
   :group 'exordium
   :type  'boolean)
 
@@ -214,6 +294,43 @@ default color."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-powerline-enable-icons nil
+  "Whether Powerline displays icons for git branches and other
+  things."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-use-variable-pitch nil
+  "Allow variable pitch fonts"
+  :group 'exordium
+  :type 'boolean)
+
+(defcustom exordium-height-minus-1 0.8
+  "Font size -1."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-1 1.1
+  "Font size +1."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-2 1.2
+  "Font size +2."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-3 1.3
+  "Font size +3."
+  :type 'number
+  :group 'exordium)
+
+(defcustom exordium-height-plus-4 1.4
+  "Font size +4."
+  :type 'number
+  :group 'exordium)
+
+
 
 ;;; Programming
 
@@ -224,17 +341,18 @@ Disables flyspell if set to nil."
   :group 'exordium
   :type  'symbol)
 
-;;; See init-rtags.el
-(defcustom exordium-rtags-auto-complete nil
-  "Whether RTags is used as the source for auto-complete in C++ mode."
-  :group 'exordium
-  :type  'boolean)
-
 ;;; See init-yasnippet.el
 (defcustom exordium-yasnippet t
   "Whether YASnippet is enabled or not."
   :group 'exordium
   :type  'boolean)
+
+(defcustom exordium-yasnippet-author
+  (format "%s (%s)" user-full-name user-login-name)
+  "Author string for yasnippet expansion"
+  :group 'exordium
+  :type  'string)
+
 
 ;;; See init-helm-projectile.el
 (defcustom exordium-helm-projectile t
@@ -258,11 +376,89 @@ Disables flyspell if set to nil."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-git-gutter-for-remote-files nil
+  "Whether a git status icon is displayed for the remote files, i.e.
+opened in TRAMP mode."
+  :group 'exordium
+  :type  'boolean)
+
+;;; See init-cpp.el
+(defcustom exordium-enable-c++11-keywords :simple
+  "Enables syntax highlighting for the new keywords introduced in C++11 if set
+to :simple. Enables modern-cpp-font-lock when set to :modern."
+  :group 'exordium
+  :type  'symbol)
+
 ;;; See init-clojure.el
 (defcustom exordium-clojure nil
   "Whether the development environment for Clojure is enabled or not."
   :group 'exordium
   :type  'boolean)
+
+
+;;; RTags
+
+;;; See init-rtags.el
+(defcustom exordium-rtags-rdm-args nil
+  "Command-line arguments passed to rdm, if needed. This should
+be a list of strings."
+  :group 'exordium
+  :type  'sexp)
+
+(defcustom exordium-rtags-auto-complete nil
+  "Whether RTags is used as the source for auto-complete in C++ mode."
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-rtags-syntax-checker :flymake
+  "The syntax checker to be used with rtags. If set to :flycheck the
+`flycheck-rtags' will be used. Otherwise, the built-in flymake will be used."
+  :group 'exordium
+  :type  'symbol)
+
+;;; See init-rtags-helm.el
+(defcustom exordium-rtags-helm-everywhere t
+  "Whether RTags uses Helm to display list of results, rather
+  than its own UI"
+  :group 'exordium
+  :type  'boolean)
+
+;;; see init-rtags-cmake.el
+(defcustom exordium-rtags-cmake nil
+  "Whether RTags is used automatically for CMake-enabled projects"
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-rtags-cmake-build-dir "cmake.bld/<arch>"
+  "Relative path of the build directory inside a CMake-enabled
+  repo. '<arch>' is replaced by the local machine's architecture."
+  :group 'exordium
+  :type  'string)
+
+;;; See init-rtags-cdb.el
+(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
+  "List of source file extension patterns for creating a
+  compilation database using command
+  `rtags-create-compilation-database'. Not needed for CMake projects."
+  :group 'exordium
+  :type  'sexp)
+
+
+(defcustom exordium-iwyu-filter-args '("-fno-default-inline")
+  "List of flags that should be removed from the 'include-what-you-use'.
+  When `include-what-you-use' is called, all parameters after the first space
+  in JSON value of `command' property are passed. Use this list to remove
+  unsupported flags and arguments as well as compiler wrappers that are in
+  project's compilation database."
+  :group 'exordium
+  :type  'sexp)
+
+(defcustom exordium-iwyu-extra-args '()
+  "List of extra arguments that should be passed when calling
+   `include-what-you-use'. They are passed 'as is' to `include-what-you-use'
+   executable."
+  :group 'exordium
+  :type  'sexp)
 
 
 ;;; See init-helm.el

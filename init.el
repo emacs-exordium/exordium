@@ -9,7 +9,7 @@
 ;; the startup time.
 (setq gc-cons-threshold 100000000)
 
-(let ((min-version "24.1"))
+(let ((min-version "24.4"))
   (when (version< emacs-version min-version)
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
@@ -27,8 +27,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (defconst exordium-after-init "after-init.el"
   "name of the after init file")
 
-;; Save any custom set variable in after-init.el rather than at the end of init.el:
-(setq custom-file "~/.emacs.d/after-init.el")
+(defconst exordium-custom "emacs-custom.el"
+  "name of the customization file")
 
 ;; Use this file for HTTP proxy settings if needed for packages.  Also add
 ;; additional packages to exordium-extra-packages for packages to be
@@ -51,6 +51,12 @@ Check the warnings and messages buffers, or restart with --debug-init")
 
 (defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
   "location of the master after init file")
+
+(defconst exordium-custom-file (locate-user-emacs-file exordium-custom)
+  "location of the customization file")
+
+;; Save any custom set variable in exordium-custom-file rather than at the end of init.el:
+(setq custom-file exordium-custom-file)
 
 (defcustom exordium-extra-packages ()
   "Additional packages to auto load from elpa repositories"
@@ -108,6 +114,9 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (when (file-readable-p exordium-after-init-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-after-init-file))
 
+(when (file-readable-p exordium-custom-file)
+  (add-to-list 'exordium-tapped-after-init-files exordium-custom-file))
+
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
   (load tapped-file))
@@ -142,6 +151,10 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (auto-complete           . "melpa-pinned")
                                          (company                 . "melpa-pinned")
                                          (rtags                   . "melpa-pinned")
+                                         (ac-rtags                . "melpa-pinned")
+                                         (company-rtags           . "melpa-pinned")
+                                         (flycheck-rtags          . "melpa-pinned")
+                                         (helm-rtags              . "melpa-pinned")
                                          (auto-complete-c-headers . "melpa")
                                          (yasnippet               . "melpa-pinned")
                                          (js2-mode                . "melpa-pinned")
@@ -153,18 +166,20 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (rainbow-delimiters      . "melpa-pinned")
                                          (helm                    . "melpa-pinned")
                                          (helm-descbinds          . "melpa-pinned")
+                                         (helm-flycheck           . "melpa-pinned")
                                          (helm-swoop              . "melpa-pinned")
                                          (helm-ag                 . "melpa-pinned")
-                                         (ido-ubiquitous          . "melpa-pinned")
+                                         (ido-completing-read+    . "melpa-pinned")
                                          (projectile              . "melpa-pinned")
                                          (helm-projectile         . "melpa-pinned")
                                          (cmake-mode              . "melpa-pinned")
                                          (markdown-mode           . "melpa-pinned")
+                                         (impatient-mode          . "melpa-pinned")
                                          (enh-ruby-mode           . "melpa")
                                          (fill-column-indicator   . "melpa-pinned")
                                          (exec-path-from-shell    . "melpa-pinned")
                                          (goto-chg                . "melpa")
-                                         (project-explorer        . "melpa-pinned")
+                                         (treemacs-projectile     . "melpa-pinned")
                                          (page-break-lines        . "melpa-pinned")
                                          (org-bullets             . "melpa-pinned")
                                          (ox-gfm                  . "melpa-pinned")
@@ -172,6 +187,14 @@ Check the warnings and messages buffers, or restart with --debug-init")
                                          (nlinum                  . "gnu")
                                          (vlf                     . "melpa-pinned")
                                          (avy                     . "melpa-pinned")
+                                         (ace-window              . "melpa-pinned")
+                                         (highlight               . "melpa-pinned")
+                                         (eval-sexp-fu            . "melpa-pinned")
+                                         (modern-cpp-font-lock    . "melpa-pinned")
+                                         (default-text-scale      . "melpa-pinned")
+                                         (evil                    . "melpa-pinned")
+                                         (all-the-icons           . "melpa-pinned")
+                                         (groovy-mode             . "melpa-pinned")
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
@@ -262,6 +285,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
 (require 'init-font-lock)       ; enables/disables font-lock globally.
 (require 'init-linum)           ; line numbers
+(when exordium-smooth-scroll    ; smooth scroll
+  (require 'init-smooth-scroll)
+  (smooth-scroll-mode 1))
 
 (update-progress-bar)
 
@@ -270,8 +296,10 @@ the .elc exists. Also discard .elc without corresponding .el"
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
 (require 'init-highlight)       ; highlighting current line, symbol under point
-(when exordium-auto-complete
-  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+(cond ((eq exordium-complete-mode :auto-complete)
+       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+      ((eq exordium-complete-mode :company)
+       (require 'init-company))) ; company mode (rtags are on by default)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 (require 'init-helm)            ; setup helm
@@ -306,10 +334,14 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-yasnippet
   (require 'init-yasnippet))
 (require 'init-gdb)
+
+;;; RTags
 (require 'init-rtags)
 (when exordium-rtags-auto-complete
   (rtags-auto-complete))
 (require 'init-rtags-helm)
+(require 'init-rtags-cmake)
+(require 'init-rtags-cdb)
 
 (update-progress-bar)
 
@@ -332,6 +364,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 (when exordium-clojure
   (require 'init-clojure))
 
+;;; include-what-you-use
+(require 'init-iwyu)
+
 (update-progress-bar)
 
 ;;; Local extensions
@@ -342,6 +377,7 @@ the .elc exists. Also discard .elc without corresponding .el"
   (require 'init-powerline))
 
 (setq default-buffer-file-coding-system 'utf-8-unix)
+(update-progress-bar)
 
 ;;; Greetings
 (setq initial-scratch-message

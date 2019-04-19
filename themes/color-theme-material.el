@@ -72,7 +72,7 @@ names to which it refers are bound."
      (bold-italic ((t (:slant italic :weight bold))))
      (underline ((t (:underline t))))
      (italic ((t (:slant italic))))
-     (shadow ((t (:background ,current-line))))
+     (shadow ((t (:background ,far-background))))
      (success ((t (:foreground ,light-green-500))))
      (error ((t (:foreground ,red))))
      (warning ((t (:foreground ,orange))))
@@ -95,7 +95,6 @@ names to which it refers are bound."
      (font-lock-constant-face ((t (:foreground ,light-green-500))))
      (font-lock-doc-face ((t (:foreground ,comment
                                    :slant ,(if exordium-material-italics 'italic 'normal)))))
-     (font-lock-doc-string-face ((t (:foreground ,comment))))
      (font-lock-function-name-face ((t (:foreground ,light-blue-100))))
      (font-lock-keyword-face ((t (:foreground ,yellow))))
      (font-lock-negation-char-face ((t (:foreground ,blue))))
@@ -142,6 +141,7 @@ names to which it refers are bound."
      (mode-line-emphasis ((t (:foreground ,foreground :slant italic))))
      (mode-line-highlight ((t (:foreground ,purple :box nil))))
      (minibuffer-prompt ((t (:foreground ,blue))))
+     (which-func ((t (:foreground ,background :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,black))))
@@ -162,7 +162,7 @@ names to which it refers are bound."
      ;; Search
      (match ((t (:foreground ,blue :background ,background :inverse-video t))))
      (isearch ((t (:foreground ,yellow :background ,background :inverse-video t :inherit nil))))
-     (isearch-lazy-highlight-face
+     (lazy-highlight
       ((t (:foreground ,light-blue-200 :background ,background :inverse-video t))))
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))
@@ -221,6 +221,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,light-green-500 :foreground ,background)
                                   `(:underline (:color ,light-green-500 :style wave))))))
+     (rtags-skippedline ((t :background ,far-background)))
 
      ;; Magit
      (magit-branch ((t (:foreground ,light-green-500))))
@@ -286,13 +287,13 @@ names to which it refers are bound."
      (org-date ((t (:foreground ,teal-200 :underline t))))
      (org-document-info ((t
                           ,(append `(:foreground ,light-blue-200)
-                                   (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-document-info-keyword ((t
                                   ,(append `(:foreground ,light-green-500)
-                                           (if exordium-theme-use-big-org-fonts '(:height 1.35) nil)))))
+                                           (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,orange)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.35))))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4))))))
      (org-done ((t (:foreground ,light-green-500 :bold t :background ,green-900))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,light-blue-200))))
@@ -315,14 +316,14 @@ names to which it refers are bound."
                                       :foreground ,blue-gray-50
                                       :background ,blue-gray-700
                                       :weight bold)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.3) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-3) nil)))))
      (org-level-2 ((t ,(append `(:inherit nil
                                       :foreground ,light-blue-50
                                       :background "#21575b"
                                       :overline ,light-blue-50)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.2) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2) nil)))))
      (org-level-3 ((t ,(append `(:inherit nil :foreground ,green-200)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.1) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-1) nil)))))
      (org-level-4 ((t (:inherit nil :foreground ,orange-200))))
      (org-level-5 ((t (:inherit nil :foreground ,light-blue-100))))
      (org-level-6 ((t (:inherit nil :foreground ,cyan-a100))))
@@ -353,16 +354,26 @@ names to which it refers are bound."
      (term-color-white ((t (:foreground ,background :background ,background))))
 
      ;; Markdown
-     (markdown-url-face ((t (:inherit link))))
+     (markdown-url-face ((t (:inherit link :foreground ,blue-gray-100))))
      (markdown-link-face ((t (:foreground ,blue :underline t))))
+     (markdown-header-face-1 ((t
+                               ,(append `(:weight bold :foreground ,light-blue-100)
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
+     (markdown-header-face-2 ((t
+                               ,(append `(:weight bold :foreground ,light-blue-100)
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
 
      ;; js2-mode
-     (js2-warning ((t (:underline ,orange))))
-     (js2-error ((t (:foreground nil :underline ,red))))
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
      (js2-external-variable ((t (:foreground ,purple))))
      (js2-function-param ((t (:foreground ,blue))))
      (js2-instance-member ((t (:foreground ,blue))))
      (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
 
      ;; nxml
      (nxml-name-face ((t (:foreground unspecified :inherit font-lock-constant-face))))
@@ -408,6 +419,9 @@ names to which it refers are bound."
      (paren-face-match ((t (:foreground nil :background nil :inherit show-paren-match))))
      (paren-face-mismatch ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
      (paren-face-no-match ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
+
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,background))))
+     (eval-sexp-fu-flash-error ((t (:background ,deep-orange-200 :foreground ,background))))
 
      ;; Rainbow-delimiters
      (rainbow-delimiters-depth-1-face ((t (:foreground ,foreground))))

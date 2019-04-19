@@ -81,7 +81,6 @@ names to which it refers are bound."
      (font-lock-variable-name-face ((t (:foreground ,blue))))
      (font-lock-warning-face ((t (:foreground ,red :weight bold))))
      (font-lock-doc-face ((t (:foreground ,base01 :slant italic))))
-     (font-lock-doc-string-face ((t (:foreground ,base01 :slant italic))))
      (font-lock-color-constant-face ((t (:foreground ,green))))
      (font-lock-comment-delimiter-face ((t (:foreground ,base01 :slant italic))))
      (font-lock-preprocessor-face ((t (:foreground ,orange))))
@@ -111,6 +110,7 @@ names to which it refers are bound."
      (minibuffer-prompt ((t (:weight bold :foreground ,cyan))))
      (mode-line ((t (:foreground ,base1 :background ,base01 :box nil))))
      (mode-line-inactive ((t (:foreground ,base00 :background ,base02 :box nil))))
+     (which-func ((t (:foreground ,back :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,base01 :foreground ,back))))
@@ -174,6 +174,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,green :foreground ,back)
                                   `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,base01))))
 
      ;; Org
      (org-hide ((t (:foreground ,base03))))
@@ -189,10 +190,10 @@ names to which it refers are bound."
      (org-delegated-kwd-face ((t (:foreground ,cyan :background ,base03))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,cyan)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-1 ((t
                     ,(append `(:foreground ,base0)
-                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
 
      ;; outline
      (outline-1 ((t (:foreground ,blue))))
@@ -207,6 +208,18 @@ names to which it refers are bound."
      ;; Flymake
      (flymake-errline ((t (:weight bold :foreground ,red :background ,back))))
      (flymake-warnline ((t (:weight bold :foreground ,orange :background ,back))))
+
+     ;; js2-mode
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
+     (js2-external-variable ((t (:foreground ,violet))))
+     (js2-function-param ((t (:foreground ,blue))))
+     (js2-instance-member ((t (:foreground ,blue))))
+     (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
 
      ;; git-gutter
      (git-gutter:modified ((t (:foreground ,violet))))
@@ -284,6 +297,10 @@ names to which it refers are bound."
      (whitespace-trailing ((t (:weight bold :foreground ,red :background ,base02))))
      (whitespace-highlight-face ((t (:foreground ,red :background ,blue))))
      (whitespace-line ((t (:foreground ,magenta :background ,base03))))
+
+     ;; Emacs Lisp
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,back))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,back))))
      )))
 
 (defmacro define-solarized-theme (mode)

@@ -5,10 +5,24 @@
 ;;; -------------- -------------------------------------------------------
 ;;; M-C-g          `rtags-helm-select-taglist' = select a symbol in the
 ;;;                current file using Helm.
+;;; C-c r r        `helm-flycheck' show rtags errors in helm buffer
 ;;; -------------- -------------------------------------------------------
 
 (require 'rtags)
 (require 'helm)
+(require 'helm-rtags)
+(require 'init-prefs)
+
+(when (eq exordium-rtags-syntax-checker :flycheck)
+  (require 'helm-flycheck)
+  (define-key c-mode-base-map
+    (kbd "C-c r r")
+    (lambda ()
+      (interactive)
+      (unless flycheck-mode
+        (flycheck-mode)
+        (diminish 'flycheck-mode))
+      (helm-flycheck))))
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"
@@ -19,6 +33,11 @@
   "Whether `rtags-helm-select-taglist' shows enums"
   :group 'rtags
   :type 'boolean)
+
+(when (or exordium-helm-everywhere exordium-rtags-helm-everywhere)
+  (setq rtags-helm-show-variables t)
+  (setq rtags-helm-show-enums t)
+  (setq rtags-use-helm t))
 
 (defun rtags-helm-sort-list (pairs)
   (sort pairs #'(lambda (p1 p2) (< (cdr p1) (cdr p2)))))

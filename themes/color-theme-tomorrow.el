@@ -138,7 +138,7 @@ names to which it refers are bound."
      (bold-italic ((t (:slant italic :weight bold))))
      (underline ((t (:underline t))))
      (italic ((t (:slant italic))))
-     (shadow ((t (:background ,current-line))))
+     (shadow ((t (:background ,black))))
      (success ((t (:foreground ,green))))
      (error ((t (:foreground ,red))))
      (warning ((t (:foreground ,orange))))
@@ -158,7 +158,6 @@ names to which it refers are bound."
      (font-lock-comment-face ((t (:foreground ,comment :slant italic))))
      (font-lock-constant-face ((t (:foreground ,aqua))))
      (font-lock-doc-face ((t (:foreground ,comment :slant italic))))
-     (font-lock-doc-string-face ((t (:foreground ,yellow))))
      (font-lock-function-name-face ((t (:foreground ,blue :weight bold))))
      (font-lock-keyword-face ((t (:foreground ,purple :weight bold))))
      (font-lock-negation-char-face ((t (:foreground ,green))))
@@ -177,6 +176,7 @@ names to which it refers are bound."
      (linum ((t (:background ,current-line :foreground ,foreground
                       :height 1.0
                       :inherit nil :weight normal :slant normal :underline nil))))
+     (linum-highlight-face ((t (:background ,foreground :foreground ,current-line))))
 
      (hl-line ((t (:background ,current-line :inherit nil))))
      (highlight ((t (:background ,green :foreground ,background)))) ;+:foreground
@@ -214,6 +214,7 @@ names to which it refers are bound."
      (mode-line-emphasis ((t (:foreground ,foreground :slant italic))))
      (mode-line-highlight ((t (:foreground ,purple :box nil :weight bold))))
      (minibuffer-prompt ((t (:foreground ,blue))))
+     (which-func ((t (:foreground ,background :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,selection))))
@@ -229,7 +230,7 @@ names to which it refers are bound."
      ;; Search
      (match ((t (:foreground ,blue :background ,background :inverse-video t))))
      (isearch ((t (:foreground ,yellow :background ,background :inverse-video t))))
-     (isearch-lazy-highlight-face
+     (lazy-highlight
       ((t (:foreground ,aqua :background ,background :inverse-video t))))
      (isearch-fail
       ((t (:background ,background :inherit font-lock-warning-face :inverse-video t))))
@@ -249,13 +250,16 @@ names to which it refers are bound."
 
      ;; Helm
      (helm-header ((t (:foreground ,green :background ,background
-                            :underline nil :box nil))))
+                       :underline nil :box nil))))
      (helm-source-header ((t (:foreground ,background :background ,purple
-                                   :underline nil :weight bold :box nil))))
+                              :underline nil :weight bold :box nil))))
      (helm-selection ((t (:background ,selection :underline nil))))
      (helm-selection-line ((t (:background ,selection))))
      (helm-visible-mark ((t (:foreground ,background :background ,yellow))))
-     (helm-candidate-number ((t (:foreground ,green :background ,selection))))
+     (helm-ff-directory ((t (:foreground ,background :background ,green))))
+     (helm-ff-executable ((t (:foreground ,red :background ,background))))
+     (helm-ff-symlink ((t (:foreground ,yellow :background ,background))))
+     (helm-ff-executable ((t (:foreground ,foreground :background ,background))))
      (helm-swoop-target-line-face ((t (:foreground ,background :background ,yellow))))
      (helm-swoop-target-word-face ((t (:foreground ,background :background ,aqua))))
 
@@ -266,21 +270,22 @@ names to which it refers are bound."
      ;; Compilation (most faces politely inherit from 'success, 'error, 'warning etc.)
      (compilation-column-number ((t (:foreground ,yellow))))
      (compilation-line-number ((t (:foreground ,yellow))))
-     (compilation-message-face ((t (:foreground ,blue))))
+     (compilation-message-face ((t (:foreground ,blue)))) ; TODO: does not exist
      (compilation-mode-line-exit ((t (:foreground ,green))))
      (compilation-mode-line-fail ((t (:foreground ,red))))
      (compilation-mode-line-run ((t (:foreground ,blue))))
 
      ;; Rtags
      (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,red :foreground ,background)
-                                `(:underline (:color ,red :style wave))))))
+                             `(:background ,red :foreground ,background)
+                           `(:underline (:color ,red :style wave))))))
      (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,orange :foreground ,background)
-                                 `(:underline (:color ,orange :style wave))))))
+                              `(:background ,orange :foreground ,background)
+                            `(:underline (:color ,orange :style wave))))))
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,green :foreground ,background)
-                                  `(:underline (:color ,green :style wave))))))
+                               `(:background ,green :foreground ,background)
+                             `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,black))))
 
      ;; Magit
      (magit-branch ((t (:foreground ,green))))
@@ -300,6 +305,10 @@ names to which it refers are bound."
      (magit-log-head-label-remote ((t (:foreground ,green))))
      (magit-log-head-label-tags ((t (:foreground ,aqua :box nil :weight bold))))
      (magit-section-title ((t (:inherit diff-hunk-header))))
+     (magit-blame-summary ((t :background ,green :foreground ,background)))
+     (magit-blame-date ((t :background ,green :foreground ,background)))
+     (magit-blame-hash ((t :background ,green :foreground ,background)))
+     (magit-blame-heading ((t :background ,green :foreground ,background)))
 
      ;; Git gutter fringe
      (git-gutter-fr:added ((t (:foreground ,green :weight bold))))
@@ -329,7 +338,7 @@ names to which it refers are bound."
      ;; Org
      (org-level-1 ((t
                     ,(append `(:foreground ,foreground)
-                             (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                             (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
      (org-level-4 ((t (:foreground ,comment))))
@@ -346,7 +355,7 @@ names to which it refers are bound."
      (org-document-info-keyword ((t (:foreground ,green))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,green)
-                                    (if exordium-theme-use-big-org-fonts '(:height 1.44) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-todo ((t (:foreground ,red :weight bold :box nil))))
      (org-done ((t (:foreground ,green :weight bold :box nil))))
      (org-checkbox ((t (:foreground ,yellow :weight bold))))
@@ -364,9 +373,25 @@ names to which it refers are bound."
      (org-warning ((t (:weight bold :foreground ,red))))
 
      ;; Markdown
-     (markdown-url-face ((t (:inherit link))))
-     (markdown-link-face ((t (:foreground ,blue :underline t))))
-     ;;(markdown-header-face-1 ((, class (:foreground ,blue :height 1.44))))
+     (markdown-url-face ((t (:inherit link :foreground ,yellow :weight normal))))
+     (markdown-link-face ((t (:foreground ,orange :underline t :weight bold))))
+     (markdown-header-face-1 ((t
+                               ,(append `(:weight bold :foreground ,blue)
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
+     (markdown-header-face-2 ((t
+                               ,(append `(:weight bold :foreground ,blue)
+                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
+     (markdown-header-face-3 ((t (:foreground ,blue :weight bold))))
+     (markdown-header-face-4 ((t (:foreground ,blue :weight normal))))
+     (markdown-header-face-5 ((t (:foreground ,blue :weight bold :slant italic))))
+     (markdown-header-delimiter-face ((t (:foreground ,blue))))
+     (markdown-bold-face ((t (:foreground ,green :weight bold))))
+     (markdown-italic-face ((t (:foreground ,foreground :weight normal :slant italic))))
+     (markdown-list-face ((t (:foreground ,blue :weight normal))))
+     (markdown-inline-code-face ((t (:foreground ,aqua :weight normal))))
+     (markdown-markup-face ((t (:foreground ,blue))))
+     (markdown-pre-face ((t (:foreground ,aqua))))
+     (markdown-gfm-checkbox-face ((t (:foreground ,red))))
 
      ;; js2-mode
      (js2-warning ((t (:underline (:color ,orange :style wave)))))
@@ -375,6 +400,10 @@ names to which it refers are bound."
      (js2-function-param ((t (:foreground ,blue))))
      (js2-instance-member ((t (:foreground ,blue))))
      (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
 
      ;; nxml
      (nxml-name-face
@@ -387,7 +416,7 @@ names to which it refers are bound."
       ((t (:foreground unspecified :inherit font-lock-keyword-face))))
      (nxml-delimited-data-face
       ((t (:foreground unspecified :inherit font-lock-string-face))))
-     (rng-error-face ((t (:underline ,red))))
+     (rng-error-face ((t (:underline ,red))))  ; TODO: does not exist
 
      ;;; Deft
      (deft-title-face ((t (:foreground ,green :weight bold))))
@@ -398,6 +427,9 @@ names to which it refers are bound."
      (undo-tree-visualizer-current-face ((t (:foreground ,green :weight bold))))
      (undo-tree-visualizer-active-branch-face ((t (:foreground ,red))))
      (undo-tree-visualizer-register-face ((t (:foreground ,yellow))))
+
+     ;; treemacs
+     (treemacs-git-modified-face ((t (:foreground ,orange))))
 
      ;; Trailing whitespaces
      (trailing-whitespace ((t (:background ,red :foreground ,yellow))))
@@ -423,6 +455,8 @@ names to which it refers are bound."
       ((t (:foreground nil :background nil :inherit show-paren-mismatch))))
 
      ;; TODO: Lisp programming faces
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,background))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,background))))
 
      ;; Clojure
      (clojure-test-failure-face ((t (:background nil :inherit flymake-warnline))))

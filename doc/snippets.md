@@ -7,19 +7,19 @@ Usage: type one of the following trigger keywords, and type <kbd>C-c y</kbd>.
 Keyword         | Description
 ----------------|-----------------------------------------------------------
 assert          | `BSLS_ASSERT_OPT`
-cat             | `BAEL_LOG_SET_CATEGORY`
-debug           | `BAEL_LOG_DEBUG`
-error           | `BAEL_LOG_ERROR`
-info            | `BAEL_LOG_INFO`
-trace           | `BAEL_LOG_TRACE`
-warn            | `BAEL_LOG_WARN`
+cat             | `BALL_LOG_SET_CATEGORY`
+debug           | `BALL_LOG_DEBUG`
+error           | `BALL_LOG_ERROR`
+info            | `BALL_LOG_INFO`
+trace           | `BALL_LOG_TRACE`
+warn            | `BALL_LOG_WARN`
 bind            | `bdef_BindUtil::bind`
 cerr            | `std::cerr`
 cout            | `std::cout`
 main            | main function
-now             | `bdetu_SystemTime::now`
+now             | `bslmt::SystemTime::nowMonotonicClock`
 return          | return statement
-sleep           | `bcemt_ThreadUtil::sleep`
+sleep           | `bslmt::ThreadUtil::sleep`
 lock            | lock guard
 unlock          | release a lock guard
 

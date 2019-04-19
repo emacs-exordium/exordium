@@ -34,7 +34,7 @@
 (diminish 'yas-minor-mode)
 
 ;;; Variables for file templates
-(defvar *bde-component-author* "Philippe Grenet (pgrenet)"
+(defvar *bde-component-author* exordium-yasnippet-author
   "Default component author string for BDE headers")
 
 (provide 'init-yasnippet)

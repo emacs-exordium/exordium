@@ -37,6 +37,8 @@
 ;;;                directly to the word. Note that the codes it generates are
 ;;;                optimized for touch-type.
 ;;;
+;;; M-Q            `unfill-paragraph': the opposite of M-q.
+;;;
 ;;; Functions:
 ;;;
 ;;; `kill-all-buffers' does what you expect.
@@ -122,6 +124,7 @@
 (require 'goto-chg)
 (define-key global-map [(control x)(control \\)] 'goto-last-change)
 (define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
+(define-key global-map [(control x)(control /)] 'goto-last-change-reverse)
 
 
 ;;; Insert date/time
@@ -180,7 +183,7 @@ Uses `current-date-time-format' for the formatting the date/time."
             (buffer-undo-list t))
         ;; Insert the line arg times
         (dotimes (i (if (> arg 0) arg 1))
-          (unless (pg/string-ends-with line "\n")
+          (unless (string-suffix-p "\n" line)
             (newline))
           (insert line)))
       ;; Create the undo information
@@ -286,7 +289,7 @@ With argument, do this that many times."
 ;;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
 
 (when (and exordium-fci-mode
-           exordium-auto-complete
+           (eq exordium-complete-mode :auto-complete)
            exordium-fci-fix-autocomplete-bug)
   (require 'fill-column-indicator)
   (require 'popup)
@@ -349,7 +352,6 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
       (message "Not found"))))
 
 
-
 ;;; Buffers
 
 (defun kill-all-buffers ()
@@ -366,6 +368,19 @@ saved. This is useful for editing snippets of text in a temporary
 buffer"
   (interactive)
   (switch-to-buffer (make-temp-name "scratch-")))
+
+
+;;; Miscellaneous
+
+(defun unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
+
+(define-key global-map "\M-Q" 'unfill-paragraph)
 
 
 ;;; Config management
@@ -414,10 +429,11 @@ afterwards."
                      exordium-local-dir))
     (when (file-directory-p dir)
       (dolist (el (directory-files dir t "\\.el$"))
-        (let ((elc (byte-compile-dest-file el)))
-          (when (file-exists-p elc)
-            (delete-file elc))
-          (byte-compile-file el))))))
+        (unless (string-suffix-p ".t.el" el)
+          (let ((elc (byte-compile-dest-file el)))
+            (when (file-exists-p elc)
+              (delete-file elc))
+            (byte-compile-file el)))))))
 
 (defun link-local-config (local-dir)
   (interactive "Dlocal directory to symlink files from")
@@ -430,6 +446,30 @@ afterwards."
   (make-symbolic-link (concat local-dir "before-init.el")
                       (locate-user-emacs-file "before-init.el")
                       't))
+
+(defun config-status ()
+  "Check if the configuration is up to date and display a
+  message"
+  (interactive)
+  (cl-flet ((sh (cmd)
+                ;; Execute cmd in dir and return output
+              (message "Running: %s" cmd)
+              (shell-command-to-string (concat "cd " user-emacs-directory " && " cmd))))
+    (if (> (length (sh "git diff --shortstat")) 0)
+        (message (propertize "Exordium repo is not clean" 'face 'error))
+      (let ((st (progn
+                  (sh "git remote update")
+                  (sh "git status -uno"))))
+        (cond ((string-match ".+\n.+ behind 'origin/master' by \\([0-9]+\\) commit" st)
+               (message (propertize
+                         (format "Exordium is %s commit(s) behind" (match-string 1 st))
+                         'face 'error)))
+               ((string-match ".+\nYour branch is up-to-date" st)
+                (message (propertize "Exordium is up-to-date"
+                                     'face 'success)))
+               (t
+                (message "Can't tell (are you on the master branch?)")))))))
+
 
 
 (provide 'init-util)

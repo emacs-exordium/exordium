@@ -7,17 +7,17 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-c =          `bde-insert-define-class-header'
 ;;; C-c -          `bde-insert-declare-class-header'
-;;; C->            `bde-aligh-right-after-point': align text after point
+;;; C->            `bde-align-right': align text after point
 ;;;                to the right. If line ends with a comment such as // RETURN
 ;;;                or // LOCK, align the comment.
 ;;; C-c i          `bde-insert-redundant-include-guard'
-;;; C-c a          `bde-align-functions-arguments'
-;;; C-c f          `bde-align-funcall'
+;;; C-c a          `bde-align-fundecl': align arguments in function declaration
+;;; C-c f          `bde-align-funcall': align arguments in function call
 ;;; C-c m          `bde-align-class-members'
 ;;; (no key)       `bde-repunctuate'
 ;;; -------------- -------------------------------------------------------
 ;;;
-;;; `bde-aligh-right-after-point':
+;;; `bde-align-right':
 ;;; Before (cursor anywhere after semi-colon):
 ;;;     return x; // RETURN
 ;;; After:
@@ -32,8 +32,10 @@
 ;;;     #include <bsl_iostream.h>
 ;;;     #endif
 ;;;
-;;; `bde-align-functions-arguments': align function signature
-;;; Before (cursor must be inside the argument list):
+;;; `bde-align-fundecl': align function signature
+;;; Before (cursor must be somewhere in the function declaration, but it
+;;;         sometimes doesn't work well if cursor is after the parenthesis
+;;;         closing the argument list):
 ;;;    Customer(const BloombergLP::bslstl::StringRef& firstName,
 ;;;             const BloombergLP::bslstl::StringRef& lastName,
 ;;;             const bsl::vector<int>& accounts,
@@ -45,7 +47,6 @@
 ;;;             const bsl::vector<int>&                accounts,
 ;;;             int                                    id,
 ;;;             BloombergLP::bslma::Allocator         *basicAllocator = 0);
-;;; TODO: apparently default values should be aligned too.
 ;;;
 ;;; `bde-align-funcall': align function call arguments
 ;;; Before (cursor must be inside the argument list):
@@ -81,24 +82,39 @@
 (require 'cc-defs)
 (require 'cc-vars)
 (require 'cc-mode)
+(require 'subr-x)
 (require 'init-lib)
 
 
-;;; Utility functions
+;;; Utility functions and constants
+
+(defconst exordium-bde-search-max-bound (* 80 25))
+;;   "Maximum point to search when searching for some regexp/string. Often
+;; the search is bound to the same line, however sometimes functionality needs to
+;; account for multi-line definitions. In here we assume 80 (columns) * 25 (lines)
+;; is enough for everyone.")
 
 (defun bde-component-name ()
   "Return the name of the component for the current buffer"
   (let ((name (file-name-sans-extension
                (file-name-nondirectory (buffer-file-name)))))
-    (if (pg/string-ends-with name ".t")
-        (substring name 0 (- (length name) 2))
-      name)))
+    (cond ((string-match-p "\\.[gipu]\\.t$" name)
+           (substring name 0 (- (length name) 4)))
+          ((string-suffix-p ".t" name)
+           (substring name 0 (- (length name) 2)))
+          (t name))))
 
 (defun bde-package-name ()
   "Return the name of the package for the current buffer"
   (interactive)
   (let ((component-name (bde-component-name)))
-    (substring component-name 0 (string-match "_" component-name))))
+    (substring
+     component-name
+     0
+     (string-match "_" component-name
+                   (if (string-prefix-p "s_" component-name)
+                       2
+                     0)))))
 
 
 ;;; Indentation
@@ -123,6 +139,20 @@
 ;;; character position in the buffer for each of them. More details in M-x
 ;;; info, then CC mode, then Interactive Customization.
 ;;; See cc-align.el for examples of line-up functions.
+
+(eval-when-compile (defvar c-syntactic-context))
+
+(defun bde-is-member-function-declaration ()
+  "Return whether the line ending resembles the member function declaration."
+  (re-search-forward
+   (concat ") *\\(const\\)?"
+           " *\\(noexcept\\|BSLS_CPP11_NOEXCEPT\\)?"
+           " *\\(\\(= *\\(0\\|de\\(fault\\|lete\\)\\)\\)"
+           "\\|BSLS_CPP11_DE\\(FAULT\\|LETED\\)"
+           "\\|override\\|BSLS_CPP11_OVERRIDE\\)?"
+           " *\\(&\\(&\\)?\\)?"
+           " *; *$")
+           (point-at-eol) t))
 
 (defun bde-comment-offset (element)
   "Custom line-up function for BDE comments.
@@ -154,8 +184,7 @@ current cursor position, if the cursor is within a class definition:
                  ;; looking at a comment line
                  (setq comment-column (- (current-column) 2))
                  (forward-line -1))
-                ((re-search-forward ") *\\(const\\)? *\\(= *0\\)? *; *$"
-                                    (point-at-eol) t)
+                ((bde-is-member-function-declaration)
                  ;; looking at end of method declaration
                  (return '+))
                 ((re-search-forward "} *$" (point-at-eol) t)
@@ -300,13 +329,23 @@ switch(val) {
          (setq erase-hint nil))))))
 
 (defun bde-guess-class-name ()
-  "Return the name of the class or struct that is defined
-immediately after the cursor (skipping any previous spaces and
-newlines). Return nil if there isn't any struct or class defined."
+  "Return the name of the class or struct that is defined immediately after the
+cursor (skipping any previous templates, spaces, and newlines). Return nil if
+there isn't any struct or class defined."
   (save-excursion
     (beginning-of-line)
     (when (forward-word)
       (backward-word)
+      (when (re-search-forward "^template *<" (point-at-eol) t)
+        (let ((level 1)
+              (bound (+ (point) exordium-bde-search-max-bound)))
+          (while (> level 0)
+            (if (re-search-forward "\\(<\\|>\\)" bound t)
+                (if (string= (match-string 1) "<")
+                    (incf level)
+                  (decf level))
+              (setq level 0))))
+        (forward-line))
       (when (re-search-forward "^\\(class\\|struct\\) " (point-at-eol) t)
         (concat (match-string 1) " " (current-word))))))
 
@@ -344,7 +383,7 @@ backspace, delete, left or right."
 
 ;;; BDE's right style comments such as // RETURN or // LOCK
 
-(defun bde-aligh-right ()
+(defun bde-align-right ()
   "Set the right amount of spaces around the point so the text
   after point is right-aligned (for things such as // RETURN). It
   works even if point is in a C++ comment."
@@ -369,7 +408,7 @@ backspace, delete, left or right."
   (move-end-of-line nil))
 
 ;;; Ctrl-> to right-aligh the text after point
-(global-set-key [(control >)] 'bde-aligh-right)
+(global-set-key [(control >)] 'bde-align-right)
 
 
 ;;; Insert redundant include guards
@@ -379,10 +418,8 @@ backspace, delete, left or right."
 guard around it"
   (interactive)
   (let ((current-line (thing-at-point 'line)))
-    (cond ((string-match "^#include <[_\.a-z0-9]+>$" current-line)
-           (let ((file-name (substring current-line 10 -2)))
-             (when (pg/string-ends-with file-name ".h")
-               (setq file-name (substring file-name 0 -2)))
+    (cond ((string-match "^#include <\\([_\.a-z0-9]+\\)\.h>$" current-line)
+           (let ((file-name (match-string 1 current-line)))
              (save-excursion
                (beginning-of-line)
                (insert "#ifndef INCLUDED_" (upcase file-name) "\n")
@@ -407,8 +444,8 @@ guard around it"
             (goto-char (point-min))
             (let ((more-lines t))
               (while more-lines
-                (when (or (pg/string-starts-with (thing-at-point 'line) "#ifndef")
-                          (pg/string-starts-with (thing-at-point 'line) "#endif"))
+                (when (or (string-prefix-p "#ifndef" (thing-at-point 'line))
+                          (string-prefix-p "#endif" (thing-at-point 'line)))
                   (kill-whole-line))
                 (setq more-lines (= 0 (forward-line 1)))))
             ;; Delete all blank lines
@@ -427,6 +464,7 @@ guard around it"
                 (setq more-lines (= 0 (forward-line 1)))))
             (buffer-string))))
         (t
+         ;; No region: just insert one guard for the current line
          (bde-insert-redundant-include-guard))))
 
 (define-key c-mode-base-map [(control c)(i)] 'bde-insert-redundant-include-guard-region)
@@ -434,139 +472,326 @@ guard around it"
 
 ;;; Align stuff
 
-(defun bde-max-column-in-region ()
-  "Return the largest column in region"
-  (let ((m 0))
-    (while (< (point) (region-end))
+(defun bde-max-column-in-region (&optional from to)
+  "Return the largest column in region. When `from' ad `to' are specified they
+will be used instead of the currently selected region."
+  (when from
+    (goto-char from))
+  (let ((m 0)
+        (to (or to (region-end))))
+    (while (< (point) to)
       (end-of-line)
       (setq m (max m (current-column)))
       (forward-line))
     m))
 
+(defun exordium-bde-arglist-at-point--open-paren-position
+    (from &optional beginning-of-line)
+  "Return the position of the first function arguments list opening parenthesis
+after the specified `from'. When `beginning-of-line' is specified it starts
+search in the beginning of the line rather than from the `from' point.
+Return `nil' when no qualifying parenthesis has been found within the first
+80 (columns) * 25 (rows) characters."
+  (when from
+    (save-excursion
+      (if beginning-of-line
+          (move-beginning-of-line nil)
+        (goto-char from))
+      (let ((level 0)
+            (bound (+ (point) exordium-bde-search-max-bound)))
+        (catch 'pos
+          (while (re-search-forward (concat "\\(\\(<\\)\\|"  ;; 2: <
+                                            "\\(>\\)\\|"     ;; 3: >
+                                            "\\((\\)\\)")    ;; 4: (
+                                    bound t)
+            (cond ((match-string 2)
+                   (incf level))
+                  ((match-string 3)
+                   (decf level))
+                  ((and (eq level 0) (match-string 4))
+                   (throw 'pos (- (point) 1))))))))))
+
+(defun exordium-bde-arglist-at-point--close-paren-position (from)
+  "Return the position of the function argument list closing parenthesis. The
+search starts from the `from' position and ends when semicolon, `inline-open',
+`defun-open', `member-init-intro', or `noexcept' has been encountered.
+Return `nil' when no qualifying parenthesis has been found withing the first
+80 (columns) * 25 (lines) characters."
+  (when from
+    (save-excursion
+      (goto-char from)
+      (let ((any-of-is-car-of #'(lambda (any-of elem-list)
+                                  (cl-member (car elem-list) any-of)))
+            (bound (+ from exordium-bde-search-max-bound))
+            (candidate nil))
+        (catch 'pos
+          (while (re-search-forward (concat "\\(\\()\\)\\|"      ;; 2: )
+                                            "\\({\\|:\\)\\|"     ;; 3: { :
+                                            "\\(;\\|noexcept\\|" ;; 4: ; noexcept
+                                            "BSLS_CPP11_NOEXCEPT\\)\\)") ;; 4...
+                                    bound t)
+            (cond ((match-string 2)
+                   (setq candidate (point)))
+                  ((match-string 3)
+                   ;; TODO: `member-init-intro' is for initializer list. The
+                   ;; latter could be in `topmost-intro' but simple adding that
+                   ;; breaks more functionality. It would require some support
+                   ;; in `bde-align-funcdecl', i.e., to move initializer list
+                   ;; after the c-tor arguments, before aligning.
+                   (when (cl-member '(inline-open defun-open member-init-intro)
+                                    (c-guess-basic-syntax)
+                                    :test any-of-is-car-of)
+                     (throw 'pos candidate)))
+                  ((match-string 4)
+                   (throw 'pos candidate)))))))))
+
+(defun exordium-bde-bounds-of-arglist-at-point ()
+  "Return a `cons' with bounds of the of the argument list of the function at
+point. Opening and closing parenthesis are included. Return `nil' when no
+argument list has been found."
+  (let* ((basic-syntax (c-guess-basic-syntax))
+         (any-of-is-car-of #'(lambda (any-of elem-list)
+                               (cl-member (car elem-list) any-of)))
+         (start (or
+                 ;; most of the `arglist-*' syntactic elements have the buffer
+                 ;; location of opening parenthesis as the third (last) value
+                 (nth 2
+                      (car (cl-member '(arglist-intro
+                                        arglist-cont-nonempty
+                                        arglist-close)
+                                      basic-syntax
+                                      :test any-of-is-car-of)))
+                 ;; the `topmost-*' syntactic elements have only the location of
+                 ;; the previous syntax
+                 ;;
+                 ;; TODO: topmost is also a class, enum and probably couple more
+                 ;; things; need to filter them out
+                 (exordium-bde-arglist-at-point--open-paren-position
+                  (nth 1
+                       (car (cl-member '(topmost-intro
+                                         topmost-intro-cont)
+                                       basic-syntax
+                                       :test any-of-is-car-of)))
+                  t)
+                 ;; the `arglist-cont' has only the `arglist-intro' position
+                 ;; one extra jump is needed before an extraction
+                 (funcall #'(lambda (pos)
+                              (when pos
+                                (save-excursion
+                                  (goto-char pos)
+                                  (nth 2
+                                       (car (cl-member '(arglist-intro
+                                                         arglist-cont-nonempty
+                                                         arglist-close)
+                                                       (c-guess-basic-syntax)
+                                                       :test any-of-is-car-of))))))
+                          (nth 1
+                               (car (cl-member '(arglist-cont)
+                                               basic-syntax
+                                               :test any-of-is-car-of))))
+                 ;; the `func-decl-cont' syntactic elements have only the
+                 ;; location of the `topmost-intro' of the function at point
+                 (exordium-bde-arglist-at-point--open-paren-position
+                  (nth 1
+                       (car (cl-member '(func-decl-cont)
+                                       basic-syntax
+                                       :test any-of-is-car-of))))))
+         (end (exordium-bde-arglist-at-point--close-paren-position start)))
+    (if (and start end)
+        (cons start end)
+      nil)))
+
+(put 'arglist 'bounds-of-thing-at-point 'exordium-bde-bounds-of-arglist-at-point)
+
+(defun exordium-bde-parse-arglist--next-arg (arglist from to)
+  "Return the position of the next comma that separates arguments in arglist.
+When the next qualifying comma caonnot be found it return the specified `to'.
+It skips templates, function calls, and unified instantiations."
+  (let ((level 0)
+        (pos from))
+    (catch 'end-arg-pos
+      (while (< pos to)
+        (setq pos (string-match (concat "\\(\\(,\\)\\|"       ;; 2: ,
+                                        "\\(<\\|(\\|{\\)\\|"  ;; 3: <({
+                                        "\\(>\\|)\\|}\\)\\)") ;; 4: >)}
+                                arglist pos))
+        (if pos
+            (progn
+              (cond ((and (eq level 0) (match-string 2 arglist))
+                     (throw 'end-arg-pos pos))
+                    ((match-string 3 arglist)
+                     (incf level))
+                    ((match-string 4 arglist)
+                     (decf level)))
+              (setq pos (match-end 0)))
+          (throw 'end-arg-pos to))))))
+
+(defun exordium-bde-split-arglist (arglist)
+  "Retrun a list containing arguments from the specified `arglist'. The
+opening and closing parenthesis are stripped from the `arglist' before
+processing. Return `nil' when there's no arguments."
+  (when arglist
+    (let* ((arglist (substring arglist
+                               (if (string-prefix-p "(" arglist)
+                                   1 0)
+                               (if (string-suffix-p ")" arglist)
+                                   -1 nil)))
+           (arglistlen (length arglist))
+           (args nil)
+           (prev 0)
+           (pos 0))
+      (while (and pos
+                  (< pos arglistlen))
+        (setq pos (exordium-bde-parse-arglist--next-arg arglist prev arglistlen))
+        (setq args (append args (list (string-trim (substring arglist prev pos)))))
+        (setq prev (if pos
+                       (+ pos 1)
+                     arglistlen)))
+      args)))
+
 ;;; Align arguments in a function declaration
 
 (defun bde-parse-argument (argument)
-  "Parse the argument line (which may include the external
-  parentheses, but should not include comas), and return a list of:
+  "Parse the argument line, and return a list of:
   - the type expression which may be empty,
-  - the name of the variable with any * or ** concatenated,
-  - the number of * (0, 1 or 2)
+  - the name of the variable with any *'s concatenated,
+  - the number of *'s (0, 1, ...)
   - the default value expression or nil.
-  For example 'int* p = 0' will return ('int' '*p' '= 0').
+  For example 'int* p = 0' will return ('int' '*p' 1 '= 0').
   All these strings are trimmed."
-  (when (pg/string-starts-with argument "(")
-    (setq argument (substring argument 1)))
-  (when (pg/string-ends-with argument ")")
-    (setq argument (substring argument 0 (1- (length argument)))))
-  (let* ((assign-pos    (string-match "=" argument))
+  (let* ((assign-pos    (when (string-match "[^=<>]=[^=]" argument)
+                          (+ (match-beginning 0) 1)))
          (assign        (when assign-pos
-                          (pg/string-trim (substring argument assign-pos))))
+                          (string-trim (substring argument assign-pos))))
          (before-assign (if assign-pos
                             (substring argument 0 assign-pos)
                           argument))
-         (var-pos       (or (string-match "[_a-z]+[0-9]*$"
-                                          (pg/string-trim-end before-assign))
+         (var-pos       (or (string-match "[_a-zA-Z][_a-zA-Z0-9]*$"
+                                          (string-trim-right before-assign))
                             0))
-         (var           (pg/string-trim (substring before-assign var-pos)))
+         (var           (string-trim (substring before-assign var-pos)))
          (before-var    (substring argument 0 var-pos))
-         (star-pos      (string-match "\\*[\\s-]*" before-var))
-         (star2-pos     (string-match "\\*\\*[\\s-]*" before-var))
-         (type          (pg/string-trim
-                         (substring before-var 0 (or star-pos var-pos)))))
-    ;; Remove possible spaces between type and &:
-    (when (string-match "\\(\\.*\\)[[:blank:]]+&" type)
-      (let ((ampersand (match-string 0 type)))
-        (when ampersand
-          (setq type (concat
-                      (substring type 0 (- (length type) (length ampersand)))
-                      "&")))))
+         (star-pos      (string-match "\\(\\*+\\)\\(\\s-\\)*$" before-var))
+         (stars         (or
+                         (when star-pos
+                           (- (match-end 1) (match-beginning 1)))
+                         0))
+         (type          (string-trim (substring before-var 0 (or star-pos var-pos)))))
+    ;; Remove possible spaces between type and & or &&:
+    (let ((pos 0))
+      (while (and (< pos (length type))
+                  (string-match
+                   "\\([[:blank:]]+\\)&\\{1,2\\}[[:blank:]]*\\.\\{0,3\\}"
+                   type
+                   pos))
+        (setq type (concat (substring type 0 (match-beginning 1))
+                           (substring type (match-end 1)))
+              pos (match-end 1))))
+    ;; TODO: Clean up type and assign: ensure comma-space, space-star,
+    ;; and ref-space. N.B., it's for now we only add ref to a type but not
+    ;; ensure it's followed by space
     (list type
-          (cond (star2-pos (concat "**" var))
-                (star-pos  (concat "*" var))
-                (t         var))
-          (cond (star2-pos 2)
-                (star-pos  1)
-                (t         0))
+          (concat (make-string stars ?*) var)
+          stars
           assign)))
 
-(defun bde-align-functions-arguments ()
+(defun bde-align-fundecl ()
   "Assuming the cursor is within the argument list of a function
 declaration or definition, align the type and variable names
 according to the BDE style."
   (interactive)
   ;; Get a list of the arguments. Note that the external parentheses are included
-  (let ((args (split-string (thing-at-point 'list) ","))
+  (let ((args (exordium-bde-split-arglist (thing-at-point 'arglist t)))
         (parsed-args ())
         (max-type-length 0)
-        (max-stars 0))
-    ;; Parse each argument and get the max type length
-    (dolist (arg args)
-      (let ((parsed-arg (bde-parse-argument arg)))
-        (setq parsed-args (cons parsed-arg parsed-args)
-              max-type-length (max max-type-length (length (car parsed-arg)))
-              max-stars (max max-stars (caddr parsed-arg)))))
-    (setq parsed-args (reverse parsed-args))
-    ;; Cut the argument list and edit it into a temporary buffer
-    (backward-up-list)
-    (push-mark)
-    (forward-list)
-    (delete-region (region-beginning) (region-end))
-    (insert
-     (with-temp-buffer
-       (insert "(")
-       (let ((i 1)
-             (parsed-arg nil))
-         (dolist (parsed-arg parsed-args)
-           (let ((type      (car parsed-arg))
-                 (var       (cadr parsed-arg))
-                 (num-stars (caddr parsed-arg))
-                 (assign    (cadddr parsed-arg)))
-             (when (> (length type) 0)
-               (insert type)
-               (insert (make-string (+ (- max-type-length (length type))
-                                       (- max-stars num-stars)
-                                       1) ; at least one space
-                                    ?\s)))
-             (insert var)
-             (when assign
-               (insert " " assign)))
-           (unless (>= i (length parsed-args))
-             (insert ",")
-             (newline))
-           (incf i)))
-       (insert ")")
-       (buffer-string)))
-    ;; Reindent
-    (save-restriction
-      (widen)
-      (push-mark)
-      (backward-list)
-      (indent-region (region-beginning) (region-end)))
-    ;; If some lines exceed the dreadful 79th column, insert a new line before
-    ;; the first line and reindent, with longest line to the right edge
-    (save-excursion
-      (let ((start-col (1+ (current-column)))
-            (max-col (bde-max-column-in-region)))
-        (when (> max-col 79)
-          (backward-list)
-          (forward-char)
-          (newline)
-          (backward-char 2)
-          (push-mark)
-          (forward-list)
-          (let ((longest-length (- max-col start-col)))
-            (if (<= longest-length 79)
-                (indent-region (region-beginning) (region-end)
-                               (- 79 longest-length))
-              ;; We cannot indent correctly, some lines are too long
-              (indent-region (region-beginning) (region-end))
-              (message "Longest line is %d chars" longest-length))))))
-    ;; Leave the cursor after the closing parenthese instead of on the opening
-    ;; one, since most likely we want to add code after the arg list.
-    (when (looking-at "\\s\(")
-      (forward-list 1))))
+        (max-stars 0)
+        (max-var-length 0))
+    (when args
+      ;; Parse each argument and get the max type length
+      (setq parsed-args
+            (mapcar #'(lambda (arg)
+                        (let ((parsed-arg (bde-parse-argument arg)))
+                          (setq max-type-length (max max-type-length
+                                                     (length (car parsed-arg)))
+                                max-stars (max max-stars
+                                               (caddr parsed-arg))
+                                max-var-length (max max-var-length
+                                                    (- (length (cadr parsed-arg))
+                                                       (caddr parsed-arg))))
+                          parsed-arg))
+                    args))
+      (funcall #'(lambda (bounds)
+                   (goto-char (car bounds))
+                   (delete-region (car bounds) (cdr bounds)))
+               (bounds-of-thing-at-point 'arglist))
+      (insert
+       (with-temp-buffer
+         (insert "(")
+         (let ((i 1)
+               (parsed-arg nil))
+           (dolist (parsed-arg parsed-args)
+             (let ((type      (car parsed-arg))
+                   (var       (cadr parsed-arg))
+                   (num-stars (caddr parsed-arg))
+                   (assign    (cadddr parsed-arg)))
+               (when (> (length type) 0)
+                 (insert type)
+                 (insert (make-string (+ (- max-type-length (length type))
+                                         (- max-stars num-stars)
+                                         1) ; at least one space
+                                      ?\s)))
+               (insert var)
+               (when assign
+                 (insert (make-string (+ (- max-var-length
+                                            (- (length var) num-stars))
+                                         1) ; at least one space
+                                      ?\s))
+                 (insert assign)))
+             (unless (>= i (length parsed-args))
+               (insert ",")
+               (newline))
+             (incf i)))
+         (insert ")")
+         (buffer-string)))
+      ;; Reindent
+      (save-restriction
+        (widen)
+        (funcall #'(lambda (bounds)
+                     (indent-region (car bounds) (cdr bounds)))
+                 (bounds-of-thing-at-point 'arglist)))
 
-(define-key c-mode-base-map [(control c)(a)] 'bde-align-functions-arguments)
+      ;; If some lines exceed the dreadful 79th column, insert a new line before
+      ;; the first line and reindent, with longest line to the right edge
+      (save-excursion
+        (let* ((bounds (bounds-of-thing-at-point 'arglist))
+               (start-col 0)
+               (max-col (funcall #'(lambda (bounds)
+                                     (bde-max-column-in-region (car bounds)
+                                                               (cdr bounds)))
+                                 bounds)))
+          (when (> max-col 79)
+            (goto-char (car bounds))
+            (setq start-col (1+ (current-column)))
+            (forward-char)
+            (newline)
+            (let ((longest-length (- max-col start-col)))
+              (if (<= longest-length 79)
+                  (funcall #'(lambda (bounds)
+                               (indent-region (car bounds)
+                                              (cdr bounds)
+                                              (- 79 longest-length)))
+                           (bounds-of-thing-at-point 'arglist))
+                ;; We cannot indent correctly, some lines are too long
+                (funcall #'(lambda (bounds)
+                             (indent-region (car bounds) (cdr bounds)))
+                         (bounds-of-thing-at-point 'arglist))
+                (message "Longest line is %d chars" longest-length))))))
+      ;; Leave the cursor after the closing parenthese instead of on the opening
+      ;; one, since most likely we want to add code after the arg list.
+      (when (looking-at "\\s\(")
+        (end-of-thing 'arglist)))))
+
+(define-key c-mode-base-map [(control c)(a)] 'bde-align-fundecl)
 
 ;;; Align arguments in a function call
 
@@ -577,19 +802,19 @@ according to the BDE style."
   (interactive)
   ;; Get the argument string (remove the external parentheses)
   (let ((arglist (thing-at-point 'list)))
-    (when (pg/string-starts-with arglist "(")
+    (when (string-prefix-p "(" arglist)
       (setq arglist (substring arglist 1)))
-    (when (pg/string-ends-with arglist ")")
+    (when (string-suffix-p ")" arglist)
       (setq arglist (substring arglist 0 (1- (length arglist)))))
-    (if (string= "" (pg/string-trim arglist))
+    (if (string= "" (string-trim arglist))
         (message "There are no arguments")
       ;; Extract the list of arguments
       (let ((args (split-string arglist ","))
             (parsed-args ()))
         (dolist (arg args)
-          (let ((parsed-arg (pg/string-trim (if (pg/string-starts-with arg "\n")
-                                                (substring arg 1)
-                                              arg))))
+          (let ((parsed-arg (string-trim (if (string-prefix-p "\n" arg)
+                                        (substring arg 1)
+                                      arg))))
             (setq parsed-args (cons parsed-arg parsed-args))))
         (setq parsed-args (reverse parsed-args))
         ;; Cut the argument list and edit it into a temporary buffer
@@ -657,7 +882,7 @@ There can be more than one comment string in a sublist if comments
 include semicolons."
   (cl-flet ((trim (s)
               ;; Returns a trimed 's' or nil if 's' becomes empty
-              (let ((trimmed (pg/string-trim s)))
+              (let ((trimmed (string-trim s)))
                 (if (string= "" trimmed) nil (list trimmed)))))
     ;; Split the text around semicolons, and trim all elements.
     ;; An element will be like 'int d_count' or
@@ -671,21 +896,21 @@ include semicolons."
                (before-var (substring element 0 var-pos))
                (star-pos   (string-match "\\*[\\s-]*" before-var))
                (star2-pos  (string-match "\\*\\*[\\s-]*" before-var))
-               (type       (pg/string-trim
+               (type       (string-trim
                             (substring before-var 0 (or star-pos var-pos))))
                (comment    nil))
           (when (and members ; e.g. not the first element
-                     (pg/string-starts-with element "//"))
+                     (string-prefix-p "//" element))
             ;; If the element starts with //, there is a comment that belongs
             ;; to the previous element. Also the type must be re-guessed to
             ;; remove any line starting with //
             (let ((type-lines (mapcan #'trim (split-string type "\n"))))
               (setq type (mapconcat #'(lambda (s)
-                                        (if (pg/string-starts-with s "//") "" s))
+                                        (if (string-prefix-p "//" s) "" s))
                                     type-lines
                                     "")
                     comment (mapconcat #'(lambda (s)
-                                           (if (pg/string-starts-with s "//")
+                                           (if (string-prefix-p "//" s)
                                                (substring s 2)
                                              ""))
                                        (mapcan #'trim (split-string element "\n"))
@@ -865,3 +1090,6 @@ or comment block. See also `repunctuate-sentences'."
 
 
 (provide 'init-bde-style)
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:

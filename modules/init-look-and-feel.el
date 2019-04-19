@@ -20,6 +20,9 @@
 ;;; C-=               Expand region by semantic units
 ;;; M-C-=             Contract region by semantic units
 ;;;
+;;; M-<up>            Move selected region up
+;;; M-<down>          Move selected region down
+;;;
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 
@@ -96,10 +99,10 @@
       scroll-preserve-screen-position t)
 
 ;;; Scrollbar
-(if exordium-scroll-bar
-    (when (featurep 'set-scroll-bar)
+(when (fboundp 'set-scroll-bar-mode)
+  (if exordium-scroll-bar
       (set-scroll-bar-mode `right)
-      (set-scroll-bar-mode nil)))
+    (set-scroll-bar-mode nil)))
 
 ;;; Better frame title with buffer name
 (setq frame-title-format (concat "%b - emacs@" system-name))
@@ -146,7 +149,8 @@
   (global-set-key (kbd "<escape>") 'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
-(fset 'yes-or-no-p 'y-or-n-p)
+(when exordium-enable-y-or-n
+  (fset 'yes-or-no-p 'y-or-n-p))
 
 ;;; Delete selection when typing
 (delete-selection-mode t)
@@ -156,11 +160,32 @@
 (when (boundp 'isearch-allow-scroll)
   (setq isearch-allow-scroll t))
 
+;;; Evil-mode
+(require 'evil)
+(if (and exordium-enable-evil-mode (fboundp 'evil-mode))
+    (evil-mode t)
+  ;; Evil mode depends in undo-tree, which thinks it should work by default
+  (when (boundp 'global-undo-tree-mode)
+    (global-undo-tree-mode -1)))
+
+(defun insert-gui-primary-selection ()
+  "If no region is selected, insert current gui selection at point."
+  (interactive)
+  (when (not (use-region-p))
+    (let ((text (gui-get-selection)))
+      (when text
+        (push-mark (point))
+        (insert-for-yank text)))))
+
+(when exordium-enable-insert-gui-primary-selection
+  (global-set-key [(meta insert)] #'insert-gui-primary-selection))
+
 
 ;;; Shortcut keys
 
 (global-set-key [(meta g)] (function goto-line))
-(define-key global-map [(control z)] (function undo))
+(when exordium-keyboard-ctrl-z-undo
+  (define-key global-map [(control z)] (function undo)))
 (global-set-key [(control ?`)] (function kill-this-buffer))
 
 
@@ -176,10 +201,11 @@
 (define-key global-map [(control x)(control b)] (function ibuffer))
 
 ;;; Zoom
-(define-key global-map [(control +)] (function text-scale-increase))
-(define-key global-map [(control -)] (function text-scale-decrease))
-(define-key global-map [(control mouse-4)] (function text-scale-increase))
-(define-key global-map [(control mouse-5)] (function text-scale-decrease))
+(require 'default-text-scale)
+(define-key global-map [(control +)] (function default-text-scale-increase))
+(define-key global-map [(control -)] (function default-text-scale-decrease))
+(define-key global-map [(control mouse-4)] (function default-text-scale-increase))
+(define-key global-map [(control mouse-5)] (function default-text-scale-decrease))
 
 ;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
@@ -199,6 +225,30 @@
 (global-set-key (kbd "C-=") (function er/expand-region))
 (global-set-key (kbd "M-C-=") (function er/contract-region))
 
+;;; Move regions up and down (from https://www.emacswiki.org/emacs/MoveRegion)
+(defun move-region (start end n)
+  "Move the current region up or down by N lines."
+  (interactive "r\np")
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (let ((start (point)))
+      (insert line-text)
+      (setq deactivate-mark nil)
+      (set-mark start))))
+
+(defun move-region-up (start end n)
+  "Move the current line up by N lines."
+  (interactive "r\np")
+  (move-region start end (if (null n) -1 (- n))))
+
+(defun move-region-down (start end n)
+  "Move the current line down by N lines."
+  (interactive "r\np")
+  (move-region start end (if (null n) 1 n)))
+
+(global-set-key (kbd "M-<up>") 'move-region-up)
+(global-set-key (kbd "M-<down>") 'move-region-down)
+
 
 ;;; File saving and opening
 
@@ -210,7 +260,20 @@
 (require 'vlf-setup)
 
 ;; Remove trailing blanks on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(define-minor-mode delete-trailing-whitespace-mode
+  "Remove trailing whitespace upon saving a buffer"
+  :lighter nil
+  (if delete-trailing-whitespace-mode
+      (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
+    (remove-hook 'before-save-hook #'delete-trailing-whitespace t)))
+
+(define-globalized-minor-mode global-delete-trailing-whitespace-mode
+  delete-trailing-whitespace-mode
+  (lambda ()
+    (delete-trailing-whitespace-mode t)))
+
+(when exordium-delete-trailing-whitespace
+  (global-delete-trailing-whitespace-mode t))
 
 ;;; Disable backup files (e.g. file~)
 (defun no-backup-files ()

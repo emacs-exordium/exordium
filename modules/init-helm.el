@@ -17,16 +17,18 @@
 (require 'helm-ag)
 
 
-(global-set-key (kbd "C-S-r") 'helm-ag-project-root)
-(global-set-key (kbd "C-S-d") 'helm-do-ag)
-(global-set-key (kbd "C-S-f") 'helm-do-ag-this-file)
-(global-set-key (kbd "C-S-a") 'helm-projectile-ag)
+(global-set-key (kbd "C-S-r")   'helm-ag-project-root)
+(global-set-key (kbd "C-S-d")   'helm-do-ag)
+(global-set-key (kbd "C-S-f")   'helm-do-ag-this-file)
+(global-set-key (kbd "C-S-a")   'helm-projectile-ag)
+(global-set-key (kbd "C-c p .") 'helm-projectile-find-file-dwim)
 
 (when exordium-helm-everywhere
+  (helm-mode)
+  (diminish 'helm-mode)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") 'helm-mini))
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring))
 
 (when exordium-helm-fuzzy-match
   (setq helm-M-x-fuzzy-match t

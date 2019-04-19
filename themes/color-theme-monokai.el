@@ -180,6 +180,7 @@ names to which it refers are bound."
                                    :foreground ,monokai-comments
                                    :background ,monokai-hl-line ; for powerline (previously monokai-bg)
                                    :box (:line-width 1 :color ,monokai-hl-line :style unspecified)))))
+     (which-func ((t (:foreground ,monokai-bg :weight bold))))
 
      ;; Powerline
      (exordium-powerline-active1 ((t (:background ,monokai-hl))))
@@ -223,6 +224,7 @@ names to which it refers are bound."
      (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
                                     `(:background ,green :foreground ,monokai-bg)
                                   `(:underline (:color ,green :style wave))))))
+     (rtags-skippedline ((t (:background ,monokai-hl-line))))
 
      ;; cua
      (cua-global-mark ((t (:background ,yellow :foreground ,monokai-bg))))
@@ -307,6 +309,18 @@ names to which it refers are bound."
      (ediff-odd-diff-B ((t (:background ,monokai-comments :foreground ,monokai-fg-lc ))))
      (ediff-even-diff-C ((t (:background ,monokai-comments :foreground ,monokai-fg ))))
      (ediff-odd-diff-C ((t (:background ,monokai-comments :foreground ,monokai-bg ))))
+
+     ;; js2-mode
+     (js2-warning ((t (:underline ,orange :style wave))))
+     (js2-error ((t (:foreground nil :underline ,red :style wave))))
+     (js2-external-variable ((t (:foreground ,violet))))
+     (js2-function-param ((t (:foreground ,blue))))
+     (js2-instance-member ((t (:foreground ,blue))))
+     (js2-private-function-call ((t (:foreground ,red))))
+
+     ;; EnhRuby-mode
+     (erm-syn-warnline ((t (:underline (:color ,orange :style wave)))))
+     (erm-syn-errline ((t (:underline (:color ,red :style wave)))))
 
      ;; flymake
      (flymake-errline
@@ -529,6 +543,13 @@ names to which it refers are bound."
      ;; SLIME
      (slime-repl-inputed-output-face
       ((t (:foreground ,red))))
+
+     ;; Emacs Lisp
+     (eval-sexp-fu-flash ((t (:background ,orange :foreground ,monokai-bg))))
+     (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,monokai-bg))))
+
+     ;; treemacs
+     (treemacs-git-modified-face ((t (:foreground ,orange))))
 
      ;; speedbar
      (speedbar-button-face

@@ -11,7 +11,9 @@
 ;;; C-c g b           Toggle Magit blame mode
 ;;;
 ;;; C-c g down        Goto next hunk in buffer
+;;; C-c g n           Goto next hunk in buffer
 ;;; C-c g up          Goto previous hunk in buffer
+;;; C-c g p           Goto previous hunk in buffer
 ;;; C-c g d           Diff current hunk
 ;;; C-c g r           Revert current hunk (asks for confirmation)
 
@@ -68,22 +70,34 @@
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
 
+;;;###autoload
+(define-globalized-minor-mode exordium-global-git-gutter-mode
+  git-gutter-mode
+  (lambda () (when (let ((file-name (buffer-file-name)))
+                     (if exordium-git-gutter-for-remote-files
+                         file-name ;; enable for all files
+                       (and file-name ;; enable only for local files
+                            (not (file-remote-p file-name)))))
+               (git-gutter--turn-on))))
+
 (when exordium-git-gutter-non-fringe
   (setq exordium-git-gutter nil)
   (require 'git-gutter)
-  (global-git-gutter-mode t)
+  (exordium-global-git-gutter-mode t)
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
 (when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   (require 'git-gutter-fringe)
-  (global-git-gutter-mode t)
+  (exordium-global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 
 ;; Keys
 (when (or exordium-git-gutter exordium-git-gutter-non-fringe)
   (define-key exordium-git-map (kbd "<down>") 'git-gutter:next-hunk)
+  (define-key exordium-git-map (kbd "n") 'git-gutter:next-hunk)
   (define-key exordium-git-map (kbd "<up>") 'git-gutter:previous-hunk)
+  (define-key exordium-git-map (kbd "p") 'git-gutter:previous-hunk)
   (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
   (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
 
@@ -103,6 +117,11 @@
 
 (define-key exordium-git-map (kbd "g") (function vc-git-grep))
 
+
+;;; Make backtick an electric pair
+(require 'init-lib)
+
+(add-hook 'git-commit-mode-hook 'exordium-electric-mode-add-back-tick)
 
 
 (provide 'init-git)

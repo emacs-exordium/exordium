@@ -3,9 +3,10 @@
 # What is this repo
 
 A portable Emacs configuration focused on adding IDE-level features for C++ and
-Lisp/Clojure programming. It is only intended to work with Emacs 24 on Linux
-and OS X including in -nw mode, but it should work on Windows as well. It is
-modular and customizable. It is not a starter kit, it is a hacker kit.
+Lisp/Clojure programming. It is only intended to work with Emacs version 24.4
+and above on Linux and OS X including in -nw mode, but it should work on
+Windows as well. It is modular and customizable. It is not a starter kit, it is
+a hacker kit.
 
 If you are looking for a good generic Emacs configuration to start with, you
 might want to check these links:
@@ -26,6 +27,7 @@ might want to check these links:
   * [Snippets](#snippets)
   * [RTags](#rtags)
 * [Lisp](#lisp)
+* [Markdown](#markdown)
 * [Customization](#customization)
 * [Troubleshooting](#troubleshooting)
 
@@ -34,17 +36,18 @@ might want to check these links:
 * Usability: [IDO](http://www.emacswiki.org/emacs/InteractivelyDoThings)
   (completion engine, turned on by default);
   [Helm](http://tuhdo.github.io/helm-intro.html) (an alternative to IDO);
-  [Auto Complete](https://github.com/auto-complete/auto-complete);
+  [Auto Complete](https://github.com/auto-complete/auto-complete) and
+  [Company](http://http://company-mode.github.io) (completion engines)
   [Expand Region](https://github.com/magnars/expand-region.el) (increase
   selected region by semantic units);
   [Fill Column Indicator](http://www.emacswiki.org/emacs/FillColumnIndicator)
   (80-character column marker);
-  [Project Explorer](https://github.com/sabof/project-explorer) (directory
-  tree); [Avy](https://github.com/abo-abo/avy) (jumping to visible text in 2 or
-  3 key-strokes); etc.
+  [Treemacs](https://github.com/Alexander-Miller/treemacs) (directory tree);
+  [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3 key-strokes);
+  [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
-* Git: [Magit](http://magit.github.io) (git UI);
+* Git: [Magit](http://magit.vc) (git UI);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
   * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
@@ -52,6 +55,8 @@ might want to check these links:
     compilation errors in buffer, auto-complete etc.
   * Formatting keys and snippets for the
     [BDE](https://github.com/bloomberg/bde) code style.
+  * [include-what-you-use](https://include-what-you-use.org): a LLVM/Clang-based
+    tool for use with clang to analyze #includes in C and C++ source files.
 * JavaScript: [JS2-mode](http://www.emacswiki.org/emacs/Js2Mode).
 * Clojure: [Cider](https://github.com/clojure-emacs/cider) and
   [Lein](http://leiningen.org).
@@ -139,6 +144,8 @@ Keybinding          | Description
 <kbd>C-c d</kbd>    | Duplicate line.
 <kbd>C-=</kbd>      | Expand region by semantic units.
 <kbd>M-C-=</kbd>    | Contract region by semantic units.
+<kbd>M-<up></kbd>   | Move region one line up
+<kbd>M-<down></kbd> | Move region one line down
 <kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
@@ -146,7 +153,7 @@ Navigation:
 Keybinding                         | Description
 -----------------------------------|----------------------------------------------------------
 <kbd>C-x C-\\</kbd>                | Goto last change in buffer. Repeat to go to the second most recent edit, etc.
-<kbd>C-x C-&#124;</kbd>            | Goto last change in reverse direction (e.g. add <kbd>shift</kbd>).
+<kbd>C-x C-/</kbd>                 | Goto last change in reverse direction.
 <kbd>C-c j</kbd> or <kbd>C-'</kbd> | Goto visible word or subword (`avy-goto-word-or-subword-1`). It first asks for the first character of the word, then annotates all words starting with that character with a unique touch-type friendly code.
 <kbd>C-c s</kbd>                   | Push point onto position stack (e.g. bookmarks).
 <kbd>C-c b</kbd>                   | Pop point from position stack.
@@ -157,13 +164,14 @@ Keybinding              | Description
 ------------------------|----------------------------------------------------------
 <kbd>C-c ARROW</kbd>    | Move cursor between windows.
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
+<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
 
-Auto-complete:
+Auto-complete/Company:
 
 Keybinding         | Description
 -------------------|-----------------------------------------------------------
-<kbd>C-.</kbd>     | Force trigger auto-complete.
-<kbd>ESC</kbd>     | Abort auto-complete.
+<kbd>C-.</kbd>     | Force trigger auto-complete/company-complete.
+<kbd>ESC</kbd>     | Abort auto-complete/company-complete.
 
 Tip: if you are looking for a particular key and you know it starts with a
 given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
@@ -264,6 +272,7 @@ Keybinding                             | Description
 <kbd>C-c M-h</kbd> or <kbd>C-c H</kbd> | Same, but first select project
 <kbd>C-c p p</kbd>                     | IDO: switch project (alternative: Helm)
 <kbd>C-c p f</kbd>                     | IDO: find file in current project (alternative Helm)
+<kbd>C-c p .</kbd>                     | IDO: find file at point based on context (alternative Helm)
 <kbd>C-c p s g</kbd>                   | Grep in current project
 <kbd>C-c p s a</kbd>                   | Same but using ack
 <kbd>C-c p r</kbd>                     | Interactive query-replace on all files in project
@@ -271,23 +280,6 @@ Keybinding                             | Description
 
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.
-
-### Project Explorer
-
-Projectile is linked with
-[Project Explorer](https://github.com/sabof/project-explorer) which displays
-the project directory structure on the left side:
-
-![Project Explorer](https://raw.github.com/philippe-grenet/exordium/master/doc/project_explorer.png)
-
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open project explorer on the left side.
-
-With the cursor in the Project Explorer window, you can use these keys:
-<kbd>q</kbd> to quit. <kbd>s</kbd> to change directory. <kbd>TAB</kbd> to
-toggle folding, <kbd>S-TAB</kbd> to fold all. <kbd>RETURN</kbd> open
-file. <kbd>w</kbd> Show path and copy it to clipboard.
 
 ### Helm
 
@@ -307,7 +299,7 @@ Keybinding          | Description
 
 #### Other Helm tools
 
-Helm is a pretty good when you need quickly scan search results. The below commands
+Helm is a pretty good when you need quickly scan search results. The commands below
 will start different search modes. By default, they will use symbol under the point.
 However if it is not there just start typing text: the Helm window shows all
 matching lines, and you can jump from one to another using the arrow keys.
@@ -324,10 +316,31 @@ expressions.
 * <kbd>C-S-r</kbd>: Ag search starting from project root.
 * <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
+## Treemacs
+
+[Treemacs](https://github.com/Alexander-Miller/treemacs) is a tree layout file
+explorer for Emacs. It is linked with Projectile and Git, and it can display the
+project directory structure on the left side:
+
+![Treemacs](https://raw.github.com/philippe-grenet/exordium/master/doc/treemacs.png)
+
+Keybinding          | Description
+--------------------|----------------------------------------------------------
+<kbd>C-c e</kbd>    | Open the current directory.
+<kbd>C-c E</kbd>    | Open the current project (projectile).
+
+Treemacs displays the git status of files (added, modified, ignored etc.) using
+different faces.
+
+With the cursor in the Treemacs window, you can use <kbd>TAB</kbd> to
+open/close directories, <kbd>RETURN</kbd> to open a file, and <kbd>q</kbd> to
+quit. Use <kbd>?</kbd> to view all the available keys. See the documentation of
+Treemacs for details.
+
 ## Git
 
 All git-related keys use prefix <kbd>C-c g</kbd> plus one more key. For example
-<kbd>C-c g s</kbd> runs [Magit](http://magit.github.io) status:
+<kbd>C-c g s</kbd> runs [Magit](http://magit.vc) status:
 
 ![magit](https://raw.github.com/philippe-grenet/exordium/master/doc/magit.png)
 
@@ -360,7 +373,9 @@ Git gutter keys:
 Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c g down</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
+<kbd>C-c g n</kbd> | Goto next hunk in buffer (`git-gutter:next-hunk`).
 <kbd>C-c g up</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
+<kbd>C-c g p</kbd>   | Goto previous hunk in buffer (`git-gutter:previous-hunk`).
 <kbd>C-c g d</kbd>    | Diff the current hunk (`git-gutter:popup-diff`).
 <kbd>C-c g r</kbd>    | Revert the current hunk after confirmation (`git-gutter:revert-hunk`).
 
@@ -397,8 +412,8 @@ Keybinding         | Description
 which replaces a keyword by a template after you hit the trigger key. YASnippet
 is only enabled for C++ mode currently. The trigger key is set to <kbd>C-c
 y</kbd> because the default TAB key is already way overused between intention
-and auto-complete. You can easily use a function key if you prefer by adding
-this in your `after-init.el`:
+and auto-complete/company-complete. You can easily use a function key if you prefer
+by adding this in your `after-init.el`:
 
 ```lisp
 (define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
@@ -419,60 +434,15 @@ mapped) file-based index. The client for "rdm" is command-line client called
 "rc". RTags uses a single index for all symbols, but it allows for loading and
 unloading projects individually.
 
-To use it, first start the daemon:
-
-```bash
-$ rdm
-```
-
-This will start the daemon on the foreground, using a number of concurrent "rp"
-jobs that is function of the number of CPUs on the local machine. It starts by
-reading the saved project indices in `~/.rtags` if any. By default it logs to
-the console but you can make it log to a file instead with `-L file` or make it
-silent with `-S`. There are many options; use `--help` to see the list.  You
-can also create a file `~/.rdmrc` containing the default command line
-arguments.
-
-Alternatively you can run rdm as an Emacs subprocess: <kbd>M-x
-rtags-start-rdm</kbd>, with logs going into a buffer (in color!). Stop it with
-<kbd>M-x rtags-quit-rdm</kbd>.
-
-#### Controlling rdm
-
-rdm stores project indices into a directory `~/.rtags` and reloads them as
-needed. rc and rdm communicate with each other using a socket file `~/.rdm`.
-
-Command            | Description
--------------------|-----------------------------------------------------------
-`rc -w`            | List projects in the index.
-`rc -w proj`       | Switch to project "proj" (a regex).
-`rc -W proj`       | Unload and delete project "proj".
-`rc -J`            | Reload the compilation DB from the current directory.
-`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
-`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
-`rc -q`            | Shutdown rdm.
-
-Note that a job may crash while trying to index a file. If it does, rdm will
-retry a few times and then give up with the file it cannot parse.
-
-#### Setting up your project
-
-If the project root directory does not contain a `.git` or `.svn` repo, you
-need to create a file `.rtags-config` in the root directory with the specified
-content:
-
-```
-project: /path/to/project
-```
-
-Then you need to tell rdm how to compile your project, by creating a
-[compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html)
-in a file named `compile_commands.json`. The compilation database contains one
+The rdm daemon knows how to compile your project with a CLang
+[compilation database](http://clang.llvm.org/docs/JSONCompilationDatabase.html),
+which is a file named `compile_commands.json`. The compilation database contains one
 entry for each file to compile, like the following (simplified for clarity):
 
-```javascript
+```
 { "directory": "/home/phil/workspaces/foo/",
-  "command":   "/usr/bin/clang++ -Irelative
+  "command":   "/usr/bin/clang++
+                -D_POSIX_PTHREAD_SEMANTICS -D_REENTRANT
                 -I/home/phil/workspaces/bde/groups/bsl/bsl+stdhdrs
                 -I/home/phil/workspaces/bde/groups/bsl/bslma
                 -I/home/phil/workspaces/bde/groups/bsl/bsls
@@ -480,10 +450,122 @@ entry for each file to compile, like the following (simplified for clarity):
    "file":      "bar.cpp" }
 ```
 
-You can generate this compilation database with the command <kbd>M-x
-rtags-create-compilation-database</kbd>. But before you do, it needs a little help:
-you need to tell it what `clang++` command to use to compile any file, with all
-the `-I` directives that are necessary for your project.
+Basically the compilation database contains the list of files to compile and
+the exact command to compile them. There are several ways to generate this
+file:
+
+* RTags provides compiler wrapper scripts which tell rdm to parse and index
+  each compilation unit before it gets compiled. While this is the easiest way
+  (all you need to do is to build), the inconvenient is that you need to build
+  before you can use the latest index, and any unused header won't be indexed.
+* You can build with CMake: it generates a compilation database for you each
+  time you build.
+* Exordium provides a command to generate the compilation database by scanning
+  source directories. It requires you to write a simple text file indicating
+  where these source directories are.
+
+The first thing you need to do is to build and install RTags: refer to the
+RTags documentation. The sections below explain how to use it.
+
+#### Using RTags from the shell
+
+First start the daemon:
+
+```bash
+$ rdm
+```
+
+This will start the daemon on the foreground, using a number of concurrent "rp"
+jobs that is function of the number of CPUs on the local machine. By default it
+logs to the console but you can make it log to a file instead with `-L file` or
+make it silent with `-S`. There are many options; use `--help` to see the list.
+
+RTags stores project indices into a directory `~/.rtags` by default, and
+reloads them as needed. It watches for file changes using *inotify* and
+refreshes the index automatically. Note that you can change the location of the
+`.rtags` directory with a `~/.rdmrc` file; it is recommended to store it into a
+local SSD drive and avoid NFS-mounted directories.
+
+By default rc and rdm communicate with each other using a socket file `~/.rdm`,
+but there are other ways: refer to the RTags documentation.
+
+The main commands are:
+
+Command            | Description
+-------------------|-----------------------------------------------------------
+`rc -w`            | List projects in the index.
+`rc -w proj`       | Switch to project "proj" (a regex).
+`rc -W proj`       | Unload and delete project "proj".
+`rc -J .`          | Reload the compilation DB from the current directory.
+`rc --find-project-root /path/to/sourcefile.cpp` | Print what it determines to be the correct project root.
+`rc -T sourcefile.cpp` | Say whether this file is indexed or not.
+`rc -q`            | Shutdown rdm.
+
+Note that a job may crash while trying to index a file. If it does, rdm will
+retry a few times and then give up with the file it cannot parse.
+
+#### Using RTags from Emacs
+
+Alternatively you can run rdm as an Emacs subprocess. The logs will go into a
+buffer (in color!).
+
+Command                    | Description
+---------------------------|---------------------------------------------------
+<kbd>M-x rtags-start</kbd> | Start rdm and RTags diagnostics.
+<kbd>M-x rtags-stop</kbd>  | Stop rdm and Rtags diagnostics.
+
+#### CMake projects
+
+If your project compiles with CMake, you're in luck: CMake generates this
+compilation database for you every time you build. Adding this line in your
+`~/.emacs.d/prefs.el` will make RTags work automagically:
+
+```lisp
+(setq exordium-rtags-cmake t)
+```
+
+In addition you may set the following variables:
+
+* Exordium assumes that your build directory is named like `cmake.bld/<arch>`,
+  relative to the project root, where `<arch>` is the `uname` of your OS. If
+  this is not the case you can change it like so in `~/.emacs.d/prefs.el`:
+
+    ```lisp
+    (setq exordium-rtags-cmake-build-dir "build")
+    ```
+
+* Exordium runs rdm with no argument by default. You can add arguments by
+  setting this variable in `~/.emacs.d/prefs.el`:
+
+    ```lisp
+    (setq exordium-rtags-rdm-args
+          "--isystem /opt/bb/lib64/clang/3.6.2/include -DBAS_NOBBENV")
+    ```
+
+You can also specify where the build directory is using a `.rtags` file at the
+root of your project with a content like `build /path/to/my/build`; it takes
+precedence over `exordium-rtags-cmake-build-dir`.
+
+Exordium will automatically detect if your project is CMake-enabled when you
+open a C++ file, by looking for `CMakeLists.txt` files along the path from the
+root of your project to the location of the file you open (your project must be
+a git repo). If this is a CMake project, Exordium will start rdm if it is not
+running, and ask rdm to index the project using the CMake-generated compilation
+database in the build directory. If the project was already indexed, it is
+simply reloaded and RTags commands work immediately. Otherwise rdm compiles the
+index, and you can see the progress with <kbd>C-c r l</kbd> (rerun to dismiss).
+
+If you need to add or remove components from your project, just rebuild it
+(e.g. "make" in the build directory) and CMake will update the compilation
+database accordingly. Because rdm watches for changes to the compilation
+database file, it will pick up the changes automatically.
+
+#### Non-CMake projects
+
+You can generate the compilation database with the command
+<kbd>M-x rtags-create-compilation-database</kbd>. But before you do, it needs
+a little help: you need to tell it what `clang++` command to use to compile
+any file, with all the `-I` directives that are necessary for your project.
 
 The command uses a file `compile_includes` in the project root directory, which
 specifies how to generate `compilation_database.json` for your project. It is a
@@ -502,11 +584,6 @@ either absolute or relative to the project root. Here is an example:
 
 ```
   # 'compile_includes' file for project foo
-  # Patterns to exclude in -I directives and while looking for sources:
-  exclude /test$
-  exclude /doc$
-  exclude /group$
-  exclude /package$
 
   # Where are the source files (there could be multiple directories).
   # We will scan recursively any subdirectories that do not match any
@@ -519,12 +596,16 @@ either absolute or relative to the project root. Here is an example:
   include /Users/phil/Code/cpp/include/bsl
   include /Users/phil/Code/cpp/include/bdl
 
-  # If any file name pattern must be excluded from the "src" files, use
-  # the "excludesrc" directive. For example this will exclude all test
-  # drivers:
+  # Optional: patterns to exclude in -I directives and while looking for
+  # sources. Here we explicitly don't want to index the tests subdir:
+  exclude /test$
+
+  # Optional: if any file name pattern must be excluded from the "src" files,
+  use the "excludesrc" directive. For example this will exclude all test
+  # drivers (extension .t.cpp):
   excludesrc \.t\.cpp$
 
-  # -D macros, if any:
+  # Optional: -D macros, if any:
   macro BDE_BUILD_TARGET_SAFE
 ```
 
@@ -532,9 +613,9 @@ In addition, the creation of a compilation database uses these variables:
 
 Variable                            | Description
 ------------------------------------|------------------------------------------
-`*rtags-compile-includes-base-dir*` | Set this to your workspace path if you want to use relative paths in `compile_includes` that are not relative to the project's root directory (the default).
-`*rtags-clang-command-prefix*`      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
-`*rtags-clang-command-suffix*`      | Default is "-c -o".
+`rtags-compile-includes-base-dir  ` | Set this to your workspace path if you want to use relative paths in `compile_includes` that are not relative to the project's root directory (the default).
+`rtags-clang-command-prefix  `      | Default is "/usr/bin/clang++ -Irelative" (note that RTags ignores the clang++ command because it uses libclang).
+`rtags-clang-command-suffix  `      | Default is "-c -o".
 
 Once you have created the `compile_includes` file, run the command <kbd>M-x
 rtags-create-compilation-database</kbd>. It will:
@@ -571,7 +652,7 @@ Navigation keys:
 
 Keybinding                           | Description
 -------------------------------------|-----------------------------------------
-<kbd>M-.</kbd> or <kbd>C-c r .</kbd> | Jump to symbol definition.
+<kbd>M-.</kbd> or <kbd>C-c r .</kbd> | Jump to symbol definition. With prefix: in other window.
 <kbd>M-,</kbd> or <kbd>C-c r ,</kbd> | Find references to symbol.
 <kbd>C-c r &gt;</kbd>                | Find symbol (prompts for symbol name).
 <kbd>C-c r &lt;</kbd>                | Find references (prompts for symbol name).
@@ -609,13 +690,19 @@ Keybinding         | Description
 <kbd>C-c r P</kbd> | Show all includes for the current file.
 <kbd>C-c r T</kbd> | Show the tag list for the current file.
 
-#### Using Flymake
+#### Using syntax checker
 
-The function `rtags-diagnostics` bound to <kbd>C-c r D</kbd> starts an async
-process to receive compilation warnings and errors from rdm. They are displayed
-into diagnostics buffer which works with Flymake to put highlighting on code
-with warnings and errors. By default Powerline displays the name of the buffer
-in green if the project compiles and in red if there are errors:
+"Rtags diagnostics" is a way to get compilation warnings and errors from rdm,
+and display them using Flymake or Flychek in buffers. Set the variable
+`exordium-rtags-syntax-checker` to `:flymake` (default) or to `:flycheck` to
+select the syntax-checker in use.
+
+The compilation warnings are  enabled by default if you run rdm from Emacs.
+Otherwise you can turn it on manually with `M-x rtags-diagnostics` bound
+to <kbd>C-c r D</kbd>.
+
+By default Powerline displays the name of the buffer in
+green if the project compiles and in red if there are errors:
 
 ![RTags diagnostics](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_diagnostics.png)
 
@@ -626,6 +713,7 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c r D</kbd>    | Run `rtags-diagnostics` if it wasn't and force reparsing of current buffer.
 <kbd>C-c r d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>C-c r r</kbd>    | Run `helm-flycheck` to show errors in helm buffer (only with `:flycheck` syntax checker)
 <kbd>C-c r DOWN</kbd> | Goto next problem (`rtags-next-diag`).
 <kbd>C-c r UP</kbd>   | Goto previous problem.
 <kbd>C-c r F</kbd>    | Fix the error using Clang's "did you mean" (try it with "inft x;")
@@ -657,9 +745,77 @@ Possible issues:
 * Auto-complete for header files does not understand when you are switching
   project.
 
+#### Company
+
+As an alternative to `auto-complete` you can choose `company-mode`. You can
+do that by setting `exordium-complete-mode` to `:company`. It will use
+RTags as a completion engine when `rdm` is started.
+
+### include-what-you-use
+
+[include-what-you-use](https://include-what-you-use.org) is a tool for use
+with clang to analyze `#include`s in C and C++ source files. The main goal of
+`include-what-you-use` is to remove superfluous `#include`s. It does this both
+by figuring out what `#include`s are not actually needed for this file (for
+both `.cpp` and `.h` files), and suggesting fixes to `#include`s with
+forward-declares when possible. Please note that since this tool is not 100%
+accurate, Exordium support does not include automatic file modification.
+Instead it provides support to spawn the process and capture the suggestions
+in a diagnostic buffer that can be later checked by human.
+
+Similarly to RTags, `include-what-you-use` relies on the compilation database
+to be available in `compile_commands.json` file. It uses
+`exordium-rtags-cmake-build-dir` to locate the compilation database for the
+current project.
+
+On top of that two variables are available to customise the behavior:
+
+* `exordium-iwyu-filter-args`: a list of arguments that should be taken out of
+  the `include-what-you-use` invocation. This is useful, when project's
+  compilation database contains arguments specific to the compiler and those
+  arguments are not supported by LLVM/Clang.
+* `exordium-iwyu-filter-args`: a list of arguments that should be passed to the
+  `include-what-you-use` executable. This becomes useful, i.e., when LLVM/Clang
+  is not installed in the system directory and extra includes has to be passed.
+
+Exordium defines the following keybindings:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c w e</kbd>    | Run `include-what-you-use` for the current buffer.
+<kbd>C-c w d</kbd>    | Show/hide the diagnostics buffer without force reparsing.
+<kbd>g</kbd>          | Reparse recent file (in `IWYU-mode` buffer).
+
 ## Lisp
 
 Coming soon: Emacs Lisp, Common Lisp and Clojure.
+
+## Markdown
+
+<kbd>M-x impatient-markdown-mode</kbd> starts a minor mode that provides a live
+preview of a markdown buffer in your favorite web browser. The web page is
+updated as you type (this feature is implemented with the
+[impatient mode](https://github.com/skeeto/impatient-mode)). Before you can use
+it, you need to set the variable `markdown-command` to the command to execute
+to render a markdown file into HTML.  For example, to use the GitHub command,
+clone [markup](https://github.com/github/markup) and set `markdown-command` to
+the path of `bin/github-markup` in your `after-init.el`.  Other options include
+Pandoc or RedCarpet.
+
+Note that [markdown-mode](http://jblevins.org/projects/markdown-mode/) itself
+provides a few keys to render into HTML, and it does not need an external
+renderer to be installed:
+
+| Key                  | Behavior                                   |
+| -------------------- | ------------------------------------------ |
+| <kbd>C-c C-c v</kbd> | Render and open in web browser             |
+| <kbd>C-c C-c m</kbd> | Render and open in another buffer          |
+| <kbd>C-c C-c l</kbd> | Live preview in EWW (the internal browser) |
+
+Another interesting feature is <kbd>M-x orgtbl-mode</kbd>, a minor mode for
+editing tables: it works like org tables but it uses the GitHub-flavored
+format. Use the tab key to switch to the next cell and reformat the whole
+table.
 
 ## Customization
 
@@ -708,8 +864,10 @@ Modules can be individually commented out if needed:
 (require 'init-util)            ; utilities like match paren, bookmarks...
 (require 'init-ido)             ; supercharged completion engine
 (require 'init-highlight)       ; highlighting current line, symbol under point
-(when exordium-auto-complete
-  (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+(cond ((eq exordium-complete-mode :auto-complete)
+       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
+      ((eq exordium-complete-mode :company)
+       (require 'init-company))) ; company mode (rtags are on by default)
 (when exordium-helm-projectile  ; find files anywhere in project
   (require 'init-helm-projectile))
 (require 'init-helm)            ; setup helm
@@ -824,6 +982,7 @@ following will give you this:
 ;; - monokai
 ;; - zenburn
 ;; - material
+;; - atom-one
 (setq exordium-theme 'material)
 
 ;; Powerline theme:
@@ -915,7 +1074,30 @@ in `provide` and the symbol in `require` are the same.
   in the server process (believe me I tried). The solution is to put something
   like `(setq default-frame-alist '((font . "Inconsolata-12")))` in your
   `pref.el` (you need to know exactly what font and size you want for
-  your local machine).
+  your local machine). The code below works for both Emacs and `emacsclient`:
+
+```lisp
+;; ~/.emacs.d/prefs.el
+
+;; Font and initial frame size
+(cond ((daemonp)
+       (message "Setting prefs for emacsclient")
+       (setq exordium-preferred-frame-width nil
+             exordium-preferred-frame-height nil)
+       (setq default-frame-alist
+             (append '((font   . "Consolas 13")
+                       (top    . 0)
+                       (left   . 50)
+                       (width  . 110)
+                       (height . 71))
+                     default-frame-alist)))
+      (t
+       (message "Setting prefs for emacs")
+       (setq exordium-preferred-frame-width 110
+             exordium-preferred-frame-height 71)
+       (setq exordium-preferred-fonts '(("Consolas" . 120)
+                                        ("Monaco"   . 120)))))
+```
 
 * Sometimes weird bugs may happen after an upgrade or during development on a
   module. Exordium recompiles any `.el` file for which the corresponding `.elc`

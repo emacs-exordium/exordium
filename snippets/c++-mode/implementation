@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: t -*-
 # name: implementation
 # key: .cpp
-# condition: (pg/string-ends-with (buffer-file-name) ".cpp")
+# condition: (string-suffix-p ".cpp" (buffer-file-name))
 # type: command
 # --
 ;; Top line
@@ -17,14 +17,9 @@
 (insert "#include <" (bde-component-name) ".h>")
 (newline 2)
 
-;; Ident
-(insert "#include <bdes_ident.h>
-BDES_IDENT_RCSID(" (bde-component-name) "_cpp,\"$Id$ $CSID$\")")
-(newline 2)
-
 ;; Namespaces
 (let ((package-name (bde-package-name)))
-  (insert "#include <bael_log.h>
+  (insert "#include <ball_log.h>
 
 namespace BloombergLP {
 namespace " package-name " {
@@ -42,14 +37,12 @@ const char k_LOG_CATEGORY[] = \""
 
 
 
-}  // close namespace " package-name "
-}  // close namespace BloombergLP")
+}  // close package namespace
+}  // close enterprise namespace")
   (newline 2))
 
 ;; Footer
-(insert "
-
-// ----------------------------------------------------------------------------
+(insert "// ----------------------------------------------------------------------------
 // NOTICE:
 //      Copyright (C) Bloomberg L.P., " (format-time-string "%Y") "
 //      All Rights Reserved.
@@ -61,4 +54,4 @@ const char k_LOG_CATEGORY[] = \""
 
 ;; Cursor
 (beginning-of-buffer)
-(forward-line 17)
+(forward-line 14)

@@ -19,7 +19,8 @@
 (require 'projectile)
 (require 'helm-projectile)
 (require 'helm-swoop)
-(require 'project-explorer)
+(require 'treemacs-projectile)
+(require 'init-prefs)
 
 (projectile-global-mode)
 (global-set-key [(control c)(h)] (function helm-projectile))
@@ -32,6 +33,14 @@
   (substitute-key-definition
    'projectile-find-file 'helm-projectile
    projectile-mode-map))
+
+;; Prevent Projectile from indexing the build directory.
+(when exordium-rtags-cmake-build-dir
+  (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
+    ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
+    (when top-level
+      (setq projectile-globally-ignored-directories
+            (cons top-level projectile-globally-ignored-directories)))))
 
 
 ;;; Do not show these files in helm buffer
@@ -66,13 +75,18 @@
 
 ;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
 
-;;; C-e = Project explorer
-(define-key global-map [(control c)(e)] (function project-explorer-open))
-
 
 ;;; Use fuzzy matching for helm-projectile when requested
 (when exordium-helm-fuzzy-match
   (setq helm-projectile-fuzzy-match t))
+
+
+;;; File explorer (treemacs)
+
+;;; C-c e = Open treemacs in the current directory
+;;; C-c E = Open treemacs in the current projectile project
+(define-key global-map [(control c)(e)] (function treemacs))
+(define-key global-map [(control c)(E)] (function treemacs-projectile))
 
 
 
