@@ -115,7 +115,13 @@
 
 ;;; Git Grep
 
-(define-key exordium-git-map (kbd "g") (function vc-git-grep))
+(define-key exordium-git-map (kbd "g")
+  (if exordium-helm-everywhere
+      (lambda()
+        (interactive)
+        (setq current-prefix-arg '(4))
+        (call-interactively 'helm-grep-do-git-grep))
+    (function vc-git-grep)))
 
 
 ;;; Make backtick an electric pair
