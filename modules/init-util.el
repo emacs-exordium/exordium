@@ -30,7 +30,7 @@
 ;;; C-|            Toggle FCI mode on and off ("Fill columm indicator",
 ;;;                e.g. the 80 column ruler)
 ;;;
-;;; C-j            Avy: jump to the beginning of any word on the screen. It
+;;; C-c j          Avy: jump to the beginning of any word on the screen. It
 ;;; C-'            asks for the first character of the word you want, and then
 ;;;                annotates each word that starts with this character with a
 ;;;                unique code of 1 or 2 letters. Type this code to jump
