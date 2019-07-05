@@ -6,6 +6,8 @@
 ;;; Greg Pfeil created a theme for Emacs. This file is a different
 ;;; implementation but uses the same choices for most faces.
 
+;;; see https://github.com/sellout/emacs-color-theme-solarized/blob/master/solarized-definitions.el
+;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
 (require 'init-prefs)
 (require 'org)
 (require 'cl-lib)
@@ -67,7 +69,7 @@ names to which it refers are bound."
      (show-paren-mismatch ((t (:weight bold :foreground ,red :background ,base01))))
 
      ;; Region
-     (region ((t (:background ,base00))))
+     (region ((t (:foreground ,base2 :background ,base02))))
      (secondary-selection ((t (:background ,base02))))
 
      ;; font-lock
@@ -99,8 +101,10 @@ names to which it refers are bound."
      (fringe ((t (:foreground ,base01 :background ,base02))))
      (linum ((t (:foreground ,base01 :background ,base02))))
      (header-line ((t (:foreground ,base0 :background ,base02 :weight bold))))
-     (highlight ((t (:background ,base02))))
+     (highlight ((t (:foreground ,base2 :background ,base02))))
      (hl-line ((t (:background ,base02))))
+     (line-number ((t (:foreground ,base1 :background ,base02))))
+     (line-number-current-line ((t (:foreground ,base2 :background ,base02))))
      (menu ((t (:foreground ,base0 :background ,base02))))
      (link ((t (:foreground ,violet :underline t))))
      (link-visited ((t (:foreground ,magenta :underline t))))
@@ -180,6 +184,7 @@ names to which it refers are bound."
      (org-hide ((t (:foreground ,base03))))
      (org-todo ((t (:weight bold :foreground ,base03 :background ,red))))
      (org-done ((t (:weight bold :foreground ,green))))
+     (org-block ((t (:foreground ,base01 :background ,base02))))
      (org-todo-kwd-face ((t (:foreground ,red :background ,base03))))
      (org-done-kwd-face ((t (:foreground ,green :background ,base03))))
      (org-project-kwd-face ((t (:foreground ,violet :background ,base03))))
