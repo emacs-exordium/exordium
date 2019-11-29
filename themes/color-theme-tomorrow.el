@@ -418,7 +418,7 @@ names to which it refers are bound."
      (treemacs-git-modified-face ((t (:foreground ,orange))))
 
      ;; Trailing whitespaces
-     (trailing-whitespace ((t (:background ,red :foreground ,yellow))))
+     (trailing-whitespace ((t (:background ,foreground :foreground ,background))))
      (whitespace-empty ((t (:foreground ,red :background ,yellow))))
      (whitespace-hspace ((t (:background ,selection :foreground ,comment))))
      (whitespace-indentation ((t (:background ,yellow :foreground ,red))))
