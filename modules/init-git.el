@@ -20,13 +20,20 @@
 ;;; Magit
 (require 'magit)
 
+(defun exordium-magit-log ()
+  "If in `dired-mode', call `magit-dired-log'. Otherwise call
+`magit-log-current (or `magit-log' if former not present)."
+    (interactive)
+    (if (eq 'dired-mode major-mode)
+        (call-interactively 'magit-dired-log)
+      (if (fboundp 'magit-log-current)
+          (call-interactively 'magit-log-current)
+        (call-interactively 'magit-log))))
+
 ;;; Keys
 (define-prefix-command 'exordium-git-map nil)
 (define-key exordium-git-map (kbd "s") (function magit-status))
-(define-key exordium-git-map (kbd "l")
-  (if (fboundp 'magit-log-current)
-      (function magit-log-current)
-    (function magit-log)))
+(define-key exordium-git-map (kbd "l") 'exordium-magit-log)
 (define-key exordium-git-map (kbd "f")
   (if (fboundp 'magit-log-buffer-file)
       (function magit-log-buffer-file)
