@@ -349,8 +349,7 @@ any file to fold or unfold its diff. Use the <kbd>s</kbd> key to stage or
 unstage a file, and the capital <kbd>S</kbd> to stage all of them. Use the
 <kbd>k</kbd> key to revert a file. Type <kbd>c</kbd> twice to commit; it will
 ask for the commit message (<kbd>C-c C-c</kbd> to close the window and
-commit). Finally the <kbd>q</kbd> key quits magit. There are a lot of other
-keys which are described [here](http://daemianmack.com/magit-cheatsheet.html).
+commit). Finally the <kbd>q</kbd> key quits magit.
 
 The screenshot above also shows
 [git gutter](https://github.com/syohex/emacs-git-gutter) in the top buffer. Git
