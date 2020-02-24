@@ -306,6 +306,9 @@ names to which it refers are bound."
      ;; Emacs Lisp
      (eval-sexp-fu-flash ((t (:background ,orange :foreground ,back))))
      (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,back))))
+
+     ;; magit and forge
+     (forge-topic-closed ((t (:foreground ,base00))))
      )))
 
 (defmacro define-solarized-theme (mode)
