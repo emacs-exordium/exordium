@@ -26,7 +26,7 @@
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 
-(with-no-warnings (require 'cl))
+(with-no-warnings (use-package cl))
 (require 'init-prefs)
 
 
@@ -161,7 +161,7 @@
   (setq isearch-allow-scroll t))
 
 ;;; Evil-mode
-(require 'evil)
+(use-package evil)
 (if (and exordium-enable-evil-mode (fboundp 'evil-mode))
     (evil-mode t)
   ;; Evil mode depends in undo-tree, which thinks it should work by default
@@ -201,7 +201,7 @@
 (define-key global-map [(control x)(control b)] (function ibuffer))
 
 ;;; Zoom
-(require 'default-text-scale)
+(use-package default-text-scale)
 (define-key global-map [(control +)] (function default-text-scale-increase))
 (define-key global-map [(control -)] (function default-text-scale-decrease))
 (define-key global-map [(control mouse-4)] (function default-text-scale-increase))
@@ -221,7 +221,7 @@
 ;;; Cool extensions
 
 ;;; Expand region
-(require 'expand-region)
+(use-package expand-region)
 (global-set-key (kbd "C-=") (function er/expand-region))
 (global-set-key (kbd "M-C-=") (function er/contract-region))
 
@@ -257,7 +257,8 @@
 
 ;; Propose vlf (Very Large File) as a choice when opening large files
 ;; (otherwise one can open a file using M-x vlf):
-(require 'vlf-setup)
+(use-package vlf-setup
+  :ensure vlf)
 
 ;; Remove trailing blanks on save
 (define-minor-mode delete-trailing-whitespace-mode

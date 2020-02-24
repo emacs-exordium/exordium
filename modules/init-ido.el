@@ -5,7 +5,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-x C-r        Open recent file with IDO or Helm.
 
-(require 'ido)
+(use-package ido)
 (unless exordium-helm-everywhere
   (ido-mode 'both))
 
@@ -35,8 +35,8 @@
 ;; Open recent files with IDO.
 ;; `abbreviate-file-name' abbreviates home dir to ~/ in the file list
 ;; Custom abbreviations can be added to `directory-abbrev-alist'.
-(require 'recentf)
-(require 'helm)
+(use-package recentf)
+(use-package helm)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)

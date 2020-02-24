@@ -36,7 +36,7 @@
 ;;
 ;; TODO: implement support for bury-buffer in FLB mode
 
-(require 'cl)
+(use-package cl)
 
 (define-minor-mode flb-mode
   "Frame-local buffer mode. This macro defines both a function

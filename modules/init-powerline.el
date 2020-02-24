@@ -1,7 +1,7 @@
 ;;;; A theme for Powerline
 
-(require 'powerline)
-(require 'all-the-icons)
+(use-package powerline)
+(use-package all-the-icons)
 (require 'init-themes)
 (require 'init-prefs)
 

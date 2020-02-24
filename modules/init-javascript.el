@@ -1,7 +1,7 @@
 ;;;; JavaScript mode
 
-(require 'js)
-(require 'js2-mode)
+(use-package js)
+(use-package js2-mode)
 (require 'init-prefs)
 
 ;;; Activate js2-mode and ac-js2 for auto-complete.

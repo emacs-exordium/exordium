@@ -1,8 +1,8 @@
 ;;;; company-mode
 
-(require 'rtags)
-(require 'company)
-(require 'diminish)
+(use-package rtags)
+(use-package company)
+(use-package diminish)
 
 ;; Turn on rtags completions
 (setq rtags-completions-enabled t)

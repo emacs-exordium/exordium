@@ -10,8 +10,8 @@
 ;;; - Open .h files in C++ mode by default
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
-(with-no-warnings (require 'cl))
-(require 'cc-mode)
+(with-no-warnings (use-package cl))
+(use-package cc-mode)
 (require 'init-lib)
 
 ;;; Open a header file in C++ mode by default
@@ -27,7 +27,7 @@
 
 ;;; Highlight dead code between #if 0 and #endif
 
-(require 'cpp)
+(use-package cpp)
 (defun cpp-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
   (let ((color (face-background 'shadow)))
@@ -147,7 +147,7 @@
 ;;; C++11 keywords
 
 (require 'init-prefs)
-(with-no-warnings (require 'cl))
+(with-no-warnings (use-package cl))
 
 (defconst exordium-extra-c++-keywords
   (remove-if #'null
@@ -162,10 +162,12 @@
             #'(lambda()
                 (font-lock-add-keywords nil exordium-extra-c++-keywords))
             t))
-(when (eq exordium-enable-c++11-keywords :modern)
-  (add-hook 'c++-mode-hook (lambda ()
-                             (modern-c++-font-lock-mode)
-                             (diminish 'modern-c++-font-lock-mode))))
+
+(use-package modern-cpp-font-lock
+  :if (eq exordium-enable-c++11-keywords :modern)
+  :diminish modern-c++-font-lock-mode
+  :hook (c++-mode . modern-c++-font-lock-mode)
+  )
 
 
 (provide 'init-cpp)

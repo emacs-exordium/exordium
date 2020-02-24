@@ -15,11 +15,11 @@
 ;;; C-S-s             Helm Swoop, a way of searching with Helm (try it!).
 ;;; C-c e             Project Explorer: show the directory tree.
 
-(require 'helm)
-(require 'projectile)
-(require 'helm-projectile)
-(require 'helm-swoop)
-(require 'treemacs-projectile)
+(use-package helm)
+(use-package projectile)
+(use-package helm-projectile)
+(use-package helm-swoop)
+(use-package treemacs-projectile)
 (require 'init-prefs)
 
 (projectile-global-mode)

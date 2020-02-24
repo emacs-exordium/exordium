@@ -141,61 +141,62 @@ Check the warnings and messages buffers, or restart with --debug-init")
 
 ;; Load the packages we need if they are not installed already
 (let ((package-pinned-packages (append '(
-                                         (diminish                . "melpa-pinned")
-                                         (highlight-symbol        . "melpa-pinned")
-                                         (magit                   . "melpa-pinned")
-                                         (git-timemachine         . "melpa-pinned")
-                                         (git-gutter              . "melpa-pinned")
-                                         (git-gutter-fringe       . "melpa-pinned")
-                                         (expand-region           . "melpa-pinned")
-                                         (auto-complete           . "melpa-pinned")
-                                         (company                 . "melpa-pinned")
-                                         (rtags                   . "melpa-pinned")
-                                         (ac-rtags                . "melpa-pinned")
-                                         (company-rtags           . "melpa-pinned")
-                                         (flycheck-rtags          . "melpa-pinned")
-                                         (helm-rtags              . "melpa-pinned")
-                                         (auto-complete-c-headers . "melpa")
-                                         (yasnippet               . "melpa-pinned")
-                                         (js2-mode                . "melpa-pinned")
-                                         (ac-js2                  . "melpa")
-                                         (iedit                   . "melpa")
-                                         (cider                   . "melpa-pinned")
-                                         (clojure-mode            . "melpa-pinned")
-                                         (paredit                 . "melpa-pinned")
-                                         (rainbow-delimiters      . "melpa-pinned")
-                                         (helm                    . "melpa-pinned")
-                                         (helm-descbinds          . "melpa-pinned")
-                                         (helm-flycheck           . "melpa-pinned")
-                                         (helm-swoop              . "melpa-pinned")
-                                         (helm-ag                 . "melpa-pinned")
-                                         (ido-completing-read+    . "melpa-pinned")
-                                         (projectile              . "melpa-pinned")
-                                         (helm-projectile         . "melpa-pinned")
-                                         (cmake-mode              . "melpa-pinned")
-                                         (markdown-mode           . "melpa-pinned")
-                                         (impatient-mode          . "melpa-pinned")
-                                         (enh-ruby-mode           . "melpa")
-                                         (fill-column-indicator   . "melpa-pinned")
-                                         (exec-path-from-shell    . "melpa-pinned")
-                                         (goto-chg                . "melpa")
-                                         (treemacs-projectile     . "melpa-pinned")
-                                         (page-break-lines        . "melpa-pinned")
-                                         (org-bullets             . "melpa-pinned")
-                                         (ox-gfm                  . "melpa-pinned")
-                                         (powerline               . "melpa-pinned")
-                                         (nlinum                  . "gnu")
-                                         (vlf                     . "melpa-pinned")
-                                         (avy                     . "melpa-pinned")
-                                         (ace-window              . "melpa-pinned")
-                                         (highlight               . "melpa-pinned")
-                                         (eval-sexp-fu            . "melpa-pinned")
-                                         (modern-cpp-font-lock    . "melpa-pinned")
-                                         (default-text-scale      . "melpa-pinned")
-                                         (evil                    . "melpa-pinned")
-                                         (all-the-icons           . "melpa-pinned")
-                                         (groovy-mode             . "melpa-pinned")
-                                         (forge                   . "melpa-pinned")
+                                         (use-package             . "melpa-pinned")
+                                         ;; (diminish                . "melpa-pinned")
+                                         ;; (highlight-symbol        . "melpa-pinned")
+                                         ;; (magit                   . "melpa-pinned")
+                                         ;; (git-timemachine         . "melpa-pinned")
+                                         ;; (git-gutter              . "melpa-pinned")
+                                         ;; (git-gutter-fringe       . "melpa-pinned")
+                                         ;; (expand-region           . "melpa-pinned")
+                                         ;; (auto-complete           . "melpa-pinned")
+                                         ;; (company                 . "melpa-pinned")
+                                         ;; (rtags                   . "melpa-pinned")
+                                         ;; (ac-rtags                . "melpa-pinned")
+                                         ;; (company-rtags           . "melpa-pinned")
+                                         ;; (flycheck-rtags          . "melpa-pinned")
+                                         ;; (helm-rtags              . "melpa-pinned")
+                                         ;; (auto-complete-c-headers . "melpa")
+                                         ;; (yasnippet               . "melpa-pinned")
+                                         ;; (js2-mode                . "melpa-pinned")
+                                         ;; (ac-js2                  . "melpa")
+                                         ;; (iedit                   . "melpa")
+                                         ;; (cider                   . "melpa-pinned")
+                                         ;; (clojure-mode            . "melpa-pinned")
+                                         ;; (paredit                 . "melpa-pinned")
+                                         ;; (rainbow-delimiters      . "melpa-pinned")
+                                         ;; (helm                    . "melpa-pinned")
+                                         ;; (helm-descbinds          . "melpa-pinned")
+                                         ;; (helm-flycheck           . "melpa-pinned")
+                                         ;; (helm-swoop              . "melpa-pinned")
+                                         ;; (helm-ag                 . "melpa-pinned")
+                                         ;; (ido-completing-read+    . "melpa-pinned")
+                                         ;; (projectile              . "melpa-pinned")
+                                         ;; (helm-projectile         . "melpa-pinned")
+                                         ;; (cmake-mode              . "melpa-pinned")
+                                         ;; (markdown-mode           . "melpa-pinned")
+                                         ;; (impatient-mode          . "melpa-pinned")
+                                         ;; (enh-ruby-mode           . "melpa")
+                                         ;; (fill-column-indicator   . "melpa-pinned")
+                                         ;; (exec-path-from-shell    . "melpa-pinned")
+                                         ;; (goto-chg                . "melpa")
+                                         ;; (treemacs-projectile     . "melpa-pinned")
+                                         ;; (page-break-lines        . "melpa-pinned")
+                                         ;; (org-bullets             . "melpa-pinned")
+                                         ;; (ox-gfm                  . "melpa-pinned")
+                                         ;; (powerline               . "melpa-pinned")
+                                         ;; (nlinum                  . "gnu")
+                                         ;; (vlf                     . "melpa-pinned")
+                                         ;; (avy                     . "melpa-pinned")
+                                         ;; (ace-window              . "melpa-pinned")
+                                         ;; (highlight               . "melpa-pinned")
+                                         ;; (eval-sexp-fu            . "melpa-pinned")
+                                         ;; (modern-cpp-font-lock    . "melpa-pinned")
+                                         ;; (default-text-scale      . "melpa-pinned")
+                                         ;; (evil                    . "melpa-pinned")
+                                         ;; (all-the-icons           . "melpa-pinned")
+                                         ;; (groovy-mode             . "melpa-pinned")
+                                         ;; (forge                   . "melpa-pinned")
                                          )
                                        exordium-extra-pinned))
       (has-refreshed nil))
@@ -237,8 +238,17 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (setq custom-theme-directory exordium-themes-dir)
 
 
+;; This is only needed once, near the top of the file
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  (require 'use-package))
+
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+(setq use-package-compute-statistics t)
+
 ;;; Load Modules
-(require 'bytecomp)
+(use-package bytecomp :ensure nil)
 (defun recompile-modules ()
   "Recompile modules for which the .elc is older than the .el, if
 the .elc exists. Also discard .elc without corresponding .el"
@@ -262,108 +272,107 @@ the .elc exists. Also discard .elc without corresponding .el"
             (delete-file elc)))))))
 (recompile-modules)
 
-(require 'init-lib)         ; utility functions - load this first
-(require 'init-environment) ; environment variables
+(use-package init-lib :ensure nil)         ; utility functions - load this first
+(use-package init-environment :ensure nil) ; environment variables
 
 ;;; Local preferences (fonts, frame size etc.)
-(require 'init-prefs)       ; defines variables that prefs.el can override
+(use-package init-prefs :ensure nil)       ; defines variables that prefs.el can override
 (dolist (tapped-file exordium-tapped-prefs-files)
   (load tapped-file))
 
 ;;; Themes
 ;;; Note: use "export TERM=xterm-256color" for emacs -nw
-(require 'init-progress-bar)
+(use-package init-progress-bar :ensure nil)
 (when exordium-nw
   (set-face-background 'highlight nil))
-(when exordium-theme
-  (require 'init-themes))
+(use-package init-themes :ensure nil :if exordium-theme)
 
 ;;; Desktop
 (when exordium-desktop
-  (require 'init-desktop))
+  (use-package init-desktop :ensure nil))
 
 ;;; Look and feel
-(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
-(require 'init-font-lock)       ; enables/disables font-lock globally.
-(require 'init-linum)           ; line numbers
-(when exordium-smooth-scroll    ; smooth scroll
-  (require 'init-smooth-scroll)
-  (smooth-scroll-mode 1))
+(use-package init-look-and-feel :ensure nil)   ; fonts, UI, keybindings, saving files etc.
+(use-package init-font-lock :ensure nil)       ; enables/disables font-lock globally.
+(use-package init-linum :ensure nil)           ; line numbers
+(use-package init-smooth-scroll
+  :ensure nil
+  :if exordium-smooth-scroll
+  :config (smooth-scroll-mode 1)) ; smooth
+                                                                                                       ; scroll
 
 (update-progress-bar)
 
 ;;; Usability
-(require 'init-window-manager)  ; navigate between windows
-(require 'init-util)            ; utilities like match paren, bookmarks...
-(require 'init-ido)             ; supercharged completion engine
-(require 'init-highlight)       ; highlighting current line, symbol under point
-(cond ((eq exordium-complete-mode :auto-complete)
-       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
-      ((eq exordium-complete-mode :company)
-       (require 'init-company))) ; company mode (rtags are on by default)
-(when exordium-helm-projectile  ; find files anywhere in project
-  (require 'init-helm-projectile))
-(require 'init-helm)            ; setup helm
+(use-package init-window-manager :ensure nil)  ; navigate between windows
+(use-package init-util :ensure nil)            ; utilities like match paren, bookmarks...
+(use-package init-ido :ensure nil)             ; supercharged completion engine
+(use-package init-highlight :ensure nil)       ; highlighting current line, symbol under point
+(use-package init-autocomplete :ensure nil
+  :if (eq exordium-complete-mode :auto-complete))
+(use-package init-company :ensure nil
+  :if (eq exordium-complete-mode :company))
+
+(use-package init-helm-projectile :ensure nil
+  :if exordium-helm-projectile)
+(use-package init-helm :ensure nil)            ; setup helm
 
 (update-progress-bar)
 
-(require 'init-dired)           ; enable dired+ and wdired permission editing
-(require 'init-git)             ; Magit and git gutter
-(require 'init-git-visit-diffs) ; visit diffs in successive narrowed buffers
-(require 'init-flb-mode)        ; frame-local buffers
+(use-package init-dired :ensure nil)           ; enable dired+ and wdired permission editing
+(use-package init-git :ensure nil)             ; Magit and git gutter
+(use-package init-git-visit-diffs :ensure nil) ; visit diffs in successive narrowed buffers
+(use-package init-flb-mode :ensure nil)        ; frame-local buffers
 
 (update-progress-bar)
 
 ;;; Prog mode
-(require 'init-prog-mode)
+(use-package init-prog-mode :ensure nil)
 
 ;;; Shell mode
-(require 'init-shell)
+(use-package init-shell :ensure nil)
 
 ;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
+(use-package init-markdown :ensure nil)
+(use-package init-org :ensure nil)
+(use-package init-xml :ensure nil)
 
 ;;; OS-specific things
-(when exordium-osx
-  (require 'init-osx))
+(use-package init-osx :ensure nil :if exordium-osx)
 
 ;;; C++
-(require 'init-cpp)
-(require 'init-bde-style)
-(when exordium-yasnippet
-  (require 'init-yasnippet))
-(require 'init-gdb)
+(use-package init-cpp :ensure nil)
+(use-package init-bde-style :ensure nil)
+(use-package init-yasnippet :ensure nil :if exordium-yasnippet)
+(use-package init-gdb :ensure nil)
 
 ;;; RTags
-(require 'init-rtags)
+(use-package init-rtags :ensure nil)
 (when exordium-rtags-auto-complete
   (rtags-auto-complete))
-(require 'init-rtags-helm)
-(require 'init-rtags-cmake)
-(require 'init-rtags-cdb)
+(use-package init-rtags-helm :ensure nil)
+(use-package init-rtags-cmake :ensure nil)
+(use-package init-rtags-cdb :ensure nil)
 
 (update-progress-bar)
 
 ;;; JS
-(require 'init-javascript)
+(use-package init-javascript :ensure nil)
 
 ;;; Python
-(require 'init-python)
+(use-package init-python :ensure nil)
 
 ;;; Ruby
-(require 'init-ruby)
+(use-package init-ruby :ensure nil)
 
 ;;; Lisp
-(require 'init-elisp)
+(use-package init-elisp :ensure nil)
 
 ;;; Clojure
-(when exordium-clojure
-  (require 'init-clojure))
+(use-package init-clojure :ensure nil :if exordium-clojure)
 
 ;;; include-what-you-use
-(require 'init-iwyu)
+(use-package init-iwyu :ensure nil)
 
 (update-progress-bar)
 
@@ -371,8 +380,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 (dolist (tapped-file exordium-tapped-after-init-files)
   (load tapped-file))
 
-(when (and exordium-theme exordium-enable-powerline)
-  (require 'init-powerline))
+(use-package init-powerline :ensure nil
+  :if (and exordium-theme exordium-enable-powerline))
 
 (update-progress-bar)
 

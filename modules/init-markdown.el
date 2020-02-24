@@ -27,7 +27,7 @@
 ;;; changed.
 
 (require 'init-prefs)
-(require 'markdown-mode)
+(use-package markdown-mode)
 
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -59,7 +59,7 @@
 
 ;;; Impatient markdown mode
 
-(require 'impatient-mode)
+(use-package impatient-mode)
 
 (define-minor-mode impatient-markdown-mode
   "Markdown rendering for people who lack patience"

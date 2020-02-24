@@ -122,18 +122,18 @@
 ;;; - "C-c r D" or M-x `rtags-diagnostics' to start,
 ;;; - "C-c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
-(with-no-warnings (require 'cl))
+(with-no-warnings (use-package cl))
 (require 'init-lib)
 (require 'init-prefs)
-(require 'rtags)
-(require 'ac-rtags)
-(require 'auto-complete-c-headers)
-(require 'projectile)
+(use-package rtags)
+(use-package ac-rtags)
+(use-package auto-complete-c-headers)
+(use-package projectile)
 
 
 ;;; Turn on flycheck support when requested
 (when (eq exordium-rtags-syntax-checker :flycheck)
-  (require 'flycheck-rtags)
+  (use-package flycheck-rtags)
   ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
   (cl-flet ((flycheck-rtags-hook ()
                                  (flycheck-select-checker 'rtags)
@@ -414,7 +414,7 @@ Note that RTags becomes the only source for auto-complete in all
 C and C++ buffers. Also note that RTags Diagostics must be turned
 on."
   (interactive)
-  (require 'ac-rtags)
+  (use-package ac-rtags)
   (setq rtags-completions-enabled t)
   (add-hook 'c++-mode-hook
             (lambda ()

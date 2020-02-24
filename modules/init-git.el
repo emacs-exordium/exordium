@@ -18,7 +18,7 @@
 ;;; C-c g r           Revert current hunk (asks for confirmation)
 
 ;;; Magit
-(require 'magit)
+(use-package magit)
 
 (defun exordium-magit-log ()
   "If in `dired-mode', call `magit-dired-log'. Otherwise call
@@ -89,13 +89,13 @@
 
 (when exordium-git-gutter-non-fringe
   (setq exordium-git-gutter nil)
-  (require 'git-gutter)
+  (use-package git-gutter)
   (exordium-global-git-gutter-mode t)
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
 (when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
-  (require 'git-gutter-fringe)
+  (use-package git-gutter-fringe)
   (exordium-global-git-gutter-mode t)
   (diminish 'git-gutter-mode))
 

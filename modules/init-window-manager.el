@@ -23,7 +23,7 @@
 
 ;;; C-c arrow = move the focus between visible buffers
 
-(require 'windmove)
+(use-package windmove)
 (global-set-key [(control c) (left)]  (function windmove-left))
 (global-set-key [(control c) (right)] (function windmove-right))
 (global-set-key [(control c) (up)]    (function windmove-up))
@@ -104,7 +104,7 @@
 
 ;;; Ace-window
 
-(require 'ace-window)
+(use-package ace-window)
 (global-set-key (kbd "M-p") #'ace-window)
 
 (provide 'init-window-manager)

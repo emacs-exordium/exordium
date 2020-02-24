@@ -3,7 +3,7 @@
 ;;; This file defines utility functions reused in other modules. It should be
 ;;; loaded before any other module.
 
-(with-no-warnings (require 'cl))
+(with-no-warnings (use-package cl))
 
 
 ;;; Files

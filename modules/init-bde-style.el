@@ -78,10 +78,10 @@
 ;;; region or comment block.
 ;;; TODO: the regex should be fixed for words like "e.g." or "i.e.".
 
-(with-no-warnings (require 'cl))
-(require 'cc-defs)
-(require 'cc-vars)
-(require 'cc-mode)
+(with-no-warnings (use-package cl))
+(use-package cc-defs :ensure nil)
+(use-package cc-vars :ensure nil)
+(use-package cc-mode)
 (require 'subr-x)
 (require 'init-lib)
 
