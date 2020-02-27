@@ -256,8 +256,8 @@ names to which it refers are bound."
      (slime-warning-face ((t (:weight bold :foreground ,red))))
 
      ;;flyspell
-     (flyspell-incorrect ((t (:foreground ,red))))
-     (flyspell-duplicate ((t (:foreground ,yellow))))
+     (flyspell-incorrect ((t (:underline (:color ,red :style wave)))))
+     (flyspell-duplicate ((t (:underline (:color ,red :style wave)))))
 
      ;;ansi-term
      (term-color-black ((t ( :foreground ,base02))))
