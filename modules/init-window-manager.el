@@ -23,11 +23,12 @@
 
 ;;; C-c arrow = move the focus between visible buffers
 
-(use-package windmove)
-(global-set-key [(control c) (left)]  (function windmove-left))
-(global-set-key [(control c) (right)] (function windmove-right))
-(global-set-key [(control c) (up)]    (function windmove-up))
-(global-set-key [(control c) (down)]  (function windmove-down))
+(use-package windmove
+  :config
+  (global-set-key [(control c) (left)]  (function windmove-left))
+  (global-set-key [(control c) (right)] (function windmove-right))
+  (global-set-key [(control c) (up)]    (function windmove-up))
+  (global-set-key [(control c) (down)]  (function windmove-down)))
 
 
 ;;; C-c shift-arrow = move buffers themselves (e.g. swap windows)

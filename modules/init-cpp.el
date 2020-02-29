@@ -11,11 +11,14 @@
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
 (with-no-warnings (use-package cl))
-(use-package cc-mode)
 (require 'init-lib)
 
-;;; Open a header file in C++ mode by default
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(use-package cc-mode
+  :config
+  ;;; Open a header file in C++ mode by default
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+)
+
 
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
