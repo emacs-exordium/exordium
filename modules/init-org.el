@@ -1,8 +1,8 @@
 ;;;; Org mode
 
 (require 'init-prefs)
+(require 'org)
 (eval-when-compile
-  (require 'org)
   (require 'ox-html)
   (require 'fill-column-indicator))
 
