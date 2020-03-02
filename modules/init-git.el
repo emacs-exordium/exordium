@@ -9,6 +9,7 @@
 ;;; C-c g l           Magit log
 ;;; C-c g f           Magit file log
 ;;; C-c g b           Toggle Magit blame mode
+;;; C-c g c           Magit clone
 ;;;
 ;;; C-c g down        Goto next hunk in buffer
 ;;; C-c g n           Goto next hunk in buffer
@@ -18,7 +19,30 @@
 ;;; C-c g r           Revert current hunk (asks for confirmation)
 
 ;;; Magit
-(use-package magit)
+(define-prefix-command 'exordium-git-map nil)
+(global-set-key (kbd "C-c g") 'exordium-git-map)
+
+(use-package magit
+  :bind (:map exordium-git-map
+              ("s" . (function magit-status))
+              ("l" . 'exordium-magit-log)
+              ("f" . 'exordium-magit-log-buffer)
+              ("b" . 'exordium-magit-blame)
+              ("c" . (function magit-clone))
+              )
+  )
+
+(defun exordium-magit-log-buffer ()
+  (if (fboundp 'magit-log-buffer-file)
+      (function magit-log-buffer-file)
+    (function magit-file-log))
+  )
+
+(defun exordium-magit-blame ()
+   (if (fboundp 'magit-blame)
+       (function magit-blame)
+     (function magit-blame-mode))
+  )
 
 (defun exordium-magit-log ()
   "If in `dired-mode', call `magit-dired-log'. Otherwise call
@@ -31,18 +55,6 @@
         (call-interactively 'magit-log))))
 
 ;;; Keys
-(define-prefix-command 'exordium-git-map nil)
-(define-key exordium-git-map (kbd "s") (function magit-status))
-(define-key exordium-git-map (kbd "l") 'exordium-magit-log)
-(define-key exordium-git-map (kbd "f")
-  (if (fboundp 'magit-log-buffer-file)
-      (function magit-log-buffer-file)
-    (function magit-file-log)))
-(define-key exordium-git-map (kbd "b")
-  (if (fboundp 'magit-blame)
-      (function magit-blame)
-    (function magit-blame-mode)))
-(global-set-key (kbd "C-c g") 'exordium-git-map)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
@@ -94,30 +106,31 @@
   (git-gutter:linum-setup)
   (diminish 'git-gutter-mode))
 
-(when (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
-  (use-package git-gutter-fringe)
-  (exordium-global-git-gutter-mode t)
-  (diminish 'git-gutter-mode))
+(use-package git-gutter-fringe
+  :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
+  :config (exordium-global-git-gutter-mode t)
+  :diminish
+  :bind (:map exordium-git-map
+              ("<down>" . 'git-gutter:next-hunk)
+              ("n" . 'git-gutter:next-hunk)
+              ("<up>" . 'git-gutter:previous-hunk)
+              ("p" . 'git-gutter:previous-hunk)
+              ("d" . 'git-gutter:popup-hunk)
+              ("r" . 'git-gutter:revert-hunk))
+  :init
+  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
+  )
 
-;; Keys
-(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
-  (define-key exordium-git-map (kbd "<down>") 'git-gutter:next-hunk)
-  (define-key exordium-git-map (kbd "n") 'git-gutter:next-hunk)
-  (define-key exordium-git-map (kbd "<up>") 'git-gutter:previous-hunk)
-  (define-key exordium-git-map (kbd "p") 'git-gutter:previous-hunk)
-  (define-key exordium-git-map (kbd "d") 'git-gutter:popup-hunk)
-  (define-key exordium-git-map (kbd "r") 'git-gutter:revert-hunk))
-
-;; Automatically update git gutter after staging or unstaging with magit (magit
-;; runs this hook for all buffers in the repo after all operations, if
-;; `magit-auto-revert-mode' is enabled -- the default).
-(when (or exordium-git-gutter exordium-git-gutter-non-fringe)
-  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook))
 
 
 ;;; Git Timemachine
+(use-package git-timemachine
+  :defer t
+  :bind
+  (:map exordium-git-map ("t" . 'git-timemachine-toggle) )
+  )
 
-(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
+;;(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
 
 ;;; Git Grep
