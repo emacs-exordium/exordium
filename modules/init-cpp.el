@@ -172,6 +172,9 @@
   :hook (c++-mode . modern-c++-font-lock-mode)
   )
 
+(use-package cmake-mode
+  :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
+         ("\\.cmake\\'" . cmake-mode)))
 
 (provide 'init-cpp)
 ;; Local Variables:
