@@ -23,29 +23,21 @@
 (global-set-key (kbd "C-c g") 'exordium-git-map)
 
 (use-package magit
-  :bind (:map exordium-git-map
-              ("s" . (function magit-status))
-              ("l" . 'exordium-magit-log)
-              ("f" . 'exordium-magit-log-buffer)
-              ("b" . 'exordium-magit-blame)
-              ("c" . (function magit-clone))
-              )
-  )
+  :init
+  (defun exordium-magit-log-buffer ()
+    (if (fboundp 'magit-log-buffer-file)
+        (function magit-log-buffer-file)
+      (function magit-file-log))
+    )
 
-(defun exordium-magit-log-buffer ()
-  (if (fboundp 'magit-log-buffer-file)
-      (function magit-log-buffer-file)
-    (function magit-file-log))
-  )
+  (defun exordium-magit-blame ()
+    (if (fboundp 'magit-blame)
+        (function magit-blame)
+      (function magit-blame-mode))
+    )
 
-(defun exordium-magit-blame ()
-   (if (fboundp 'magit-blame)
-       (function magit-blame)
-     (function magit-blame-mode))
-  )
-
-(defun exordium-magit-log ()
-  "If in `dired-mode', call `magit-dired-log'. Otherwise call
+  (defun exordium-magit-log ()
+    "If in `dired-mode', call `magit-dired-log'. Otherwise call
 `magit-log-current (or `magit-log' if former not present)."
     (interactive)
     (if (eq 'dired-mode major-mode)
@@ -54,37 +46,53 @@
           (call-interactively 'magit-log-current)
         (call-interactively 'magit-log))))
 
-;;; Keys
-
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
-(defadvice magit-status (around magit-fullscreen activate)
-  (window-configuration-to-register :magit-fullscreen)
-  ad-do-it
-  (delete-other-windows))
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
 
 ;;; Make `magit-log' run alone in the frame, and then restore the old window
 ;;; configuration when you quit out of magit.
-(defadvice magit-log (around magit-fullscreen activate)
-  (window-configuration-to-register :magit-fullscreen)
-  ad-do-it
-  (delete-other-windows))
+  (defadvice magit-log (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
 
-(defun magit-quit-session ()
-  "Restores the previous window configuration and kills the magit buffer"
-  (interactive)
-  (kill-buffer)
-  (jump-to-register :magit-fullscreen))
+  (defun magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer"
+    (interactive)
+    (kill-buffer)
+    (jump-to-register :magit-fullscreen))
 
-(define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+  ;;; Turn off the horrible warning about magit auto-revert of saved buffers
+  (setq magit-last-seen-setup-instructions "1.4.0")
+
+  :bind
+  (
+   :map exordium-git-map
+        ("s" . (function magit-status))
+        ("l" . 'exordium-magit-log)
+        ("f" . 'exordium-magit-log-buffer)
+        ("b" . 'exordium-magit-blame)
+        ("c" . (function magit-clone))
+   :map magit-status-mode-map
+        ("q" . 'magit-quit-session)
+        )
+  )
+
+
+;;; Keys
+
+
+;; (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
 ;;; Don't show "MRev" in the modeline
 (when (bound-and-true-p magit-auto-revert-mode)
   (diminish 'magit-auto-revert-mode))
 
 
-;;; Turn off the horrible warning about magit auto-revert of saved buffers
-(setq magit-last-seen-setup-instructions "1.4.0")
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.

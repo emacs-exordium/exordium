@@ -8,19 +8,7 @@
   (add-hook 'org-src-mode-hook
             (lambda ()
               (turn-off-fci-mode)))
-  (when exordium-enable-org-export
-    ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     `((perl       . t)
-       (ruby       . t)
-       ,(if (version< org-version "9.0")
-            '(sh         . t)
-          '(shell      . t))
-       (python     . t)
-       (emacs-lisp . t)
-       (C          . t)
-       (dot        . t))))
+
     (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 
   :config
@@ -40,7 +28,20 @@
     (when exordium-org-export-css
       (setq org-html-htmlize-output-type 'css)
       (setq org-html-head exordium-org-export-css-stylesheet)))
-  )
+
+  (when exordium-enable-org-export
+    ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     `((perl       . t)
+       (ruby       . t)
+       ,(if (version< org-version "9.0")
+            '(sh         . t)
+          '(shell      . t))
+       (python     . t)
+       (emacs-lisp . t)
+       (C          . t)
+       (dot        . t)))))
 
 (use-package fill-column-indicator)
 

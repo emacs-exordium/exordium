@@ -34,7 +34,7 @@
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
   :hook
-  (add-hook (markdown-mode . exordium-electric-mode-add-back-tick)
+  (add-hook (markdown-mode . exordium-electric-mode-add-back-tick))
   :config
   ;; Loud face for TODOs in markdown documents
   (when exordium-font-lock
@@ -48,32 +48,17 @@
   (when (fboundp 'ace-window)
     (define-key markdown-mode-map (kbd "M-p") #'ace-window))
 
-)
-
-;(autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
+  )
 
 ;;; FIXME: quick workaround for a bug in markdown-mode 2.1 (font lock is broken)
 (when (and (boundp 'markdown-mode-version)
            (equal markdown-mode-version "2.1"))
   (add-hook 'markdown-mode-hook 'font-lock-mode))
 
-;;; Loud face for TODOs in markdown documents
-;; (when exordium-font-lock
-;;   (setq markdown-mode-font-lock-keywords-core
-;;         (list
-;;          (cons markdown-regex-italic '(2 markdown-italic-face))
-;;          (cons "\\<\\(TODO\\|FIXME\\|TBD\\):" '(1 font-lock-warning-face)))))
-
-;;; Markdown-mode uses M-p to go to the previous link, which is useless and
-;;; conflicts with ace-window, so let's change this:
-;; (when (fboundp 'ace-window)
-;;   (define-key markdown-mode-map (kbd "M-p") #'ace-window))
 
 
 ;;; Make backtick an electric pair
 (require 'init-lib)
-
-;; (add-hook 'markdown-mode-hook 'exordium-electric-mode-add-back-tick)
 
 
 ;;; Impatient markdown mode
