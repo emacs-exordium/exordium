@@ -365,6 +365,7 @@ Keybinding            | Description
 <kbd>C-c g l</kbd>    | Open git log (`magit-log` or `magit-dired-log` when in `dired-mode`).
 <kbd>C-c g f</kbd>    | Open git file log (`magit-file-log`).
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
+<kbd>C-c g c</kbd>    | Clone a repository (`magit-clone`).
 <kbd>C-c g g</kbd>    | Git grep (`vc-git-grep`) or (`helm-grep-do-git-grep`).
 
 Git gutter keys:
