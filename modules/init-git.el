@@ -9,6 +9,7 @@
 ;;; C-c g l           Magit log
 ;;; C-c g f           Magit file log
 ;;; C-c g b           Toggle Magit blame mode
+;;; C-c g c           Magit clone
 ;;;
 ;;; C-c g down        Goto next hunk in buffer
 ;;; C-c g n           Goto next hunk in buffer
@@ -42,6 +43,7 @@
   (if (fboundp 'magit-blame)
       (function magit-blame)
     (function magit-blame-mode)))
+(define-key exordium-git-map (kbd "c") (function magit-clone))
 (global-set-key (kbd "C-c g") 'exordium-git-map)
 
 ;;; Make `magit-status' run alone in the frame, and then restore the old window
