@@ -25,15 +25,17 @@
 (use-package magit
   :init
   (defun exordium-magit-log-buffer ()
+    (interactive)
     (if (fboundp 'magit-log-buffer-file)
-        (function magit-log-buffer-file)
-      (function magit-file-log))
+        (call-interactively 'magit-log-buffer-file)
+      (call-interactively 'magit-file-log))
     )
 
   (defun exordium-magit-blame ()
+    (interactive)
     (if (fboundp 'magit-blame)
-        (function magit-blame)
-      (function magit-blame-mode))
+        (call-interactively 'magit-blame)
+      (call-interactively 'magit-blame-mode))
     )
 
   (defun exordium-magit-log ()
