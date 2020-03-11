@@ -48,20 +48,6 @@
           (call-interactively 'magit-log-current)
         (call-interactively 'magit-log))))
 
-;;; Make `magit-status' run alone in the frame, and then restore the old window
-;;; configuration when you quit out of magit.
-  (defadvice magit-status (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
-
-;;; Make `magit-log' run alone in the frame, and then restore the old window
-;;; configuration when you quit out of magit.
-  (defadvice magit-log (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
-
   (defun magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
@@ -82,6 +68,22 @@
    :map magit-status-mode-map
         ("q" . 'magit-quit-session)
         )
+
+  :config
+;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log'),
+;;; and `magit-status-internal' (called from `projectile-vc') to run alone in
+;;; the frame, and then restore the old window configuration when you quit out
+;;; of magit.
+  (defun exordium-define-advice-magit-fullscreen (symbol)
+    (cl-flet ((advice (orig-fun &rest args)
+                      (window-configuration-to-register :magit-fullscreen)
+                      (apply orig-fun args)
+                      (delete-other-windows)))
+      (advice-add symbol :around #'advice)))
+  (exordium-define-advice-magit-fullscreen 'magit-status)
+  (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
+  (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
+    (exordium-define-advice-magit-fullscreen 'magit-status-internal))
   )
 
 
