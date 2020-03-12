@@ -70,21 +70,23 @@
         )
 
   :config
-;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log'),
-;;; and `magit-status-internal' (called from `projectile-vc') to run alone in
-;;; the frame, and then restore the old window configuration when you quit out
-;;; of magit.
-  (defun exordium-define-advice-magit-fullscreen (symbol)
-    (cl-flet ((advice (orig-fun &rest args)
-                      (window-configuration-to-register :magit-fullscreen)
-                      (apply orig-fun args)
-                      (delete-other-windows)))
-      (advice-add symbol :around #'advice)))
-  (exordium-define-advice-magit-fullscreen 'magit-status)
-  (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
-  (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
-    (exordium-define-advice-magit-fullscreen 'magit-status-internal))
+;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
+;;; `magit-dired-log'), and `magit-status-internal' (called from
+;;; `projectile-vc') to run alone in the frame, and then restore the old window
+;;; configuration when you quit out of magit.
+  (when exordium-use-magit-fullscreen
+    (defun exordium-define-advice-magit-fullscreen (symbol)
+      (cl-flet ((advice (orig-fun &rest args)
+                        (window-configuration-to-register :magit-fullscreen)
+                        (apply orig-fun args)
+                        (delete-other-windows)))
+        (advice-add symbol :around #'advice)))
+    (exordium-define-advice-magit-fullscreen 'magit-status)
+    (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
+    (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
+      (exordium-define-advice-magit-fullscreen 'magit-status-internal)))
   )
+
 
 
 ;;; Keys
