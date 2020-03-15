@@ -111,8 +111,14 @@ This makes it easier to paste text from the Windows clipboard."
 
 ;;; Backup files (e.g. file~)
 (defcustom exordium-backup-files nil
-  "Enables or disables backup files. Disabled by default, I can't
-  stand these annoying files~"
+  "Enables or disables backup files.
+Disabled by default, I can't stand these annoying files~"
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-use-magit-fullscreen t
+  "If t, magit status and log will fill the whole frame.
+The original window configuration will be restored when you quit out of magit."
   :group 'exordium
   :type  'boolean)
 
