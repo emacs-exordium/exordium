@@ -10,7 +10,7 @@
 ;;; - Open .h files in C++ mode by default
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
-(with-no-warnings (use-package cl))
+(use-package cl-lib :ensure nil)
 (require 'init-lib)
 
 (use-package cc-mode
@@ -95,7 +95,7 @@
       (cond (matching-ext
              (unless
                  (catch 'found
-                   (flet ((when-exists-find-and-throw
+                   (cl-flet ((when-exists-find-and-throw
                            (file)
                            (when (file-exists-p file)
                              (find-file file)
@@ -150,7 +150,7 @@
 ;;; C++11 keywords
 
 (require 'init-prefs)
-(with-no-warnings (use-package cl))
+(use-package cl-lib :ensure nil)
 
 (defconst exordium-extra-c++-keywords
   (remove-if #'null
