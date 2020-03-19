@@ -20,8 +20,8 @@
 (setq org-startup-with-inline-images t)
 
 ;;; Show org-mode bullets as UTF-8 characters.
-(require 'org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(require 'org-superstar)
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
 
 ;;; visual line mode in org-mode, paragraphs without embedded newline
 (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
