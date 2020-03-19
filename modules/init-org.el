@@ -47,9 +47,9 @@
 
 
 ;;; Show org-mode bullets as UTF-8 characters.
-(use-package org-bullets
+(use-package org-superstar
   :hook
-  (org-mode . (lambda () (org-bullets-mode 1))))
+  (org-mode . (lambda () (org-superstar-mode 1))))
 
 ;;; visual line mode in org-mode, paragraphs without embedded newline
 
