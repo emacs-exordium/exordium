@@ -122,7 +122,7 @@
 ;;; - "C-c r D" or M-x `rtags-diagnostics' to start,
 ;;; - "C-c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
 
-(with-no-warnings (use-package cl))
+(use-package cl-lib :ensure nil)
 (require 'init-lib)
 (require 'init-prefs)
 (use-package rtags)

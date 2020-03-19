@@ -8,7 +8,7 @@
 ;;; C-c w d    `iwyu-show-diagnostics-buffer'
 ;;; g          `iwyu-start-process-for' (in `IWYU-mode' buffer)
 
-(use-package cl)
+(use-package cl-lib :ensure nil)
 (use-package compile)
 
 ;;;###autoload

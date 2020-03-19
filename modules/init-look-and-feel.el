@@ -26,14 +26,14 @@
 ;;; F10               Speedbar
 ;;; ----------------- ---------------------------------------------------------
 
-(with-no-warnings (use-package cl))
+(use-package cl-lib :ensure nil)
 (require 'init-prefs)
 
 
 ;;; Font
 
 (defvar exordium-available-preferred-fonts
-  (remove-if-not (lambda (font-and-size)
+  (cl-remove-if-not (lambda (font-and-size)
                    (member (car font-and-size) (font-family-list)))
                  exordium-preferred-fonts))
 
