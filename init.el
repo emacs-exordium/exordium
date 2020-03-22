@@ -142,7 +142,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
 ;; Load the packages we need if they are not installed already
 (let ((package-pinned-packages (append '(
                                          (use-package             . "melpa-pinned")
-                                         ;; (diminish                . "melpa-pinned")
+                                         (diminish                . "melpa-pinned")
+                                         (bind-key                . "melpa-pinned")
                                          ;; (highlight-symbol        . "melpa-pinned")
                                          ;; (magit                   . "melpa-pinned")
                                          ;; (git-timemachine         . "melpa-pinned")
@@ -242,6 +243,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (eval-when-compile
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
 
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
@@ -370,6 +373,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; Clojure
 (use-package init-clojure :ensure nil :if exordium-clojure)
+
+;;; Groovy
+(use-package init-groovy :ensure nil)
 
 ;;; include-what-you-use
 (use-package init-iwyu :ensure nil)

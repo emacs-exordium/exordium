@@ -148,6 +148,11 @@
 
 ;;(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
+;;; Magit Forge
+(use-package forge
+  :defer t
+  )
+
 
 ;;; Git Grep
 

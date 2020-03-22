@@ -22,7 +22,10 @@
 
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
-(define-key global-map (kbd "C-c ;") 'iedit-mode)
+(use-package iedit
+  :init
+  (define-key global-map (kbd "C-c ;") 'iedit-mode)
+  )
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)

@@ -80,7 +80,7 @@
   :if exordium-enable-org-export)
 
 (use-package ox-gfm
-  :ensure org
+  :ensure t
   :after (org)
   :if exordium-enable-org-export)
 

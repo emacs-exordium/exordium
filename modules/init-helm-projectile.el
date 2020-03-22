@@ -54,6 +54,7 @@
 ;;; Other usages of Helm:
 
 ;;; C-h b = describe keybindings using Helm
+(use-package helm-descbinds)
 (define-key global-map [(control h)(b)] (function helm-descbinds))
 
 ;;; C-S-s = helm-swoop
