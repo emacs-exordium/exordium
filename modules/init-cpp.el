@@ -24,8 +24,7 @@
 ;;; Fix A bug (normal key is "C-;")
 (use-package iedit
   :init
-  (define-key global-map (kbd "C-c ;") 'iedit-mode)
-  )
+  (define-key global-map (kbd "C-c ;") 'iedit-mode))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
@@ -172,8 +171,7 @@
 (use-package modern-cpp-font-lock
   :if (eq exordium-enable-c++11-keywords :modern)
   :diminish modern-c++-font-lock-mode
-  :hook (c++-mode . modern-c++-font-lock-mode)
-  )
+  :hook (c++-mode . modern-c++-font-lock-mode))
 
 (use-package cmake-mode
   :mode (("/CMakeLists\\.txt\\'" . cmake-mode)

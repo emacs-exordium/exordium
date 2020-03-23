@@ -28,15 +28,13 @@
     (interactive)
     (if (fboundp 'magit-log-buffer-file)
         (call-interactively 'magit-log-buffer-file)
-      (call-interactively 'magit-file-log))
-    )
+      (call-interactively 'magit-file-log)))
 
   (defun exordium-magit-blame ()
     (interactive)
     (if (fboundp 'magit-blame)
         (call-interactively 'magit-blame)
-      (call-interactively 'magit-blame-mode))
-    )
+      (call-interactively 'magit-blame-mode)))
 
   (defun exordium-magit-log ()
     "If in `dired-mode', call `magit-dired-log'. Otherwise call
@@ -58,16 +56,14 @@
   (setq magit-last-seen-setup-instructions "1.4.0")
 
   :bind
-  (
-   :map exordium-git-map
+  (:map exordium-git-map
         ("s" . (function magit-status))
         ("l" . 'exordium-magit-log)
         ("f" . 'exordium-magit-log-buffer)
         ("b" . 'exordium-magit-blame)
         ("c" . (function magit-clone))
    :map magit-status-mode-map
-        ("q" . 'magit-quit-session)
-        )
+        ("q" . 'magit-quit-session))
 
   :config
 ;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
@@ -86,8 +82,7 @@
     (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
     (exordium-define-advice-magit-fullscreen 'magit-status-setup-buffer)
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
-      (exordium-define-advice-magit-fullscreen 'magit-status-internal)))
-  )
+      (exordium-define-advice-magit-fullscreen 'magit-status-internal))))
 
 
 
@@ -134,8 +129,7 @@
               ("d" . 'git-gutter:popup-hunk)
               ("r" . 'git-gutter:revert-hunk))
   :init
-  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
-  )
+  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook))
 
 
 
@@ -143,15 +137,13 @@
 (use-package git-timemachine
   :defer t
   :bind
-  (:map exordium-git-map ("t" . 'git-timemachine-toggle) )
-  )
+  (:map exordium-git-map ("t" . 'git-timemachine-toggle) ))
 
 ;;(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
 ;;; Magit Forge
 (use-package forge
-  :defer t
-  )
+  :defer t)
 
 
 ;;; Git Grep

@@ -140,12 +140,11 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
-(let ((package-pinned-packages (append '(
-                                         (use-package             . "melpa-pinned")
-                                         (diminish                . "melpa-pinned")
-                                         (bind-key                . "melpa-pinned")
-                                         )
-                                       exordium-extra-pinned))
+(let ((package-pinned-packages (append
+                                '((use-package             . "melpa-pinned")
+                                  (diminish                . "melpa-pinned")
+                                  (bind-key                . "melpa-pinned"))
+                                exordium-extra-pinned))
       (has-refreshed nil))
 
   (defun update-package (p  has-refreshed)

@@ -13,9 +13,7 @@
   (define-key company-active-map (kbd "<escape>") 'company-abort)
 
   ;; Key to force trigger company-complete
-  (define-key company-mode-map [(control .)] 'company-complete)
-
-  )
+  (define-key company-mode-map [(control .)] 'company-complete))
 
 
 

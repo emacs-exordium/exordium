@@ -23,8 +23,7 @@
         (unless flycheck-mode
           (flycheck-mode)
           (diminish 'flycheck-mode))
-        (helm-flycheck)))
-  )
+        (helm-flycheck))))
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"

@@ -2,7 +2,6 @@
 
 (use-package groovy-mode
   :ensure t
-  :defer t
-  )
+  :defer t)
 
 (provide 'init-groovy)

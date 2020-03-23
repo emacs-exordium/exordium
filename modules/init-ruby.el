@@ -5,7 +5,6 @@
   :ensure t
   :defer t
   :mode ("\\.rb$" . enh-ruby-mode)
-  :interpreter ("ruby" . enh-ruby-mode)
-  )
+  :interpreter ("ruby" . enh-ruby-mode))
 
 (provide 'init-ruby)

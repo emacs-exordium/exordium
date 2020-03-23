@@ -46,9 +46,7 @@
 ;;; Markdown-mode uses M-p to go to the previous link, which is useless and
 ;;; conflicts with ace-window, so let's change this:
   (when (fboundp 'ace-window)
-    (define-key markdown-mode-map (kbd "M-p") #'ace-window))
-
-  )
+    (define-key markdown-mode-map (kbd "M-p") #'ace-window)))
 
 ;;; FIXME: quick workaround for a bug in markdown-mode 2.1 (font lock is broken)
 (when (and (boundp 'markdown-mode-version)

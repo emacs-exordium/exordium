@@ -142,8 +142,7 @@
                                  (setq-local flycheck-check-syntax-automatically nil))))
   (add-hook 'c-mode-hook #'flycheck-rtags-hook)
   (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
-  (add-hook 'objc-mode-hook #'flycheck-rtags-hook)
-  )
+  (add-hook 'objc-mode-hook #'flycheck-rtags-hook))
 
 ;;; Key bindings
 
