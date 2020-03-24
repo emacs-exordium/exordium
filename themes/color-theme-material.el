@@ -128,6 +128,8 @@ names to which it refers are bound."
      (widget-button ((t (:underline t))))
      (widget-field ((t (:background ,current-line :box (:line-width 1 :color ,foreground)))))
      (menu ((t (:foreground ,foreground :background ,background))))
+          (fill-column-indicator ((t (:foreground "dim gray" :background ,background))))
+
 
      ;; Mode line
      (mode-line ((t (:background ,black ; for powerline (previously far-background)

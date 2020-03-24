@@ -22,7 +22,8 @@
 
 (require 'init-prefs)
 (eval-when-compile
-  (use-package fill-column-indicator)
+  (use-package fill-column-indicator
+    :if (version< emacs-version "27"))
   (require 'hilinum-mode)
   (use-package powerline))
 
@@ -66,7 +67,8 @@
 
 ;;; FCI (80-column marker) color
 
-(when exordium-fci-mode
+(when (and exordium-fci-mode
+           (version< emacs-version "27"))
   (use-package fill-column-indicator)
   (let ((color (and (facep 'vertical-border)
                     (face-foreground 'vertical-border))))

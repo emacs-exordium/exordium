@@ -5,9 +5,12 @@
   :commands (org-mode)
   :mode (("\\.org\\'" . org-mode))
   :init
-  (add-hook 'org-src-mode-hook
-            (lambda ()
-              (turn-off-fci-mode)))
+  (use-package fill-column-indicator
+    :if (version< emacs-version "27")
+    :config
+    (add-hook 'org-src-mode-hook
+              (lambda ()
+                (turn-off-fci-mode))))
 
     (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 
@@ -43,7 +46,6 @@
        (C          . t)
        (dot        . t)))))
 
-(use-package fill-column-indicator)
 
 
 ;;; Show org-mode bullets as UTF-8 characters.
