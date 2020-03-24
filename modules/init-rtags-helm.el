@@ -18,12 +18,12 @@
   :init
   (define-key c-mode-base-map
     (kbd "C-c r r")
-      (lambda ()
-        (interactive)
-        (unless flycheck-mode
-          (flycheck-mode)
-          (diminish 'flycheck-mode))
-        (helm-flycheck))))
+    (lambda ()
+      (interactive)
+      (unless flycheck-mode
+        (flycheck-mode)
+        (diminish 'flycheck-mode))
+      (helm-flycheck))))
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"
