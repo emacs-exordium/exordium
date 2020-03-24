@@ -82,8 +82,12 @@
     (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
     (exordium-define-advice-magit-fullscreen 'magit-status-setup-buffer)
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
-      (exordium-define-advice-magit-fullscreen 'magit-status-internal))))
+      (exordium-define-advice-magit-fullscreen 'magit-status-internal)))
 
+  (define-advice magit-clone-regular (:after
+                                      (_repo directory _args)
+                                      exordium-projectile-add-known-project)
+    (projectile-add-known-project directory)))
 
 
 ;;; Keys
