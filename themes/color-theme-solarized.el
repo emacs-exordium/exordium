@@ -51,6 +51,11 @@
        (cl-rotatef base00 base0))
      ,@body))
 
+;; for testing do in a scratch:
+;; (let ((custom--inhibit-theme-enable nil))
+;;   (eval-buffer "color-theme-solarized.el")
+;;   (set-colors-solarized-light))
+
 (defmacro solarized-face-specs ()
   "Return a backquote which defines a list of face specs.
 It expects to be evaluated in a scope in which the various color
