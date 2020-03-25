@@ -5,8 +5,9 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-x C-r        Open recent file with IDO or Helm.
 
-(use-package ido)
-(unless exordium-helm-everywhere
+(use-package ido
+  :if (not exordium-helm-everywhere)
+  :config
   (ido-mode 'both))
 
 
@@ -42,6 +43,7 @@
 (setq recentf-max-menu-items 25)
 
 (use-package ido-completing-read+
+  :if (not exordium-helm-everywhere)
   :defer t)
 
 (defun ido-find-recentf ()
