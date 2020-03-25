@@ -141,7 +141,7 @@
 (use-package git-timemachine
   :defer t
   :bind
-  (:map exordium-git-map ("t" . 'git-timemachine-toggle) ))
+  (:map exordium-git-map ("t" . 'git-timemachine-toggle)))
 
 ;;(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
