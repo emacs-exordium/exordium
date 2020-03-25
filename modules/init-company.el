@@ -16,10 +16,4 @@
   (define-key company-mode-map [(control .)] 'company-complete))
 
 
-
-
-;; ;; Clean up mode-line.
-;; (eval-after-load "company"
-;;   '(diminish 'company-mode "CA"))
-
 (provide 'init-company)

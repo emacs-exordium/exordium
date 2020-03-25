@@ -90,11 +90,6 @@
     (projectile-add-known-project directory)))
 
 
-;;; Keys
-
-
-;; (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-
 ;;; Don't show "MRev" in the modeline
 (when (bound-and-true-p magit-auto-revert-mode)
   (diminish 'magit-auto-revert-mode))
@@ -145,8 +140,6 @@
   :defer t
   :bind
   (:map exordium-git-map ("t" . 'git-timemachine-toggle)))
-
-;;(define-key exordium-git-map (kbd "t") 'git-timemachine-toggle)
 
 ;;; Magit Forge
 (use-package forge

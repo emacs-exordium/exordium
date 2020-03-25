@@ -97,10 +97,10 @@
              (unless
                  (catch 'found
                    (cl-flet ((when-exists-find-and-throw
-                           (file)
-                           (when (file-exists-p file)
-                             (find-file file)
-                             (throw 'found t))))
+                              (file)
+                              (when (file-exists-p file)
+                                (find-file file)
+                                (throw 'found t))))
                      (dolist (candidate-ext matching-ext)
                        ;; Look for a buffer matching candidate-ext
                        (let ((buff (concat base-name candidate-ext)))

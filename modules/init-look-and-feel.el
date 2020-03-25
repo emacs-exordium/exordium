@@ -34,8 +34,8 @@
 
 (defvar exordium-available-preferred-fonts
   (cl-remove-if-not (lambda (font-and-size)
-                   (member (car font-and-size) (font-family-list)))
-                 exordium-preferred-fonts))
+                      (member (car font-and-size) (font-family-list)))
+                    exordium-preferred-fonts))
 
 (defvar exordium-font-size
   (when exordium-available-preferred-fonts
