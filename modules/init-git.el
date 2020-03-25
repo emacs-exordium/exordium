@@ -114,12 +114,15 @@
                             (not (file-remote-p file-name)))))
                (git-gutter--turn-on))))
 
-(when exordium-git-gutter-non-fringe
+(use-package git-gutter
+  :if exordium-git-gutter-non-fringe
+  :init
   (setq exordium-git-gutter nil)
-  (use-package git-gutter)
+  :config
   (exordium-global-git-gutter-mode t)
   (git-gutter:linum-setup)
-  (diminish 'git-gutter-mode))
+  :diminish
+  )
 
 (use-package git-gutter-fringe
   :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
