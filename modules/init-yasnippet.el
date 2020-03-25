@@ -13,7 +13,7 @@
 ;;; For details about how to write a snippet, see
 ;;; https://github.com/capitaomorte/yasnippet/blob/master/README.mdown
 
-(require 'yasnippet)
+(use-package yasnippet)
 ;;(yas-global-mode 1) ; always on
 
 ;;; Directory tree where to find snippets (subdirectories must be mode names).

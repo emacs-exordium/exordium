@@ -23,7 +23,7 @@
 ;;; after-save-hook I think.
 
 (require 'init-prefs)
-(require 'rtags)
+(use-package rtags)
 
 ;; Note: for now we actually don't need to keep the build-dir of any known
 ;; project but we should need it later to automatically index new files created

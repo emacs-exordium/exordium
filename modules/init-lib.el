@@ -3,7 +3,7 @@
 ;;; This file defines utility functions reused in other modules. It should be
 ;;; loaded before any other module.
 
-(with-no-warnings (require 'cl))
+(use-package cl-lib :ensure nil)
 
 
 ;;; Files
@@ -77,7 +77,7 @@ attention to case differences."
     "Remove leading and trailing whitespace from STRING."
     (string-trim-left (string-trim-right string))))
 
-(eval-when-compile (assert (not (fboundp 'string-truncate))))
+(eval-when-compile (cl-assert (not (fboundp 'string-truncate))))
 
 (defun string-truncate (string n)
   "Return STRING minus the last N characters."

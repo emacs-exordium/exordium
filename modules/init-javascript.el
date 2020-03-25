@@ -1,13 +1,16 @@
 ;;;; JavaScript mode
 
-(require 'js)
-(require 'js2-mode)
+(use-package js)
+(use-package js2-mode)
 (require 'init-prefs)
 
 ;;; Activate js2-mode and ac-js2 for auto-complete.
 
 (add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook 'ac-js2-mode)
+
+(use-package ac-js2
+  :init
+  (add-hook 'js2-mode-hook 'ac-js2-mode))
 
 ;;; js2-mode comes with some useful utility functions for working with js files
 ;;; more efficiently. For example, ac-js2-jump-to-definition quickly jumps to
