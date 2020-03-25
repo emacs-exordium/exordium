@@ -15,15 +15,13 @@
             ;; Set dired-x global variables here.  For example:
             (setq wdired-allow-to-change-permissions t)
             (setq dired-x-hands-off-my-keys nil)
-            (load "dired-x")
-            ))
+            (load "dired-x")))
 
 (add-hook 'dired-mode-hook
           (lambda ()
             ;; Set dired-x buffer-local variables here.  For example:
             (define-key (current-local-map) [(mouse-3)]
-              'dired-mouse-find-file-other-window)
-            ))
+              'dired-mouse-find-file-other-window)))
 
 (use-package find-dired)
 ;; xargs to get options rather than exec ls on each find

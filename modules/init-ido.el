@@ -41,6 +41,9 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 
+(use-package ido-completing-read+
+  :defer t)
+
 (defun ido-find-recentf ()
   "Use ido to select a recently opened file from the `recentf-list'"
   (interactive)

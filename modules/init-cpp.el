@@ -16,13 +16,14 @@
 (use-package cc-mode
   :config
   ;;; Open a header file in C++ mode by default
-  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-)
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode)))
 
 
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
-(define-key global-map (kbd "C-c ;") 'iedit-mode)
+(use-package iedit
+  :init
+  (define-key global-map (kbd "C-c ;") 'iedit-mode))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
@@ -169,8 +170,7 @@
 (use-package modern-cpp-font-lock
   :if (eq exordium-enable-c++11-keywords :modern)
   :diminish modern-c++-font-lock-mode
-  :hook (c++-mode . modern-c++-font-lock-mode)
-  )
+  :hook (c++-mode . modern-c++-font-lock-mode))
 
 (use-package cmake-mode
   :mode (("/CMakeLists\\.txt\\'" . cmake-mode)

@@ -129,19 +129,20 @@
 (use-package ac-rtags)
 (use-package auto-complete-c-headers)
 (use-package projectile)
-
+(use-package company-rtags)
 
 ;;; Turn on flycheck support when requested
-(when (eq exordium-rtags-syntax-checker :flycheck)
-  (use-package flycheck-rtags)
+(use-package flycheck-rtags
+  :if (eq exordium-rtags-syntax-checker :flycheck)
+  :init
   ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
   (cl-flet ((flycheck-rtags-hook ()
                                  (flycheck-select-checker 'rtags)
                                  (setq-local flycheck-highlighting-mode nil)
-                                 (setq-local flycheck-check-syntax-automatically nil)))
-    (add-hook 'c-mode-hook #'flycheck-rtags-hook)
-    (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
-    (add-hook 'objc-mode-hook #'flycheck-rtags-hook)))
+                                 (setq-local flycheck-check-syntax-automatically nil))))
+  (add-hook 'c-mode-hook #'flycheck-rtags-hook)
+  (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
+  (add-hook 'objc-mode-hook #'flycheck-rtags-hook))
 
 ;;; Key bindings
 
