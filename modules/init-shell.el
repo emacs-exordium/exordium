@@ -20,8 +20,7 @@
  '(comint-get-old-input (lambda () "")) ; what to run when I press enter on a
                                         ; line above the current prompt
  '(comint-input-ring-size 5000)         ; max shell history size
- '(protect-buffer-bury-p nil)
-)
+ '(protect-buffer-bury-p nil))
 
 ;;; Clear the buffer
 (defun clear-buffer ()

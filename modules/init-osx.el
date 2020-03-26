@@ -18,6 +18,10 @@
   (x-focus-frame nil))
 
 ;; Make $PATH available in shell mode
-(exec-path-from-shell-initialize)
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 
 (provide 'init-osx)

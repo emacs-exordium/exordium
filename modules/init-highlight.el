@@ -31,9 +31,9 @@
 
 ;;; Highlight symbol under point automatically after a small delay.
 
-(eval-when-compile (require 'highlight-symbol))
+(eval-when-compile (use-package highlight-symbol))
 (when exordium-highlight-symbol
-  (require 'highlight-symbol)
+  (use-package highlight-symbol)
   (highlight-symbol-nav-mode)
   ;;
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
@@ -45,7 +45,7 @@
 
 ;;; Highlight/unhighlight symbol under point using a key.
 
-(require 'hi-lock)
+(use-package hi-lock)
 
 (defvar exordium-highlighted-symbols ()
   "list of regexps for the currently highlighted symbols. This

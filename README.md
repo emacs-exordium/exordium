@@ -351,6 +351,11 @@ unstage a file, and the capital <kbd>S</kbd> to stage all of them. Use the
 ask for the commit message (<kbd>C-c C-c</kbd> to close the window and
 commit). Finally the <kbd>q</kbd> key quits magit.
 
+By default running [Magit](http://magit.vc) via global keybindings will start it
+in a full screen mode (whole frame). This is controlled by
+`exordium-use-magit-fullscreen` preference. You can [customize](#customization) it
+to `nil` to get original [Magit](http://magit.vc) behavior.
+
 The screenshot above also shows
 [git gutter](https://github.com/syohex/emacs-git-gutter) in the top buffer. Git
 gutter displays a git diff of the file in the left-side fringe (you can

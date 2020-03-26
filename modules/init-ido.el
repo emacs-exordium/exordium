@@ -5,8 +5,9 @@
 ;;; -------------- -------------------------------------------------------
 ;;; C-x C-r        Open recent file with IDO or Helm.
 
-(require 'ido)
-(unless exordium-helm-everywhere
+(use-package ido
+  :if (not exordium-helm-everywhere)
+  :config
   (ido-mode 'both))
 
 
@@ -35,11 +36,15 @@
 ;; Open recent files with IDO.
 ;; `abbreviate-file-name' abbreviates home dir to ~/ in the file list
 ;; Custom abbreviations can be added to `directory-abbrev-alist'.
-(require 'recentf)
-(require 'helm)
+(use-package recentf)
+(use-package helm)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
+
+(use-package ido-completing-read+
+  :if (not exordium-helm-everywhere)
+  :defer t)
 
 (defun ido-find-recentf ()
   "Use ido to select a recently opened file from the `recentf-list'"

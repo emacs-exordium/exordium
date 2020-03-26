@@ -9,11 +9,11 @@
 ;;; Display page breaks with an horizontal line instead of ^L.
 ;;; Note: To insert a page break: C-q C-l
 ;;;       To jump to the previous/next page break: C-x [ and C-x ]
-(require 'page-break-lines)
+(use-package page-break-lines)
 
 ;;; Animation when evaluating a defun or a region:
-(require 'highlight)
-(require 'eval-sexp-fu)
+(use-package highlight)
+(use-package eval-sexp-fu)
 
 (defun exordium-elisp-mode-hook ()
   "Hook for elisp mode. Enables `page-break-lines' mode and
