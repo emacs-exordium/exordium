@@ -321,9 +321,16 @@ names to which it refers are bound."
      (grep-hit-face ((t (:foreground ,blue))))
      (grep-match-face ((t (:foreground nil :background nil :inherit match))))
 
+     ;; Man
+     (Man-overstrike ((t (:foreground ,orange))))
+     (Man-underline ((t (:foreground ,green))))
+
      ;; Org
      (org-level-1 ((t
-                    ,(append `(:foreground ,foreground)
+                    ,(append `(:foreground ,green
+                               :overline ,green
+                               :background ,selection
+                               :box (:style released-button))
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
