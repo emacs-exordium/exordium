@@ -15,11 +15,14 @@
 ;;; C-S-s             Helm Swoop, a way of searching with Helm (try it!).
 ;;; C-c e             Project Explorer: show the directory tree.
 
-(require 'helm)
-(require 'projectile)
-(require 'helm-projectile)
-(require 'helm-swoop)
-(require 'treemacs-projectile)
+(use-package helm)
+(use-package projectile)
+(use-package helm-projectile)
+(use-package helm-swoop
+  :init
+  ;; C-S-s = helm-swoop
+  (define-key global-map [(control shift s)] (function helm-swoop)))
+(use-package treemacs-projectile)
 (require 'init-prefs)
 
 (projectile-global-mode)
@@ -54,10 +57,9 @@
 ;;; Other usages of Helm:
 
 ;;; C-h b = describe keybindings using Helm
-(define-key global-map [(control h)(b)] (function helm-descbinds))
-
-;;; C-S-s = helm-swoop
-(define-key global-map [(control shift s)] (function helm-swoop))
+(use-package helm-descbinds
+  :init
+  (define-key global-map [(control h)(b)] (function helm-descbinds)))
 
 ;; TODO: work in progress
 ;; The intent is to improve the readability of the helm swoop selection line

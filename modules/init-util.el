@@ -121,7 +121,7 @@
 
 ;;; Goto last change
 
-(require 'goto-chg)
+(use-package goto-chg)
 (define-key global-map [(control x)(control \\)] 'goto-last-change)
 (define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
 (define-key global-map [(control x)(control /)] 'goto-last-change-reverse)
@@ -265,10 +265,10 @@ With argument, do this that many times."
 ;;; fci-always-use-textual-rule to t (it will use a character instead).
 
 (eval-when-compile
-  (require 'fill-column-indicator))
+  (use-package fill-column-indicator))
 
 (when exordium-fci-mode
-  (require 'fill-column-indicator)
+  (use-package fill-column-indicator)
 
   (when exordium-fci-use-dashes
     (setq fci-rule-use-dashes t)
@@ -291,8 +291,8 @@ With argument, do this that many times."
 (when (and exordium-fci-mode
            (eq exordium-complete-mode :auto-complete)
            exordium-fci-fix-autocomplete-bug)
-  (require 'fill-column-indicator)
-  (require 'popup)
+  (use-package fill-column-indicator)
+  (use-package popup)
 
   ;;; fci-mode turns line truncation on by default (see
   ;;; `fci-handle-truncate-lines'); this is pretty annoying when you have long

@@ -54,7 +54,7 @@
 ;;; - Create `compilation_database.json' (it overwrites without asking)
 ;;; - Ask if you want to reload it (if rdm is running).
 
-(with-no-warnings (require 'cl))
+(use-package cl-lib :ensure nil)
 (require 'init-lib)
 
 ;; Override these variables in your .emacs as needed:

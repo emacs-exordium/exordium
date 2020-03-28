@@ -8,13 +8,14 @@
 ;;; C-c r r        `helm-flycheck' show rtags errors in helm buffer
 ;;; -------------- -------------------------------------------------------
 
-(require 'rtags)
-(require 'helm)
-(require 'helm-rtags)
+(use-package rtags)
+(use-package helm)
+(use-package helm-rtags)
 (require 'init-prefs)
 
-(when (eq exordium-rtags-syntax-checker :flycheck)
-  (require 'helm-flycheck)
+(use-package helm-flycheck
+  :if (eq exordium-rtags-syntax-checker :flycheck)
+  :init
   (define-key c-mode-base-map
     (kbd "C-c r r")
     (lambda ()

@@ -12,6 +12,11 @@
 ;;;;   (Ignore the error when it starts). Use M-C-x to evaluate Clojure forms.
 ;;;;   C-c C-q to quit in the REPL (or use teh CIDER menu)
 
+(use-package clojure-mode)
+(use-package cider)
+(use-package rainbow-delimiters)
+(use-package paredit)
+
 ;;; Env PATH
 (defun set-exec-path-for-lein ()
   (let ((path-from-shell

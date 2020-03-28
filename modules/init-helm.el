@@ -12,9 +12,9 @@
 ;;; C-S-f             Search with Ag: this file (like Swoop).
 ;;; C-S-a             Search with Ag: in current projectile project.
 
-(require 'helm)
-(require 'helm-projectile)
-(require 'helm-ag)
+(use-package helm)
+(use-package helm-projectile)
+(use-package helm-ag)
 
 
 (global-set-key (kbd "C-S-r")   'helm-ag-project-root)

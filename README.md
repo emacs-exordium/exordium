@@ -1,4 +1,4 @@
-![Exordium](https://raw.github.com/philippe-grenet/exordium/master/doc/Exordium.png)
+![Exordium](https://raw.github.com/emacs-exordium/exordium/master/doc/Exordium.png)
 
 # What is this repo
 
@@ -69,7 +69,7 @@ Backup any `.emacs` file or `.emacs.d` directory you may have, and then clone
 this repo:
 
 ```bash
-$ git clone https://github.com/philippe-grenet/exordium.git ~/.emacs.d
+$ git clone https://github.com/emacs-exordium/exordium.git ~/.emacs.d
 ```
 
 The first time you start Emacs it will download and compile the required
@@ -108,7 +108,7 @@ configuration for the local machine (these files are not tracked by git):
 
 File name        | Usage
 -----------------|-------------------------------------------------------
-`prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
+`prefs.el`       | Loaded before any module. The module [init-prefs.el](https://github.com/emacs-exordium/exordium/blob/master/modules/init-prefs.el) defines a number of customization variables for fonts, theme etc. `prefs.el` is where you should override any of these variables.
 `before-init.el` | Loaded before anything else. Use it to set up the HTTP proxy for instance.
 `after-init.el`  | Loaded after everything else. This is where you should add your own features.
 
@@ -194,7 +194,7 @@ Here is an example: <kbd>C-c h</kbd> shows the list of buffers and files in the
 current project using Helm; to find a file you just need to type a few letters and the
 list shrinks as it performs fuzzy matching:
 
-![Helm](https://raw.github.com/philippe-grenet/exordium/master/doc/helm.png)
+![Helm](https://raw.github.com/emacs-exordium/exordium/master/doc/helm.png)
 
 ### Setting up projects
 
@@ -322,7 +322,7 @@ expressions.
 explorer for Emacs. It is linked with Projectile and Git, and it can display the
 project directory structure on the left side:
 
-![Treemacs](https://raw.github.com/philippe-grenet/exordium/master/doc/treemacs.png)
+![Treemacs](https://raw.github.com/emacs-exordium/exordium/master/doc/treemacs.png)
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
@@ -342,7 +342,7 @@ Treemacs for details.
 All git-related keys use prefix <kbd>C-c g</kbd> plus one more key. For example
 <kbd>C-c g s</kbd> runs [Magit](http://magit.vc) status:
 
-![magit](https://raw.github.com/philippe-grenet/exordium/master/doc/magit.png)
+![magit](https://raw.github.com/emacs-exordium/exordium/master/doc/magit.png)
 
 The bottom window shows the current git status. Use the <kbd>tab</kbd> key on
 any file to fold or unfold its diff. Use the <kbd>s</kbd> key to stage or
@@ -350,6 +350,11 @@ unstage a file, and the capital <kbd>S</kbd> to stage all of them. Use the
 <kbd>k</kbd> key to revert a file. Type <kbd>c</kbd> twice to commit; it will
 ask for the commit message (<kbd>C-c C-c</kbd> to close the window and
 commit). Finally the <kbd>q</kbd> key quits magit.
+
+By default running [Magit](http://magit.vc) via global keybindings will start it
+in a full screen mode (whole frame). This is controlled by
+`exordium-use-magit-fullscreen` preference. You can [customize](#customization) it
+to `nil` to get original [Magit](http://magit.vc) behavior.
 
 The screenshot above also shows
 [git gutter](https://github.com/syohex/emacs-git-gutter) in the top buffer. Git
@@ -420,7 +425,7 @@ by adding this in your `after-init.el`:
 ```
 
 Snippets are stored in `~/.emacs.d/snippets/c++-mode`. Here are
-[the snippets](https://github.com/philippe-grenet/exordium/blob/master/doc/snippets.md).
+[the snippets](https://github.com/emacs-exordium/exordium/blob/master/doc/snippets.md).
 
 Note that variable `*bde-component-author*` defines the default author for a
 header file template (see `modules/init-yasnippet.el`). You can set it to your
@@ -646,7 +651,7 @@ While RTags uses <kbd>C-x r</kbd> as default prefix, this configuration uses
 such as <kbd>M-C-g</kbd> to display the list of symbols from the current buffer
 using Helm:
 
-![Rtags Helm](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_helm.png)
+![Rtags Helm](https://raw.github.com/emacs-exordium/exordium/master/doc/rtags_helm.png)
 
 Navigation keys:
 
@@ -704,7 +709,7 @@ to <kbd>C-c r D</kbd>.
 By default Powerline displays the name of the buffer in
 green if the project compiles and in red if there are errors:
 
-![RTags diagnostics](https://raw.github.com/philippe-grenet/exordium/master/doc/rtags_diagnostics.png)
+![RTags diagnostics](https://raw.github.com/emacs-exordium/exordium/master/doc/rtags_diagnostics.png)
 
 Click on the highlighted symbol in your code to view the error message. Click
 on the error line in the diagnostics buffer to jump to the error location.
@@ -898,7 +903,7 @@ Modules can be individually commented out if needed:
 ```
 
 If you are looking for a specific feature or key binding,
-[this page](https://github.com/philippe-grenet/exordium/blob/master/doc/code-organization.md)
+[this page](https://github.com/emacs-exordium/exordium/blob/master/doc/code-organization.md)
 explains the code organization. Each module starts with a commentary including
 all key bindings.
 
@@ -909,7 +914,7 @@ configuration for the local machine:
 
 File name        | Usage
 -----------------|-------------------------------------------------------
-`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
+`prefs.el`       | Loaded before any module. Use it to override fonts, window size etc. See [init-prefs.el](https://github.com/emacs-exordium/exordium/blob/master/modules/init-prefs.el).
 `before-init.el` | Loaded before anything else. Use it to set up the http proxy for instance.
 `after-init.el`  | Loaded after everything else. Use it to load machine-specific extensions.
 
@@ -965,7 +970,7 @@ Exordium-specific emacs functions are WIP.
 ```
 
 There are more options, see
-[init-prefs.el](https://github.com/philippe-grenet/exordium/blob/master/modules/init-prefs.el).
+[init-prefs.el](https://github.com/emacs-exordium/exordium/blob/master/modules/init-prefs.el).
 
 ### Themes
 
@@ -989,7 +994,7 @@ following will give you this:
 (setq exordium-powerline-theme :wave)
 ```
 
-![Material](https://raw.github.com/philippe-grenet/exordium/master/doc/material.png)
+![Material](https://raw.github.com/emacs-exordium/exordium/master/doc/material.png)
 
 ### Local modules
 
