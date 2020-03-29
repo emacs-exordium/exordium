@@ -457,6 +457,16 @@ names to which it refers are bound."
    (apply 'custom-theme-set-faces 'atom-one (atom-one-face-specs)))
   (provide-theme 'atom-one))
 
+;;; Debugging functions
+
+(defun set-colors-atom-one ()
+  "Sets the colors to the monokai theme"
+  (interactive)
+  (with-atom-one-colors
+   'default
+   (apply 'custom-set-faces (atom-one-face-specs))))
+
+
 (provide 'color-theme-atom-one)
 
 ;; Local Variables:
