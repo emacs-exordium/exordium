@@ -63,11 +63,5 @@
 
 
 
-
-;;; Fill column indicator
-(when (eq exordium-fci-mode :prog)
-  (add-hook 'prog-mode-hook 'fci-mode))
-
-
 (provide 'init-prog-mode)
 ;; End of file

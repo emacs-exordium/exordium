@@ -179,6 +179,7 @@ names to which it refers are bound."
       ((t (:background ,current-line :box (:line-width 1 :color ,foreground)))))
      (header-line ((t (:foreground ,purple :background nil))))
      (menu ((t (:foreground ,foreground :background ,selection))))
+     (fill-column-indicator ((t (:foreground "dim gray" :background ,background))))
 
      ;; Customize
      (custom-variable-tag ((t (:foreground ,blue))))
