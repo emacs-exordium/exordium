@@ -347,7 +347,8 @@ With argument, do this that many times."
               char)))
         (prog1
             (setq-default display-fill-column-indicator-character
-                          (char-or-nil
+                          (seq-find
+                           #'char-or-nil
                            (alist-get (if (eq exordium-fci-use-dashes t)
                                           :one
                                         exordium-fci-use-dashes)

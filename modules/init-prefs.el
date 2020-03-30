@@ -193,16 +193,15 @@ font."
   :group 'exordium
   :type  'symbol)
 
-(defcustom exordium-fci-dashes-alist '((:one .   ?\u2575)  ;; ╵
-                                       (:two .   ?\u254e)  ;; ╎
-                                       (:three . ?\u2506)  ;; ┆
-                                       (:four .  ?\u250a)) ;; ┊
-  "The mapping form a symbol to a character to be used when displaying dashes.
-If the value of `exordium-fci-use-dashes' cannot be mapped or the mapped value
-cannot be displayed by the current font default will be used.
-
-Probably the char ?\u2758 `❘' could be better, but it's not as common in fonts,
-i.e., (Fira Code doesn't have it)."
+(defcustom exordium-fci-dashes-alist '((:one .   (?\u2758 ?\u2575)) ;; ❘ or ╵
+                                       (:two .   (?\u254e))         ;; ╎
+                                       (:three . (?\u2506))         ;; ┆
+                                       (:four .  (?\u250a)))       ;; ┊
+  "The mapping form a symbol to a sequence of characters to be used for dashes.
+For each symbol the first displayable character from the sequence will be used
+if displayable in current configuration.  If the value of
+`exordium-fci-use-dashes' cannot be mapped or the mapped value cannot be
+displayed by the current font default will be used."
   :group 'exordium
   :type  'alist)
 
