@@ -114,7 +114,7 @@ names to which it refers are bound."
 
      (query-replace ((t (:inherit (isearch)))))
      (minibuffer-prompt ((t (:foreground ,atom-one-dark-silver))))
-     (fill-column-indicator ((t (:foreground "dim gray" :background ,atom-one-dark-bg))))
+     (fill-column-indicator ((t (:foreground "dim gray" :background ,atom-one-dark-bg :slant normal))))
 
      ;; Customize
      (custom-variable-tag ((t (:foreground ,atom-one-dark-blue))))
