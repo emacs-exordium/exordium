@@ -327,6 +327,7 @@ With argument, do this that many times."
   (use-package display-fill-column-indicator
     :if exordium-fci-mode
     :ensure nil
+    :demand t
     :bind ("C-|" . display-fill-column-indicator-mode)
     :init
     (defun exordium--select-display-fill-column-indicator-character ()
@@ -373,7 +374,7 @@ With argument, do this that many times."
                 #'display-fill-column-indicator-mode)))
     ;; `init-util' is loaded only after `init-look-and-feel', so let's do advice
     (define-advice exordium-set-font (:after-while (&rest _args))
-                (exordium--select-display-fill-column-indicator-character))))
+      (exordium--select-display-fill-column-indicator-character))))
 
 
 ;;; Avy - go to any word on the screen in just 2 or 3 keystrokes.
