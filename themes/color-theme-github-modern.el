@@ -111,7 +111,7 @@ names to which it refers are bound."
      (secondary-selection ((t (:background ,github-white))))
      (trailing-whitespace ((t (:background ,github-string))))
      (vertical-border ((t (:foreground ,github-border))))
-     (fill-column-indicator ((t (:foreground ,github-comment :background ,github-white))))
+     (fill-column-indicator ((t (:foreground ,github-comment :background ,github-white :slant normal))))
 ;;;;; font lock
      (font-lock-builtin-face ((t (:foreground ,github-keyword))))
      (font-lock-comment-face ((t (:foreground ,github-comment))))

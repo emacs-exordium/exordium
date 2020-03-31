@@ -146,7 +146,7 @@ names to which it refers are bound."
      (secondary-selection ((t (:background ,zenburn-bg+2))))
      (trailing-whitespace ((t (:background ,zenburn-red))))
      (vertical-border ((t (:foreground ,zenburn-fg))))
-     (fill-column-indicator ((t (:foreground ,zenburn-bg+05 :background ,zenburn-bg))))
+     (fill-column-indicator ((t (:foreground ,zenburn-bg+05 :background ,zenburn-bg :slant normal))))
 
      ;; Hi-Lock
      (hi-blue    ((t (:background ,zenburn-cyan    :foreground ,zenburn-bg-1))))

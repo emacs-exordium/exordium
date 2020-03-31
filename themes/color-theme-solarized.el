@@ -114,7 +114,7 @@ names to which it refers are bound."
      (link ((t (:foreground ,violet :underline t))))
      (link-visited ((t (:foreground ,magenta :underline t))))
      (vertical-border ((t (:foreground ,base0))))
-     (fill-column-indicator ((t (:foreground ,base01 :background ,back))))
+     (fill-column-indicator ((t (:foreground ,base01 :background ,back :slant normal))))
 
      ;; Mode line
      (minibuffer-prompt ((t (:weight bold :foreground ,cyan))))
