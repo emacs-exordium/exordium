@@ -184,11 +184,26 @@ nil means it is disabled."
   :group 'exordium
   :type  'symbol)
 
-(defcustom exordium-fci-use-dashes t
-  "If t, use dashes for fill-column-indicator.
-If nil, use a plain line."
+(defcustom exordium-fci-use-dashes :one
+  "If non-nil use dashes for fill-column-indicator.
+If nil, use a plain line.  The value can be one of `:one', `:two', `:three',
+`:four', or any other key from `exordium-fci-dashes-alist' to use associated
+value.  Note that the character will only be used if displayable by a current
+font."
   :group 'exordium
-  :type  'boolean)
+  :type  'symbol)
+
+(defcustom exordium-fci-dashes-alist '((:one .   (?\u2758 ?\u2575)) ;; ❘ or ╵
+                                       (:two .   (?\u254e))         ;; ╎
+                                       (:three . (?\u2506))         ;; ┆
+                                       (:four .  (?\u250a)))       ;; ┊
+  "The mapping form a symbol to a sequence of characters to be used for dashes.
+For each symbol the first displayable character from the sequence will be used
+if displayable in current configuration.  If the value of
+`exordium-fci-use-dashes' cannot be mapped or the mapped value cannot be
+displayed by the current font default will be used."
+  :group 'exordium
+  :type  'alist)
 
 (defcustom exordium-fci-fix-autocomplete-bug t
   "Whether fill-column-indicator is temporarily disabled when an

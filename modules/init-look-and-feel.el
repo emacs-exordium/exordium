@@ -58,7 +58,8 @@
       (set-face-attribute 'default nil
                           :family font
                           :height size
-                          :weight 'normal))))
+                          :weight 'normal)
+      t))) ;; indicate that the font has been set
 
 (when exordium-preferred-fonts
   (exordium-set-font))
