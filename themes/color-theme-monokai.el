@@ -272,7 +272,7 @@ names to which it refers are bound."
      (secondary-selection ((t (:background ,monokai-hl :inherit t))))
      (trailing-whitespace ((t (:background ,red))))
      (vertical-border ((t (:foreground ,monokai-hl))))
-     (fill-column-indicator ((t (:foreground "dim gray" :background ,monokai-bg))))
+     (fill-column-indicator ((t (:foreground "dim gray" :background ,monokai-bg :slant normal))))
 
      ;; auto-complete
      (ac-candidate-face ((t (:background ,monokai-hl :foreground ,cyan))))
