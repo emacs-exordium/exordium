@@ -388,6 +388,14 @@ Git Timemachine key   | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c g t</kbd>    | Enter the git time machine (`git-timemachine-toggle`)
 
+If you use `ediff` to solve merge conflicts you may find the following keys useful
+(in `*Ediff Control Panel*`):
+
+ediff key             | Description
+----------------------|-----------------------------------------------------------
+<kbd>A</kbd>          | Copy buffer A's region followed by buffer B's region to C
+<kbd>B</kbd>          | Copy buffer B's region followed by buffer A's region to C
+
 ## C++
 
 ### Utilities
