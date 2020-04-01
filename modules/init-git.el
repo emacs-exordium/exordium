@@ -116,13 +116,12 @@
   :config
   (exordium-global-git-gutter-mode t)
   (git-gutter:linum-setup)
-  :diminish
-  )
+  :diminish)
 
 (use-package git-gutter-fringe
   :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   :config (exordium-global-git-gutter-mode t)
-  :diminish
+  :diminish git-gutter-mode
   :bind (:map exordium-git-map
               ("<down>" . 'git-gutter:next-hunk)
               ("n" . 'git-gutter:next-hunk)
