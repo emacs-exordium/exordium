@@ -162,4 +162,69 @@
 (add-hook 'git-commit-mode-hook 'exordium-electric-mode-add-back-tick)
 
 
+(use-package ediff
+  :ensure nil
+  :defer t
+  :config
+  (defun exordium-ediff-copy-both-to-C (first second)
+    "Copy FIRST then SECOND into the C buffer in `ediff-mode'.
+This command should be called form `ediff''s control buffer.
+
+Adapted from: http://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-how-can-i-take-the-changes-of-both-version"
+    (interactive
+     (let ((first-string (completing-read "First: " '("A" "B") nil t "A"))
+           (second-string (completing-read "Second: " '("A" "B") nil t "B")))
+       (list first-string second-string)))
+    (let ((first (or first "A"))
+          (second (or second "B")))
+      (ediff-copy-diff ediff-current-difference nil 'C nil
+                       (concat
+                        (ediff-get-region-contents
+                         ediff-current-difference (intern first) ediff-control-buffer)
+                        (ediff-get-region-contents
+                         ediff-current-difference (intern second) ediff-control-buffer)))))
+
+  (defun exordium--add-copy-both-to-ediff-mode-map ()
+    (when ediff-merge-job
+      (define-key ediff-mode-map "A"
+        #'(lambda ()
+            (interactive)
+            (exordium-ediff-copy-both-to-C "A" "B")))
+      (define-key ediff-mode-map "B"
+        #'(lambda ()
+            (interactive)
+            (exordium-ediff-copy-both-to-C "B" "A")))))
+
+  (defconst exordium--ediff-long-help-message-merge
+    "
+p,DEL -previous diff |     | -vert/horiz split   |  x -copy buf X's region to C
+n,SPC -next diff     |     h -highlighting       |  X -copy both buf's regions
+    j -jump to diff  |     @ -auto-refinement    |     to C; X's region first
+   gx -goto X's point|    ## -ignore whitespace  |  r -restore buf C's old diff
+  C-l -recenter      | #f/#h -focus/hide regions |  * -refine current region
+  v/V -scroll up/dn  |     X -read-only in buf X |  ! -update diff regions
+  </> -scroll lt/rt  |     m -wide display       |  + -combine diff regions
+    ~ -swap variants |     s -shrink window C    | wx -save buf X
+                     |  $$ -show clashes only    | wd -save diff output
+                     |  $* -skip changed regions |  / -show/hide ancestor buff
+                     |                           |  & -merge w/new default
+"
+    "Help message for merge sessions.
+This is a copy of `ediff-long-help-message-merge' with addition of X key.")
+
+  (defun exordium--ediff-set-help-message()
+    "Redefine the `ediff-long-help-message' and `ediff-help-message'.
+This follows what `ediff-set-help-message' function is doing."
+    (when ediff-merge-job
+      (setq ediff-long-help-message
+            (concat ediff-long-help-message-head
+		            exordium--ediff-long-help-message-merge
+		            ediff-long-help-message-tail))
+      (when ediff-use-long-help-message
+        (setq ediff-help-message ediff-long-help-message))))
+
+  (add-hook 'ediff-display-help-hook 'exordium--ediff-set-help-message)
+  (add-hook 'ediff-keymap-setup-hook 'exordium--add-copy-both-to-ediff-mode-map))
+
+
 (provide 'init-git)
