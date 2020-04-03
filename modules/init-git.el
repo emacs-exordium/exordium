@@ -174,26 +174,26 @@ Adapted from: http://stackoverflow.com/questions/9656311/conflict-resolution-wit
     (interactive
      (let ((first-string (completing-read "First: " '("A" "B") nil t "A"))
            (second-string (completing-read "Second: " '("A" "B") nil t "B")))
-       (list (intern first-string) (intern second-string))))
-    (let ((first (or first 'A))
-          (second (or second 'B)))
+       (list first-string second-string)))
+    (let ((first (or first "A"))
+          (second (or second "B")))
       (ediff-copy-diff ediff-current-difference nil 'C nil
                        (concat
                         (ediff-get-region-contents
-                         ediff-current-difference first ediff-control-buffer)
+                         ediff-current-difference (intern first) ediff-control-buffer)
                         (ediff-get-region-contents
-                         ediff-current-difference second ediff-control-buffer)))))
+                         ediff-current-difference (intern second) ediff-control-buffer)))))
 
   (defun exordium--add-copy-both-to-ediff-mode-map ()
     (when ediff-merge-job
       (define-key ediff-mode-map "A"
         #'(lambda ()
             (interactive)
-            (exordium-ediff-copy-both-to-C 'A 'B)))
+            (exordium-ediff-copy-both-to-C "A" "B")))
       (define-key ediff-mode-map "B"
         #'(lambda ()
             (interactive)
-            (exordium-ediff-copy-both-to-C 'B 'A)))))
+            (exordium-ediff-copy-both-to-C "B" "A")))))
 
   (defconst exordium--ediff-long-help-message-merge
     "
