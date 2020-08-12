@@ -77,6 +77,11 @@ names to which it refers are bound."
      (region ((t (:foreground ,base2 :background ,base02))))
      (secondary-selection ((t (:background ,base02))))
 
+     ;; tab-bar
+     (tab-bar ((t (:foreground ,base0 :background ,base02))))
+     (tab-bar-tab ((t (:foreground ,base1 :background ,back))))
+     (tab-bar-tab-inactive ((t (:foreground ,base01 :background ,base02))))
+
      ;; font-lock
      (font-lock-builtin-face ((t (:foreground ,green :slant italic))))
      (font-lock-comment-face ((t (:foreground ,base01 :slant italic))))
