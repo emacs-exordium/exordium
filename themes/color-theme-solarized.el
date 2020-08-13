@@ -6,6 +6,8 @@
 ;;; Greg Pfeil created a theme for Emacs. This file is a different
 ;;; implementation but uses the same choices for most faces.
 
+;;; see https://github.com/sellout/emacs-color-theme-solarized/blob/master/solarized-definitions.el
+;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
 (require 'init-prefs)
 (require 'org)
 (require 'cl-lib)
@@ -49,6 +51,11 @@
        (cl-rotatef base00 base0))
      ,@body))
 
+;; for testing do in a scratch:
+;; (let ((custom--inhibit-theme-enable nil))
+;;   (eval-buffer "color-theme-solarized.el")
+;;   (set-colors-solarized-light))
+
 (defmacro solarized-face-specs ()
   "Return a backquote which defines a list of face specs.
 It expects to be evaluated in a scope in which the various color
@@ -67,8 +74,13 @@ names to which it refers are bound."
      (show-paren-mismatch ((t (:weight bold :foreground ,red :background ,base01))))
 
      ;; Region
-     (region ((t (:background ,base00))))
+     (region ((t (:foreground ,base2 :background ,base02))))
      (secondary-selection ((t (:background ,base02))))
+
+     ;; tab-bar
+     (tab-bar ((t (:foreground ,base0 :background ,base02))))
+     (tab-bar-tab ((t (:foreground ,base1 :background ,back))))
+     (tab-bar-tab-inactive ((t (:foreground ,base01 :background ,base02))))
 
      ;; font-lock
      (font-lock-builtin-face ((t (:foreground ,green :slant italic))))
@@ -99,8 +111,10 @@ names to which it refers are bound."
      (fringe ((t (:foreground ,base01 :background ,base02))))
      (linum ((t (:foreground ,base01 :background ,base02))))
      (header-line ((t (:foreground ,base0 :background ,base02 :weight bold))))
-     (highlight ((t (:background ,base02))))
+     (highlight ((t (:foreground ,base2 :background ,base02))))
      (hl-line ((t (:background ,base02))))
+     (line-number ((t (:foreground ,base1 :background ,base02))))
+     (line-number-current-line ((t (:foreground ,base2 :background ,base02))))
      (menu ((t (:foreground ,base0 :background ,base02))))
      (link ((t (:foreground ,violet :underline t))))
      (link-visited ((t (:foreground ,magenta :underline t))))
@@ -181,6 +195,7 @@ names to which it refers are bound."
      (org-hide ((t (:foreground ,base03))))
      (org-todo ((t (:weight bold :foreground ,base03 :background ,red))))
      (org-done ((t (:weight bold :foreground ,green))))
+     (org-block ((t (:foreground ,base01 :background ,base02))))
      (org-todo-kwd-face ((t (:foreground ,red :background ,base03))))
      (org-done-kwd-face ((t (:foreground ,green :background ,base03))))
      (org-project-kwd-face ((t (:foreground ,violet :background ,base03))))
@@ -252,8 +267,8 @@ names to which it refers are bound."
      (slime-warning-face ((t (:weight bold :foreground ,red))))
 
      ;;flyspell
-     (flyspell-incorrect ((t (:foreground ,red))))
-     (flyspell-duplicate ((t (:foreground ,yellow))))
+     (flyspell-incorrect ((t (:underline (:color ,red :style wave)))))
+     (flyspell-duplicate ((t (:underline (:color ,red :style wave)))))
 
      ;;ansi-term
      (term-color-black ((t ( :foreground ,base02))))
@@ -302,6 +317,9 @@ names to which it refers are bound."
      ;; Emacs Lisp
      (eval-sexp-fu-flash ((t (:background ,orange :foreground ,back))))
      (eval-sexp-fu-flash-error ((t (:background ,red :foreground ,back))))
+
+     ;; magit and forge
+     (forge-topic-closed ((t (:foreground ,base00))))
      )))
 
 (defmacro define-solarized-theme (mode)
