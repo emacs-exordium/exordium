@@ -3,7 +3,7 @@
 ;;;     M-x eval-buffer
 ;;;     M-x ert
 
-(with-no-warnings (require 'cl))
+(require 'cl-lib)
 (require 'init-bde-style)
 
 ;; Test apparatus

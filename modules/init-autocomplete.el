@@ -1,9 +1,9 @@
 ;;;; Autocomplete
 
-(require 'auto-complete)
+(use-package auto-complete :ensure nil)
 
 ;; Default config for auto-complete
-(require 'auto-complete-config)
+(use-package auto-complete-config :ensure nil)
 (ac-config-default)
 
 ;; Case sensitivity is important when finding matches

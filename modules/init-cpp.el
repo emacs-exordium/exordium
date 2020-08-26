@@ -10,16 +10,20 @@
 ;;; - Open .h files in C++ mode by default
 ;;; - Highlight dead code between #if 0 and #endif (after saving)
 
-(with-no-warnings (require 'cl))
-(require 'cc-mode)
+(use-package cl-lib :ensure nil)
 (require 'init-lib)
 
-;;; Open a header file in C++ mode by default
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(use-package cc-mode
+  :config
+  ;;; Open a header file in C++ mode by default
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode)))
+
 
 ;;; IEdit: rename the symbol under point
 ;;; Fix A bug (normal key is "C-;")
-(define-key global-map (kbd "C-c ;") 'iedit-mode)
+(use-package iedit
+  :init
+  (define-key global-map (kbd "C-c ;") 'iedit-mode))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
@@ -27,7 +31,7 @@
 
 ;;; Highlight dead code between #if 0 and #endif
 
-(require 'cpp)
+(use-package cpp)
 (defun cpp-highlight-dead-code ()
   "highlight c/c++ #if 0 #endif macros"
   (let ((color (face-background 'shadow)))
@@ -92,11 +96,11 @@
       (cond (matching-ext
              (unless
                  (catch 'found
-                   (flet ((when-exists-find-and-throw
-                           (file)
-                           (when (file-exists-p file)
-                             (find-file file)
-                             (throw 'found t))))
+                   (cl-flet ((when-exists-find-and-throw
+                              (file)
+                              (when (file-exists-p file)
+                                (find-file file)
+                                (throw 'found t))))
                      (dolist (candidate-ext matching-ext)
                        ;; Look for a buffer matching candidate-ext
                        (let ((buff (concat base-name candidate-ext)))
@@ -147,7 +151,7 @@
 ;;; C++11 keywords
 
 (require 'init-prefs)
-(with-no-warnings (require 'cl))
+(use-package cl-lib :ensure nil)
 
 (defconst exordium-extra-c++-keywords
   (remove-if #'null
@@ -162,11 +166,15 @@
             #'(lambda()
                 (font-lock-add-keywords nil exordium-extra-c++-keywords))
             t))
-(when (eq exordium-enable-c++11-keywords :modern)
-  (add-hook 'c++-mode-hook (lambda ()
-                             (modern-c++-font-lock-mode)
-                             (diminish 'modern-c++-font-lock-mode))))
 
+(use-package modern-cpp-font-lock
+  :if (eq exordium-enable-c++11-keywords :modern)
+  :diminish modern-c++-font-lock-mode
+  :hook (c++-mode . modern-c++-font-lock-mode))
+
+(use-package cmake-mode
+  :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
+         ("\\.cmake\\'" . cmake-mode)))
 
 (provide 'init-cpp)
 ;; Local Variables:

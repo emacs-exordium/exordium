@@ -84,6 +84,7 @@ names to which it refers are bound."
      (link-visited ((t (:foreground ,zenburn-yellow-2 :underline t :weight normal))))
      (default ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
      (cursor ((t (:foreground ,zenburn-fg :background ,zenburn-fg+1))))
+     (widget-field ((t (:foreground ,zenburn-fg :background ,zenburn-bg+3))))
      (escape-glyph ((t (:foreground ,zenburn-yellow :bold t))))
      (fringe ((t (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
      (header-line ((t (:foreground ,zenburn-yellow :background ,zenburn-bg-1
@@ -91,6 +92,7 @@ names to which it refers are bound."
      (highlight ((t (:background ,zenburn-bg-05))))
      (success ((t (:foreground ,zenburn-green :weight bold))))
      (warning ((t (:foreground ,zenburn-orange :weight bold))))
+     (tooltip ((t (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
      (shadow ((t (:background ,zenburn-bg+1))))
 
      ;; compilation
@@ -144,6 +146,7 @@ names to which it refers are bound."
      (secondary-selection ((t (:background ,zenburn-bg+2))))
      (trailing-whitespace ((t (:background ,zenburn-red))))
      (vertical-border ((t (:foreground ,zenburn-fg))))
+     (fill-column-indicator ((t (:foreground ,zenburn-bg+05 :background ,zenburn-bg :slant normal))))
 
      ;; Hi-Lock
      (hi-blue    ((t (:background ,zenburn-cyan    :foreground ,zenburn-bg-1))))

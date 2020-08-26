@@ -22,9 +22,10 @@
 
 (require 'init-prefs)
 (eval-when-compile
-  (require 'fill-column-indicator)
+  (use-package fill-column-indicator
+    :if (version< emacs-version "27"))
   (require 'hilinum-mode)
-  (require 'powerline))
+  (use-package powerline))
 
 (when exordium-theme
   (load-theme exordium-theme t))
@@ -66,8 +67,9 @@
 
 ;;; FCI (80-column marker) color
 
-(when exordium-fci-mode
-  (require 'fill-column-indicator)
+(when (and exordium-fci-mode
+           (version< emacs-version "27"))
+  (use-package fill-column-indicator)
   (let ((color (and (facep 'vertical-border)
                     (face-foreground 'vertical-border))))
     (setq fci-rule-color (or color "dim gray"))))

@@ -114,6 +114,7 @@ Inspired by the apropospriate-theme."
      (let ((background   (cdr (assoc 'background colors)))
            (current-line (cdr (assoc 'current-line colors)))
            (selection    (cdr (assoc 'selection colors)))
+           (highlight    (cdr (assoc 'current-line colors)))
            (foreground   (cdr (assoc 'foreground colors)))
            (comment      (cdr (assoc 'comment colors)))
            (red          (cdr (assoc 'red colors)))
@@ -193,6 +194,7 @@ names to which it refers are bound."
       ((t (:background ,current-line :box (:line-width 1 :color ,foreground)))))
      (header-line ((t (:foreground ,purple :background nil))))
      (menu ((t (:foreground ,foreground :background ,selection))))
+     (fill-column-indicator ((t (:foreground "dim gray" :background ,background :slant normal))))
 
      ;; Customize
      (custom-variable-tag ((t (:foreground ,blue))))
@@ -255,11 +257,11 @@ names to which it refers are bound."
                               :underline nil :weight bold :box nil))))
      (helm-selection ((t (:background ,selection :underline nil))))
      (helm-selection-line ((t (:background ,selection))))
-     (helm-visible-mark ((t (:foreground ,background :background ,yellow))))
-     (helm-ff-directory ((t (:foreground ,background :background ,green))))
+     (helm-visible-mark ((t (:foreground ,yellow :background ,background))))
+     (helm-ff-file ((t (:foreground ,foreground :background ,background))))
+     (helm-ff-directory ((t (:foreground ,blue :background ,background))))
      (helm-ff-executable ((t (:foreground ,red :background ,background))))
      (helm-ff-symlink ((t (:foreground ,yellow :background ,background))))
-     (helm-ff-executable ((t (:foreground ,foreground :background ,background))))
      (helm-swoop-target-line-face ((t (:foreground ,background :background ,yellow))))
      (helm-swoop-target-word-face ((t (:foreground ,background :background ,aqua))))
 
@@ -291,10 +293,11 @@ names to which it refers are bound."
      (magit-branch ((t (:foreground ,green))))
      (magit-header ((t (:inherit nil :weight bold))))
      (magit-item-highlight ((t (:background ,current-line))))
-     ;;(magit-item-highlight ((t (:inherit highlight))))
      (magit-item-mark ((t (:inherit region :foreground ,orange))))
-     (magit-diff-add ((t (:inherit region :foreground ,green))))
-     (magit-diff-del ((t (:inherit region :foreground ,red))))
+     (magit-diff-added ((t (:inherit region :foreground ,green))))
+     (magit-diff-added-highlight ((t (:foreground ,green :background ,highlight))))
+     (magit-diff-removed ((t (:inherit region :foreground ,red))))
+     (magit-diff-removed-highlight ((t (:foreground ,red :background ,highlight))))
      (magit-diff-none ((t (:inherit region :foreground ,foreground))))
      (magit-log-graph ((t (:foreground ,comment))))
      (magit-log-sha1 ((t (:foreground ,purple))))
@@ -335,9 +338,16 @@ names to which it refers are bound."
      (grep-hit-face ((t (:foreground ,blue))))
      (grep-match-face ((t (:foreground nil :background nil :inherit match))))
 
+     ;; Man
+     (Man-overstrike ((t (:foreground ,orange))))
+     (Man-underline ((t (:foreground ,green))))
+
      ;; Org
      (org-level-1 ((t
-                    ,(append `(:foreground ,foreground)
+                    ,(append `(:foreground ,green
+                               :overline ,green
+                               :background ,selection
+                               :box (:style released-button))
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
@@ -376,18 +386,19 @@ names to which it refers are bound."
      (markdown-url-face ((t (:inherit link :foreground ,yellow :weight normal))))
      (markdown-link-face ((t (:foreground ,orange :underline t :weight bold))))
      (markdown-header-face-1 ((t
-                               ,(append `(:weight bold :foreground ,blue)
+                               ,(append `(:weight bold :foreground ,red)
                                         (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
      (markdown-header-face-2 ((t
-                               ,(append `(:weight bold :foreground ,blue)
+                               ,(append `(:weight bold :foreground ,red)
                                         (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
-     (markdown-header-face-3 ((t (:foreground ,blue :weight bold))))
-     (markdown-header-face-4 ((t (:foreground ,blue :weight normal))))
-     (markdown-header-face-5 ((t (:foreground ,blue :weight bold :slant italic))))
-     (markdown-header-delimiter-face ((t (:foreground ,blue))))
+     (markdown-header-face-3 ((t (:foreground ,red :weight bold))))
+     (markdown-header-face-4 ((t (:foreground ,red :weight normal))))
+     (markdown-header-face-5 ((t (:foreground ,red :weight bold :slant italic))))
+     (markdown-header-delimiter-face ((t (:foreground ,red))))
+     (markdown-hr-face ((t (:foreground ,red))))
      (markdown-bold-face ((t (:foreground ,green :weight bold))))
      (markdown-italic-face ((t (:foreground ,foreground :weight normal :slant italic))))
-     (markdown-list-face ((t (:foreground ,blue :weight normal))))
+     (markdown-list-face ((t (:foreground ,red :weight normal))))
      (markdown-inline-code-face ((t (:foreground ,aqua :weight normal))))
      (markdown-markup-face ((t (:foreground ,blue))))
      (markdown-pre-face ((t (:foreground ,aqua))))
@@ -432,7 +443,7 @@ names to which it refers are bound."
      (treemacs-git-modified-face ((t (:foreground ,orange))))
 
      ;; Trailing whitespaces
-     (trailing-whitespace ((t (:background ,red :foreground ,yellow))))
+     (trailing-whitespace ((t (:background ,foreground :foreground ,background))))
      (whitespace-empty ((t (:foreground ,red :background ,yellow))))
      (whitespace-hspace ((t (:background ,selection :foreground ,comment))))
      (whitespace-indentation ((t (:background ,yellow :foreground ,red))))

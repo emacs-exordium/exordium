@@ -111,8 +111,14 @@ This makes it easier to paste text from the Windows clipboard."
 
 ;;; Backup files (e.g. file~)
 (defcustom exordium-backup-files nil
-  "Enables or disables backup files. Disabled by default, I can't
-  stand these annoying files~"
+  "Enables or disables backup files.
+Disabled by default, I can't stand these annoying files~"
+  :group 'exordium
+  :type  'boolean)
+
+(defcustom exordium-use-magit-fullscreen t
+  "If t, magit status and log will fill the whole frame.
+The original window configuration will be restored when you quit out of magit."
   :group 'exordium
   :type  'boolean)
 
@@ -178,11 +184,26 @@ nil means it is disabled."
   :group 'exordium
   :type  'symbol)
 
-(defcustom exordium-fci-use-dashes t
-  "If t, use dashes for fill-column-indicator.
-If nil, use a plain line."
+(defcustom exordium-fci-use-dashes :one
+  "If non-nil use dashes for fill-column-indicator.
+If nil, use a plain line.  The value can be one of `:one', `:two', `:three',
+`:four', or any other key from `exordium-fci-dashes-alist' to use associated
+value.  Note that the character will only be used if displayable by a current
+font."
   :group 'exordium
-  :type  'boolean)
+  :type  'symbol)
+
+(defcustom exordium-fci-dashes-alist '((:one .   (?\u2758 ?\u2575)) ;; ❘ or ╵
+                                       (:two .   (?\u254e))         ;; ╎
+                                       (:three . (?\u2506))         ;; ┆
+                                       (:four .  (?\u250a)))       ;; ┊
+  "The mapping form a symbol to a sequence of characters to be used for dashes.
+For each symbol the first displayable character from the sequence will be used
+if displayable in current configuration.  If the value of
+`exordium-fci-use-dashes' cannot be mapped or the mapped value cannot be
+displayed by the current font default will be used."
+  :group 'exordium
+  :type  'alist)
 
 (defcustom exordium-fci-fix-autocomplete-bug t
   "Whether fill-column-indicator is temporarily disabled when an

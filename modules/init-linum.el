@@ -6,11 +6,11 @@
 ;;;
 ;;; See also init-ui.el
 
-(require 'linum)
-(require 'nlinum)
+(use-package linum)
+(use-package nlinum)
 (require 'init-prefs)
 (unless (version< emacs-version "26.1")
-  (require 'display-line-numbers))
+  (use-package display-line-numbers))
 
 (defun nlinum--setup-window-fudge ()
   "Workaround a bug in older versions of Emacs"

@@ -20,7 +20,7 @@
 ;;;   This function completes the native `gdb-many-windows' which displays 6
 ;;;   windows (stack, breakpoints, local variables or registers).
 
-(require 'gdb-mi)
+(use-package gdb-mi)
 
 ;; Show main source buffer when using GDB.
 (setq gdb-show-main t)

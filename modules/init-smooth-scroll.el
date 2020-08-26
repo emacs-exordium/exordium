@@ -26,7 +26,7 @@
 ;;; Credit: the algorithm is from the Sublimity plugin, but fine-tuned.
 ;;; See https://github.com/zk-phi/sublimity
 
-(with-no-warnings (require 'cl))
+(use-package cl-lib :ensure nil)
 
 
 ;;; Customizable variables
