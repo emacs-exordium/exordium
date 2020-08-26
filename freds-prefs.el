@@ -291,6 +291,7 @@ just move point to the bottom of the buffer instead."
  (add-hook 'c-mode-hook 'dg-c-mode)
  (add-hook 'cperl-mode-hook 'dg-c-mode)
  (add-hook 'ruby-mode-hook 'my-ruby-mode)
+ (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
  (line-number-mode 1)
 
   (auto-fill-mode 0)
