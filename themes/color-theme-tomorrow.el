@@ -389,6 +389,7 @@ names to which it refers are bound."
      (markdown-markup-face ((t (:foreground ,blue))))
      (markdown-pre-face ((t (:foreground ,aqua))))
      (markdown-gfm-checkbox-face ((t (:foreground ,red))))
+     (markdown-table-face ((t (:foreground ,comment))))
 
      ;; js2-mode
      (js2-warning ((t (:underline (:color ,orange :style wave)))))
