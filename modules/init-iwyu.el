@@ -115,8 +115,8 @@ arguments in `exordium-iwyu-extra-args'."
              "include-what-you-use"
              (append
               exordium-iwyu-extra-args
-              (remove-if '(lambda (x) (member x exordium-iwyu-filter-args))
-                         (iwyu-prepare-args (plist-get entry :command)))))
+              (cl-remove-if '(lambda (x) (member x exordium-iwyu-filter-args))
+                            (iwyu-prepare-args (plist-get entry :command)))))
             (display-buffer buffer-name)
             (other-window 1)
             (set-window-dedicated-p (get-buffer-window (current-buffer)) t)

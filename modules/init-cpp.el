@@ -154,12 +154,12 @@
 (use-package cl-lib :ensure nil)
 
 (defconst exordium-extra-c++-keywords
-  (remove-if #'null
-             (list
-              ;; This can be completed with other things later (C++17?)
-              (when (eq exordium-enable-c++11-keywords :simple)
-                '("\\<\\(alignas\\|alignof\\|char16_t\\|char32_t\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face))))
-  "A-list of pairs (regex . face) for highlighting extra keywords in C++ mode")
+  (cl-remove-if #'null
+                (list
+                 ;; This can be completed with other things later (C++17?)
+                 (when (eq exordium-enable-c++11-keywords :simple)
+                   '("\\<\\(alignas\\|alignof\\|char16_t\\|char32_t\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face))))
+  "A-list of pairs (regex . face) for highlighting extra keywords in C++ mode.")
 
 (when exordium-extra-c++-keywords
   (add-hook 'c++-mode-hook
