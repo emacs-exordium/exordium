@@ -203,12 +203,14 @@ names to which it refers are bound."
 
      ;; Org
      (org-hide ((t (:foreground ,base03))))
-     (org-todo ((t (:weight bold :foreground ,base03 :background ,red))))
+     (org-todo ((t (:weight bold :foreground ,red))))
      (org-done ((t (:weight bold :foreground ,green))))
+     (exordium-org-wait ((t (:weight bold :foreground ,yellow ))))
+     (exordium-org-work ((t (:weight bold :foreground ,orange))))
      (org-meta-line ((t (:background ,base02 :slant italic :box t))))
      (org-block ((t (:background ,back))))
      (org-code ((t (:foreground ,cyan :background ,back))))
-     (org-verbatim ((t (:background ,base02))))
+     (org-verbatim ((t (:background ,back))))
      (org-todo-kwd-face ((t (:foreground ,red :background ,base03))))
      (org-done-kwd-face ((t (:foreground ,green :background ,base03))))
      (org-project-kwd-face ((t (:foreground ,violet :background ,base03))))
@@ -363,15 +365,12 @@ names to which it refers are bound."
   "Return the mode without the solarized- prefix, e.g. dark or light."
   (intern (substring (symbol-name exordium-theme) 10)))
 
+;; TODO: rename me and use a standard
 (defun set-solarized-extra-org-statuses ()
   "Set colors for WORK and WAIT org statuses"
   (with-solarized-colors
    (solarized-mode-name)
-   (setq org-todo-keyword-faces
-         `(("WORK" . (:background ,yellow :foreground ,back
-                      :weight bold :box nil))
-           ("WAIT" . (:background ,orange :foreground ,back
-                                  :weight bold :box nil))))
+   ;; TODO: but this should go to a common bit in exordium within `use-package' and `markdown'
    (when exordium-theme-use-big-font
      (custom-set-variables
       '(markdown-header-scaling-values `(,exordium-height-plus-4

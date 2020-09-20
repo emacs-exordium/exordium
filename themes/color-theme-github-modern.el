@@ -898,6 +898,8 @@ names to which it refers are bound."
      (org-tag ((t (:bold t :weight bold))))
      (org-time-grid ((t (:foreground ,github-text))))
      (org-todo ((t (:bold t :foreground ,github-string :weight bold))))
+     (exordium-org-work ((t (:foreground ,github-function :weight bold :box nil))))
+     (exordium-org-wait ((t (:foreground ,github-constant :weight bold :box nil))))
      (org-upcoming-deadline ((t (:inherit font-lock-keyword-face))))
      (org-warning ((t (:bold t :foreground ,github-string :weight bold :underline nil))))
      (org-column ((t (:background ,github-selection))))
@@ -1254,17 +1256,6 @@ names to which it refers are bound."
   (with-github-colors
    (apply 'custom-theme-set-variables 'github-modern (github-variables)))
   (provide-theme 'github-modern))
-
-;;; Extra functions
-
-(defun set-github-extra-org-statuses ()
-  (require 'org)
-  (with-github-colors
-   (setq org-todo-keyword-faces
-         `(("WORK" . (:foreground ,github-function
-                      :weight bold :box nil))
-           ("WAIT" . (:foreground ,github-constant
-                      :weight bold :box nil))))))
 
 ;;; Debugging functions
 

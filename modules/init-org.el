@@ -8,10 +8,20 @@
   (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 
   :config
-  (setq org-startup-truncated nil)
-  (setq org-startup-with-inline-images t)
+  (defface exordium-org-wait '((t (:inherit org-todo)))
+    "Face for WAIT keywords."
+    :group 'exordium)
+  (defface exordium-org-work '((t (:inherit org-todo)))
+    "Face for WORK keywords."
+    :group 'exordium)
+  (setq org-todo-keyword-faces
+        '(("WORK" . exordium-org-work)
+          ("WAIT" . exordium-org-wait)))
   (setq org-todo-keywords
         '((sequence "TODO" "WORK" "WAIT" "DONE")))
+
+  (setq org-startup-truncated nil)
+  (setq org-startup-with-inline-images t)
   (setq org-src-fontify-natively t)
   (setq org-fontify-whole-heading-line t)
   (setq org-src-preserve-indentation t)
