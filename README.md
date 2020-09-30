@@ -313,7 +313,7 @@ expressions.
 * <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: Swoop search for text in current buffer.
 * <kbd>C-S-d</kbd>: Ag search for text, but ask for directory to start first.
 * <kbd>C-S-f</kbd>: Ag search for text in current buffer (similar to Swoop).
-* <kbd>C-S-r</kbd>: Ag search starting from project root.
+* <kbd>C-S-r</kbd>: ripgrep search for text in current projectile project.
 * <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
 ## Treemacs
