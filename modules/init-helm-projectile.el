@@ -15,27 +15,31 @@
 ;;; C-S-s             Helm Swoop, a way of searching with Helm (try it!).
 ;;; C-c e             Project Explorer: show the directory tree.
 
+(require 'init-prefs)
 (use-package helm)
-(use-package projectile)
-(use-package helm-projectile)
+
+(use-package projectile
+  :bind
+  (:map projectile-command-map
+        ("." . helm-projectile-find-file-dwim))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :config
+  (projectile-mode))
+
+(use-package helm-projectile
+  :config
+  (global-set-key [(control c)(h)] (function helm-projectile))
+  (global-set-key [(control c)(H)] (function helm-projectile-switch-project))
+  (global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
+  (when exordium-helm-everywhere
+    (helm-projectile-on)))
+
 (use-package helm-swoop
   :init
   ;; C-S-s = helm-swoop
   (define-key global-map [(control shift s)] (function helm-swoop)))
 (use-package treemacs-projectile)
-(require 'init-prefs)
-
-(projectile-global-mode)
-(global-set-key [(control c)(h)] (function helm-projectile))
-(global-set-key [(control c)(H)] (function helm-projectile-switch-project))
-(global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
-(when exordium-helm-everywhere
-  (substitute-key-definition
-   'projectile-switch-project 'helm-projectile-switch-project
-   projectile-mode-map)
-  (substitute-key-definition
-   'projectile-find-file 'helm-projectile
-   projectile-mode-map))
 
 ;; Prevent Projectile from indexing the build directory.
 (when exordium-rtags-cmake-build-dir
