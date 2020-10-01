@@ -6,31 +6,28 @@
   :mode (("\\.org\\'" . org-mode))
   :init
   (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
-
-  :config
   (defface exordium-org-wait '((t (:inherit org-todo)))
     "Face for WAIT keywords."
     :group 'exordium)
   (defface exordium-org-work '((t (:inherit org-todo)))
     "Face for WORK keywords."
     :group 'exordium)
-  (setq org-todo-keyword-faces
-        '(("WORK" . exordium-org-work)
-          ("WAIT" . exordium-org-wait)))
-  (setq org-todo-keywords
-        '((sequence "TODO" "WORK" "WAIT" "DONE")))
 
-  (setq org-startup-truncated nil)
-  (setq org-startup-with-inline-images t)
-  (setq org-src-fontify-natively t)
-  (setq org-fontify-whole-heading-line t)
-  (setq org-src-preserve-indentation t)
-  (setq org-completion-use-ido t)
+  :custom
+  (org-todo-keywords
+   '((sequence "TODO(t)" "WORK(w!/!)" "WAIT(a@/!)" "|" "DONE(d!/!)")))
+  (org-todo-keyword-faces
+   '(("WORK" . exordium-org-work)
+     ("WAIT" . exordium-org-wait)))
+  (org-startup-truncated nil)
+  (org-startup-with-inline-images t)
+  (org-src-fontify-natively t)
+  (org-fontify-whole-heading-line t)
+  (org-src-preserve-indentation t)
+  ;; Turn off the confirmation for code eval when using org-babel
+  (org-confirm-babel-evaluate (not exordium-no-org-babel-confirm))
+  :config
   (when exordium-enable-org-export
-    ;; Turn off the confirmation for code eval when using org-babel
-    (when exordium-no-org-babel-confirm
-      (setq org-confirm-babel-evaluate nil))
-
     ;; Configure export using a css style sheet
     (when exordium-org-export-css
       (setq org-html-htmlize-output-type 'css)
