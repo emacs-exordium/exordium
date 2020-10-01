@@ -7,7 +7,7 @@
 ;;; M-y               Remap standard: Yank with helm.
 ;;; C-x b             Remap standard: Switch buffer with helm.
 ;;; C-x C-f           Remap standard: Find file with helm.
-;;; C-S-r             Search with Ag: from project root.
+;;; C-S-r             Search with ripgrep: in current projectile project.
 ;;; C-S-d             Search with Ag: ask for directory first.
 ;;; C-S-f             Search with Ag: this file (like Swoop).
 ;;; C-S-a             Search with Ag: in current projectile project.
@@ -15,13 +15,13 @@
 (use-package helm)
 (use-package helm-projectile)
 (use-package helm-ag)
+(use-package helm-rg)
 
 
-(global-set-key (kbd "C-S-r")   'helm-ag-project-root)
+(global-set-key (kbd "C-S-r")   'helm-projectile-rg)
 (global-set-key (kbd "C-S-d")   'helm-do-ag)
 (global-set-key (kbd "C-S-f")   'helm-do-ag-this-file)
 (global-set-key (kbd "C-S-a")   'helm-projectile-ag)
-(global-set-key (kbd "C-c p .") 'helm-projectile-find-file-dwim)
 
 (when exordium-helm-everywhere
   (helm-mode)
