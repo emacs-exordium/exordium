@@ -25,18 +25,21 @@
   (org-src-fontify-natively t)
   (org-fontify-whole-heading-line t)
   (org-src-preserve-indentation t)
-  ;; Turn off the confirmation for code eval when using org-babel
-  (org-confirm-babel-evaluate (not exordium-no-org-babel-confirm))
+  (org-confirm-babel-evaluate (not exordium-no-org-babel-confirm)
+                              "Turn off the confirmation for code eval when using org-babel.")
+  (org-html-htmlize-output-type (if exordium-org-export-css
+                                    'css
+                                  org-html-htmlize-output-type)
+                                "Configure export using a css style sheet")
+  (org-html-head (if exordium-org-export-css
+                     exordium-org-export-css-stylesheet
+                   org-html-head)
+                 "Configure export using a css style sheet")
   :config
-  (when exordium-enable-org-export
-    ;; Configure export using a css style sheet
-    (when exordium-org-export-css
-      (setq org-html-htmlize-output-type 'css)
-      (setq org-html-head exordium-org-export-css-stylesheet)))
-
-  (setq org-support-shift-select t)
+  ;; TODO: delete `exordium-enable-org-export'??
   (when exordium-enable-org-export
     ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
+    ;; TODO: add extra languages configurable by user
     (org-babel-do-load-languages
      'org-babel-load-languages
      `((perl       . t)
