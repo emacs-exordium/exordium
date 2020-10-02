@@ -19,6 +19,7 @@
   (org-todo-keyword-faces
    '(("WORK" . exordium-org-work)
      ("WAIT" . exordium-org-wait)))
+  (org-log-into-drawer t)
   (org-startup-truncated nil)
   (org-startup-with-inline-images t)
   (org-src-fontify-natively t)
