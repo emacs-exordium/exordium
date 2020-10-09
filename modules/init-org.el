@@ -1,18 +1,17 @@
 ;;;; Org mode
 
 (require 'init-prefs)
+
+(defface exordium-org-wait '((t (:inherit org-todo)))
+  "Face for WAIT keywords."
+  :group 'exordium)
+(defface exordium-org-work '((t (:inherit org-todo)))
+  "Face for WORK keywords."
+  :group 'exordium)
+
 (use-package org
   :commands (org-mode)
   :mode (("\\.org\\'" . org-mode))
-  :init
-  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
-  (defface exordium-org-wait '((t (:inherit org-todo)))
-    "Face for WAIT keywords."
-    :group 'exordium)
-  (defface exordium-org-work '((t (:inherit org-todo)))
-    "Face for WORK keywords."
-    :group 'exordium)
-
   :custom
   (org-todo-keywords
    '((sequence "TODO(t)" "WORK(w!/!)" "WAIT(a@/!)" "|" "DONE(d!/!)")))
