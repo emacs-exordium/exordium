@@ -250,10 +250,6 @@ the .elc exists. Also discard .elc without corresponding .el"
   (set-face-background 'highlight nil))
 (use-package init-themes :ensure nil :if exordium-theme)
 
-;;; Desktop
-(when exordium-desktop
-  (use-package init-desktop :ensure nil))
-
 ;;; Look and feel
 (use-package init-look-and-feel :ensure nil)   ; fonts, UI, keybindings, saving files etc.
 (use-package init-font-lock :ensure nil)       ; enables/disables font-lock globally.
@@ -350,6 +346,11 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
   (load tapped-file))
+
+;;; Desktop - close to the end so customisations had a chance to kick in
+(when exordium-desktop
+  (use-package init-desktop :ensure nil))
+
 
 (use-package init-powerline :ensure nil
   :if (and exordium-theme exordium-enable-powerline))
