@@ -35,6 +35,11 @@
                    org-html-head)
                  "Configure export using a css style sheet")
   :config
+  (add-hook 'org-src-mode-hook
+            #'(lambda ()
+                (make-local-variable 'flychek-disabled-checkers)
+                (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)))
+  (add-hook 'org-mode-hook #'turn-on-visual-line-mode)
   ;; TODO: delete `exordium-enable-org-export'??
   (when exordium-enable-org-export
     ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
