@@ -18,6 +18,7 @@
   (org-todo-keyword-faces
    '(("WORK" . exordium-org-work)
      ("WAIT" . exordium-org-wait)))
+  (org-startup-folded t)
   (org-log-into-drawer t)
   (org-startup-truncated nil)
   (org-startup-with-inline-images t)
