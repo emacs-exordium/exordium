@@ -339,6 +339,10 @@ names to which it refers are bound."
 
      ;; magit and forge
      (forge-topic-closed ((t (:foreground ,base00))))
+
+     ;; iedit
+     (iedit-occurrence ((t (:box ,base0))))
+     (iedit-read-only-occurrence ((t (:box ,base01))))
      )))
 
 (defmacro define-solarized-theme (mode)
