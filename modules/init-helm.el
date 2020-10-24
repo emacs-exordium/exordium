@@ -12,7 +12,9 @@
 ;;; C-S-f             Search with Ag: this file (like Swoop).
 ;;; C-S-a             Search with Ag: in current projectile project.
 
-(use-package helm)
+(use-package helm
+  :custom
+  (helm-split-window-default-side 'other))
 (use-package helm-projectile)
 (use-package helm-ag)
 (use-package helm-rg)
