@@ -22,6 +22,53 @@
 ;;; IEdit: rename the symbol under point
 (use-package iedit
   :init
+  (defun exordium--electric-pair-inhibit-if-helps-balance (char)
+  "Return non-nil if auto-pairing of CHAR would hurt parentheses' balance.
+Works by first removing the character from the buffer, then doing
+some list calculations, finally restoring the situation as if nothing
+happened.
+
+This is a copy from https://github.com/emacs-mirror/emacs/blob/a812ed2/lisp/elec-pair.el,
+that is, from before with `iedit' has been introduced.
+See `exordium--iedit-electric-pair-workaround' for more details."
+  (pcase (electric-pair-syntax-info char)
+    (`(,syntax ,pair ,_ ,s-or-c)
+     (unwind-protect
+         (progn
+           (delete-char -1)
+           (cond ((eq ?\( syntax)
+                  (let* ((pair-data
+                          (electric-pair--balance-info 1 s-or-c))
+                         (outermost (cdr pair-data)))
+                    (cond ((car outermost)
+                           nil)
+                          (t
+                           (eq (cdr outermost) pair)))))
+                 ((eq syntax ?\")
+                  (electric-pair--unbalanced-strings-p char))))
+       (insert char)))))
+
+  (defun exordium--iedit-electric-pair-workaround ()
+    "This is a workaround for interference with an `electric-pair'.
+The issue is described here: https://github.com/victorhge/iedit/issues/114.
+It seems that it has been introduced by a change in `elec-pair.el' this commit:
+https://github.com/emacs-mirror/emacs/commit/e66d5a1.  The idea is to use old
+version of the function in affected Emacs versions."
+    (when (and electric-pair-mode
+               (version< "27" emacs-version))
+      (advice-add 'electric-pair-inhibit-if-helps-balance
+                  :override
+                  #'exordium--electric-pair-inhibit-if-helps-balance)))
+
+  (defun exordium--iedit-electric-pair-workaround-end ()
+    "This is a complimentary function to `exordium--iedit-electric-pair-workaround'.
+See doc for the latter."
+    (advice-remove 'electric-pair-inhibit-if-helps-balance
+                   #'exordium--electric-pair-inhibit-if-helps-balance))
+
+  :hook
+  (iedit-mode . exordium--iedit-electric-pair-workaround)
+  (iedit-mode-end . exordium--iedit-electric-pair-workaround-end)
   ;;; Fix A bug (normal key is "C-;")
   :bind (:map global-map
               ("C-c ;" . #'iedit-mode)))
