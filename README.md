@@ -326,8 +326,8 @@ project directory structure on the left side:
 
 Keybinding          | Description
 --------------------|----------------------------------------------------------
-<kbd>C-c e</kbd>    | Open the current directory.
-<kbd>C-c E</kbd>    | Open the current project (projectile).
+<kbd>C-c e</kbd>    | Toggle `treemacs` the current directory.
+<kbd>C-c E</kbd>    | Open a projectile project (with a selector).
 
 Treemacs displays the git status of files (added, modified, ignored etc.) using
 different faces.

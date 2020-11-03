@@ -1,4 +1,3 @@
-;;;; Helm - see http://tuhdo.github.io/helm-intro.html
 ;;;; Projectile - see http://batsov.com/projectile/
 ;;;
 ;;; ----------------- -------------------------------------------------------
@@ -6,17 +5,19 @@
 ;;; ----------------- -------------------------------------------------------
 ;;; C-c p p           [Opt remap] Select project and open file with helm.
 ;;; C-c p f           [Opt remap] Open file with helm-projectile (current project).
-;;; C-c h             Open file with helm-projectile (current project).
-;;; C-c M-h           Same but first select the project.
-;;; or C-c H
 ;;; C-c p s g         Grep in project.
-;;;
-;;; C-h b             Describe keybindings using Helm.
-;;; C-S-s             Helm Swoop, a way of searching with Helm (try it!).
-;;; C-c e             Project Explorer: show the directory tree.
+;;; ... and many more under C-c p
+;;; C-c h             Open file with helm-projectile (current project).
+;;; C-c H             Same but first select the project.
+;;; or C-c M-h
+;;; C-c e             treemacs: toggle the directory tree.
+;;; C-c E             Open treemacs with a projectile project.
+;;; C-S-a             Search with Ag: in current projectile project. (see also`init-helm.el')
+;;; C-S-r             Search with ripgrep: in current projectile project. (see also`init-helm.el')
 
 (require 'init-prefs)
-(use-package helm)
+
+(use-package helm-rg)
 
 (use-package projectile
   :bind
@@ -28,18 +29,22 @@
   (projectile-mode))
 
 (use-package helm-projectile
+  :bind
+  (:map global-map
+        ("C-c h"   . #'helm-projectile)
+        ("C-c H"   . #'helm-projectile-switch-project)
+        ("C-c M-h" . #'helm-projectile-switch-project)
+        ("C-S-a"   . #'helm-projectile-ag)
+        ("C-S-r"   . #'helm-projectile-rg))
   :config
-  (global-set-key [(control c)(h)] (function helm-projectile))
-  (global-set-key [(control c)(H)] (function helm-projectile-switch-project))
-  (global-set-key [(control c)(meta h)] (function helm-projectile-switch-project))
   (when exordium-helm-everywhere
     (helm-projectile-on)))
 
-(use-package helm-swoop
-  :init
-  ;; C-S-s = helm-swoop
-  (define-key global-map [(control shift s)] (function helm-swoop)))
-(use-package treemacs-projectile)
+(use-package treemacs-projectile
+  :bind
+  (:map global-map
+        ("C-c e" . #'treemacs)
+        ("C-c E" . #'treemacs-projectile)))
 
 ;; Prevent Projectile from indexing the build directory.
 (when exordium-rtags-cmake-build-dir
@@ -48,52 +53,5 @@
     (when top-level
       (setq projectile-globally-ignored-directories
             (cons top-level projectile-globally-ignored-directories)))))
-
-
-;;; Do not show these files in helm buffer
-(add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
-(add-to-list 'helm-boring-file-regexp-list "\\.log\\.")
-
-;; Use `recentf-list' instead of `file-name-history' in `helm-find-files'.
-;;(setq helm-ff-file-name-history-use-recentf t)
-
-
-;;; Other usages of Helm:
-
-;;; C-h b = describe keybindings using Helm
-(use-package helm-descbinds
-  :init
-  (define-key global-map [(control h)(b)] (function helm-descbinds)))
-
-;; TODO: work in progress
-;; The intent is to improve the readability of the helm swoop selection line
-;; (in the helm buffer).
-
-;; (defun fix-helm-swoop-colors (orig-fun &rest args)
-;;   "Advice around `helm-swoop' to change the background of the
-;; selected line in the hem buffer, for better readability"
-;;   (let ((bg       (face-attribute 'helm-selection :background))
-;;         (swoop-bg (face-attribute 'helm-swoop-target-line-face :background)))
-;;     (set-face-attribute 'helm-selection nil :background swoop-bg)
-;;     (let ((res (apply orig-fun args)))
-;;       (set-face-attribute 'helm-selection nil :background bg)
-;;       res)))
-
-;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
-
-
-;;; Use fuzzy matching for helm-projectile when requested
-(when exordium-helm-fuzzy-match
-  (setq helm-projectile-fuzzy-match t))
-
-
-;;; File explorer (treemacs)
-
-;;; C-c e = Open treemacs in the current directory
-;;; C-c E = Open treemacs in the current projectile project
-(define-key global-map [(control c)(e)] (function treemacs))
-(define-key global-map [(control c)(E)] (function treemacs-projectile))
-
-
 
 (provide 'init-helm-projectile)

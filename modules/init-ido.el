@@ -3,7 +3,7 @@
 ;;; -------------- -------------------------------------------------------
 ;;; Key            Definition
 ;;; -------------- -------------------------------------------------------
-;;; C-x C-r        Open recent file with IDO or Helm.
+;;; C-x C-r        Open recent file with IDO (see also `init-helm.el').
 
 (use-package ido
   :if (not exordium-helm-everywhere)
@@ -37,7 +37,6 @@
 ;; `abbreviate-file-name' abbreviates home dir to ~/ in the file list
 ;; Custom abbreviations can be added to `directory-abbrev-alist'.
 (use-package recentf)
-(use-package helm)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -53,10 +52,9 @@
    (ido-completing-read "Recentf open: "
                         (mapcar 'abbreviate-file-name recentf-list)
                         nil t)))
-(cond (exordium-helm-everywhere
-       (define-key global-map [(control x)(control r)] 'helm-recentf))
-      (t
-       (define-key global-map [(control x)(control r)] 'ido-find-recentf)))
+
+(unless exordium-helm-everywhere
+  (define-key global-map [(control x)(control r)] 'ido-find-recentf))
 
 
 (provide 'init-ido)
