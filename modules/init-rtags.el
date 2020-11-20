@@ -128,7 +128,7 @@
 (use-package rtags)
 (use-package ac-rtags)
 (use-package auto-complete-c-headers)
-(use-package projectile)
+;;(use-package projectile)
 (use-package company-rtags)
 
 ;;; Turn on flycheck support when requested
