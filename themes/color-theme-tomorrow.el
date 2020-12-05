@@ -245,6 +245,7 @@ names to which it refers are bound."
      (helm-selection-line ((t (:background ,selection))))
      (helm-visible-mark ((t (:foreground ,yellow :background ,background))))
      (helm-ff-file ((t (:foreground ,foreground :background ,background))))
+     (helm-ff-file-extension ((t (:foreground ,purple :background ,background))))
      (helm-ff-directory ((t (:foreground ,blue :background ,background))))
      (helm-ff-executable ((t (:foreground ,red :background ,background))))
      (helm-ff-symlink ((t (:foreground ,yellow :background ,background))))
@@ -318,6 +319,9 @@ names to which it refers are bound."
      (ediff-odd-diff-A ((t (:foreground ,comment :background nil :inverse-video t))))
      (ediff-odd-diff-B ((t (:foreground ,comment :background nil :inverse-video t))))
 
+     ;; Company
+     (company-preview-common ((t (:foreground ,yellow :background ,background :inverse-video t))))
+
      ;; Grep
      (grep-context-face ((t (:foreground ,comment))))
      (grep-error-face ((t (:foreground ,red :weight bold :underline t))))
@@ -354,7 +358,7 @@ names to which it refers are bound."
                                     (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-todo ((t (:foreground ,red :weight bold :box nil))))
      (org-done ((t (:foreground ,green :weight bold :box nil))))
-     (org-checkbox ((t (:foreground ,yellow :weight bold))))
+     (org-checkbox ((t (:background ,yellow :foreground ,background :weight bold))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,aqua))))
      (org-formula ((t (:foreground ,red))))
