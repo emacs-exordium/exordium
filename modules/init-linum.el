@@ -30,7 +30,9 @@
 (defun exordium-inhibit-line-numbers-p ()
   (or (minibufferp)
       (and exordium-inhibit-line-numbers-modes
-           (cl-member major-mode exordium-inhibit-line-numbers-modes))
+           (cl-find-if #'(lambda (mode)
+                           (derived-mode-p mode))
+                       exordium-inhibit-line-numbers-modes))
       (and exordium-inhibit-line-numbers-star-buffers
            (eq 0 (string-match "*" (buffer-name))))
       (and exordium-inhibit-line-numbers-buffer-size

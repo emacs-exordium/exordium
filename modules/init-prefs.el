@@ -138,20 +138,21 @@ line numbers WILL NOT be shown."
   :group 'exordium
   :type  'symbol)
 
-(defcustom exordium-inhibit-line-numbers-modes '(eshell-mode
-                                                 shell-mode
-                                                 help-mode
-                                                 compilation-mode
-                                                 iwyu-mode
-                                                 Info-mode
+(defcustom exordium-inhibit-line-numbers-modes '(Info-mode
                                                  calendar-mode
-                                                 treemacs-mode
-                                                 org-mode
-                                                 rtags-rdm-mode
-                                                 rtags-diagnostics-mode
-                                                 eww-mode
+                                                 compilation-mode
                                                  dired-mode
-                                                 image-mode)
+                                                 eshell-mode
+                                                 eww-mode
+                                                 help-mode
+                                                 image-mode
+                                                 iwyu-mode
+                                                 magit-mode
+                                                 org-mode
+                                                 rtags-diagnostics-mode
+                                                 rtags-rdm-mode
+                                                 shell-mode
+                                                 treemacs-mode)
   "List of modes for which line numbers should not be displayed."
   :group 'exordium
   :type 'list)
