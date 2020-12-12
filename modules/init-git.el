@@ -1,4 +1,4 @@
-;;;; All git-related stuff
+;;;; All git-related stuff, except for forge
 ;;;
 ;;; All keys are C-c g <one-more-key>:
 ;;;

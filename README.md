@@ -48,6 +48,7 @@ might want to check these links:
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
+  [Forge](https://magit.vc/manual/forge/) (work with Git forges);
   [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
 * C++:
   * [RTags](https://github.com/Andersbakken/rtags): a LLVM/Clang-based code
@@ -372,6 +373,15 @@ Keybinding            | Description
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
 <kbd>C-c g c</kbd>    | Clone a repository (`magit-clone`).
 <kbd>C-c g g</kbd>    | Git grep (`vc-git-grep`) or (`helm-grep-do-git-grep`).
+
+Forge keys:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c C-p</kbd>    | in `forge-post-mode`: Preview post with markdown (`exordium-forge-markdown-preview`)
+<kbd>C-c C-d</kbd>    | in `forge-post-mode`: Submit current post (a Pull Request) as a draft (`exordium-forge-post-submit-draft`)
+<kbd>C-c C-d</kbd>    | in `magit-status-mode` and in `forge-topic-mode`: Mark a Pull Request at point as ready for review (`exordium-forge-mark-ready-for-rewiew`)
+
 
 Git gutter keys:
 
