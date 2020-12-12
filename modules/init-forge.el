@@ -83,6 +83,7 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
              (_ (string-match
                  "//\\([^/]+\\)/\\([^/]+\\)/\\([^/]+\\)/pull/\\([0-9]+\\)$"
                  url))
+             (number (match-string 4 url))
              (host (car (alist-get (match-string 1 url)
                                    forge-alist
                                    nil nil #'string=)))
@@ -91,13 +92,13 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
              (id (exordium-ghub-graphql--pull-request-id
                   (match-string 2 url)
                   (match-string 3 url)
-                  (string-to-number (match-string 4 url))
+                  (string-to-number number)
                   :username username :auth 'forge :host host))
              (not-a-draft-anymore
               (not (exordium-ghub-grqphql--mark-pull-request-ready-for-review
                     id
                     :username username :auth 'forge :host host))))
-        (message "PR #%s marked as ready for review." (match-string 4 url))
+        (message "PR #%s is ready for review." number)
       (user-error "Nothing at point that is a PR or mark failed")))
   :hook
   (forge-post-mode . (lambda ()
