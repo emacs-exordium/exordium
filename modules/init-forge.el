@@ -4,7 +4,7 @@
 ;;; Key               Definition
 ;;; ----------------- ---------------------------------------------------------
 ;;; C-c C-p           Markdown preview (in `forge-post-mode')
-;;; C-c C-d           Forge post submint as draft (in `forge-post-mode')
+;;; C-c C-d           Forge post submit as draft (in `forge-post-mode')
 ;;; C-c C-d           Forge mark pull request at point mark as ready for review
 ;;;                   (in `magit-status-mode' and in `forge-topic-mode')
 
@@ -16,7 +16,7 @@
   :init
 
   (defun exordium-forge-markdown-preview ()
-    "Preview current buffer as a preview in a `markdown-mode' would do."
+    "Preview current buffer as a preview in a `markdown-mode' buffer would do."
     (interactive)
     (let ((temp-file (make-temp-file (file-name-base buffer-file-name)
                                      nil ".md"
