@@ -94,4 +94,11 @@ attention to case differences."
                 (append electric-pair-text-pairs '((?` . ?`))))))
 
 
+(defun exordium-browse-url-at-point ()
+  "Open an URL at point."
+  (interactive)
+  (when-let ((url (thing-at-point 'url)))
+    (browse-url url)))
+
+
 (provide 'init-lib)
