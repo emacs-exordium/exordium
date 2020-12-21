@@ -202,11 +202,13 @@
 (define-key global-map [(control x)(control b)] (function ibuffer))
 
 ;;; Zoom
-(use-package default-text-scale)
-(define-key global-map [(control +)] (function default-text-scale-increase))
-(define-key global-map [(control -)] (function default-text-scale-decrease))
-(define-key global-map [(control mouse-4)] (function default-text-scale-increase))
-(define-key global-map [(control mouse-5)] (function default-text-scale-decrease))
+(use-package default-text-scale
+  :if (version< emacs-version "27")
+  :config
+  (define-key global-map [(control +)] (function default-text-scale-increase))
+  (define-key global-map [(control -)] (function default-text-scale-decrease))
+  (define-key global-map [(control mouse-4)] (function default-text-scale-increase))
+  (define-key global-map [(control mouse-5)] (function default-text-scale-decrease)))
 
 ;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
