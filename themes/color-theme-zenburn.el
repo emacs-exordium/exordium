@@ -665,10 +665,10 @@ names to which it refers are bound."
      ;; Markdown
      (markdown-url-face ((t (:inherit link :foreground ,zenburn-yellow :weight normal))))
      (markdown-link-face ((t (:foreground ,zenburn-orange :underline t :weight bold))))
-     (markdown-header-face-1 ((t (:inherit :weight bold :foreground ,zenburn-orange
+     (markdown-header-face-1 ((t (:inherit ,exordium-variable-pitch :weight bold :foreground ,zenburn-orange
                                 ,@(when exordium-theme-use-big-font
                                     (list :height exordium-height-plus-4))))))
-     (markdown-header-face-2 ((t (:inherit :weight bold :foreground ,zenburn-blue
+     (markdown-header-face-2 ((t (:inherit ,exordium-variable-pitch :weight bold :foreground ,zenburn-blue
                                 ,@(when exordium-theme-use-big-font
                                     (list :height exordium-height-plus-2))))))
      (markdown-header-face-3 ((t (:foreground ,zenburn-blue :weight bold))))
