@@ -32,6 +32,7 @@
       (setq org-html-htmlize-output-type 'css)
       (setq org-html-head exordium-org-export-css-stylesheet)))
 
+  (setq org-support-shift-select t)
   (when exordium-enable-org-export
     ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
     (org-babel-do-load-languages
