@@ -30,7 +30,9 @@
 
 
 (use-package page-break-lines
-  :diminish)
+  :diminish
+  :hook
+  (help-mode . page-break-lines-mode))
 
 (use-package helpful
   :bind
@@ -54,9 +56,7 @@
    :map emacs-lisp-mode-map
         ("C-c C-d" . #'helpful-at-point)
    :map helpful-mode-map
-        ("C-c C-o" . #'exordium-browse-url-at-point))
-  :hook
-  (help-mode . turn-on-page-break-mode))
+        ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 (use-package helm
   :diminish
