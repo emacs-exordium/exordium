@@ -18,7 +18,10 @@
 (add-hook 'prog-mode-hook 'exordium-show-trailing-whitespace-mode)
 (add-hook 'prog-mode-hook 'exordium-require-final-newline-mode)
 
-(when (eq exordium-spell-check :prog)
+(use-package flyspell
+  :if (eq exordium-spell-check :prog)
+  :diminish 'flyspell-mode
+  :init
   (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
 
