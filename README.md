@@ -44,7 +44,9 @@ might want to check these links:
   (80-character column marker);
   [Treemacs](https://github.com/Alexander-Miller/treemacs) (directory tree);
   [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3 key-strokes);
-  [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows).
+  [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows);
+  [helpful](https://github.com/Wilfred/helpful) (a better Emacs *help* buffer);
+  [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);

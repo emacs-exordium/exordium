@@ -9,7 +9,8 @@
 ;;; Display page breaks with an horizontal line instead of ^L.
 ;;; Note: To insert a page break: C-q C-l
 ;;;       To jump to the previous/next page break: C-x [ and C-x ]
-(use-package page-break-lines)
+(use-package page-break-lines
+  :diminish)
 
 ;;; Animation when evaluating a defun or a region:
 (use-package highlight)
@@ -20,8 +21,7 @@
 enables line truncation as well to prevent a rendering bug (page
 break lines wrap around)."
   (set (make-local-variable 'truncate-lines) t)
-  (turn-on-page-break-lines-mode)
-  (diminish 'page-break-lines-mode))
+  (turn-on-page-break-lines-mode))
 
 (add-hook 'emacs-lisp-mode-hook #'exordium-elisp-mode-hook)
 

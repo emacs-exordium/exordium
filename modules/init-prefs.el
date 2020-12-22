@@ -122,6 +122,11 @@ The original window configuration will be restored when you quit out of magit."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-help-extensions t
+  "If t, use help extensions like `which-key' and `helpful-mode'."
+  :group 'exordium
+  :type 'boolean)
+
 
 ;;; Line numbers - see init-linum.el
 

@@ -265,6 +265,9 @@ the .elc exists. Also discard .elc without corresponding .el"
   :if exordium-helm-projectile)
 (use-package init-helm :ensure nil)            ; setup helm
 
+(use-package init-help :ensure nil
+  :if exordium-help-extensions)
+
 (update-progress-bar)
 
 (use-package init-dired :ensure nil)           ; enable dired+ and wdired permission editing

@@ -18,7 +18,7 @@
 (require 'init-prefs)
 
 (use-package helm
-  :diminish helm-mode
+  :diminish
   :custom
   (helm-split-window-default-side 'other)
   (helm-buffer-details-flag nil)
@@ -34,7 +34,7 @@
         (customize-set-variable 'helm-completion-style 'helm-fuzzy)))))
 
 (use-package helm
-  :diminish helm-mode
+  :diminish
   :when exordium-helm-everywhere
   :custom
   (history-delete-duplicates t)
