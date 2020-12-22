@@ -24,9 +24,6 @@
   :init
   (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
-(when (eq exordium-spell-check :prog)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
-
 
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
 ;;; `electric-pair-open-newline-between-pairs'.
