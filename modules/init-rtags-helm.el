@@ -5,25 +5,34 @@
 ;;; -------------- -------------------------------------------------------
 ;;; M-C-g          `rtags-helm-select-taglist' = select a symbol in the
 ;;;                current file using Helm.
-;;; C-c r r        `helm-flycheck' show rtags errors in helm buffer
+;;; C-c r r        `helm-flycheck' show rtags & flycheck errors in helm buffer
+;;;                when buffer is in `c-mode'
+;;; C-x c f        `helm-flycheck' show flycheck errors in helm buffer
 ;;; -------------- -------------------------------------------------------
 
 (use-package rtags)
 (use-package helm)
 (use-package helm-rtags)
+(use-package flycheck)
+(use-package cc-mode :ensure nil)
 (require 'init-prefs)
+
+(defun exordium-helm-flycheck ()
+  "Ensure `flycheck-mode' is enabled and run `helm-flycheck'."
+  (interactive)
+  (unless flycheck-mode
+    (flycheck-mode)
+    (diminish 'flycheck-mode))
+  (helm-flycheck))
 
 (use-package helm-flycheck
   :if (eq exordium-rtags-syntax-checker :flycheck)
-  :init
-  (define-key c-mode-base-map
-    (kbd "C-c r r")
-    (lambda ()
-      (interactive)
-      (unless flycheck-mode
-        (flycheck-mode)
-        (diminish 'flycheck-mode))
-      (helm-flycheck))))
+  :bind
+  (:map c-mode-base-map
+        ("C-c r r" . #'exordium-helm-flycheck)
+   :map helm-command-map
+   ("f" . #'exordium-helm-flycheck)))
+
 
 (defcustom rtags-helm-show-variables nil
   "Whether `rtags-helm-select-taglist' shows variables and parameters"

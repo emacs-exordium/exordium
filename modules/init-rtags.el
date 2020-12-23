@@ -136,13 +136,14 @@
   :if (eq exordium-rtags-syntax-checker :flycheck)
   :init
   ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
-  (cl-flet ((flycheck-rtags-hook ()
-                                 (flycheck-select-checker 'rtags)
-                                 (setq-local flycheck-highlighting-mode nil)
-                                 (setq-local flycheck-check-syntax-automatically nil))))
-  (add-hook 'c-mode-hook #'flycheck-rtags-hook)
-  (add-hook 'c++-mode-hook #'flycheck-rtags-hook)
-  (add-hook 'objc-mode-hook #'flycheck-rtags-hook))
+  (defun exordium--setup-flycheck-rtags ()
+    (flycheck-select-checker 'rtags)
+    (setq-local flycheck-highlighting-mode nil)
+    (setq-local flycheck-check-syntax-automatically nil))
+  :hook
+  (c-mode . exordium--setup-flycheck-rtags)
+  (c++-mode . exordium--setup-flycheck-rtags)
+  (objc-mode . exordium--setup-flycheck-rtags))
 
 ;;; Key bindings
 
