@@ -57,21 +57,18 @@
   :hook
   (org-mode . (lambda () (org-superstar-mode 1))))
 
-;;; visual line mode in org-mode, paragraphs without embedded newline
-
-;; use ido for org completion
+(use-package ox-html
+  :ensure org
+  :after (org))
 
 (use-package ox-html
   :ensure org
   :after (org)
+  :if exordium-org-export-css
   :custom
-  (org-html-htmlize-output-type (if exordium-org-export-css
-                                    'css
-                                  org-html-htmlize-output-type)
+  (org-html-htmlize-output-type 'css
                                 "Configure export using a css style sheet")
-  (org-html-head (if exordium-org-export-css
-                     exordium-org-export-css-stylesheet
-                   org-html-head)
+  (org-html-head exordium-org-export-css-stylesheet
                  "Configure export using a css style sheet"))
 
 (use-package ox-md
@@ -98,6 +95,5 @@
   :ensure t
   :after (org)
   :if exordium-enable-org-export)
-
 
 (provide 'init-org)
