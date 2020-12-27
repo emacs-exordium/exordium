@@ -243,9 +243,9 @@ i.e., with git pull."
 ;;; Autocomplete -- see init-autocomplete.el
 
 (defcustom exordium-complete-mode :auto-complete
-  "Slect the completion engine for exordium. Possible values are
-  :auto-complete, :company, and nil. Default is :auto-complete. See also
-  `exordium-rtags-auto-complete'."
+  "Slect the completion engine for exordium.
+Possible values are `:auto-complete',`:company', and nil.
+Default is `:auto-complete'.  See also `exordium-rtags-auto-complete'."
   :group 'exordium
   :type  'symbol)
 
@@ -433,7 +433,8 @@ be a list of strings."
   :type  'sexp)
 
 (defcustom exordium-rtags-auto-complete nil
-  "Whether RTags is used as the source for auto-complete in C++ mode."
+  "Whether RTags is used as the source for auto-complete in C++ mode.
+This is considered only when `exordium-complete-mode' is `:auto-complete'."
   :group 'exordium
   :type  'boolean)
 

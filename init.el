@@ -300,7 +300,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; RTags
 (use-package init-rtags :ensure nil)
-(when exordium-rtags-auto-complete
+(when (and (eq exordium-complete-mode :auto-complete)
+       exordium-rtags-auto-complete)
   (rtags-auto-complete))
 (use-package init-rtags-helm :ensure nil)
 (use-package init-rtags-cmake :ensure nil)

@@ -4,16 +4,16 @@
   :diminish "CA"
   :after (rtags)
   :defer
-  :init
-  ;; Turn on company mode everywhere
-  (global-company-mode)
   :config
   (setq rtags-completions-enabled t)
-  ;; Use ESC to escape company-complete (in addition to C-g)
-  (define-key company-active-map (kbd "<escape>") 'company-abort)
-
-  ;; Key to force trigger company-complete
-  (define-key company-mode-map [(control .)] 'company-complete))
-
+  ;; Turn on company mode everywhere
+  (global-company-mode)
+  :bind
+  (:map company-active-map
+        ;; Use ESC to escape company-complete (in addition to C-g)
+        ("<escape>" . #'company-abort)
+        ;; Key to force trigger company-complete
+    :map global-map
+        ("C-." . #'company-complete)))
 
 (provide 'init-company)

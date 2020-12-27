@@ -8,9 +8,10 @@
 
 (add-hook 'js-mode-hook 'js2-minor-mode)
 
-(use-package ac-js2
-  :init
-  (add-hook 'js2-mode-hook 'ac-js2-mode))
+(when (eq exordium-complete-mode :auto-complete)
+  (use-package ac-js2
+    :hook
+    (js2-mode . ac-js2-mode)))
 
 ;;; js2-mode comes with some useful utility functions for working with js files
 ;;; more efficiently. For example, ac-js2-jump-to-definition quickly jumps to
