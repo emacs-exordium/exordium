@@ -110,10 +110,6 @@ names to which it refers are bound."
      (cursor ((t (:background ,orange))))
      (fringe ((t (:background ,far-background))))
 
-     (linum ((t (:background ,background :foreground ,subtle
-                      :underline nil :weight normal :box nil :slant normal))))
-     (linum-highlight-face ((t (:background ,current-line :foreground ,foreground))))
-
      (border ((t (:background ,current-line))))
      (border-glyph ((t (nil))))
 

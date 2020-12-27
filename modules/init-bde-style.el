@@ -342,8 +342,8 @@ there isn't any struct or class defined."
           (while (> level 0)
             (if (re-search-forward "\\(<\\|>\\)" bound t)
                 (if (string= (match-string 1) "<")
-                    (incf level)
-                  (decf level))
+                    (cl-incf level)
+                  (cl-decf level))
               (setq level 0))))
         (forward-line))
       (when (re-search-forward "^\\(class\\|struct\\) " (point-at-eol) t)
@@ -505,9 +505,9 @@ Return `nil' when no qualifying parenthesis has been found within the first
                                             "\\((\\)\\)")    ;; 4: (
                                     bound t)
             (cond ((match-string 2)
-                   (incf level))
+                   (cl-incf level))
                   ((match-string 3)
-                   (decf level))
+                   (cl-decf level))
                   ((and (eq level 0) (match-string 4))
                    (throw 'pos (- (point) 1))))))))))
 
@@ -620,9 +620,9 @@ It skips templates, function calls, and unified instantiations."
               (cond ((and (eq level 0) (match-string 2 arglist))
                      (throw 'end-arg-pos pos))
                     ((match-string 3 arglist)
-                     (incf level))
+                     (cl-incf level))
                     ((match-string 4 arglist)
-                     (decf level)))
+                     (cl-decf level)))
               (setq pos (match-end 0)))
           (throw 'end-arg-pos to))))))
 
@@ -750,7 +750,7 @@ according to the BDE style."
              (unless (>= i (length parsed-args))
                (insert ",")
                (newline))
-             (incf i)))
+             (cl-incf i)))
          (insert ")")
          (buffer-string)))
       ;; Reindent
@@ -831,7 +831,7 @@ according to the BDE style."
                (unless (>= i (length parsed-args))
                  (insert ",")
                  (newline))
-               (incf i)))
+               (cl-incf i)))
            (insert ")")
            (buffer-string)))
         ;; Reindent
@@ -996,7 +996,7 @@ start at column 40."
                         (dolist (comment comments)
                           (insert comment)))
                       ;; One blank line between two members
-                      (decf num-members)
+                      (cl-decf num-members)
                       (newline (if (> num-members 0) 2 1))))
                   (buffer-string))))
              ;; Fix the comments for the 79th column, e.g. fill-paragraph on each

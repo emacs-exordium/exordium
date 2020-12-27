@@ -132,14 +132,11 @@ The original window configuration will be restored when you quit out of magit."
 
 (defcustom exordium-display-line-numbers t
   "Whether line numbers are displayed or not.
-Set to nil to disable line numbers.
-Set to `t' to enable line numbers using `line-numbers' (or `linum' on pre 26.1 emacs).
-Set to :nlinum to enable line numbers using pakage `nlinum'
-which should be more efficient in particular for large buffers.
+Set to nil to disable line numbers.  Set to t to enable line numbers.
 
 When buffer matches either of the `exordium-inhibit-line-numbers-modes',
-`exordium-inhibit-line-numbers-buffer-size', or `exordium-inhibit-line-numbers-star-buffers'
-line numbers WILL NOT be shown."
+`exordium-inhibit-line-numbers-buffer-size', or
+`exordium-inhibit-line-numbers-star-buffers' line numbers WILL NOT be shown."
   :group 'exordium
   :type  'symbol)
 
@@ -165,17 +162,16 @@ line numbers WILL NOT be shown."
 (defcustom exordium-inhibit-line-numbers-buffer-size nil
   "The maximum buffer size that line numbers should be displayed.
 Set to some integer, to show line numbers only for buffers that are smaller
-than the specified size. I.e., `(* 512 1024)' will only display line numbers
+than the specified size.  I.e., `(* 512 1024)' will only display line numbers
 that are smaller than 0.5MiB (this is over 6.5k 80 character lines).
-Set to `nil' to enable line numbers even in large buffers."
+Set to nil to enable line numbers even in large buffers."
   :group 'exordium
   :type 'integer)
 
 (defcustom exordium-inhibit-line-numbers-star-buffers nil
-  "Controls whether line numbers shold be displayed in buffers that name
-starts with `*'.
-Set to `t' to don't display line numbers in buffers that name starts with `*'.
-Set to `nil' to display line numbers in buffers that name starts with `*'."
+  "Controls whether line numbers shold be displayed in buffers that name starts with `*'.
+Set to t to don't display line numbers in buffers that name starts with `*'.
+Set to nil to display line numbers in buffers that name starts with `*'."
   :group 'exordium
   :type 'boolean)
 
@@ -277,12 +273,6 @@ use underline waves."
   "Whether the theme uses big fonts for titles and top-level
   items. This applies to modes like org or markdown. Set it to
   nil if you do not want to have variable-sized font."
-  :group 'exordium
-  :type  'boolean)
-
-(defcustom exordium-highlight-linum t
-  "Whether the current line number is highlighted.
-This does not work with nlinum-mode currently."
   :group 'exordium
   :type  'boolean)
 

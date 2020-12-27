@@ -94,12 +94,6 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((t (:background ,atom-one-dark-accent))))
      (fringe ((t (:background ,atom-one-dark-bg))))
-
-     (linum ((t (:background ,atom-one-dark-bg :foreground ,atom-one-dark-mono-3
-                 :box nil :underline nil))))
-     (linum-highlight-face ((t (:background ,atom-one-dark-bg :foreground ,atom-one-dark-mono-1
-                                :box nil :underline nil))))
-
      (border ((t (:foreground ,atom-one-dark-mono-3))))
      (vertical-border ((t (:foreground ,atom-one-dark-mono-3))))
      (border-glyph ((t (nil))))

@@ -573,9 +573,6 @@ names to which it refers are bound."
      (erm-syn-warnline ((t (:underline (:color ,zenburn-orange :style wave)))))
      (erm-syn-errline ((t (:underline (:color ,zenburn-red :style wave)))))
 
-     ;; linum-mode
-     (linum ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))
-
 ;;;;; magit
 ;;;;;; headings and diffs
      (magit-section-highlight           ((t (:background ,zenburn-bg+05))))

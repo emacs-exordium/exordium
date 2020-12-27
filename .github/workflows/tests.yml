@@ -1,0 +1,36 @@
+name: CI Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+
+jobs:
+  ci-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        emacs_version:
+          - 26.1
+          - 26.2
+          - 26.3
+          - 27.1
+          - snapshot
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+      - uses: actions/checkout@v2
+        with:
+          path: '.emacs.d'
+      - name: First start # So most modules are pulled in from melpa and gnu
+        run: '.emacs.d/.ci/first-start.sh .emacs.d'
+      - name: Compilation # This pulls extra modules not enabled by default
+        run: '.emacs.d/.ci/compilation.sh .emacs.d'
+      - name: Unit tests
+        run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
