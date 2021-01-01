@@ -325,6 +325,7 @@ With argument, do this that many times."
 
   ;; else (not (version< emacs-version "27")) use native package
   (use-package display-fill-column-indicator
+    :no-require (version< emacs-version "27") ; only to satisfy compiler on emacs-26
     :if exordium-fci-mode
     :ensure nil
     :demand t
