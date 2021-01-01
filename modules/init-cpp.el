@@ -174,6 +174,9 @@
   :hook (c++-mode . modern-c++-font-lock-mode))
 
 (use-package cmake-mode
+  ;; Temporarily disable cmake-mode on emacs-26 until the following fix is in melpa
+  ;; https://gitlab.kitware.com/cmake/cmake/-/merge_requests/5657
+  :no-require (version< emacs-version "27")
   :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
          ("\\.cmake\\'" . cmake-mode)))
 
