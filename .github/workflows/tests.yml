@@ -34,3 +34,26 @@ jobs:
         run: '.emacs.d/.ci/compilation.sh .emacs.d'
       - name: Unit tests
         run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+
+  pkryger-taps:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            emacs_version: 26.1
+          - os: macos-latest
+            emacs_version: snapshot
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+      - uses: actions/checkout@v2
+        with:
+          path: '.emacs.d'
+      - uses: actions/checkout@v2
+        with:
+          repository: 'pkryger/exordium-commontap'
+          path: '.emacs.d/taps/commontap'
+      - name: First start # So most modules are pulled in from melpa and gnu
+        run: '.emacs.d/.ci/first-start.sh .emacs.d'
