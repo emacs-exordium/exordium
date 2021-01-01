@@ -18,4 +18,4 @@ ${EMACS} -Q --batch \
        "Workaround for missing function in pre-27 non GUI purcell/setup-emacs."
        (car args)))
    (load-file "'${EMACS_DIR}'/init.el"))' \
-         -f batch-byte-compile ${EMACS_DIR}/{modules,themes,extensions}/*.el
+         -f batch-byte-compile ${EMACS_DIR}/{modules,extensions}/*.el
