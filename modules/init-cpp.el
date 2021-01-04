@@ -87,8 +87,8 @@
  .h or a .cpp open the .t.cpp, or from a .t.cpp open the .cpp."
   (interactive "P")
   (let ((ext (bde-file-name-extension (buffer-file-name))))
-    (let ((base-name    (string-truncate (buffer-name) (length ext)))
-          (base-path    (string-truncate (buffer-file-name) (length ext)))
+    (let ((base-name    (exordium-string-truncate (buffer-name) (length ext)))
+          (base-path    (exordium-string-truncate (buffer-file-name) (length ext)))
           (matching-ext (cdr (find-if (lambda (i)
                                         (string= (car i) ext))
                                       exordium-cpp-header-switches))))
@@ -174,6 +174,9 @@
   :hook (c++-mode . modern-c++-font-lock-mode))
 
 (use-package cmake-mode
+  ;; Temporarily disable cmake-mode on emacs-26 until the following fix is in melpa
+  ;; https://gitlab.kitware.com/cmake/cmake/-/merge_requests/5657
+  :no-require (version< emacs-version "27")
   :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
          ("\\.cmake\\'" . cmake-mode)))
 

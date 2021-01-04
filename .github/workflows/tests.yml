@@ -1,0 +1,62 @@
+name: CI Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+
+jobs:
+  ci-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+        emacs_version:
+          - 26.1
+          - 26.2
+          - 26.3
+          - 27.1
+          - snapshot
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+      - uses: actions/checkout@v2
+        with:
+          path: '.emacs.d'
+      - name: First start # So most modules are pulled in from melpa and gnu
+        run: '.emacs.d/.ci/first-start.sh .emacs.d'
+      - name: Compilation # This pulls extra modules not enabled by default
+        run: '.emacs.d/.ci/compilation.sh .emacs.d'
+      - name: Unit tests
+        run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+
+  pkryger-taps:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            emacs_version: 26.3
+          - os: macos-latest
+            emacs_version: snapshot
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+      - uses: actions/checkout@v2
+        with:
+          path: '.emacs.d'
+      - uses: actions/checkout@v2
+        with:
+          repository: 'pkryger/exordium-commontap'
+          path: '.emacs.d/taps/commontap'
+      - name: First start # So most modules are pulled in from melpa and gnu
+        run: '.emacs.d/.ci/first-start.sh .emacs.d'

@@ -9,7 +9,7 @@
 ;; the startup time.
 (setq gc-cons-threshold 100000000)
 
-(let ((min-version "24.4"))
+(let ((min-version "26.1"))
   (when (version< emacs-version min-version)
     (error "This config requires at least Emacs %s, but you're running %s"
            min-version emacs-version)))
@@ -300,7 +300,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 ;;; RTags
 (use-package init-rtags :ensure nil)
-(when exordium-rtags-auto-complete
+(when (and (eq exordium-complete-mode :auto-complete)
+       exordium-rtags-auto-complete)
   (rtags-auto-complete))
 (use-package init-rtags-helm :ensure nil)
 (use-package init-rtags-cmake :ensure nil)

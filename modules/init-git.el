@@ -115,7 +115,6 @@
   (setq exordium-git-gutter nil)
   :config
   (exordium-global-git-gutter-mode t)
-  (git-gutter:linum-setup)
   :diminish)
 
 (use-package git-gutter-fringe
@@ -139,10 +138,6 @@
   :defer t
   :bind
   (:map exordium-git-map ("t" . 'git-timemachine-toggle)))
-
-;;; Magit Forge
-(use-package forge
-  :defer t)
 
 
 ;;; Git Grep

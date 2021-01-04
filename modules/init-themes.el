@@ -22,9 +22,8 @@
 
 (require 'init-prefs)
 (eval-when-compile
-  (use-package fill-column-indicator
-    :if (version< emacs-version "27"))
-  (require 'hilinum-mode)
+  (when (version< emacs-version "27")
+    (use-package fill-column-indicator))
   (use-package powerline))
 
 (when exordium-theme
@@ -52,18 +51,6 @@
       ((featurep 'color-theme-material)
        (when (fboundp 'set-material-extra-org-statuses)
          (set-material-extra-org-statuses))))
-
-;;; linum extension: highlight the current line number.
-;;; TODO: this does not work with `nlinum' at this time.
-;;; See http://stackoverflow.com/questions/25411108/how-to-highlight-the-current-line-number-in-nlinum-mode
-
-(when (and exordium-highlight-linum
-           (or (eq exordium-display-line-numbers t)
-               (eq exordium-display-line-numbers :linum))
-           (not exordium-git-gutter-non-fringe))
-  ;;(load "hilinum-mode.el")
-  (require 'hilinum-mode)
-  (hlinum-activate))
 
 ;;; FCI (80-column marker) color
 

@@ -159,12 +159,6 @@ names to which it refers are bound."
      ;; Emacs interface
      (cursor ((t (:background ,red))))
      (fringe ((t (:background ,current-line))))
-     ;;(linum ((t (:background ,current-line)))) ; grunge
-     (linum ((t (:background ,current-line :foreground ,foreground
-                      :height 1.0
-                      :inherit nil :weight normal :slant normal :underline nil))))
-     (linum-highlight-face ((t (:background ,foreground :foreground ,current-line))))
-
      (hl-line ((t (:background ,current-line :inherit nil))))
      (highlight ((t (:background ,green :foreground ,background)))) ;+:foreground
 

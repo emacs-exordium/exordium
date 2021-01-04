@@ -591,8 +591,6 @@ names to which it refers are bound."
 ;;;;; hl-sexp
      (hl-sexp-face ((,class (:background ,github-white))
                      (t :weight bold)))
-;;;;; hlinum
-     (linum-highlight-face ((t (:foreground ,github-comment :background ,github-highlight))))
 ;;;;; hydra
      (hydra-face-red ((t (:foreground ,github-text :background ,github-white))))
      (hydra-face-amaranth ((t (:foreground ,github-text :background ,github-white))))
@@ -667,8 +665,6 @@ names to which it refers are bound."
      (ledger-font-reconciler-cleared-face ((t (:foreground ,github-text :weight normal))))
      (ledger-font-reconciler-pending-face ((t (:foreground ,github-text :weight normal))))
      (ledger-font-report-clickable-face ((t (:foreground ,github-text :weight normal))))
-;;;;; linum-mode
-     (linum ((t (:foreground ,github-comment :background ,github-white))))
 ;;;;; lispy
      (lispy-command-name-face ((t (:background ,github-highlight :inherit font-lock-function-name-face))))
      (lispy-cursor-face ((t (:foreground ,github-white :background ,github-text))))

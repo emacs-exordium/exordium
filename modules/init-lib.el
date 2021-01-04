@@ -41,47 +41,9 @@ dirs. Input is a string and output is a list of strings."
 
 ;;; String manipulation functions
 
-(require 'subr-x)
-
-;; string-prefix-p has been in Emacs for years, but string-suffix-p was
-;; introduced only in Emacs 24.4.
-
-(unless (fboundp 'string-suffix-p)
-  (defun string-suffix-p (suffix string  &optional ignore-case)
-    "Return non-nil if SUFFIX is a suffix of STRING.
-If IGNORE-CASE is non-nil, the comparison is done without paying
-attention to case differences."
-    (let ((start-pos (- (length string) (length suffix))))
-      (and (>= start-pos 0)
-           (eq t (compare-strings suffix nil nil
-                                  string start-pos nil ignore-case))))))
-
-;; Other string functions introduced in Emacs 24.4:
-
-(unless (fboundp 'string-trim-left)
-  (defsubst string-trim-left (string)
-    "Remove leading whitespace from STRING."
-    (if (string-match "\\`[ \t\n\r]+" string)
-        (replace-match "" t t string)
-      string)))
-
-(unless (fboundp 'string-trim-right)
-  (defsubst string-trim-right (string)
-    "Remove trailing whitespace from STRING."
-    (if (string-match "[ \t\n\r]+\\'" string)
-        (replace-match "" t t string)
-      string)))
-
-(unless (fboundp 'string-trim)
-  (defsubst string-trim (string)
-    "Remove leading and trailing whitespace from STRING."
-    (string-trim-left (string-trim-right string))))
-
-(eval-when-compile (cl-assert (not (fboundp 'string-truncate))))
-
-(defun string-truncate (string n)
+(defun exordium-string-truncate (string n)
   "Return STRING minus the last N characters."
-  (substring string 0 (max 0(- (length string) n))))
+  (substring string 0 (max 0 (- (length string) n))))
 
 
 ;;; Add backtick to electric pair mode. It makes buffer local variable with

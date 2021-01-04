@@ -376,9 +376,6 @@ names to which it refers are bound."
      (ido-indicator ((t (:background ,red :foreground ,monokai-bg :width condensed))))
      (ido-virtual ((t (:foreground ,cyan))))
 
-     ;; linum-mode
-     (linum ((t (:foreground ,gray-hc :background ,monokai-bg))))
-
      ;; magit
      (magit-section-title
       ((t (:foreground ,yellow :weight bold))))

@@ -126,10 +126,13 @@
 (require 'init-lib)
 (require 'init-prefs)
 (use-package rtags)
-(use-package ac-rtags)
-(use-package auto-complete-c-headers)
-;;(use-package projectile)
-(use-package company-rtags)
+(pcase exordium-complete-mode
+  (:auto-complete
+   (use-package ac-rtags)
+   (use-package auto-complete-c-headers))
+  (:company
+   (use-package company-rtags)))
+
 
 ;;; Turn on flycheck support when requested
 (use-package flycheck-rtags
@@ -367,88 +370,90 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 ;;; FIXME: this is broken, need to revisit the whole thing.
 
 ;;; AC source for #include
+(when (eq exordium-complete-mode :auto-complete)
 
 ;;; The following function fixes a bug in achead:documentation-for-candidate
-(defun my-documentation-for-candidate (candidate)
-  "Generate documentation for a candidate `candidate'. For now,
+  (defun my-documentation-for-candidate (candidate)
+    "Generate documentation for a candidate `candidate'. For now,
 just returns the path and content of the header file which
 `candidate' specifies."
-  (let ((path
-         (assoc-default candidate achead:ac-latest-results-alist 'string=)))
-    (ignore-errors
-      (with-temp-buffer
-        (insert path)
-        (unless (file-directory-p path)
-          (insert "\n--------------------------\n")
-          (insert-file-contents path nil 0 200)) ;; first 200 content bytes
-        (buffer-string)))))
+    (let ((path
+           (assoc-default candidate achead:ac-latest-results-alist 'string=)))
+      (ignore-errors
+        (with-temp-buffer
+          (insert path)
+          (unless (file-directory-p path)
+            (insert "\n--------------------------\n")
+            (insert-file-contents path nil 0 200)) ;; first 200 content bytes
+          (buffer-string)))))
 
-(ac-define-source my-c-headers
-  `((init       . (setq achead:include-cache nil))
-    (candidates . achead:ac-candidates)
-    (prefix     . ,achead:ac-prefix)
-    (document   . my-documentation-for-candidate)
-    (requires   . 0)
-    (symbol     . "h")
-    (action     . ac-start)
-    (limit      . nil)))
+  (ac-define-source my-c-headers
+    `((init       . (setq achead:include-cache nil))
+      (candidates . achead:ac-candidates)
+      (prefix     . ,achead:ac-prefix)
+      (document   . my-documentation-for-candidate)
+      (requires   . 0)
+      (symbol     . "h")
+      (action     . ac-start)
+      (limit      . nil)))
 
 ;;; AC source for RTags
 
-(defun ac-rtags-init ()
-  (unless rtags-diagnostics-process
-    (rtags-diagnostics)))
+  (defun ac-rtags-init ()
+    (unless rtags-diagnostics-process
+      (rtags-diagnostics)))
 
-(ac-define-source my-rtags
-  '((init       . rtags-ac-init)
-    (prefix     . rtags-ac-prefix)
-    (candidates . rtags-ac-candidates)
-    (action     . rtags-ac-action)
-    (document   . rtags-ac-document)
-    (requires   . 0)
-    (symbol     . "r")))
+  (ac-define-source my-rtags
+    '((init       . rtags-ac-init)
+      (prefix     . rtags-ac-prefix)
+      (candidates . rtags-ac-candidates)
+      (action     . rtags-ac-action)
+      (document   . rtags-ac-document)
+      (requires   . 0)
+      (symbol     . "r")))
 
 ;;; Functions to enable auto-complete
-
-(defun rtags-auto-complete ()
-  "Enables auto-complete with RTags.
+  (defun rtags-auto-complete ()
+    "Enables auto-complete with RTags.
 Note that RTags becomes the only source for auto-complete in all
 C and C++ buffers. Also note that RTags Diagostics must be turned
 on."
-  (interactive)
-  (use-package ac-rtags)
-  (setq rtags-completions-enabled t)
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (setq ac-sources '(ac-source-my-rtags)))))
+    (interactive)
+    (unless (eq exordium-complete-mode :auto-complete)
+      (error "The `exordium-complete-mode' is not :auto-complete"))
+    (setq rtags-completions-enabled t)
+    (add-hook 'c++-mode-hook
+              (lambda ()
+                (setq ac-sources '(ac-source-my-rtags)))))
 
-(defun rtags-diagnostics-auto-complete ()
-  "Starts diagnostics and auto-complete with RTags and #includes.
+  (defun rtags-diagnostics-auto-complete ()
+    "Starts diagnostics and auto-complete with RTags and #includes.
 Note that this function replaces all other sources of auto-complete
  for C++ files. Any previously opened C++ file needs to be reopen
 for this to be effective."
-  (interactive)
-  ;; Require
-  ;; Start RTags diagnostics
-  (unless rtags-diagnostics-process
-    (rtags-diagnostics))
-  ;; FIXME: this is broken, should not depend on compile_includes
-  ;; Create an auto-complete source for headers using compile_includes
-  ;; (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
-  ;;   (dolist (dir (plist-get plist :src-dirs))
-  ;;     (add-to-list 'achead:include-directories dir))
-  ;;   (dolist (dir (plist-get plist :include-dirs))
-  ;;     (add-to-list 'achead:include-directories dir)))
-  ;; Turn on RTags auto-complete
-  (setq rtags-completions-enabled t)
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (setq ac-sources '(ac-source-my-rtags
-                                 ;;ac-source-my-c-headers
-                                 )))))
+    (interactive)
+    ;; Require
+    ;; Start RTags diagnostics
+    (unless rtags-diagnostics-process
+      (rtags-diagnostics))
+    ;; FIXME: this is broken, should not depend on compile_includes
+    ;; Create an auto-complete source for headers using compile_includes
+    ;; (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
+    ;;   (dolist (dir (plist-get plist :src-dirs))
+    ;;     (add-to-list 'achead:include-directories dir))
+    ;;   (dolist (dir (plist-get plist :include-dirs))
+    ;;     (add-to-list 'achead:include-directories dir)))
+    ;; Turn on RTags auto-complete
+    (setq rtags-completions-enabled t)
+    (add-hook 'c++-mode-hook
+              (lambda ()
+                (setq ac-sources '(ac-source-my-rtags
+                                   ;;ac-source-my-c-headers
+                                   )))))
 
-(define-key c-mode-base-map [(control c)(r)(A)]
-  'rtags-diagnostics-auto-complete)
+
+  (define-key c-mode-base-map [(control c)(r)(A)]
+    'rtags-diagnostics-auto-complete))
 
 
 (provide 'init-rtags)
