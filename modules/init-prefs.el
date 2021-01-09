@@ -122,6 +122,13 @@ The original window configuration will be restored when you quit out of magit."
   :group 'exordium
   :type  'boolean)
 
+(defcustom exordium-smerge-show-dispatch t
+  "It t, automatically show `exordium-smerge-dispatch' for unmerged files.
+This is when hitting RET on a file with a merge conflict in a
+Magit status buffer."
+  :group 'exordium
+  :type 'boolean)
+
 (defcustom exordium-help-extensions t
   "If t, use help extensions like `which-key' and `helpful-mode'."
   :group 'exordium
