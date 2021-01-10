@@ -17,6 +17,8 @@
 ;;; C-c g p           Goto previous hunk in buffer
 ;;; C-c g d           Diff current hunk
 ;;; C-c g r           Revert current hunk (asks for confirmation)
+;;;
+;;; C-c ^ d           Show SMerge Dispatch
 
 ;;; Magit
 (define-prefix-command 'exordium-git-map nil)
@@ -102,7 +104,77 @@
 (when (bound-and-true-p magit-auto-revert-mode)
   (diminish 'magit-auto-revert-mode))
 
+
+;; SMerge Dispatch
+(defun exordium-smerge-save-and-status ()
+  "Save current buffer and show Magit status buffer."
+  (interactive)
+  (save-buffer)
+  (magit-status-setup-buffer))
 
+(defun exordium-smerge-revert-and-status ()
+  "Revert current buffer and run Magit status buffer."
+  (interactive)
+  (revert-buffer nil t)
+  (magit-status-setup-buffer))
+
+(transient-define-suffix exordium-smerge:undo ()
+  :description "undo"
+  :key (if exordium-keyboard-ctrl-z-undo "C-z" "C-x u")
+  (interactive)
+  (undo))
+
+;;;###autoload
+(define-transient-command exordium-smerge-dispatch ()
+  "Dispatch for `smerge-mode' commands."
+  :transient-suffix     'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Movement"
+    ("n" "next hunk" smerge-next)
+    ("p" "prev hunk" smerge-prev)
+    ("C-n" "next line" next-line)
+    ("C-p" "prev line" previous-line)
+    ("C-v" "scroll up" scroll-up-command)
+    ("M-v" "scroll down" scroll-down-command)
+    ("C-l" "recenter" recenter-top-bottom)]
+   ["Merge action"
+    ("b" "keep base" smerge-keep-base)
+    ("u" "keep upper" smerge-keep-upper)
+    ("l" "keep lower" smerge-keep-lower)
+    ("a" "keep all"   smerge-keep-all)
+    ("c" "keep current" smerge-keep-current)
+    ("r" "resolve" smerge-resolve)]
+   ["Diff action"
+    ("= <" "upper/base" smerge-diff-base-upper)
+    ("= =" "upper/lower" smerge-diff-upper-lower)
+    ("= >" "base/lower" smerge-diff-base-lower)
+    ("R" "refine" smerge-refine)
+    ("C" "combine with next" smerge-combine-with-next)
+    ("k" "kill current" smerge-kill-current)]
+   ["Other"
+    ("C-c C-s" "save" save-buffer)
+    ("C-c C-c" "save & status" exordium-smerge-save-and-status
+     :transient nil)
+    ("C-c C-k" "revert & status" exordium-smerge-revert-and-status
+     :transient nil)
+    (exordium-smerge:undo)
+    ("E" "ediff" smerge-ediff
+     :transient nil)]])
+
+(use-package smerge-mode
+  :ensure nil
+  :bind
+  (:map smerge-mode-map
+        ("C-c ^ d" . exordium-smerge-dispatch)))
+
+(defun exordium-smerge-dispatch-maybe ()
+  "Display `exordium-smerge-dispatch' when buffer is in `smerge-mode'."
+  (when (and smerge-mode exordium-smerge-show-dispatch)
+    (exordium-smerge-dispatch)))
+
+(use-package magit
+  :hook
+  (magit-diff-visit-file . exordium-smerge-dispatch-maybe))
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.

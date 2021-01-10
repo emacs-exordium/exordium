@@ -22,6 +22,7 @@ might want to check these links:
 * [Keymap](#keymap)
 * [Projectile](#projectile)
 * [Git](#git)
+  * [Conflict Resolution](#conflict-resolution)
 * C++
   * [Utilities](#utilities)
   * [Snippets](#snippets)
@@ -404,6 +405,8 @@ Git Timemachine key   | Description
 ----------------------|-----------------------------------------------------------
 <kbd>C-c g t</kbd>    | Enter the git time machine (`git-timemachine-toggle`)
 
+### Conflict Resolution
+
 If you use `ediff` to solve merge conflicts you may find the following keys useful
 (in `*Ediff Control Panel*`):
 
@@ -411,6 +414,21 @@ ediff key             | Description
 ----------------------|-----------------------------------------------------------
 <kbd>A</kbd>          | Copy buffer A's region followed by buffer B's region to C
 <kbd>B</kbd>          | Copy buffer B's region followed by buffer A's region to C
+
+When the variable `exordium-smerge-show-dispatch` is set to `t` (the default) hitting `RET`
+on a file with unmerged changes in Magit status buffer will display a SMerge dispatch that
+will assist with merge using built-in `smerge-mode`. When all conflicts are resolved,
+hitting `C-c C-c` will bring you back to Magit status. Hitting `C-c C-k` will revert the buffer
+to last saved changes and will bring you back to Magit status.
+
+The SMerge dispatch is a `transient` command (like most of `magit` and `forge` commands), so it can
+always be dismissed with `C-g`.
+
+In addition to keys presented in the dispatch, the following keys are added to SMerge keys:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c ^ d</kbd> | Show SMerge dispatch  (`exordium-smerge-dispatch`).
 
 ## C++
 
