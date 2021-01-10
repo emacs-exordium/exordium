@@ -319,6 +319,10 @@ expressions.
 * <kbd>C-S-r</kbd>: ripgrep search for text in current projectile project.
 * <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
+Note that <kbd>C-S-a</kbd> and <kbd>C-S-r</kbd> work also directly from
+`helm-projectile-switch-project`. This means that you searching a project with `ag` or `rg`
+simply by selecting it in helm and hitting appropriate keybinding.
+
 ## Treemacs
 
 [Treemacs](https://github.com/Alexander-Miller/treemacs) is a tree layout file

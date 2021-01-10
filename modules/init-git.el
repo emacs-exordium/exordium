@@ -52,6 +52,11 @@
     (kill-buffer)
     (jump-to-register :magit-fullscreen))
 
+  (defun exordium-magit--dont-insert-symbol-for-search ()
+    "Don't insert a symbol at point when starting ag or rg."
+    (setq-local helm-ag-insert-at-point nil)
+    (setq-local helm-rg-thing-at-point nil))
+
   ;;; Turn off the horrible warning about magit auto-revert of saved buffers
   (setq magit-last-seen-setup-instructions "1.4.0")
 
@@ -64,6 +69,9 @@
         ("c" . (function magit-clone))
    :map magit-status-mode-map
         ("q" . 'magit-quit-session))
+
+  :hook
+  (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
 
   :config
 ;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
