@@ -98,13 +98,13 @@
 
 
 ;; SMerge Dispatch
-(defun exordium-smerge--save-and-status ()
+(defun exordium-smerge-save-and-status ()
   "Save current buffer and show Magit status buffer."
   (interactive)
   (save-buffer)
   (magit-status-setup-buffer))
 
-(defun exordium-smerge--revert-and-status ()
+(defun exordium-smerge-revert-and-status ()
   "Revert current buffer and run Magit status buffer."
   (interactive)
   (revert-buffer nil t)
@@ -145,9 +145,9 @@
     ("k" "kill current" smerge-kill-current)]
    ["Other"
     ("C-c C-s" "save" save-buffer)
-    ("C-c C-c" "save & status" exordium-smerge--save-and-status
+    ("C-c C-c" "save & status" exordium-smerge-save-and-status
      :transient nil)
-    ("C-c C-k" "revert & status" exordium-smerge--revert-and-status
+    ("C-c C-k" "revert & status" exordium-smerge-revert-and-status
      :transient nil)
     (exordium-smerge:undo)
     ("E" "ediff" smerge-ediff
