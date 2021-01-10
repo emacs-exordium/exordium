@@ -118,48 +118,49 @@
   (revert-buffer nil t)
   (magit-status-setup-buffer))
 
-(transient-define-suffix exordium-smerge:undo ()
-  :description "undo"
-  :key (if exordium-keyboard-ctrl-z-undo "C-z" "C-x u")
-  (interactive)
-  (undo))
+(use-package transient
+  :config
+  (transient-define-suffix exordium-smerge:undo ()
+    :description "undo"
+    :key (if exordium-keyboard-ctrl-z-undo "C-z" "C-x u")
+    (interactive)
+    (undo))
 
-;;;###autoload
-(define-transient-command exordium-smerge-dispatch ()
-  "Dispatch for `smerge-mode' commands."
-  :transient-suffix     'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Movement"
-    ("n" "next hunk" smerge-next)
-    ("p" "prev hunk" smerge-prev)
-    ("C-n" "next line" next-line)
-    ("C-p" "prev line" previous-line)
-    ("C-v" "scroll up" scroll-up-command)
-    ("M-v" "scroll down" scroll-down-command)
-    ("C-l" "recenter" recenter-top-bottom)]
-   ["Merge action"
-    ("b" "keep base" smerge-keep-base)
-    ("u" "keep upper" smerge-keep-upper)
-    ("l" "keep lower" smerge-keep-lower)
-    ("a" "keep all"   smerge-keep-all)
-    ("c" "keep current" smerge-keep-current)
-    ("r" "resolve" smerge-resolve)]
-   ["Diff action"
-    ("= <" "upper/base" smerge-diff-base-upper)
-    ("= =" "upper/lower" smerge-diff-upper-lower)
-    ("= >" "base/lower" smerge-diff-base-lower)
-    ("R" "refine" smerge-refine)
-    ("C" "combine with next" smerge-combine-with-next)
-    ("k" "kill current" smerge-kill-current)]
-   ["Other"
-    ("C-c C-s" "save" save-buffer)
-    ("C-c C-c" "save & status" exordium-smerge-save-and-status
-     :transient nil)
-    ("C-c C-k" "revert & status" exordium-smerge-revert-and-status
-     :transient nil)
-    (exordium-smerge:undo)
-    ("E" "ediff" smerge-ediff
-     :transient nil)]])
+  (transient-define-prefix exordium-smerge-dispatch ()
+    "Dispatch for `smerge-mode' commands."
+    :transient-suffix     'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Movement"
+      ("n" "next hunk" smerge-next)
+      ("p" "prev hunk" smerge-prev)
+      ("C-n" "next line" next-line)
+      ("C-p" "prev line" previous-line)
+      ("C-v" "scroll up" scroll-up-command)
+      ("M-v" "scroll down" scroll-down-command)
+      ("C-l" "recenter" recenter-top-bottom)]
+     ["Merge action"
+      ("b" "keep base" smerge-keep-base)
+      ("u" "keep upper" smerge-keep-upper)
+      ("l" "keep lower" smerge-keep-lower)
+      ("a" "keep all"   smerge-keep-all)
+      ("c" "keep current" smerge-keep-current)
+      ("r" "resolve" smerge-resolve)]
+     ["Diff action"
+      ("= <" "upper/base" smerge-diff-base-upper)
+      ("= =" "upper/lower" smerge-diff-upper-lower)
+      ("= >" "base/lower" smerge-diff-base-lower)
+      ("R" "refine" smerge-refine)
+      ("C" "combine with next" smerge-combine-with-next)
+      ("k" "kill current" smerge-kill-current)]
+     ["Other"
+      ("C-c C-s" "save" save-buffer)
+      ("C-c C-c" "save & status" exordium-smerge-save-and-status
+       :transient nil)
+      ("C-c C-k" "revert & status" exordium-smerge-revert-and-status
+       :transient nil)
+      (exordium-smerge:undo)
+      ("E" "ediff" smerge-ediff
+       :transient nil)]]))
 
 (use-package smerge-mode
   :ensure nil
