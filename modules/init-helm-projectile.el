@@ -52,19 +52,6 @@
                              project)
       (error "No candidates selected")))
 
-  (use-package helm-projectile
-    :bind
-    (:map helm-projectile-projects-map
-          ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
-          ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg))
-    :config
-    (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
-                               #'helm-do-ag
-                               helm-source-projectile-projects)
-
-    (helm-add-action-to-source "ripgrep (arg) in project `C-S-r'"
-                               #'exordium-helm-projectile--switch-project-and-do-rg
-                               helm-source-projectile-projects))
   :bind
   (:map global-map
         ("C-c h"   . #'helm-projectile)
@@ -75,6 +62,7 @@
    :map helm-projectile-projects-map
         ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
         ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg))
+
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
                              #'helm-do-ag
