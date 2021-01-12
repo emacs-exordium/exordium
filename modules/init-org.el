@@ -39,9 +39,7 @@
      'org-babel-load-languages
      `((perl       . t)
        (ruby       . t)
-       ,(if (version< org-version "9.0")
-            '(sh         . t)
-          '(shell      . t))
+       (shell      . t)
        (python     . t)
        (emacs-lisp . t)
        (C          . t)
