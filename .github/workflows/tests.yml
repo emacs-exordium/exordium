@@ -33,8 +33,8 @@ jobs:
           path: '.emacs.d'
       - name: First start # So most modules are pulled in from melpa and gnu
         run: '.emacs.d/.ci/first-start.sh .emacs.d'
-      - name: Compilation # This pulls extra modules not enabled by default
-        run: '.emacs.d/.ci/compilation.sh .emacs.d'
+      # - name: Compilation # This pulls extra modules not enabled by default
+      #   run: '.emacs.d/.ci/compilation.sh .emacs.d'
       - name: Unit tests
         run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
 
