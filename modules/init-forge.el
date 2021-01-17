@@ -25,8 +25,7 @@
         (insert-file-contents temp-file t)
         (markdown-preview))
       (delete-file temp-file)))
-  
-
+
   (defun exordium-forge--add-draft (alist)
     "Add draft to ALIST."
     (append alist '((draft . "t"))))
@@ -100,6 +99,7 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
                     :username username :auth 'forge :host host))))
         (message "PR #%s is ready for review." number)
       (user-error "Nothing at point that is a PR or mark failed")))
+
   :hook
   (forge-post-mode . (lambda ()
                        (set-fill-column 1000)))
@@ -111,6 +111,109 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
         ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)
    :map forge-topic-mode-map
         ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
+
+(use-package async)
+(use-package cl-lib :ensure nil)
+(use-package forge
+  :after async
+  :init
 
+  (defun exordium-forge-cleanup-known-repositories--question (to-delete &optional number)
+    "Return a question about deletion of up to NUMBER of TO-DELETE repositories.
+
+Only up to NUMBER first elements from TO-DELETE are included in
+the returned question.  When length of TO-DELETE is greater than
+NUMBER the *Messages* buffer is populated with all elements in
+TO-DELETE list.
+
+Default value of NUMBER is 5.
+
+Each element of TO-DELETE is in the same format as used in
+`exordium-forge-cleanup-known-repositories'."
+    (let* ((length (length to-delete))
+           (reminder (- length (or number 5)))
+           (question
+            "Do you really want to remove the following from the db? [%s] "))
+      (if (<= reminder 0)
+          (format question
+                  (exordium-forge-cleanup-known-repositories--concat to-delete))
+        (message "Repositories to delete from the db: %s"
+                 (exordium-forge-cleanup-known-repositories--concat to-delete))
+        (format (concat
+                 question
+                 "and %s other %s (see *Messages* for a full list)? ")
+                (exordium-forge-cleanup-known-repositories--concat
+                 (cl-subseq to-delete 0 (- reminder)))
+                reminder
+                (if (= 1 reminder) "repository" "repositories")))))
+
+  (defun exordium-forge-cleanup-known-repositories--concat (to-delete)
+    "Return a concatenation of TO-DELETE repositories.
+Each element of TO-DELETE is in the same format as used in
+`exordium-forge-cleanup-known-repositories'."
+    (mapconcat
+     (lambda (repo)
+       (pcase-let ((`(,host ,owner ,name) (cdr repo)))
+         (format "%s/%s @%s" owner name host)))
+     to-delete
+     ", "))
+
+  (defun exordium-forge-cleanup-known-repositories ()
+    "Cleanup forge repositories whose worktree doesn't exist anymore."
+    (interactive)
+    (if-let ((to-delete (cl-remove-if
+                         (lambda (repo)
+                           (if-let ((worktree (car repo)))
+                               (file-exists-p worktree)
+                             t))
+                         (forge-sql [:select [worktree githost owner name]
+                                             :from repository
+                                             :order-by [(asc owner) (asc name)]]
+                                    [worktree githost owner name]))))
+        (when (yes-or-no-p (exordium-forge-cleanup-known-repositories--question
+                            to-delete))
+          (async-start
+           ;; Deletion can be very slow and could block UI. To be executed in a
+           ;; child process.  At the time of writing macros did not expand
+           ;; nicely, and there was no^ access to local variables and functions.
+           ;;
+           ;; ^ Could get one, but that would require loading a whole exordium
+           ;;   into a child process, that seemed like an overkill.
+           (lambda ()
+             (package-initialize)
+             (require 'forge)
+             (let (results)
+               (dolist
+                   (repo (cl-remove-if
+                          (lambda (repo)
+                            (if-let ((worktree (car repo)))
+                                (file-exists-p worktree)
+                              t))
+                          (forge-sql [:select [worktree githost owner name]
+                                              :from repository
+                                              :order-by [(asc owner) (asc name)]]
+                                     [worktree githost owner name])))
+                 (when-let ((forge-repo (forge-get-repository (cdr repo))))
+                   (let ((t0 (current-time))
+                         ;; Timeout is huge (10x what was the default at the
+                         ;; time of writing this) as db ops are long sometimes.
+                         ;; And this is happening in a child process anyway.
+                         (emacsql-global-timeout 300))
+                     (closql-delete forge-repo)
+                     (setq results
+                           (cons (append (cdr repo)
+                                         (list (float-time (time-since t0))))
+                                 results)))))
+               results))
+           (lambda (results)
+             (when results (magit-refresh))
+             (dolist (repo results)
+               (pcase-let ((`(,host ,owner ,name ,time) repo))
+                 (message "- Deleted %s/%s @%s - took %.06fs"
+                          owner name host time)))
+             (message "Cleanup complete. Deleted %s %s from the db."
+                      (length results)
+                      (if (= 1 (length results)) "repository" "repositories")))))
+      (message "Nothing to cleanup"))))
 
 (provide 'init-forge)
