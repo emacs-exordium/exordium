@@ -13,4 +13,5 @@ ${EMACS} -Q --batch \
   (setq user-emacs-directory "'${EMACS_DIR}'")
   (load-file "'${EMACS_DIR}'/init.el")
   (load-file "'${EMACS_DIR}'/modules/init-bde-style.t.el")
+  (load-file "'${EMACS_DIR}'/modules/init-forge.t.el")
   (ert-run-tests-batch-and-exit))'
