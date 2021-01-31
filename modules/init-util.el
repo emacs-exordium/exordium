@@ -575,7 +575,9 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                                (forward-sexp)
                                (point))))
                  ;; assume generic string delimiter has a length of 3
-                 (quote-length (if (region-active-p)
+                 ;; emacs-26 is not returning a quote value in `syntax-ppss'
+                 (quote-length (if (or (version< emacs-version "27")
+                                       (region-active-p))
                                    (if (and (< 5 (- orig-end orig-start))
                                             (eq orig-quote
                                                 (char-after (+ 1 orig-start)))
