@@ -5,6 +5,7 @@
 ;;;       all non-melpa Elisp files. You need to restart Emacs afterwards.
 ;;; * M-x `insert-current-time' at cursor position
 ;;; * M-x `insert-current-date-time' at cursor position
+;;; * M-x `exordium-flip-string-quotes' change quotes between ?\' and ?\"
 ;;;
 ;;; Keys:
 ;;; -------------- -------------------------------------------------------
@@ -527,6 +528,118 @@ afterwards."
                (t
                 (message "Can't tell (are you on the master branch?)")))))))
 
+
+;;; Flip quotes in a string
+
+(defun exordium-flip-string--even-chars-between (char pos-start pos-end)
+  "Return t when there is an even number of CHAR between POS-START and POS-END.
+The check is starting from `char-before' the POS-END and
+continues until at most POS-START."
+  (let ((offset 0)
+        even)
+    (while (and (< pos-start (- pos-end offset 1))
+                (eq (char-before (- pos-end offset)) char)
+                (eq (char-before (- pos-end offset 1)) char))
+      (setq even (if (< pos-start (- pos-end offset 2))
+                     (not (eq (char-before (- pos-end offset 2)) char))
+                   t))
+      (incf offset 2))
+    even))
+
+(defun exordium-flip-string-quotes (&optional flip-inner)
+  "Flip quotes in a string.
+
+Unless a region is active use syntax in the current buffer to
+determine the string at point.  When a region is active ignore syntax
+in current buffer and assume the active region is the string.
+
+With a FLIP-INNER prefix, also flip all quotes in the string.
+Otherwise escape quotes in the inner string (rationalising escaping)."
+  (interactive "P")
+  (save-restriction
+    (widen)
+    (save-excursion
+      (when-let ((ppss (or (region-active-p)
+                           (syntax-ppss)))
+                 (orig-start (if (region-active-p)
+                                 (min (region-beginning) (region-end))
+                               (nth 8 ppss)))
+                 (orig-quote (char-after orig-start))
+                 (new-quote (pcase orig-quote
+                              (?\' ?\")
+                              (?\" ?\')))
+                 (orig-end (if (region-active-p)
+                               (max (region-beginning) (region-end))
+                             (save-excursion
+                               (goto-char orig-start)
+                               (forward-sexp)
+                               (point))))
+                 ;; assume generic string delimiter has a length of 3
+                 (quote-length (if (region-active-p)
+                                   (if (and (< 5 (- orig-end orig-start))
+                                            (eq orig-quote
+                                                (char-after (+ 1 orig-start)))
+                                            (eq orig-quote
+                                                (char-after (+ 2 orig-start))))
+                                       3
+                                     1)
+                                   (pcase (nth 3 ppss)
+                                     ((pred booleanp) 3)
+                                     (_ 1)))))
+        (goto-char orig-start)
+        (delete-char quote-length)
+        (insert-char new-quote quote-length)
+        (while (< (point) (- orig-end quote-length))
+          (if flip-inner
+              (if-let ((a-quote (pcase (char-after)
+                                  (?\' ?\")
+                                  (?\" ?\'))))
+                  (progn
+                    (delete-char 1)
+                    (insert-char a-quote))
+                (forward-char))
+            (cond
+             ((eq (char-after) new-quote)
+              (if (eq quote-length 1)
+                  (when (or (not (eq (char-before) ?\\))
+                            (exordium-flip-string--even-chars-between
+                             ?\\ orig-start (point)))
+                    (insert-char ?\\)
+                    (incf orig-end))
+                (when (and (< (point) (- orig-end 2))
+                           (eq (char-after (+ 1 (point))) new-quote)
+                           (eq (char-after (+ 2 (point))) new-quote))
+                  ;; assume generic string delimeter has a length of 3
+                  (insert-char ?\\)
+                  (forward-char)
+                  (insert-char ?\\)
+                  (forward-char)
+                  (insert-char ?\\)
+                  (incf orig-end 3))))
+             ((and
+               (eq (char-after) orig-quote)
+               (eq (char-before) ?\\))
+              (backward-char)
+              (delete-char 1)
+              (decf orig-end)))
+            (forward-char)))
+        ;; A special case: the if the last quote in a string with a generic
+        ;; string delimiter `(eq quote-length 3)' is the same as the new-quote
+        ;; it needs to be escaped (or the flipped string will end up
+        ;; prematurely).
+        (when (and (not flip-inner)
+                   (eq (char-before) new-quote)
+                   (eq quote-length 3)
+                   (< 5 (- orig-end orig-start))
+                   (or
+                    (not (eq (char-before (- (point) 1)) ?\\))
+                    (exordium-flip-string--even-chars-between
+                     ?\\ orig-start (- (point) 1))))
+          (backward-char)
+          (insert-char ?\\)
+          (forward-char))
+        (delete-char quote-length)
+        (insert-char new-quote quote-length)))))
 
 
 (provide 'init-util)
