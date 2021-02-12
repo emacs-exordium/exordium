@@ -174,37 +174,25 @@ Each element of TO-DELETE is in the same format as used in
                             to-delete))
           (async-start
            ;; Deletion can be very slow and could block UI. To be executed in a
-           ;; child process.  At the time of writing macros did not expand
-           ;; nicely, and there was no^ access to local variables and functions.
-           ;;
-           ;; ^ Could get one, but that would require loading a whole exordium
-           ;;   into a child process, that seemed like an overkill.
-           (lambda ()
-             (package-initialize)
-             (require 'forge)
-             (let (results)
-               (dolist
-                   (repo (cl-remove-if
-                          (lambda (repo)
-                            (if-let ((worktree (car repo)))
-                                (file-exists-p worktree)
-                              t))
-                          (forge-sql [:select [worktree githost owner name]
-                                              :from repository
-                                              :order-by [(asc owner) (asc name)]]
-                                     [worktree githost owner name])))
-                 (when-let ((forge-repo (forge-get-repository (cdr repo))))
-                   (let ((t0 (current-time))
-                         ;; Timeout is huge (10x what was the default at the
-                         ;; time of writing this) as db ops are long sometimes.
-                         ;; And this is happening in a child process anyway.
-                         (emacsql-global-timeout 300))
-                     (closql-delete forge-repo)
-                     (setq results
-                           (cons (append (cdr repo)
-                                         (list (float-time (time-since t0))))
-                                 results)))))
-               results))
+           ;; child process.
+           `(lambda ()
+              (package-initialize)
+              (require 'forge)
+              ,(async-inject-variables "\\`\\(to-delete\\|forge-alist\\)\\'")
+              (let (results)
+                (dolist (repo to-delete)
+                  (when-let ((forge-repo (forge-get-repository (cdr repo))))
+                    (let ((t0 (current-time))
+                          ;; Timeout is huge (10x what was the default at the
+                          ;; time of writing this) as db ops are long sometimes.
+                          ;; And this is happening in a child process anyway.
+                          (emacsql-global-timeout 300))
+                      (closql-delete forge-repo)
+                      (setq results
+                            (cons (append (cdr repo)
+                                          (list (float-time (time-since t0))))
+                                  results)))))
+                results))
            (lambda (results)
              (when results (magit-refresh))
              (dolist (repo results)
