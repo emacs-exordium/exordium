@@ -56,6 +56,7 @@
    :map emacs-lisp-mode-map
         ("C-c C-d" . #'helpful-at-point)
    :map helpful-mode-map
+        ("C-c C-d" . #'helpful-at-point)
         ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 (use-package helm
