@@ -71,11 +71,11 @@ buffers (e.g. `buffer-list'), returns a subset of this list that
 contains all common buffers, e.g. the buffers that should be
 shared among all frames."
   (let ((buffers (funcall orig-fun)))
-    (loop for b in buffers
-          when (let ((n (buffer-name b)))
-                 (and (string-prefix-p "*" n)
-                      (string-suffix-p "*" n)))
-          collect b)))
+    (cl-loop for b in buffers
+             when (let ((n (buffer-name b)))
+                    (and (string-prefix-p "*" n)
+                         (string-suffix-p "*" n)))
+             collect b)))
 
 (defun flb-buffer-list (orig-fun &rest args)
   "Advice around `buffer-list': returns the list of buffers. Note
@@ -110,23 +110,23 @@ that this advice disregards the `orig-fun'."
 (defun flb-frame-owns-buffer-p (frame buffer)
   "Predicate testing if FRAME owns BUFFER, e.g. if BUFFER is only
   open in FRAME"
-  (loop for (key value) on flb-frame-buffers by #'cddr
-        ;; skip FRAME
-        unless (eq key frame)
-        ;; return t if BUFFER is never a member of value
-        never (member buffer value)))
+  (cl-loop for (key value) on flb-frame-buffers by #'cddr
+           ;; skip FRAME
+           unless (eq key frame)
+           ;; return t if BUFFER is never a member of value
+           never (member buffer value)))
 
 (defun flb-remove-dead-frames ()
   "Removes any dead frames from variable `flb-frame-buffers'"
   (let ((newlist ()))
-    (loop for (key value) on flb-frame-buffers by #'cddr
-          do (if (frame-live-p key)
-                 ;; Keep the frame
-                 (setq newlist (plist-put newlist key value))
-               ;; else don't keep it and kill any buffers it owns
-               (dolist (b value)
-                 (when (flb-frame-owns-buffer-p key b)
-                   (kill-buffer b)))))
+    (cl-loop for (key value) on flb-frame-buffers by #'cddr
+             do (if (frame-live-p key)
+                    ;; Keep the frame
+                    (setq newlist (plist-put newlist key value))
+                  ;; else don't keep it and kill any buffers it owns
+                  (dolist (b value)
+                    (when (flb-frame-owns-buffer-p key b)
+                      (kill-buffer b)))))
     (setq flb-frame-buffers newlist)))
 
 (defun flb-update-frame-buffers (frame buffer)
@@ -135,7 +135,7 @@ that this advice disregards the `orig-fun'."
   buffers and removes any dead buffers."
   (let ((local-buffers (plist-get flb-frame-buffers frame)))
     (cl-pushnew buffer local-buffers)
-    (setq local-buffers (remove-if-not #'buffer-live-p local-buffers))
+    (setq local-buffers (cl-remove-if-not #'buffer-live-p local-buffers))
     (setq flb-frame-buffers (plist-put flb-frame-buffers frame local-buffers))))
 
 (defun flb-post-command-hook ()

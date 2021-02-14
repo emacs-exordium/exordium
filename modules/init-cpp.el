@@ -89,9 +89,9 @@
   (let ((ext (bde-file-name-extension (buffer-file-name))))
     (let ((base-name    (exordium-string-truncate (buffer-name) (length ext)))
           (base-path    (exordium-string-truncate (buffer-file-name) (length ext)))
-          (matching-ext (cdr (find-if (lambda (i)
-                                        (string= (car i) ext))
-                                      exordium-cpp-header-switches))))
+          (matching-ext (cdr (cl-find-if (lambda (i)
+                                           (string= (car i) ext))
+                                         exordium-cpp-header-switches))))
       (when (and arg matching-ext)
         (setq matching-ext (cdr matching-ext)))
       (cond (matching-ext

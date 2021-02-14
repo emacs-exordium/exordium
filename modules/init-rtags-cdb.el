@@ -93,8 +93,8 @@ a list of five sublists:
         (exclude-src-list ())
         (macro-list       ()))
     (dolist (record (exordium-read-file-lines compile-includes-file))
-      (incf line-number)
-      (setq value (second (split-string record " ")))
+      (cl-incf line-number)
+      (setq value (cl-second (split-string record " ")))
       (cond ((or (eq "" record)
                  (string-prefix-p "#" record))
              ;; Comment or empty string; skip it
@@ -157,11 +157,11 @@ could not be loaded. The property list looks like this:
            ;; Parse the file and return 3 lists: src, include, exclude
            (let ((directives (rtags-load-compile-includes-file-content
                               compile-includes-file)))
-             (let ((src-dirs    (first directives))
-                   (incl-dirs   (second directives))
-                   (excl-regexs (third directives))
-                   (excl-src    (fourth directives))
-                   (macros      (fifth directives))
+             (let ((src-dirs    (cl-first directives))
+                   (incl-dirs   (cl-second directives))
+                   (excl-regexs (cl-third directives))
+                   (excl-src    (cl-fourth directives))
+                   (macros      (cl-fifth directives))
                    (result      ()))
                ;; Scan src to get all subdirs that do not match the excludes
                (let (dirs)
@@ -244,7 +244,7 @@ the specified directory."
                              default-directory)))
               (dolist (file files)
                 (unless (rtags-is-excluded-p file exclude-files)
-                  (incf num-files)
+                  (cl-incf num-files)
                   (insert "  { \"directory\": \"" dirname "\",")
                   (newline)
                   (insert "    \"command\":   \""

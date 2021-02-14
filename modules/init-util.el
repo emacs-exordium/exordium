@@ -50,6 +50,7 @@
 (require 'init-lib)
 (require 'init-prefs)
 
+(use-package cl-lib :ensure nil)
 
 ;;; Match parentheses
 ;;; Ctrl-% = go to match paren
@@ -543,7 +544,7 @@ continues until at most POS-START."
       (setq even (if (< pos-start (- pos-end offset 2))
                      (not (eq (char-before (- pos-end offset 2)) char))
                    t))
-      (incf offset 2))
+      (cl-incf offset 2))
     even))
 
 (defun exordium-flip-string-quotes (&optional flip-inner)
@@ -607,7 +608,7 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                             (exordium-flip-string--even-chars-between
                              ?\\ orig-start (point)))
                     (insert-char ?\\)
-                    (incf orig-end))
+                    (cl-incf orig-end))
                 (when (and (< (point) (- orig-end 2))
                            (eq (char-after (+ 1 (point))) new-quote)
                            (eq (char-after (+ 2 (point))) new-quote))
@@ -617,13 +618,13 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                   (insert-char ?\\)
                   (forward-char)
                   (insert-char ?\\)
-                  (incf orig-end 3))))
+                  (cl-incf orig-end 3))))
              ((and
                (eq (char-after) orig-quote)
                (eq (char-before) ?\\))
               (backward-char)
               (delete-char 1)
-              (decf orig-end)))
+              (cl-decf orig-end)))
             (forward-char)))
         ;; A special case: the if the last quote in a string with a generic
         ;; string delimiter `(eq quote-length 3)' is the same as the new-quote
