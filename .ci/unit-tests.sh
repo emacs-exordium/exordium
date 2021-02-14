@@ -3,7 +3,7 @@
 set -x
 set -e
 
-EMACS_DIR="${GITHUB_WORKSPACE:-~}/${1:-.emacs.d}"
+EMACS_DIR="$(cd ${GITHUB_WORKSPACE:-~}/${1:-.emacs.d}; pwd -P)/"
 EMACS="${EMACS:=emacs}"
 
 # Run all tests form *.t.el

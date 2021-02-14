@@ -37,6 +37,8 @@ jobs:
       #   run: '.emacs.d/.ci/compilation.sh .emacs.d'
       - name: Unit tests
         run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+      - name: Verify no obsolete cl- functions
+        run: '.emacs.d/.ci/unit-test-cl.sh .emacs.d'
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}
