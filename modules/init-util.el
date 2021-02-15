@@ -50,6 +50,9 @@
 (require 'init-lib)
 (require 'init-prefs)
 
+(use-package cl-lib :ensure nil)
+(use-package elisp-refs)
+
 
 ;;; Match parentheses
 ;;; Ctrl-% = go to match paren
@@ -543,7 +546,7 @@ continues until at most POS-START."
       (setq even (if (< pos-start (- pos-end offset 2))
                      (not (eq (char-before (- pos-end offset 2)) char))
                    t))
-      (incf offset 2))
+      (cl-incf offset 2))
     even))
 
 (defun exordium-flip-string-quotes (&optional flip-inner)
@@ -607,7 +610,7 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                             (exordium-flip-string--even-chars-between
                              ?\\ orig-start (point)))
                     (insert-char ?\\)
-                    (incf orig-end))
+                    (cl-incf orig-end))
                 (when (and (< (point) (- orig-end 2))
                            (eq (char-after (+ 1 (point))) new-quote)
                            (eq (char-after (+ 2 (point))) new-quote))
@@ -617,13 +620,13 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                   (insert-char ?\\)
                   (forward-char)
                   (insert-char ?\\)
-                  (incf orig-end 3))))
+                  (cl-incf orig-end 3))))
              ((and
                (eq (char-after) orig-quote)
                (eq (char-before) ?\\))
               (backward-char)
               (delete-char 1)
-              (decf orig-end)))
+              (cl-decf orig-end)))
             (forward-char)))
         ;; A special case: the if the last quote in a string with a generic
         ;; string delimiter `(eq quote-length 3)' is the same as the new-quote
@@ -644,4 +647,218 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
         (insert-char new-quote quote-length)))))
 
 
-(provide 'init-util)
+;; Find obsolete cl aliases
+
+(defun exordium-elisp-refs--show-results-maybe (orig-fun &rest args)
+  "Only show a *refs* buffer when there are results.
+
+This is meant to be applied as an advice around `elisp-refs--show-results'."
+  (when (cl-third args)
+    (apply orig-fun args)))
+
+(defvar exordium-refs-cl-aliases--advice
+  #'exordium-elisp-refs--show-results-maybe
+  "An advice to be used around `elisp-refs-show-results'.")
+
+(defun exordium-refs-cl-aliases (&optional show-all)
+  "Find all exordium references to aliases defined in an obsolete `cl.el'.
+
+It may produce multiple *refs* buffers, one for each alias uses.
+
+With SHOW-ALL prefix show references in the whole `.emacs.d'
+directory.  Otherwise show only references in `.emacs.d/modules'
+subdirectory.  Note that scanning the whole `.emacs.d' also
+includes scanning `.emacs.d/elpa' (and similar) so it may take
+considerably longer time and yield numerous superfluous results
+from installed packages.
+
+The list of aliases comes from
+https://github.com/emacs-mirror/emacs/blob/9b4a2dd/lisp/obsolete/cl.el#L118-L291
+and may require updates."
+  (interactive "P")
+  (dolist (fun '(
+                 (get* . cl-get)
+                 (random* . cl-random)
+                 (rem* . cl-rem)
+                 (mod* . cl-mod)
+                 (round* . cl-round)
+                 (truncate* . cl-truncate)
+                 (ceiling* . cl-ceiling)
+                 (floor* . cl-floor)
+                 (rassoc* . cl-rassoc)
+                 (assoc* . cl-assoc)
+                 (member* . cl-member)
+                 (delete* . cl-delete)
+                 (remove* . cl-remove)
+                 (defsubst* . cl-defsubst)
+                 (sort* . cl-sort)
+                 (function* . cl-function)
+                 (defmacro* . cl-defmacro)
+                 (defun* . cl-defun)
+                 (mapcar* . cl-mapcar)
+                 remprop
+                 getf
+                 tailp
+                 list-length
+                 nreconc
+                 revappend
+                 concatenate
+                 subseq
+                 random-state-p
+                 make-random-state
+                 signum
+                 isqrt
+                 lcm
+                 gcd
+                 notevery
+                 notany
+                 every
+                 some
+                 mapcon
+                 mapl
+                 maplist
+                 map
+                 equalp
+                 coerce
+                 tree-equal
+                 nsublis
+                 sublis
+                 nsubst-if-not
+                 nsubst-if
+                 nsubst
+                 subst-if-not
+                 subst-if
+                 subsetp
+                 nset-exclusive-or
+                 set-exclusive-or
+                 nset-difference
+                 set-difference
+                 nintersection
+                 intersection
+                 nunion
+                 union
+                 rassoc-if-not
+                 rassoc-if
+                 assoc-if-not
+                 assoc-if
+                 member-if-not
+                 member-if
+                 merge
+                 stable-sort
+                 search
+                 mismatch
+                 count-if-not
+                 count-if
+                 count
+                 position-if-not
+                 position-if
+                 position
+                 find-if-not
+                 find-if
+                 find
+                 nsubstitute-if-not
+                 nsubstitute-if
+                 nsubstitute
+                 substitute-if-not
+                 substitute-if
+                 substitute
+                 delete-duplicates
+                 remove-duplicates
+                 delete-if-not
+                 delete-if
+                 remove-if-not
+                 remove-if
+                 replace
+                 fill
+                 reduce
+                 compiler-macroexpand
+                 define-compiler-macro
+                 assert
+                 check-type
+                 typep
+                 deftype
+                 defstruct
+                 callf2
+                 callf
+                 letf*
+                 letf
+                 rotatef
+                 shiftf
+                 remf
+                 psetf
+                 (define-setf-method . define-setf-expander)
+                 the
+                 locally
+                 multiple-value-setq
+                 multiple-value-bind
+                 symbol-macrolet
+                 macrolet
+                 progv
+                 psetq
+                 do-all-symbols
+                 do-symbols
+                 do*
+                 do
+                 loop
+                 return-from
+                 return
+                 block
+                 etypecase
+                 typecase
+                 ecase
+                 case
+                 load-time-value
+                 eval-when
+                 destructuring-bind
+                 gentemp
+                 pairlis
+                 acons
+                 subst
+                 adjoin
+                 copy-list
+                 ldiff
+                 list*
+                 tenth
+                 ninth
+                 eighth
+                 seventh
+                 sixth
+                 fifth
+                 fourth
+                 third
+                 endp
+                 rest
+                 second
+                 first
+                 svref
+                 copy-seq
+                 evenp
+                 oddp
+                 minusp
+                 plusp
+                 floatp-safe
+                 declaim
+                 proclaim
+                 nth-value
+                 multiple-value-call
+                 multiple-value-apply
+                 multiple-value-list
+                 values-list
+                 values
+                 pushnew
+                 decf
+                 incf
+                 ))
+    (advice-add 'elisp-refs--show-results :around exordium-refs-cl-aliases--advice)
+    (let ((path (concat (file-name-directory (expand-file-name user-emacs-directory))
+                        (unless show-all "modules")))
+          (new (if (consp fun) (prog1 (cdr fun) (setq fun (car fun)))
+                 (intern (format "cl-%s" fun)))))
+      (cond
+       ((functionp fun)
+        (elisp-refs-function fun path))
+       ((macrop fun)
+        (elisp-refs-macro fun path))))
+    (advice-remove 'elisp-refs--show-results exordium-refs-cl-aliases--advice)))
+
+(provide 'init-util)

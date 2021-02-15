@@ -206,7 +206,7 @@ otherwise."
                 (puid  (cdr (assoc 'euid attrs))))
            (when (and (eq puid uuid)
                       (string= pname "rdm"))
-              (return t))))))))
+              (cl-return t))))))))
 
 (defun exordium-rtags-start-rdm-impl (&optional open-buffer)
   "Start rdm in a subprocess. Open the rdm log buffer if
@@ -279,7 +279,7 @@ An optional second argument BOUND bounds the search: the match
 found must not extend after that position. This function also
 sets `match-data' to the entire match."
   (let ((org-pos (point)))
-    (block while-loop
+    (cl-block while-loop
       ;; While there are more matches for REGEXP
       (while (re-search-forward regexp bound t)
         (if (re-search-backward "^" org-pos t)
@@ -288,8 +288,8 @@ sets `match-data' to the entire match."
               (if (re-search-forward "$" bound t)
                   (progn
                     (set-match-data (list begin-pos (point)))
-                    (return-from while-loop (point)))
-                (return-from while-loop))))))))
+                    (cl-return-from while-loop (point)))
+                (cl-return-from while-loop))))))))
 
 (defun rtags-rdm-match-record-error (bound)
   "Search forward from point to BOUND for error."

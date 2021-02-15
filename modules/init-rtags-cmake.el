@@ -24,6 +24,7 @@
 
 (require 'init-prefs)
 (use-package rtags)
+(use-package cl-lib :ensure nil)
 
 ;; Note: for now we actually don't need to keep the build-dir of any known
 ;; project but we should need it later to automatically index new files created
@@ -148,11 +149,11 @@ directory."
   "Read the specified file and return the value associated with
 the specified key, or nil if no such key."
   (let* ((records          (exordium-read-file-lines file))
-         (matching-records (remove-if-not #'(lambda (record)
+         (matching-records (cl-remove-if-not #'(lambda (record)
                                               (string-prefix-p key record))
                                           records)))
     (when matching-records
-      (second (split-string (car matching-records) " ")))))
+      (cl-second (split-string (car matching-records) " ")))))
 
 (defun exordium-rtags-cmake-get-expanded-build-dir ()
   "Return the value of the pref `exordium-rtags-cmake-build-dir'

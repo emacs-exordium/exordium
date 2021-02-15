@@ -170,36 +170,36 @@ current cursor position, if the cursor is within a class definition:
                         // my comment at whatever column I want
                         // tab goes here
 3. nil otherwise."
-  (case (caar c-syntactic-context)
+  (cl-case (caar c-syntactic-context)
     ((inclass innamespace)
      (save-excursion
        (let ((class-offset         ; extra offset for inner structs
               (c-langelem-col (car c-syntactic-context) t))
              (comment-column nil)) ; column number of last //
-         (loop
+         (cl-loop
           (beginning-of-line)
           (cond ((= (point) (point-min))
-                 (return nil))
+                 (cl-return nil))
                 ((re-search-forward "^ *//" (point-at-eol) t)
                  ;; looking at a comment line
                  (setq comment-column (- (current-column) 2))
                  (forward-line -1))
                 ((bde-is-member-function-declaration)
                  ;; looking at end of method declaration
-                 (return '+))
+                 (cl-return '+))
                 ((re-search-forward "} *$" (point-at-eol) t)
                  ;; looking at end of inline method definition
-                 (return '+))
+                 (cl-return '+))
                 ((re-search-forward "; *//" (point-at-eol) t)
                  ;; looking at beginning of data member comment block
-                 (return (- (current-column) 2 class-offset c-basic-offset)))
+                 (cl-return (- (current-column) 2 class-offset c-basic-offset)))
                 ((and comment-column
                       (re-search-forward "[_A-Za-z0-9]+; *$"
                                          (point-at-eol) t))
                  ;; looking at end of (long?) data member declaration
-                 (return (- comment-column class-offset c-basic-offset)))
+                 (cl-return (- comment-column class-offset c-basic-offset)))
                 (t
-                 (return nil)))))))
+                 (cl-return nil)))))))
     (t nil)))
 
 (defun bde-statement-block-intro-offset (element)
@@ -298,7 +298,7 @@ switch(val) {
       (insert " <class name>")
       (backward-char 12)
       ;; Read and process input
-      (loop
+      (cl-loop
        (let ((c (read-event "Inserting header")))
          (cond ((integerp c)
                 (when erase-hint (kill-line))
@@ -325,7 +325,7 @@ switch(val) {
                ((eq c 'right)
                 (forward-char 1))
                (t
-                (return nil)))
+                (cl-return nil)))
          (setq erase-hint nil))))))
 
 (defun bde-guess-class-name ()
@@ -1041,33 +1041,33 @@ the beginning of the first line, or nil if not found. It is safer
 to use this function in conjunction with `bde-in-comment-p'. Note
 that this function only considers lines that only contain a
 comment."
-  (loop
+  (cl-loop
    (beginning-of-line)
    (cond ((= (point) (point-min))
-          (return nil))
+          (cl-return nil))
          ((re-search-forward "^ *//" (point-at-eol) t)
           ;; looking at a comment line
           (forward-line -1))
          (t
           (forward-line 1)
-          (return (point))))))
+          (cl-return (point))))))
 
 (defun bde-comment-end ()
   "Return the position of the end of a comment block, at the end
 of the last line, or nil if not found. It is safer to use this
 function in conjunction with `bde-in-comment-p'. Note that this
 function only considers lines that only contain a comment."
-  (loop
+  (cl-loop
    (beginning-of-line)
    (cond ((= (point) (point-min))
-          (return nil))
+          (cl-return nil))
          ((re-search-forward "^ *//" (point-at-eol) t)
           ;; looking at a comment line
           (forward-line 1))
          (t
           (forward-line -1)
           (end-of-line)
-          (return (point))))))
+          (cl-return (point))))))
 
 (defun bde-repunctuate ()
   "Put two spaces at the end of sentences in the selected region
