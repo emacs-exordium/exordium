@@ -66,6 +66,7 @@ names to which it refers are bound."
      (shadow ((t (:background ,base01))))
      (success ((t (:foreground ,green))))
      (error ((t (:weight bold :foreground ,red))))
+     (next-error ((t (:background ,magenta))))
      (warning ((t (:weight bold :foreground ,orange))))
      (scroll-bar ((t (:background ,back))))
 
