@@ -331,7 +331,8 @@ names to which it refers are bound."
                     ,(append `(:foreground ,green
                                :overline ,green
                                :background ,selection
-                               :box (:style released-button))
+                               :box (:style released-button)
+                               :extend t)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
@@ -367,26 +368,27 @@ names to which it refers are bound."
      (org-warning ((t (:weight bold :foreground ,red))))
 
      ;; Markdown
-     (markdown-url-face ((t (:inherit link :foreground ,yellow :weight normal))))
-     (markdown-link-face ((t (:foreground ,orange :underline t :weight bold))))
+     (markdown-url-face ((t (:inherit link :foreground ,foreground :weight normal))))
+     (markdown-plain-url-face ((t (:inherit link :foreground ,foreground :weight normal))))
+     (markdown-link-face ((t (:inherit link :foreground ,red :weight normal))))
      (markdown-header-face-1 ((t
-                               ,(append `(:weight bold :foreground ,red)
+                               ,(append `(:weight bold :foreground ,green)
                                         (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
      (markdown-header-face-2 ((t
-                               ,(append `(:weight bold :foreground ,red)
+                               ,(append `(:weight bold :foreground ,green)
                                         (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
-     (markdown-header-face-3 ((t (:foreground ,red :weight bold))))
-     (markdown-header-face-4 ((t (:foreground ,red :weight normal))))
-     (markdown-header-face-5 ((t (:foreground ,red :weight bold :slant italic))))
-     (markdown-header-delimiter-face ((t (:foreground ,red))))
-     (markdown-hr-face ((t (:foreground ,red))))
-     (markdown-bold-face ((t (:foreground ,green :weight bold))))
+     (markdown-header-face-3 ((t (:foreground ,green :weight bold))))
+     (markdown-header-face-4 ((t (:foreground ,green :weight normal))))
+     (markdown-header-face-5 ((t (:foreground ,green :weight bold :slant italic))))
+     (markdown-header-delimiter-face ((t (:foreground ,green))))
+     (markdown-hr-face ((t (:foreground ,green))))
+     (markdown-bold-face ((t (:foreground ,yellow :weight bold))))
      (markdown-italic-face ((t (:foreground ,foreground :weight normal :slant italic))))
-     (markdown-list-face ((t (:foreground ,red :weight normal))))
-     (markdown-inline-code-face ((t (:foreground ,aqua :weight normal))))
+     (markdown-list-face ((t (:foreground ,green :weight normal))))
+     (markdown-inline-code-face ((t (:foreground ,red :weight normal))))
      (markdown-markup-face ((t (:foreground ,blue))))
      (markdown-pre-face ((t (:foreground ,aqua))))
-     (markdown-gfm-checkbox-face ((t (:foreground ,red))))
+     (markdown-gfm-checkbox-face ((t (:foreground ,yellow))))
      (markdown-table-face ((t (:foreground ,comment))))
 
      ;; js2-mode
