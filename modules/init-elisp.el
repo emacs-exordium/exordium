@@ -23,6 +23,7 @@ bug (page break lines wrap around)."
   (emacs-lisp-mode . exordium-page-break-lines-hook))
 
 ;;; Animation when evaluating a defun or a region:
+(require 'facemenu)  ;; no longer preloaded in emacs 28, but used by `highlight' without require
 (use-package highlight)
 (use-package eval-sexp-fu)
 
