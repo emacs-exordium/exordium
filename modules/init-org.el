@@ -27,6 +27,7 @@
   (org-startup-with-inline-images t)
   (org-src-fontify-natively t)
   (org-fontify-whole-heading-line t)
+  (org-fontify-quote-and-verse-blocks t)
   (org-src-preserve-indentation t)
   (org-confirm-babel-evaluate (not exordium-no-org-babel-confirm)
                               "Turn off the confirmation for code eval when using org-babel.")
