@@ -51,8 +51,11 @@
   (defun magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
-    (kill-buffer)
-    (jump-to-register :magit-fullscreen))
+    (let ((register (when (boundp 'exordium--magit-fullscreen)
+                      exordium--magit-fullscreen)))
+      (kill-buffer)
+      (when register
+        (jump-to-register register))))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
@@ -82,17 +85,28 @@
 ;;; the frame, and then restore the old window configuration when you quit out
 ;;; of magit.
   (when exordium-use-magit-fullscreen
-    (defun exordium-define-advice-magit-fullscreen (symbol)
-      (cl-flet ((advice (orig-fun &rest args)
-                        (window-configuration-to-register :magit-fullscreen)
-                        (apply orig-fun args)
-                        (delete-other-windows)))
-        (advice-add symbol :around #'advice)))
-    (exordium-define-advice-magit-fullscreen 'magit-status)
-    (exordium-define-advice-magit-fullscreen 'exordium-magit-log)
-    (exordium-define-advice-magit-fullscreen 'magit-status-setup-buffer)
+    (defun exordium--magit-fullscreen (orig-fun &rest args)
+      (let* ((frame-address
+              (replace-regexp-in-string ".* \\(0x[a-f0-9]+\\)>"
+                                        "\\1"
+                                        (format "%s" (selected-frame))))
+             (register
+              (intern
+               (format
+                ":exordium-magit-fullscreen-%s-%s"
+                (when (and (boundp 'tab-bar-mode) tab-bar-mode)
+                  (alist-get 'index (tab-bar-get-buffer-tab (current-buffer))))
+                frame-address))))
+        (window-configuration-to-register register)
+        (apply orig-fun args)
+        (delete-other-windows)
+        (setq-local exordium--magit-fullscreen register)))
+
+    (advice-add 'magit-status :around #'exordium--magit-fullscreen)
+    (advice-add 'exordium-magit-log :around #'exordium--magit-fullscreen)
+    (advice-add 'magit-status-setup-buffer :around #'exordium--magit-fullscreen)
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
-      (exordium-define-advice-magit-fullscreen 'magit-status-internal)))
+      (advice-add 'magit-status-internal :around #'exordium--magit-fullscreen)))
 
   (define-advice magit-clone-regular (:after
                                       (_repo directory _args)
