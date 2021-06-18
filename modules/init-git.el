@@ -55,7 +55,9 @@
                       exordium--magit-fullscreen)))
       (kill-buffer)
       (when register
-        (jump-to-register register))))
+        (jump-to-register register)
+        (setq register-alist
+              (assoc-delete-all register register-alist)))))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
