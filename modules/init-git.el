@@ -55,7 +55,9 @@
                       exordium--magit-fullscreen)))
       (kill-buffer)
       (when register
-        (jump-to-register register))))
+        (jump-to-register register)
+        (setq register-alist
+              (assoc-delete-all register register-alist)))))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
@@ -113,6 +115,18 @@
                                       exordium-projectile-add-known-project)
     (projectile-add-known-project directory)))
 
+(use-package desktop
+  :ensure nil
+  :when exordium-desktop
+  :init
+  (defun exordium--desktop-save-hook ()
+    (setq register-alist
+          (assoc-delete-all ":exordium-magit-fullscreen-"
+                            register-alist
+                            (lambda (key val)
+                              (string-prefix-p val (symbol-name key))))))
+  :hook
+  (desktop-save . exordium--desktop-save-hook))
 
 ;;; Don't show "MRev" in the modeline
 (when (bound-and-true-p magit-auto-revert-mode)
