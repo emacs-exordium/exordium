@@ -51,13 +51,13 @@
   (defun magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
-    (let ((register (when (boundp 'exordium--magit-fullscreen)
-                      exordium--magit-fullscreen)))
+    (let ((configuration (when (boundp 'exordium--magit-fullscreen-configuration)
+                           exordium--magit-fullscreen-configuration)))
       (kill-buffer)
-      (when register
-        (jump-to-register register)
-        (setq register-alist
-              (assoc-delete-all register register-alist)))))
+      (when (and configuration
+                 (window-configuration-p (car configuration)))
+        (set-window-configuration (car configuration))
+        (goto-char (cadr configuration)))))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
@@ -87,22 +87,17 @@
 ;;; the frame, and then restore the old window configuration when you quit out
 ;;; of magit.
   (when exordium-use-magit-fullscreen
+
     (defun exordium--magit-fullscreen (orig-fun &rest args)
-      (let* ((frame-address
-              (replace-regexp-in-string ".* \\(0x[a-f0-9]+\\)>"
-                                        "\\1"
-                                        (format "%s" (selected-frame))))
-             (register
-              (intern
-               (format
-                ":exordium-magit-fullscreen-%s-%s"
-                (when (and (boundp 'tab-bar-mode) tab-bar-mode)
-                  (alist-get 'index (tab-bar-get-buffer-tab (current-buffer))))
-                frame-address))))
-        (window-configuration-to-register register)
+      (let* ((exordium--magit-fullscreen-current-configuration
+              ;; Favour current configuration should it already exist in the stack
+              (or (and (boundp 'exordium--magit-fullscreen-current-configuration)
+                       exordium--magit-fullscreen-current-configuration)
+                  (list (current-window-configuration) (point-marker)))))
         (apply orig-fun args)
         (delete-other-windows)
-        (setq-local exordium--magit-fullscreen register)))
+        (setq-local exordium--magit-fullscreen-configuration
+                    exordium--magit-fullscreen-current-configuration)))
 
     (advice-add 'magit-status :around #'exordium--magit-fullscreen)
     (advice-add 'exordium-magit-log :around #'exordium--magit-fullscreen)
