@@ -89,11 +89,11 @@
   (when exordium-use-magit-fullscreen
 
     (defun exordium--magit-fullscreen (orig-fun &rest args)
-      (let* ((exordium--magit-fullscreen-current-configuration
-              ;; Favour current configuration should it already exist in the stack
-              (or (and (boundp 'exordium--magit-fullscreen-current-configuration)
-                       exordium--magit-fullscreen-current-configuration)
-                  (list (current-window-configuration) (point-marker)))))
+      (let ((exordium--magit-fullscreen-current-configuration
+             ;; Favour current configuration should it already exist in the stack
+             (or (and (boundp 'exordium--magit-fullscreen-current-configuration)
+                      exordium--magit-fullscreen-current-configuration)
+                 (list (current-window-configuration) (point-marker)))))
         (apply orig-fun args)
         (delete-other-windows)
         (setq-local exordium--magit-fullscreen-configuration
