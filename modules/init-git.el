@@ -48,16 +48,38 @@
           (call-interactively 'magit-log-current)
         (call-interactively 'magit-log))))
 
-  (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
+  (defvar exordium--magit-fullscreen-configuration-tmp nil
+    "A temporary (cached) screen configuration and a point-marker that are set by a
+first executing `exordium--magit-fullscreen'.")
+
+  (defvar-local exordium--magit-fullscreen-configuration nil
+    "A screen configuration and a point-marker that are to be restored by
+`exordium-magit-quit-session'.")
+
+  (defun exordium-magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer."
     (interactive)
-    (let ((configuration (when (boundp 'exordium--magit-fullscreen-configuration)
-                           exordium--magit-fullscreen-configuration)))
+    (let ((configuration exordium--magit-fullscreen-configuration))
       (kill-buffer)
       (when (and configuration
                  (window-configuration-p (car configuration)))
         (set-window-configuration (car configuration))
         (goto-char (cadr configuration)))))
+
+  (defun exordium--magit-fullscreen (orig-fun &rest args)
+    "Store the current window configuration, call ORIG-FUN with ARGS, and delete other windows.
+
+The window configuration (including `point-marker') is stored in a very beginning
+and cached, so that when the function is called again, the cached version is used.
+
+The function is meant to be used as an advice with conjunction with `exordium-magit-quit-session'."
+    (let ((exordium--magit-fullscreen-configuration-tmp
+           (or exordium--magit-fullscreen-configuration-tmp
+               (list (current-window-configuration) (point-marker)))))
+      (apply orig-fun args)
+      (delete-other-windows)
+      (setq-local exordium--magit-fullscreen-configuration
+                  exordium--magit-fullscreen-configuration-tmp)))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
@@ -75,7 +97,7 @@
         ("b" . 'exordium-magit-blame)
         ("c" . (function magit-clone))
    :map magit-status-mode-map
-        ("q" . 'magit-quit-session))
+        ("q" . 'exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
@@ -87,18 +109,6 @@
 ;;; the frame, and then restore the old window configuration when you quit out
 ;;; of magit.
   (when exordium-use-magit-fullscreen
-
-    (defun exordium--magit-fullscreen (orig-fun &rest args)
-      (let ((exordium--magit-fullscreen-current-configuration
-             ;; Favour current configuration should it already exist in the stack
-             (or (and (boundp 'exordium--magit-fullscreen-current-configuration)
-                      exordium--magit-fullscreen-current-configuration)
-                 (list (current-window-configuration) (point-marker)))))
-        (apply orig-fun args)
-        (delete-other-windows)
-        (setq-local exordium--magit-fullscreen-configuration
-                    exordium--magit-fullscreen-current-configuration)))
-
     (advice-add 'magit-status :around #'exordium--magit-fullscreen)
     (advice-add 'exordium-magit-log :around #'exordium--magit-fullscreen)
     (advice-add 'magit-status-setup-buffer :around #'exordium--magit-fullscreen)
