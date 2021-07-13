@@ -48,16 +48,38 @@
           (call-interactively 'magit-log-current)
         (call-interactively 'magit-log))))
 
-  (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
+  (defvar exordium--magit-fullscreen-configuration-tmp nil
+    "A temporary (cached) screen configuration and a point-marker that are set by a
+first executing `exordium--magit-fullscreen'.")
+
+  (defvar-local exordium--magit-fullscreen-configuration nil
+    "A screen configuration and a point-marker that are to be restored by
+`exordium-magit-quit-session'.")
+
+  (defun exordium-magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer."
     (interactive)
-    (let ((register (when (boundp 'exordium--magit-fullscreen)
-                      exordium--magit-fullscreen)))
+    (let ((configuration exordium--magit-fullscreen-configuration))
       (kill-buffer)
-      (when register
-        (jump-to-register register)
-        (setq register-alist
-              (assoc-delete-all register register-alist)))))
+      (when (and configuration
+                 (window-configuration-p (car configuration)))
+        (set-window-configuration (car configuration))
+        (goto-char (cadr configuration)))))
+
+  (defun exordium--magit-fullscreen (orig-fun &rest args)
+    "Store the current window configuration, call ORIG-FUN with ARGS, and delete other windows.
+
+The window configuration (including `point-marker') is stored in a very beginning
+and cached, so that when the function is called again, the cached version is used.
+
+The function is meant to be used as an advice with conjunction with `exordium-magit-quit-session'."
+    (let ((exordium--magit-fullscreen-configuration-tmp
+           (or exordium--magit-fullscreen-configuration-tmp
+               (list (current-window-configuration) (point-marker)))))
+      (apply orig-fun args)
+      (delete-other-windows)
+      (setq-local exordium--magit-fullscreen-configuration
+                  exordium--magit-fullscreen-configuration-tmp)))
 
   (defun exordium-magit--dont-insert-symbol-for-search ()
     "Don't insert a symbol at point when starting ag or rg."
@@ -75,7 +97,7 @@
         ("b" . 'exordium-magit-blame)
         ("c" . (function magit-clone))
    :map magit-status-mode-map
-        ("q" . 'magit-quit-session))
+        ("q" . 'exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
@@ -87,23 +109,6 @@
 ;;; the frame, and then restore the old window configuration when you quit out
 ;;; of magit.
   (when exordium-use-magit-fullscreen
-    (defun exordium--magit-fullscreen (orig-fun &rest args)
-      (let* ((frame-address
-              (replace-regexp-in-string ".* \\(0x[a-f0-9]+\\)>"
-                                        "\\1"
-                                        (format "%s" (selected-frame))))
-             (register
-              (intern
-               (format
-                ":exordium-magit-fullscreen-%s-%s"
-                (when (and (boundp 'tab-bar-mode) tab-bar-mode)
-                  (alist-get 'index (tab-bar-get-buffer-tab (current-buffer))))
-                frame-address))))
-        (window-configuration-to-register register)
-        (apply orig-fun args)
-        (delete-other-windows)
-        (setq-local exordium--magit-fullscreen register)))
-
     (advice-add 'magit-status :around #'exordium--magit-fullscreen)
     (advice-add 'exordium-magit-log :around #'exordium--magit-fullscreen)
     (advice-add 'magit-status-setup-buffer :around #'exordium--magit-fullscreen)
@@ -114,19 +119,6 @@
                                       (_repo directory _args)
                                       exordium-projectile-add-known-project)
     (projectile-add-known-project directory)))
-
-(use-package desktop
-  :ensure nil
-  :when exordium-desktop
-  :init
-  (defun exordium--desktop-save-hook ()
-    (setq register-alist
-          (assoc-delete-all ":exordium-magit-fullscreen-"
-                            register-alist
-                            (lambda (key val)
-                              (string-prefix-p val (symbol-name key))))))
-  :hook
-  (desktop-save . exordium--desktop-save-hook))
 
 ;;; Don't show "MRev" in the modeline
 (when (bound-and-true-p magit-auto-revert-mode)
