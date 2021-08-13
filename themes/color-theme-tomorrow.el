@@ -353,6 +353,7 @@ names to which it refers are bound."
                                     (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-todo ((t (:foreground ,red :weight bold :box nil))))
      (org-done ((t (:foreground ,green :weight bold :box nil))))
+     (org-headline-done ((t (:foreground ,comment :box nil))))
      (org-checkbox ((t (:background ,yellow :foreground ,background :weight bold))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,aqua))))
