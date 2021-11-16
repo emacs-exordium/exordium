@@ -20,13 +20,21 @@
 (use-package helm-rg)
 
 (use-package projectile
+  :diminish
   :bind
   (:map projectile-command-map
         ("." . helm-projectile-find-file-dwim))
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
-  (projectile-mode))
+  (projectile-mode)
+  ;; Prevent Projectile from indexing the build directory.
+  (when exordium-rtags-cmake-build-dir
+    (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
+      ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
+      (when top-level
+        (setq projectile-globally-ignored-directories
+              (cons top-level projectile-globally-ignored-directories))))))
 
 (use-package helm-projectile
   :init
@@ -53,15 +61,14 @@
       (error "No candidates selected")))
 
   :bind
-  (:map global-map
-        ("C-c h"   . #'helm-projectile)
-        ("C-c H"   . #'helm-projectile-switch-project)
-        ("C-c M-h" . #'helm-projectile-switch-project)
-        ("C-S-a"   . #'helm-projectile-ag)
-        ("C-S-r"   . #'helm-projectile-rg)
+  (("C-c h"   . helm-projectile)
+   ("C-c H"   . helm-projectile-switch-project)
+   ("C-c M-h" . helm-projectile-switch-project)
+   ("C-S-a"   . helm-projectile-ag)
+   ("C-S-r"   . helm-projectile-rg)
    :map helm-projectile-projects-map
-        ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
-        ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg))
+        ("C-S-a" . exordium-helm-projectile--exit-helm-and-do-ag)
+        ("C-S-r" . exordium-helm-projectile--exit-helm-and-do-rg))
 
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
@@ -76,16 +83,7 @@
 
 (use-package treemacs-projectile
   :bind
-  (:map global-map
-        ("C-c e" . #'treemacs)
-        ("C-c E" . #'treemacs-projectile)))
-
-;; Prevent Projectile from indexing the build directory.
-(when exordium-rtags-cmake-build-dir
-  (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
-    ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
-    (when top-level
-      (setq projectile-globally-ignored-directories
-            (cons top-level projectile-globally-ignored-directories)))))
+  (("C-c e" . treemacs)
+   ("C-c E" . treemacs-projectile)))
 
 (provide 'init-helm-projectile)
