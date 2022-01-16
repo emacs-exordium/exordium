@@ -330,7 +330,6 @@ names to which it refers are bound."
      (org-level-1 ((t
                     ,(append `(:foreground ,green
                                :overline ,green
-                               ;;:background ,selection
                                :inherit nil
                                :extend t)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))

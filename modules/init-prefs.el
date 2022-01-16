@@ -355,7 +355,7 @@ default color."
   :group 'exordium)
 
 (defcustom exordium-height-plus-10 2.0
-  "Font size +5."
+  "Font size +10."
   :type 'number
   :group 'exordium)
 
