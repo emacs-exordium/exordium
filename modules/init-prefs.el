@@ -354,6 +354,11 @@ default color."
   :type 'number
   :group 'exordium)
 
+(defcustom exordium-height-plus-10 2.0
+  "Font size +5."
+  :type 'number
+  :group 'exordium)
+
 
 
 ;;; Programming
@@ -405,6 +410,13 @@ Disables flyspell if set to nil."
 opened in TRAMP mode."
   :group 'exordium
   :type  'boolean)
+
+(defcustom exordium-git-gutter-fringe-style :flat
+  "Style for git gutter fringe markers.
+:default = unchanged.
+:flat = doom-style"
+  :group 'exordium
+  :type 'symbol)
 
 ;;; See init-cpp.el
 (defcustom exordium-enable-c++11-keywords :simple
