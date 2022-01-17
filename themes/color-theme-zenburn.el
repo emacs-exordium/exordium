@@ -708,7 +708,9 @@ names to which it refers are bound."
      (org-document-title ((t (:inherit ,exordium-variable-pitch :weight bold :foreground ,zenburn-blue
                                        ,@(when exordium-theme-use-big-font
                                            (list :height exordium-height-plus-4))))))
-     (org-level-1 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-orange
+     (org-level-1 ((t (:inherit ,exordium-variable-pitch
+                                :foreground ,zenburn-orange
+                                :overline ,zenburn-orange
                                 ,@(when exordium-theme-use-big-font
                                     (list :height exordium-height-plus-4))))))
      (org-level-2 ((t (:inherit ,exordium-variable-pitch :foreground ,zenburn-green+4

@@ -314,7 +314,8 @@ names to which it refers are bound."
      (grep-match-face ((t (:foreground nil :background nil :inherit match))))
 
      ;; Org
-     (org-level-1 ((t ,(append `(:foreground ,atom-one-dark-orange-1)
+     (org-level-1 ((t ,(append `(:foreground ,atom-one-dark-orange-1
+                                 :overline ,atom-one-dark-orange-1)
                                (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,atom-one-dark-mono-1))))
      (org-level-3 ((t (:foreground ,atom-one-dark-mono-2))))

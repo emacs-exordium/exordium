@@ -207,7 +207,8 @@ names to which it refers are bound."
                            ,(append `(:weight bold :foreground ,cyan)
                                     (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-1 ((t
-                    ,(append `(:foreground ,base0)
+                    ,(append `(:foreground ,base0
+                               :overline ,base0)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
 
      ;; outline
