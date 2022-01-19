@@ -230,7 +230,17 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
               ("d" . 'git-gutter:popup-hunk)
               ("r" . 'git-gutter:revert-hunk))
   :init
-  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook))
+  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
+  :config
+  ;; Style
+  (when (eq exordium-git-gutter-fringe-style :flat)
+    (setq-default fringes-outside-margins t)
+    (define-fringe-bitmap 'git-gutter-fr:added [224]
+      nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:modified [224]
+      nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
+      nil nil 'bottom)))
 
 
 

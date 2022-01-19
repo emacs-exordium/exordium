@@ -469,16 +469,16 @@ names to which it refers are bound."
       ((t (:foreground ,monokai-bg))))
      (org-level-1
       ((t (:inherit ,s-variable-pitch
-                :height ,monokai-height-plus-4 :foreground ,orange))))
+           :height ,monokai-height-plus-4 :foreground ,orange :overline ,orange))))
      (org-level-2
       ((t (:inherit ,s-variable-pitch
-                :height ,monokai-height-plus-3 :foreground ,green))))
+           :height ,monokai-height-plus-3 :foreground ,green))))
      (org-level-3
       ((t (:inherit ,s-variable-pitch
-                :height ,monokai-height-plus-2 :foreground ,blue))))
+           :height ,monokai-height-plus-2 :foreground ,blue))))
      (org-level-4
       ((t (:inherit ,s-variable-pitch
-                :height ,monokai-height-plus-1 :foreground ,yellow))))
+           :height ,monokai-height-plus-1 :foreground ,yellow))))
      (org-level-5
       ((t (:inherit ,s-variable-pitch :foreground ,cyan))))
      (org-level-6

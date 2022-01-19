@@ -20,6 +20,7 @@
   (setq org-todo-keywords
         '((sequence "TODO" "WORK" "WAIT" "DONE")))
   (setq org-src-fontify-natively t)
+  (setq org-fontify-whole-heading-line t)
   (setq org-src-preserve-indentation t)
   (setq org-completion-use-ido t)
   (when exordium-enable-org-export

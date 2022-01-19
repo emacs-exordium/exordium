@@ -330,13 +330,12 @@ names to which it refers are bound."
      (org-level-1 ((t
                     ,(append `(:foreground ,green
                                :overline ,green
-                               :background ,selection
-                               :box (:style released-button)
+                               :inherit nil
                                :extend t)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
      (org-level-2 ((t (:foreground ,aqua))))
      (org-level-3 ((t (:foreground ,purple))))
-     (org-level-4 ((t (:foreground ,comment))))
+     (org-level-4 ((t (:foreground ,blue))))
      (org-agenda-structure ((t (:foreground ,purple))))
      (org-agenda-date ((t (:foreground ,blue :underline nil))))
      (org-agenda-done ((t (:foreground ,green))))
@@ -350,11 +349,11 @@ names to which it refers are bound."
      (org-document-info-keyword ((t (:foreground ,green))))
      (org-document-title ((t
                            ,(append `(:weight bold :foreground ,green)
-                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
+                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-10) nil)))))
      (org-todo ((t (:foreground ,red :weight bold :box nil))))
      (org-done ((t (:foreground ,green :weight bold :box nil))))
      (org-headline-done ((t (:foreground ,comment :box nil))))
-     (org-checkbox ((t (:background ,yellow :foreground ,background :weight bold))))
+     (org-checkbox ((t (:background ,selection :foreground ,yellow :weight bold))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,aqua))))
      (org-formula ((t (:foreground ,red))))
@@ -364,7 +363,7 @@ names to which it refers are bound."
      (org-scheduled-previously ((t (:foreground ,orange))))
      (org-scheduled-today ((t (:foreground ,green))))
      (org-special-keyword ((t (:foreground ,orange))))
-     (org-table ((t (:foreground ,foreground))))
+     (org-table ((t (:foreground ,comment))))
      (org-upcoming-deadline ((t (:foreground ,orange))))
      (org-warning ((t (:weight bold :foreground ,red))))
 
@@ -372,15 +371,19 @@ names to which it refers are bound."
      (markdown-url-face ((t (:inherit link :foreground ,foreground :weight normal))))
      (markdown-plain-url-face ((t (:inherit link :foreground ,foreground :weight normal))))
      (markdown-link-face ((t (:inherit link :foreground ,red :weight normal))))
-     (markdown-header-face-1 ((t
-                               ,(append `(:weight bold :foreground ,green)
-                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
-     (markdown-header-face-2 ((t
-                               ,(append `(:weight bold :foreground ,green)
-                                        (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
-     (markdown-header-face-3 ((t (:foreground ,green :weight bold))))
-     (markdown-header-face-4 ((t (:foreground ,green :weight normal))))
-     (markdown-header-face-5 ((t (:foreground ,green :weight bold :slant italic))))
+     (markdown-header-face-1 ((t ,(append
+                                   `(:weight bold :foreground ,green)
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4)) nil))))
+     (markdown-header-face-2 ((t ,(append
+                                   `(:weight bold :foreground ,green)
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-plus-2)) nil))))
+     (markdown-header-face-3 ((t (:foreground ,green :weight bold :slant italic))))
+     (markdown-header-face-4 ((t ,(append
+                                   `(:weight normal :foreground ,green :slant italic)
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-minus-1)) nil))))
+     (markdown-header-face-5 ((t ,(append
+                                   `(:weight normal :foreground ,green :slant italic)
+                                   (if exordium-theme-use-big-font `(:height ,exordium-height-minus-1)) nil))))
      (markdown-header-delimiter-face ((t (:foreground ,green))))
      (markdown-hr-face ((t (:foreground ,green))))
      (markdown-bold-face ((t (:foreground ,yellow :weight bold))))
