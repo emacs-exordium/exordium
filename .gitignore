@@ -13,6 +13,7 @@ local
 elpa
 
 # Caches
+eln-cache/
 .cache/
 cider-history
 semanticdb
