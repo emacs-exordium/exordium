@@ -266,120 +266,57 @@ With argument, do this that many times."
 
 ;;; FCI: 80-column ruler bound to Ctrl-|
 
-(if (version< emacs-version "27")
-;;; Note: if it causes Emacs to crash on images, set the variable
-;;; fci-always-use-textual-rule to t (it will use a character instead).
-    (progn
-      (eval-when-compile
-        (use-package fill-column-indicator))
+(use-package display-fill-column-indicator
+  :if exordium-fci-mode
+  :ensure nil
+  :demand t
+  :bind ("C-|" . display-fill-column-indicator-mode)
+  :init
+  (defun exordium--select-display-fill-column-indicator-character ()
+    (cl-flet
+        ((char-or-nil
+          (char)
+          ;; Return the `char' if displayable. Return nil otherwise.
+          ;; This is the same check as in `display-fill-column-indicator-mode'
+          ;; but with `string=' the check for faces equality (for some reason
+          ;; `eq' doesn't work when initialising).
+          (when (and char
+                     (char-displayable-p char)
+                     (or (not (display-graphic-p))
+                         (string=
+                          (aref (query-font (car (internal-char-font nil char)))
+                                0)
+                          (face-font 'default))))
+            char)))
+      (prog1
+          (setq-default display-fill-column-indicator-character
+                        (seq-find
+                         #'char-or-nil
+                         (alist-get (if (eq exordium-fci-use-dashes t)
+                                        :one
+                                      exordium-fci-use-dashes)
+                                    exordium-fci-dashes-alist)))
+        (when (and exordium-fci-use-dashes
+                   (not display-fill-column-indicator-character))
+          (message
+           (concat "Selected exordium-fci-dashes: %s with mapped char: %s "
+                   "cannot be used as a display-fill-column-indicator-character "
+                   " with the face-font: %s.")
+           exordium-fci-use-dashes
+           (alist-get exordium-fci-use-dashes exordium-fci-dashes-alist)
+           (face-font 'default))))))
+  (exordium--select-display-fill-column-indicator-character)
 
-      (when exordium-fci-mode
-        (use-package fill-column-indicator)
-
-        (when exordium-fci-use-dashes
-          (setq fci-rule-use-dashes t)
-          (setq fci-dash-pattern 0.5))
-        (setq fci-rule-width 1)
-
-        (define-key global-map [(control |)]
-          #'(lambda ()
-              (interactive)
-              (fci-mode (if fci-mode 0 1))))
-
-        (cond
-         ((eq exordium-fci-mode :always)
-          (define-globalized-minor-mode global-fci-mode fci-mode
-            (lambda () (fci-mode 1)))
-          (global-fci-mode 1))
-         ((eq exordium-fci-mode :prog)
-          (add-hook 'prog-mode-hook 'fci-mode)))
-
-          ;;; Fix a display bug in auto-complete caused by FCI. See
-          ;;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
-        (when (and (eq exordium-complete-mode :auto-complete)
-                   exordium-fci-fix-autocomplete-bug)
-          (use-package fill-column-indicator)
-          (use-package popup)
-
-  ;;; fci-mode turns line truncation on by default (see
-  ;;; `fci-handle-truncate-lines'); this is pretty annoying when you have long
-  ;;; lines and fci-mode goes off (to display popup) and your line truncation
-  ;;; goes off. Hence, for popups we turn off this handler and let `fci-mode'
-  ;;; relay on whatever buffer value of `truncate-lines' is.
-
-          (defvar exordium-fci-mode-suppressed nil)
-
-          (defadvice popup-create (before suppress-fci-mode activate)
-            "Suspend fci-mode while popups are visible"
-            (let ((fci-enabled (and (boundp 'fci-mode) fci-mode)))
-              (when fci-enabled
-                (set (make-local-variable 'exordium-fci-mode-suppressed) fci-enabled)
-                (set (make-local-variable 'exordium-fci-handle-truncate-lines)
-                     fci-handle-truncate-lines)
-                (setq fci-handle-truncate-lines nil)
-                (turn-off-fci-mode))))
-
-          (defadvice popup-delete (after restore-fci-mode activate)
-            "Restore fci-mode when all popups have closed"
-            (when (and exordium-fci-mode-suppressed
-                       (null popup-instances))
-              (setq exordium-fci-mode-suppressed nil)
-              (setq fci-handle-truncate-lines 'exordium-fci-handle-truncate-lines)
-              (turn-on-fci-mode))))))
-
-  ;; else (not (version< emacs-version "27")) use native package
-  (use-package display-fill-column-indicator
-    :no-require (version< emacs-version "27") ; only to satisfy compiler on emacs-26
-    :if exordium-fci-mode
-    :ensure nil
-    :demand t
-    :bind ("C-|" . display-fill-column-indicator-mode)
-    :init
-    (defun exordium--select-display-fill-column-indicator-character ()
-      (cl-flet
-          ((char-or-nil
-            (char)
-            ;; Return the `char' if displayable. Return nil otherwise.
-            ;; This is the same check as in `display-fill-column-indicator-mode'
-            ;; but with `string=' the check for faces equality (for some reason
-            ;; `eq' doesn't work when initialising).
-            (when (and char
-                       (char-displayable-p char)
-                       (or (not (display-graphic-p))
-                           (string=
-                            (aref (query-font (car (internal-char-font nil char)))
-                                  0)
-                            (face-font 'default))))
-              char)))
-        (prog1
-            (setq-default display-fill-column-indicator-character
-                          (seq-find
-                           #'char-or-nil
-                           (alist-get (if (eq exordium-fci-use-dashes t)
-                                          :one
-                                        exordium-fci-use-dashes)
-                                      exordium-fci-dashes-alist)))
-          (when (and exordium-fci-use-dashes
-                     (not display-fill-column-indicator-character))
-            (message
-             (concat "Selected exordium-fci-dashes: %s with mapped char: %s "
-                     "cannot be used as a display-fill-column-indicator-character "
-                     " with the face-font: %s.")
-             exordium-fci-use-dashes
-             (alist-get exordium-fci-use-dashes exordium-fci-dashes-alist)
-             (face-font 'default))))))
-    (exordium--select-display-fill-column-indicator-character)
-
-    :config
-    (cond
-     ((eq exordium-fci-mode :always)
-      (global-display-fill-column-indicator-mode))
-     ((eq exordium-fci-mode :prog)
-      (add-hook 'prog-mode-hook
-                #'display-fill-column-indicator-mode)))
-    ;; `init-util' is loaded only after `init-look-and-feel', so let's do advice
-    (define-advice exordium-set-font (:after-while (&rest _args))
-      (exordium--select-display-fill-column-indicator-character))))
+  :config
+  (cond
+   ((eq exordium-fci-mode :always)
+    (global-display-fill-column-indicator-mode))
+   ((eq exordium-fci-mode :prog)
+    (add-hook 'prog-mode-hook
+              #'display-fill-column-indicator-mode)))
+  ;; `init-util' is loaded only after `init-look-and-feel', so let's do advice
+  (define-advice exordium-set-font (:after-while (&rest _args))
+    (exordium--select-display-fill-column-indicator-character)))
 
 
 ;;; Avy - go to any word on the screen in just 2 or 3 keystrokes.
@@ -578,9 +515,7 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                                (forward-sexp)
                                (point))))
                  ;; assume generic string delimiter has a length of 3
-                 ;; emacs-26 is not returning a quote value in `syntax-ppss'
-                 (quote-length (if (or (version< emacs-version "27")
-                                       (region-active-p))
+                 (quote-length (if (region-active-p)
                                    (if (and (< 5 (- orig-end orig-start))
                                             (eq orig-quote
                                                 (char-after (+ 1 orig-start)))
