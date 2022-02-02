@@ -5,14 +5,7 @@
   :commands (org-mode)
   :mode (("\\.org\\'" . org-mode))
   :init
-  (use-package fill-column-indicator
-    :if (version< emacs-version "27")
-    :config
-    (add-hook 'org-src-mode-hook
-              (lambda ()
-                (turn-off-fci-mode))))
-
-    (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 
   :config
   (setq org-startup-truncated nil)

@@ -19,10 +19,8 @@ jobs:
           - ubuntu-latest
           - macos-latest
         emacs_version:
-          - 26.1
-          - 26.2
-          - 26.3
           - 27.1
+          - 27.2
           - snapshot
     steps:
       - uses: purcell/setup-emacs@master
@@ -46,7 +44,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            emacs_version: 26.3
+            emacs_version: 27.2
           - os: macos-latest
             emacs_version: snapshot
     steps:

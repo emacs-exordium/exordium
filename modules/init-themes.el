@@ -22,8 +22,6 @@
 
 (require 'init-prefs)
 (eval-when-compile
-  (when (version< emacs-version "27")
-    (use-package fill-column-indicator))
   (use-package powerline))
 
 (when exordium-theme
@@ -51,15 +49,6 @@
       ((featurep 'color-theme-material)
        (when (fboundp 'set-material-extra-org-statuses)
          (set-material-extra-org-statuses))))
-
-;;; FCI (80-column marker) color
-
-(when (and exordium-fci-mode
-           (version< emacs-version "27"))
-  (use-package fill-column-indicator)
-  (let ((color (and (facep 'vertical-border)
-                    (face-foreground 'vertical-border))))
-    (setq fci-rule-color (or color "dim gray"))))
 
 
 ;;; Utilities
