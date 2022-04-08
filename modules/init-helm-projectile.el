@@ -37,6 +37,7 @@
               (cons top-level projectile-globally-ignored-directories))))))
 
 (use-package helm-projectile
+  :after (projectile)
   :init
   (defun exordium-helm-projectile--exit-helm-and-do-ag ()
     "Exit helm and run ag on first selected candidate."
@@ -68,7 +69,9 @@
    ("C-S-r"   . helm-projectile-rg)
    :map helm-projectile-projects-map
         ("C-S-a" . exordium-helm-projectile--exit-helm-and-do-ag)
-        ("C-S-r" . exordium-helm-projectile--exit-helm-and-do-rg))
+        ("C-S-r" . exordium-helm-projectile--exit-helm-and-do-rg)
+   :map projectile-command-map
+        ("p" . helm-projectile-switch-project))
 
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
