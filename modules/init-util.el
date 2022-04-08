@@ -499,33 +499,49 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
   (save-restriction
     (widen)
     (save-excursion
-      (when-let ((ppss (or (region-active-p)
-                           (syntax-ppss)))
-                 (orig-start (if (region-active-p)
-                                 (min (region-beginning) (region-end))
-                               (nth 8 ppss)))
+      ;; Starting with emacs-28 python strings are split when using a generic
+      ;; string delimeter: first and last two quotes are a separate sexp, and
+      ;; the `forward-sexp' only works from the most inner quote.  However,
+      ;; in emacs-27, the `forward-sexp' works only from the most outer quote.
+      (when-let ((orig-start (if (region-active-p)
+                                 (let* ((pt (min (region-beginning)
+                                                 (region-end)))
+                                        (c (char-after pt)))
+                                   (when (or (eq c ?\') (eq c ?\"))
+                                     pt))
+                               (when-let ((pos (nth 8 (syntax-ppss)))
+                                          (c (char-after pos)))
+                                 (if (and (< (1+ (point-min)) pos)
+                                          (eq c (char-after (- pos 1)))
+                                          (eq c (char-after (- pos 2))))
+                                     (- pos 2)
+                                   (- pos 0)))))
                  (orig-quote (char-after orig-start))
                  (new-quote (pcase orig-quote
                               (?\' ?\")
                               (?\" ?\')))
+                 (quote-length (if (and (eq orig-quote
+                                             (char-after (+ orig-start 1)))
+                                        (eq orig-quote
+                                            (char-after (+ orig-start 2))))
+                                   3
+                                 1))
                  (orig-end (if (region-active-p)
-                               (max (region-beginning) (region-end))
+                               (let* ((pt (max (region-beginning)
+                                               (region-end)))
+                                      (c (char-after (1- pt))))
+                                 (when  (eq c orig-quote)
+                                   pt))
                              (save-excursion
                                (goto-char orig-start)
+                               (forward-char (if (version< emacs-version "28")
+                                                 0
+                                               (logand quote-length 2)))
                                (forward-sexp)
-                               (point))))
-                 ;; assume generic string delimiter has a length of 3
-                 (quote-length (if (region-active-p)
-                                   (if (and (< 5 (- orig-end orig-start))
-                                            (eq orig-quote
-                                                (char-after (+ 1 orig-start)))
-                                            (eq orig-quote
-                                                (char-after (+ 2 orig-start))))
-                                       3
-                                     1)
-                                   (pcase (nth 3 ppss)
-                                     ((pred booleanp) 3)
-                                     (_ 1)))))
+                               (forward-char (if (version< emacs-version "28")
+                                                 0
+                                               (logand quote-length 2)))
+                               (point)))))
         (goto-char orig-start)
         (delete-char quote-length)
         (insert-char new-quote quote-length)
