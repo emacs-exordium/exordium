@@ -225,7 +225,7 @@ std::map<int, int> **dd = std::map<int, int>{});
 
 (ert-deftest test-bde-guess-class-name-class-2 ()
   (let ((tst (make-test-case :input "class TheName : public TheInterface {")))
-    (should (string= (with-test-casre-return tst (bde-guess-class-name))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "class TheName"))))
 
 (ert-deftest test-bde-guess-class-name-struct-1 ()
