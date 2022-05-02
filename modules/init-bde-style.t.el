@@ -233,7 +233,7 @@ std::map<int, int> **dd = std::map<int, int>{});
     (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "struct TheName"))))
 
-(ert-deftest test-bde-guess-class-name-class-2 ()
+(ert-deftest test-bde-guess-class-name-struct-2 ()
   (let ((tst (make-test-case :input "struct TheName : OtherStruct {")))
     (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "struct TheName"))))
