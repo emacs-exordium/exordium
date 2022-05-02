@@ -875,7 +875,7 @@ int c)
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 9 24)))))
 
-(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-4 ()
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-5 ()
   (let ((tst (make-test-case :input "Foo::Foo(bool b,
 int c)
 : b{b} {}"
