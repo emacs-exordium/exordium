@@ -137,6 +137,8 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (add-to-list 'package-archives
              (cons "gnu" exordium-gnu-package-repo) t)
 
+(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version))
+
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
@@ -339,6 +341,12 @@ the .elc exists. Also discard .elc without corresponding .el"
 (use-package init-powerline :ensure nil
   :if (and exordium-theme exordium-enable-powerline))
 
+;; Docker
+(use-package init-docker :ensure nil)
+
+;;; LSP
+(use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
+
 (update-progress-bar)
 
 ;;; Greetings
@@ -346,6 +354,6 @@ the .elc exists. Also discard .elc without corresponding .el"
       (let ((current-user (split-string (user-full-name) " ")))
         (format ";; Happy hacking %s!
 
-" (if current-user (car current-user) exordium-current-user))))
+" (if current-user (car current-user) exordium-csurrent-user))))
 
 ;;; End of file
