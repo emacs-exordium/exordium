@@ -44,7 +44,16 @@
 
   (setq lsp-idle-delay 0.1) ;; clangd is fast
 
-  (setq treemacs-space-between-root-nodes nil))
+  (setq treemacs-space-between-root-nodes nil)
+
+  (setq lsp-log-io t)
+
+  (progn
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-tramp-connection `("clangd-13","-j=4 --background-index --log=error --clang-tidy --resource-dir=/opt/bb/lib/llvm-13.0/lib64/clang/13.0.0/"))
+                      :activation-fn (lsp-activate-on "c" "cpp" "objective-c")
+                      :remote? t
+                      :server-id 'clangd-remote))))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -99,6 +108,19 @@
   :config
   (which-key-mode))
 
+
+;; ;; Terrible hack working around off by one error between TRAMP and lsp-mode
+;; (defun lsp--make-message@override (params)
+;;   "Create a LSP message from PARAMS, after encoding it to a JSON string."
+;;   (let ((body (lsp--json-serialize params)))
+;;     (concat "Content-Length: "
+;;             (number-to-string (+ 2 (string-bytes body))) ;; dirty fix for pyls remote (https://github.com/emacs-lsp/lsp-mode/issues/1845#issuecomment-699169414)
+;;             ;;(number-to-string (1+ (string-bytes body)))
+;;             "\r\n\r\n"
+;;             body
+;;             "\n")))
+
+;; (advice-add 'lsp--make-message :override #'lsp--make-message@override)
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here
