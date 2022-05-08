@@ -624,7 +624,7 @@ Default is to choose the first that is found via `executable-find'."
   :group 'exordium
   :type  'string)
 
-(defcustom exordium-lsp-ui-doc-position 'bottom
+(defcustom exordium-lsp-ui-doc-position 'at-point
   "Where to display the doc in LSP mode."
   :group 'exordium
   :type '(choice (const :tag "Top" top)

@@ -3,6 +3,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'init-prefs)
 
 (use-package flycheck
   :commands flycheck-mode
@@ -60,14 +61,20 @@
   :init
   (setq lsp-ui-doc-enable exordium-lsp-ui-doc-enable
         lsp-ui-doc-use-childframe t
+        lsp-ui-doc-show-with-cursor nil
         lsp-ui-doc-position exordium-lsp-ui-doc-position
         lsp-ui-doc-include-signature t
+
         lsp-ui-sideline-enable exordium-lsp-ui-sideline-enable
         lsp-ui-sideline-show-code-actions t
-        lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-show-hover nil
+
         lsp-ui-flycheck-enable exordium-lsp-ui-flycheck-enable
         lsp-ui-flycheck-list-position exordium-lsp-ui-flycheck-list-position
+
         lsp-ui-peek-enable exordium-lsp-ui-peek-enable
+
+        setq lsp-lens-enable t
         )
   :commands lsp-ui-mode)
 
