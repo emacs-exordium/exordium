@@ -29,6 +29,7 @@ might want to check these links:
   * [RTags](#rtags)
 * [Lisp](#lisp)
 * [Markdown](#markdown)
+* [LSP](#lsp)
 * [Customization](#customization)
 * [Troubleshooting](#troubleshooting)
 
@@ -863,6 +864,15 @@ Another interesting feature is <kbd>M-x orgtbl-mode</kbd>, a minor mode for
 editing tables: it works like org tables but it uses the GitHub-flavored
 format. Use the tab key to switch to the next cell and reformat the whole
 table.
+
+## LSP
+Exordium includes configuration for [`lsp-mode`](https://emacs-lsp.github.io/lsp-mode/) a language server protocol client. The configuration currently supports C++ using clangd. It is enabled with the customization option `exordium-lsp-mode-enable`. The settings that are enabled by default have been in use by some Exordium in anger, but may need tweaking. The authors of lsp-mode also have a policy of enabling new features by default, so that new capabilities are visible and discoverable.
+
+The `lsp-mode` keymap is bound to `C-c l`.
+
+LSP mode is available via TRAMP, and in particular via tramp to docker containers.
+
+LSP mode in the shared Exordium base is stable enough for use, but the configuration details are experimental and subject to change without notification.
 
 ## Customization
 
