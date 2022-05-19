@@ -49,12 +49,7 @@
 
   (setq lsp-log-io t)
 
-  (progn
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-tramp-connection `("clangd-13","-j=4 --background-index --log=error --clang-tidy --resource-dir=/opt/bb/lib/llvm-13.0/lib64/clang/13.0.0/"))
-                      :activation-fn (lsp-activate-on "c" "cpp" "objective-c")
-                      :remote? t
-                      :server-id 'clangd-remote))))
+)
 
 (use-package lsp-ui
   :after lsp-mode
