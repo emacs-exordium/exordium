@@ -48,7 +48,6 @@
   (setq treemacs-space-between-root-nodes nil)
 
   (setq lsp-log-io t)
-
 )
 
 (use-package lsp-ui
@@ -69,8 +68,7 @@
 
         lsp-ui-peek-enable exordium-lsp-ui-peek-enable
 
-        setq lsp-lens-enable t
-        )
+        lsp-lens-enable t)
   :commands lsp-ui-mode)
 
 (use-package helm-xref
