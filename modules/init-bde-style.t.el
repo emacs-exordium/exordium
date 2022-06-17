@@ -225,7 +225,7 @@ std::map<int, int> **dd = std::map<int, int>{});
 
 (ert-deftest test-bde-guess-class-name-class-2 ()
   (let ((tst (make-test-case :input "class TheName : public TheInterface {")))
-    (should (string= (with-test-casre-return tst (bde-guess-class-name))
+    (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "class TheName"))))
 
 (ert-deftest test-bde-guess-class-name-struct-1 ()
@@ -233,7 +233,7 @@ std::map<int, int> **dd = std::map<int, int>{});
     (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "struct TheName"))))
 
-(ert-deftest test-bde-guess-class-name-class-2 ()
+(ert-deftest test-bde-guess-class-name-struct-2 ()
   (let ((tst (make-test-case :input "struct TheName : OtherStruct {")))
     (should (string= (with-test-case-return tst (bde-guess-class-name))
                      "struct TheName"))))
@@ -875,7 +875,7 @@ int c)
     (should (equal (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point))
                    (cons 9 24)))))
 
-(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-4 ()
+(ert-deftest test-exordium-bde-bounds-of-arglist-at-point-multi-line-5 ()
   (let ((tst (make-test-case :input "Foo::Foo(bool b,
 int c)
 : b{b} {}"
