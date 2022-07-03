@@ -21,6 +21,7 @@ jobs:
         emacs_version:
           - 27.1
           - 27.2
+          - 28.1
           - snapshot
     steps:
       - uses: purcell/setup-emacs@master
@@ -40,11 +41,13 @@ jobs:
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}
+    env:
+      ci_tests: true
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
-            emacs_version: 27.2
+            emacs_version: 28.1
           - os: macos-latest
             emacs_version: snapshot
     steps:
