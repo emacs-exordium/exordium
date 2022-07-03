@@ -10,7 +10,7 @@ prefs.el
 local
 
 # Melpa packages
-elpa
+elpa*/
 
 # Caches
 eln-cache/
