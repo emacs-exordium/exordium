@@ -50,7 +50,8 @@
        (python     . t)
        (emacs-lisp . t)
        (C          . t)
-       (dot        . t)))))
+       (dot        . t)
+       (sql        . t)))))
 
 
 ;;; Show org-mode bullets as UTF-8 characters.
