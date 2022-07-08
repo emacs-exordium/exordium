@@ -149,6 +149,9 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 
 (setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version))
 
+(when (fboundp 'native-comp-available-p)
+ (setq package-native-compile (native-comp-available-p)))
+
 (package-initialize)
 
 ;; Load the packages we need if they are not installed already
