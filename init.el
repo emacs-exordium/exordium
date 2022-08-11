@@ -354,6 +354,6 @@ the .elc exists. Also discard .elc without corresponding .el"
       (let ((current-user (split-string (user-full-name) " ")))
         (format ";; Happy hacking %s!
 
-" (if current-user (car current-user) exordium-csurrent-user))))
+" (if current-user (car current-user) exordium-current-user))))
 
 ;;; End of file
