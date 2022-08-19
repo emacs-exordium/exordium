@@ -61,6 +61,13 @@
                              project)
       (error "No candidates selected")))
 
+  (defun exordium-projectile-switch-project-find-file-other-window ()
+    "Switch to a project we have visited before then jump to a
+project's file using completion and show it in another window."
+    (interactive)
+    (let ((projectile-switch-project-action #'projectile-find-file-other-window))
+      (projectile-switch-project)))
+
   :bind
   (("C-c h"   . helm-projectile)
    ("C-c H"   . helm-projectile-switch-project)
@@ -71,7 +78,8 @@
         ("C-S-a" . exordium-helm-projectile--exit-helm-and-do-ag)
         ("C-S-r" . exordium-helm-projectile--exit-helm-and-do-rg)
    :map projectile-command-map
-        ("p" . helm-projectile-switch-project))
+        ("p" . helm-projectile-switch-project)
+        ("4 p" . exordium-projectile-switch-project-find-file-other-window))
 
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
