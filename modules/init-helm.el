@@ -72,6 +72,8 @@
   (("C-S-r" . helm-rg)))
 
 (use-package helm-swoop
+  :custom
+  (helm-swoop-split-direction 'split-window-horizontally)
   :bind
   (("C-S-s" . helm-swoop)
    ;; Use similar bindings to `helm-ag-edit'
