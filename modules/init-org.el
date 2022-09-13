@@ -38,6 +38,26 @@
                 (make-local-variable 'flychek-disabled-checkers)
                 (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)))
   (add-hook 'org-mode-hook #'turn-on-visual-line-mode)
+
+  (defun exordium--org-babel-after-execute ()
+    "Redisplay inline images in subtree if cursor in source block with :result graphics.
+
+Rationale:
+For some reason `org-babel-execute' is not producing images from .dot format (`org-version' 9.5.4).
+This is a spin off https://stackoverflow.com/a/66911315/519827, but REFRESH is set to nil."
+    (when (org-in-src-block-p)
+      (let (beg end)
+        (save-excursion
+          (org-mark-subtree)
+          (setq beg (point))
+          (setq end (mark)))
+        (when-let ((info (org-babel-get-src-block-info t))
+                   (params (org-babel-process-params (nth 2 info)))
+                   (result-params (cdr (assq :result params)))
+                   ((string-match-p "graphics" result-params)))
+          (org-display-inline-images nil nil beg end)))))
+  (add-hook 'org-babel-after-execute-hook #'exordium--org-babel-after-execute)
+
   ;; TODO: delete `exordium-enable-org-export'??
   (when exordium-enable-org-export
     ;; Enable org-babel for perl, ruby, sh, python, emacs-lisp, C, C++, etc
