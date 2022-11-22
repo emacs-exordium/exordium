@@ -21,6 +21,11 @@
 
 (use-package exec-path-from-shell
   :ensure t
+  :custom
+  (exec-path-from-shell-arguments
+   (if (string-suffix-p "zsh" (exec-path-from-shell--shell))
+       '("-i")
+     '("-l" "-i")))
   :config
   (exec-path-from-shell-initialize))
 
