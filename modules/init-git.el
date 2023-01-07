@@ -102,6 +102,9 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
 
+  :custom
+  (magit-diff-refine-hunk t)
+
   :config
 ;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
 ;;; `magit-dired-log'), `magit-status-setup-buffer' (called from `magit-clone'),
