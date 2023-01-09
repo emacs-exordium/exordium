@@ -80,17 +80,18 @@ Powerline follow."
 ;; around that bug:
 
 (defvar exordium-theme-loaded-in-frame nil
-  "Whether `reloa-current-theme-in-frame' was called")
+  "Whether `reload-current-theme-in-frame' was called.")
 
-(defun reload-current-theme-in-frame (frame)
-  "Reload the current theme in FRAME"
-  (unless exordium-theme-loaded-in-frame
-    (select-frame frame)
-    (load-theme exordium-theme t nil)
-    (setq exordium-theme-loaded-in-frame t)))
+(defun reload-current-theme-in-frame (&optional frame)
+  "Reload the current theme in FRAME."
+  (when exordium-theme
+    (unless exordium-theme-loaded-in-frame
+      (when frame (select-frame frame))
+      (load-theme exordium-theme t nil)
+      (setq exordium-theme-loaded-in-frame t))))
 
 (when (daemonp)
-  (add-hook 'after-make-frame-functions #'reload-current-theme-in-frame))
+  (add-hook 'server-after-make-frame-hook #'reload-current-theme-in-frame))
 
 
 (provide 'init-themes)
