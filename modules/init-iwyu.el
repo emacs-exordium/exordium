@@ -129,20 +129,20 @@ arguments in `exordium-iwyu-extra-args'."
 with '.h' extension) it uses the corresponding implementation, i.e., the file
 with '.cpp' extension."
   (interactive)
-  (let ((compile-commands-json
-         (concat (file-name-as-directory
-                  (exordium-rtags-cmake-get-build-dir
-                   (exordium-rtags-cmake-find-buffer-project-root)))
-                 "compile_commands.json"))
-        (file-name (file-name-nondirectory buffer-file-name)))
-    (if (file-exists-p compile-commands-json)
-        (when file-name
-          (iwyu-start-process-for
-           compile-commands-json
-           (if (string= "h" (file-name-extension file-name))
-               (concat (file-name-sans-extension file-name) ".cpp")
-             file-name)))
-      (message "Cannot find compile_commands.json for this project"))))
+  (if-let ((compile-commands-json
+            (cl-find-if #'file-exists-p
+                        (mapcar (lambda (build-dir)
+                                  (concat (file-name-as-directory (concat (projectile-project-root)
+                                                                          build-dir))
+                                          "compile_commands.json"))
+                                '("cmake.bld/Linux" "build" "cmake-build" "cmake-build/linux_64_static_ninja_Debug"))))
+           (file-name (file-name-nondirectory buffer-file-name)))
+      (iwyu-start-process-for
+       compile-commands-json
+       (if (string= "h" (file-name-extension file-name))
+           (concat (file-name-sans-extension file-name) ".cpp")
+           file-name))
+    (message "Cannot find compile_commands.json for this project")))
 
 
 (define-key c-mode-base-map [(control c)(w)(d)] 'iwyu-show-diagnostics-buffer)

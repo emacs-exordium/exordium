@@ -26,7 +26,6 @@
   (helm-flycheck))
 
 (use-package helm-flycheck
-  :if (eq exordium-rtags-syntax-checker :flycheck)
   :bind
   (:map c-mode-base-map
         ("C-c r r" . #'exordium-helm-flycheck)

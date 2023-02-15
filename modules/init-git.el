@@ -92,15 +92,18 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :bind
   (:map exordium-git-map
         ("s" . (function magit-status))
-        ("l" . 'exordium-magit-log)
-        ("f" . 'exordium-magit-log-buffer)
-        ("b" . 'exordium-magit-blame)
+        ("l" . exordium-magit-log)
+        ("f" . exordium-magit-log-buffer)
+        ("b" . exordium-magit-blame)
         ("c" . (function magit-clone))
    :map magit-status-mode-map
-        ("q" . 'exordium-magit-quit-session))
+        ("q" . exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
+
+  :custom
+  (magit-diff-refine-hunk t)
 
   :config
 ;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
@@ -222,13 +225,14 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
   :config (exordium-global-git-gutter-mode t)
   :diminish git-gutter-mode
-  :bind (:map exordium-git-map
-              ("<down>" . 'git-gutter:next-hunk)
-              ("n" . 'git-gutter:next-hunk)
-              ("<up>" . 'git-gutter:previous-hunk)
-              ("p" . 'git-gutter:previous-hunk)
-              ("d" . 'git-gutter:popup-hunk)
-              ("r" . 'git-gutter:revert-hunk))
+  :bind
+  (:map exordium-git-map
+        ("<down>" . git-gutter:next-hunk)
+        ("n" . git-gutter:next-hunk)
+        ("<up>" . git-gutter:previous-hunk)
+        ("p" . git-gutter:previous-hunk)
+        ("d" . git-gutter:popup-hunk)
+        ("r" . git-gutter:revert-hunk))
   :init
   (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
   :config
@@ -248,7 +252,8 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 (use-package git-timemachine
   :defer t
   :bind
-  (:map exordium-git-map ("t" . 'git-timemachine-toggle)))
+  (:map exordium-git-map
+        ("t" . git-timemachine-toggle)))
 
 
 ;;; Git Grep

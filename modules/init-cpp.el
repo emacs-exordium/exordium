@@ -23,8 +23,7 @@
 (use-package iedit
   :init
   ;;; Fix A bug (normal key is "C-;")
-  :bind (:map global-map
-              ("C-c ;" . #'iedit-mode)))
+  :bind ("C-c ;" . iedit-mode))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)

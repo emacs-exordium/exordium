@@ -4,7 +4,7 @@
 (use-package enh-ruby-mode
   :ensure t
   :defer t
-  :mode ("\\.rb$" . enh-ruby-mode)
+  :mode ("\\.rb'" . enh-ruby-mode)
   :interpreter ("ruby" . enh-ruby-mode))
 
 (provide 'init-ruby)

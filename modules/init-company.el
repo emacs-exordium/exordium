@@ -11,12 +11,9 @@
   (add-to-list 'company-backends '(company-capf company-dabbrev))
   (setq company-idle-delay nil)
   :bind
-  (:map company-active-map
-        ;; Use ESC to escape company-complete (in addition to C-g)
-        ("<escape>" . #'company-abort)
-        ;; Key to force trigger company-complete
-    :map global-map
-        ("C-." . #'company-complete)))
+  (("C-." . company-complete)
+   :map company-active-map
+        ("<escape>" . company-abort)))
 
 
 (use-package company-statistics
