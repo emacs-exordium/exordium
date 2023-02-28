@@ -40,10 +40,10 @@
   (history-delete-duplicates t)
   (helm-M-x-always-save-history t)
   :bind
-  (([remap execute-extended-command] . helm-M-x) ; M-x
-   ([remap yank-pop] . helm-show-kill-ring) ; M-y
-   ([remap find-file] . helm-find-files) ; C-x C-f
-   ([remap find-file-read-only] . helm-recentf)) ; C-x C-r
+  (([remap execute-extended-command] . #'helm-M-x) ; M-x
+   ([remap yank-pop] . #'helm-show-kill-ring) ; M-y
+   ([remap find-file] . #'helm-find-files) ; C-x C-f
+   ([remap find-file-read-only] . #'helm-recentf)) ; C-x C-r
   :config
   ;; Do not show these files in helm buffer
   (add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
@@ -52,35 +52,35 @@
 
 (use-package helm-descbinds
   :bind
-  (("C-h b" . helm-descbinds)))
+  (("C-h b" . #'helm-descbinds)))
 
 (use-package helm-ag
   :custom
   (helm-ag-insert-at-point 'symbol)
   :bind
-  (("C-S-d" . helm-do-ag)
-   ("C-S-f" . helm-do-ag-this-file)))
+  (("C-S-d" . #'helm-do-ag)
+   ("C-S-f" . #'helm-do-ag-this-file)))
 
 (use-package helm-ag
   :unless exordium-helm-projectile
   :bind
-  (("C-S-a" . helm-ag-project-root)))
+  (("C-S-a" . #'helm-ag-project-root)))
 
 (use-package helm-rg
   :unless exordium-helm-projectile
   :bind
-  (("C-S-r" . helm-rg)))
+  (("C-S-r" . #'helm-rg)))
 
 (use-package helm-swoop
   :custom
   (helm-swoop-split-direction 'split-window-horizontally)
   :bind
-  (("C-S-s" . helm-swoop)
+  (("C-S-s" . #'helm-swoop)
    ;; Use similar bindings to `helm-ag-edit'
    :map helm-swoop-edit-map
-        ("C-c C-c" . helm-swoop--edit-complete)
-        ("C-c C-k" . helm-swoop--edit-cancel)
-        ("C-c C-q C-k" . helm-swoop--edit-delete-all-lines)))
+        ("C-c C-c" . #'helm-swoop--edit-complete)
+        ("C-c C-k" . #'helm-swoop--edit-cancel)
+        ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
 
 
 

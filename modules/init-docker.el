@@ -1,7 +1,7 @@
 ;;;; Configuration of Docker related features
 
 (use-package docker
-  :bind ("C-c D" . docker))
+  :bind ("C-c D" . #'docker))
 
 
 (use-package dockerfile-mode
