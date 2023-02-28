@@ -223,19 +223,20 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 
 (use-package git-gutter-fringe
   :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
-  :config (exordium-global-git-gutter-mode t)
   :diminish git-gutter-mode
   :bind
   (:map exordium-git-map
-        ("<down>" . git-gutter:next-hunk)
-        ("n" . git-gutter:next-hunk)
-        ("<up>" . git-gutter:previous-hunk)
-        ("p" . git-gutter:previous-hunk)
-        ("d" . git-gutter:popup-hunk)
-        ("r" . git-gutter:revert-hunk))
+        ("<down>" . #'git-gutter:next-hunk)
+        ("n" . #'git-gutter:next-hunk)
+        ("<up>" . #'git-gutter:previous-hunk)
+        ("p" . #'git-gutter:previous-hunk)
+        ("d" . #'git-gutter:popup-hunk)
+        ("r" . #'git-gutter:revert-hunk))
   :init
   (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
   :config
+  (exordium-global-git-gutter-mode t)
+
   ;; Style
   (when (eq exordium-git-gutter-fringe-style :flat)
     (setq-default fringes-outside-margins t)
