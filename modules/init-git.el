@@ -91,13 +91,13 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 
   :bind
   (:map exordium-git-map
-        ("s" . (function magit-status))
-        ("l" . exordium-magit-log)
-        ("f" . exordium-magit-log-buffer)
-        ("b" . exordium-magit-blame)
-        ("c" . (function magit-clone))
+        ("s" . #'magit-status)
+        ("l" . #'exordium-magit-log)
+        ("f" . #'exordium-magit-log-buffer)
+        ("b" . #'exordium-magit-blame)
+        ("c" . #'magit-clone)
    :map magit-status-mode-map
-        ("q" . exordium-magit-quit-session))
+        ("q" . #'exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
@@ -189,7 +189,7 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :ensure nil
   :bind
   (:map smerge-mode-map
-        ("C-c ^ d" . exordium-smerge-dispatch)))
+        ("C-c ^ d" . #'exordium-smerge-dispatch)))
 
 (defun exordium-smerge-dispatch-maybe ()
   "Display `exordium-smerge-dispatch' when buffer is in `smerge-mode'."
@@ -254,7 +254,7 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :defer t
   :bind
   (:map exordium-git-map
-        ("t" . git-timemachine-toggle)))
+        ("t" . #'git-timemachine-toggle)))
 
 
 ;;; Git Grep

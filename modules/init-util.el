@@ -270,7 +270,7 @@ With argument, do this that many times."
   :if exordium-fci-mode
   :ensure nil
   :demand t
-  :bind ("C-|" . display-fill-column-indicator-mode)
+  :bind ("C-|" . #'display-fill-column-indicator-mode)
   :init
   (defun exordium--select-display-fill-column-indicator-character ()
     (cl-flet

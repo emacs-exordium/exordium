@@ -23,7 +23,7 @@
   :diminish
   :bind
   (:map projectile-command-map
-        ("." . helm-projectile-find-file-dwim))
+        ("." . #'helm-projectile-find-file-dwim))
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
@@ -69,17 +69,17 @@ project's file using completion and show it in another window."
       (projectile-switch-project)))
 
   :bind
-  (("C-c h"   . helm-projectile)
-   ("C-c H"   . helm-projectile-switch-project)
-   ("C-c M-h" . helm-projectile-switch-project)
-   ("C-S-a"   . helm-projectile-ag)
-   ("C-S-r"   . helm-projectile-rg)
+  (("C-c h"   . #'helm-projectile)
+   ("C-c H"   . #'helm-projectile-switch-project)
+   ("C-c M-h" . #'helm-projectile-switch-project)
+   ("C-S-a"   . #'helm-projectile-ag)
+   ("C-S-r"   . #'helm-projectile-rg)
    :map helm-projectile-projects-map
-        ("C-S-a" . exordium-helm-projectile--exit-helm-and-do-ag)
-        ("C-S-r" . exordium-helm-projectile--exit-helm-and-do-rg)
+        ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
+        ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg)
    :map projectile-command-map
-        ("p" . helm-projectile-switch-project)
-        ("4 p" . exordium-projectile-switch-project-find-file-other-window))
+        ("p" . #'helm-projectile-switch-project)
+        ("4 p" . #'exordium-projectile-switch-project-find-file-other-window))
 
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
@@ -94,7 +94,7 @@ project's file using completion and show it in another window."
 
 (use-package treemacs-projectile
   :bind
-  (("C-c e" . treemacs)
-   ("C-c E" . treemacs-projectile)))
+  (("C-c e" . #'treemacs)
+   ("C-c E" . #'treemacs-projectile)))
 
 (provide 'init-helm-projectile)
