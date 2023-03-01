@@ -105,12 +105,12 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
                        (set-fill-column 1000)))
   :bind
   (:map forge-post-mode-map
-        ("C-c C-p" . exordium-forge-markdown-preview)
-        ("C-c C-d" . exordium-forge-post-submit-draft)
+        ("C-c C-p" . #'exordium-forge-markdown-preview)
+        ("C-c C-d" . #'exordium-forge-post-submit-draft)
    :map magit-status-mode-map
-        ("C-c C-d" . exordium-forge-mark-ready-for-rewiew)
+        ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)
    :map forge-topic-mode-map
-        ("C-c C-d" . exordium-forge-mark-ready-for-rewiew)))
+        ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
 
 (use-package async)
 (use-package cl-lib :ensure nil)
