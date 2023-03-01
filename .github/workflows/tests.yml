@@ -28,7 +28,7 @@ jobs:
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: '.emacs.d'
       - name: First start # So most modules are pulled in from melpa and gnu
@@ -55,10 +55,10 @@ jobs:
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: '.emacs.d'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'pkryger/exordium-commontap'
           path: '.emacs.d/taps/commontap'
