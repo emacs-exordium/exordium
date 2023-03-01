@@ -207,6 +207,7 @@ names to which it refers are bound."
      (org-done ((t (:weight bold :foreground ,green))))
      (exordium-org-wait ((t (:weight bold :foreground ,yellow ))))
      (exordium-org-work ((t (:weight bold :foreground ,orange))))
+     (exordium-org-stop ((t (:weight bold :foreground ,blue))))
      (org-meta-line ((t (:background ,base02 :slant italic :box t))))
      (org-block ((t (:background ,back))))
      (org-code ((t (:foreground ,cyan :background ,back))))

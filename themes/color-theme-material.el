@@ -306,6 +306,7 @@ names to which it refers are bound."
      (org-todo ((t (:foreground ,deep-orange-200 :bold t :background ,deep-orange-a700))))
      (exordium-org-work ((t (:foreground ,yellow :background ,deep-orange-a700 :weight bold :box nil))))
      (exordium-org-wait ((t (:foreground ,orange :background ,deep-orange-a700 :weight bold :box nil))))
+     (exordium-org-stop ((t (:foreground ,light-green-400 :bold t :background ,green-900))))
      (org-upcoming-deadline ((t (:foreground ,orange))))
      (org-warning ((t (:weight bold :foreground ,red))))
      (org-block-begin-line ((t (:foreground ,light-blue-100 :underline ,light-blue-50))))

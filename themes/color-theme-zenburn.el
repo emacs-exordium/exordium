@@ -738,6 +738,7 @@ names to which it refers are bound."
      (org-todo ((t (:bold t :foreground ,zenburn-red :weight bold))))
      (exordium-org-work ((t (:foreground ,zenburn-yellow :weight bold :box nil))))
      (exordium-org-wait ((t (:foreground ,zenburn-orange :weight bold :box nil))))
+     (exordium-org-stop ((t (:foreground ,zenburn-green+1 :weight bold :box nil))))
      (org-upcoming-deadline ((t (:inherit font-lock-keyword-face))))
      (org-warning ((t (:bold t :foreground ,zenburn-red :weight bold :underline nil))))
      (org-column ((t (:background ,zenburn-bg-1))))

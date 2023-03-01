@@ -900,6 +900,7 @@ names to which it refers are bound."
      (org-todo ((t (:bold t :foreground ,github-string :weight bold))))
      (exordium-org-work ((t (:foreground ,github-function :weight bold :box nil))))
      (exordium-org-wait ((t (:foreground ,github-constant :weight bold :box nil))))
+     (exordium-org-stop ((t (:bold t :weight bold :foreground ,github-comment))))
      (org-upcoming-deadline ((t (:inherit font-lock-keyword-face))))
      (org-warning ((t (:bold t :foreground ,github-string :weight bold :underline nil))))
      (org-column ((t (:background ,github-selection))))

@@ -8,6 +8,10 @@
 (defface exordium-org-work '((t (:inherit org-todo)))
   "Face for WORK keywords."
   :group 'exordium)
+(defface exordium-org-stop '((t (:inherit org-done)))
+  "Face for STOP keywords."
+  :group 'exordium)
+
 
 (use-package org
   :commands (org-mode)
@@ -17,10 +21,11 @@
         ([remap org-toggle-comment] . iedit-mode))
   :custom
   (org-todo-keywords
-   '((sequence "TODO(t)" "WORK(w!/!)" "WAIT(a@/!)" "|" "DONE(d!/!)")))
+   '((sequence "TODO(t)" "WORK(w!/!)" "WAIT(a@/!)" "|" "STOP(s@/!)" "DONE(d!/!)")))
   (org-todo-keyword-faces
    '(("WORK" . exordium-org-work)
-     ("WAIT" . exordium-org-wait)))
+     ("WAIT" . exordium-org-wait)
+     ("STOP" . exordium-org-stop)))
   (org-startup-folded t)
   (org-log-into-drawer t)
   (org-startup-truncated nil)

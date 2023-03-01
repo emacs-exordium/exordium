@@ -511,6 +511,8 @@ names to which it refers are bound."
       ((t (:foreground ,yellow :weight bold :box nil))))
      (exordium-org-wait
       ((t (:foreground ,orange :weight bold :box nil))))
+     (exordium-org-stop
+      ((t (:weight bold :foreground ,blue))))
      (org-upcoming-deadline
       ((t (:foreground ,yellow :weight normal :underline nil))))
      (org-warning

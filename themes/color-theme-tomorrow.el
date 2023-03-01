@@ -354,6 +354,7 @@ names to which it refers are bound."
      (org-done ((t (:foreground ,green :weight bold :box nil))))
      (exordium-org-wait ((t (:foreground ,yellow :weight bold :box nil))))
      (exordium-org-work ((t (:foreground ,orange :weight bold :box nil))))
+     (exordium-org-stop ((t (:foreground ,blue :weight bold :box nil))))
      (org-checkbox ((t (:background ,selection :foreground ,yellow :weight bold))))
      (org-ellipsis ((t (:foreground ,comment))))
      (org-footnote ((t (:foreground ,aqua))))
