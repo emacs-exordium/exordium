@@ -304,6 +304,9 @@ names to which it refers are bound."
      (org-special-keyword ((t (:foreground ,comment))))
      (org-table ((t (:foreground ,light-blue-50 :background ,far-background))))
      (org-todo ((t (:foreground ,deep-orange-200 :bold t :background ,deep-orange-a700))))
+     (exordium-org-work ((t (:foreground ,yellow :background ,deep-orange-a700 :weight bold :box nil))))
+     (exordium-org-wait ((t (:foreground ,orange :background ,deep-orange-a700 :weight bold :box nil))))
+     (exordium-org-stop ((t (:foreground ,light-green-400 :bold t :background ,green-900))))
      (org-upcoming-deadline ((t (:foreground ,orange))))
      (org-warning ((t (:weight bold :foreground ,red))))
      (org-block-begin-line ((t (:foreground ,light-blue-100 :underline ,light-blue-50))))
@@ -461,18 +464,6 @@ names to which it refers are bound."
    (apply 'custom-theme-set-faces 'material (material-face-specs)))
   (provide-theme 'material))
 
-;; Extra functions
-
-(defun set-material-extra-org-statuses ()
-  (require 'org)
-  (with-material-colors
-   (setq org-todo-keyword-faces
-         `(("WORK" . (;:background ,yellow
-                      :foreground ,yellow :background ,deep-orange-a700
-                      :weight bold :box nil))
-           ("WAIT" . (;:background ,orange
-                      :foreground ,orange :background ,deep-orange-a700
-                      :weight bold :box nil))))))
 
 ;;; Debugging functions
 

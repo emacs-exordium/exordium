@@ -507,6 +507,12 @@ names to which it refers are bound."
       ((t (:foreground ,monokai-comments))))
      (org-todo
       ((t (:foreground ,red :weight bold))))
+     (exordium-org-work
+      ((t (:foreground ,yellow :weight bold :box nil))))
+     (exordium-org-wait
+      ((t (:foreground ,orange :weight bold :box nil))))
+     (exordium-org-stop
+      ((t (:weight bold :foreground ,blue))))
      (org-upcoming-deadline
       ((t (:foreground ,yellow :weight normal :underline nil))))
      (org-warning
@@ -576,14 +582,6 @@ names to which it refers are bound."
    'default
    (apply 'custom-theme-set-faces 'monokai (monokai-face-specs)))
   (provide-theme 'monokai))
-
-(defun set-monokai-extra-org-statuses ()
-  "Set colors for WORK and WAIT org statuses"
-  (with-monokai-colors
-        'default
-        (setq org-todo-keyword-faces
-              `(("WORK" . (:foreground ,yellow :weight bold :box nil))
-                ("WAIT" . (:foreground ,orange :weight bold :box nil))))))
 
 ;;; Debugging functions
 

@@ -736,6 +736,9 @@ names to which it refers are bound."
      (org-tag ((t (:bold t :weight bold))))
      (org-time-grid ((t (:foreground ,zenburn-orange))))
      (org-todo ((t (:bold t :foreground ,zenburn-red :weight bold))))
+     (exordium-org-work ((t (:foreground ,zenburn-yellow :weight bold :box nil))))
+     (exordium-org-wait ((t (:foreground ,zenburn-orange :weight bold :box nil))))
+     (exordium-org-stop ((t (:foreground ,zenburn-green+1 :weight bold :box nil))))
      (org-upcoming-deadline ((t (:inherit font-lock-keyword-face))))
      (org-warning ((t (:bold t :foreground ,zenburn-red :weight bold :underline nil))))
      (org-column ((t (:background ,zenburn-bg-1))))
@@ -939,19 +942,6 @@ names to which it refers are bound."
   (with-zenburn-colors
    (apply 'custom-theme-set-variables 'zenburn (zenburn-variables)))
   (provide-theme 'zenburn))
-
-;;; Extra functions
-
-(defun set-zenburn-extra-org-statuses ()
-  (require 'org)
-  (with-zenburn-colors
-   (setq org-todo-keyword-faces
-         `(("WORK" . (;:background ,zenburn-yellow
-                      :foreground ,zenburn-yellow
-                      :weight bold :box nil))
-           ("WAIT" . (;:background ,zenburn-orange
-                      :foreground ,zenburn-orange
-                      :weight bold :box nil))))))
 
 ;;; Debugging functions
 

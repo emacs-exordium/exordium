@@ -66,6 +66,7 @@ names to which it refers are bound."
      (shadow ((t (:background ,base01))))
      (success ((t (:foreground ,green))))
      (error ((t (:weight bold :foreground ,red))))
+     (next-error ((t (:background ,magenta))))
      (warning ((t (:weight bold :foreground ,orange))))
      (scroll-bar ((t (:background ,back))))
 
@@ -190,11 +191,27 @@ names to which it refers are bound."
                                   `(:underline (:color ,green :style wave))))))
      (rtags-skippedline ((t (:background ,base01))))
 
+     ;; outline
+     (outline-1 ((t (:foreground ,blue))))
+     (outline-2 ((t (:foreground ,cyan))))
+     (outline-3 ((t (:foreground ,yellow))))
+     (outline-4 ((t (:foreground ,red))))
+     (outline-5 ((t (:foreground ,orange))))
+     (outline-6 ((t (:foreground ,violet))))
+     (outline-7 ((t (:foreground ,base0))))
+     (outline-8 ((t (:foreground ,base01))))
+
      ;; Org
      (org-hide ((t (:foreground ,base03))))
-     (org-todo ((t (:weight bold :foreground ,base03 :background ,red))))
+     (org-todo ((t (:weight bold :foreground ,red))))
      (org-done ((t (:weight bold :foreground ,green))))
-     (org-block ((t (:foreground ,base01 :background ,base02))))
+     (exordium-org-wait ((t (:weight bold :foreground ,yellow ))))
+     (exordium-org-work ((t (:weight bold :foreground ,orange))))
+     (exordium-org-stop ((t (:weight bold :foreground ,blue))))
+     (org-meta-line ((t (:background ,base02 :slant italic :box t))))
+     (org-block ((t (:background ,back))))
+     (org-code ((t (:foreground ,cyan :background ,back))))
+     (org-verbatim ((t (:background ,back))))
      (org-todo-kwd-face ((t (:foreground ,red :background ,base03))))
      (org-done-kwd-face ((t (:foreground ,green :background ,base03))))
      (org-project-kwd-face ((t (:foreground ,violet :background ,base03))))
@@ -203,23 +220,29 @@ names to which it refers are bound."
      (org-started-kwd-face ((t (:foreground ,yellow :background ,base03))))
      (org-cancelled-kwd-face ((t (:foreground ,green :background ,base03))))
      (org-delegated-kwd-face ((t (:foreground ,cyan :background ,base03))))
-     (org-document-title ((t
-                           ,(append `(:weight bold :foreground ,cyan)
-                                    (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
-     (org-level-1 ((t
-                    ,(append `(:foreground ,base0
-                               :overline ,base0)
-                             (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
+     (org-document-title ((t (:weight bold :foreground ,cyan
+                                      ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-4))))))
+     (org-level-1 ((t (:inherit outline-1 :overline ,blue
+                                   ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-3))))))
+     (org-level-2 ((t (:inherit outline-2
+                                  ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-2))))))
+     (org-level-3 ((t (:inherit outline-3
+                                  ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-1))))))
 
-     ;; outline
-     (outline-1 ((t (:foreground ,blue))))
-     (outline-2 ((t (:foreground ,cyan))))
-     (outline-3 ((t (:foreground ,yellow))))
-     (outline-4 ((t (:foreground ,red))))
-     (outline-5 ((t (:foreground ,base0))))
-     (outline-6 ((t (:foreground ,base01))))
-     (outline-7 ((t (:foreground ,orange))))
-     (outline-8 ((t (:foreground ,violet))))
+
+     ;; rst - reStructuredText-documents
+     (rst-level-1 ((t (:inherit outline-1
+                                ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-3))))))
+     (rst-level-2 ((t (:inherit outline-2
+                                ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-2))))))
+     (rst-level-3 ((t (:inherit outline-3
+                                ,@(when exordium-theme-use-big-font `(:height ,exordium-height-plus-1))))))
+     (rst-level-4 ((t (:inherit outline-4))))
+     (rst-level-5 ((t (:inherit outline-5))))
+     (rst-level-6 ((t (:inherit outline-6))))
+
+     ;; markdown
+     (markdown-markup-face ((t (:foreground ,cyan :background ,back :slant normal :weight normal))))
 
      ;; Flymake
      (flymake-errline ((t (:weight bold :foreground ,red :background ,back))))
@@ -320,6 +343,10 @@ names to which it refers are bound."
 
      ;; magit and forge
      (forge-topic-closed ((t (:foreground ,base00))))
+
+     ;; iedit
+     (iedit-occurrence ((t (:box ,base0))))
+     (iedit-read-only-occurrence ((t (:box ,base01))))
      )))
 
 (defmacro define-solarized-theme (mode)
@@ -339,15 +366,21 @@ names to which it refers are bound."
   "Return the mode without the solarized- prefix, e.g. dark or light."
   (intern (substring (symbol-name exordium-theme) 10)))
 
+;; TODO: rename me and use a standard
 (defun set-solarized-extra-org-statuses ()
   "Set colors for WORK and WAIT org statuses"
   (with-solarized-colors
    (solarized-mode-name)
-   (setq org-todo-keyword-faces
-         `(("WORK" . (:background ,yellow :foreground ,back
-                      :weight bold :box nil))
-           ("WAIT" . (:background ,orange :foreground ,back
-                      :weight bold :box nil))))))
+   ;; TODO: but this should go to a common bit in exordium within `use-package' and `markdown'
+   (when exordium-theme-use-big-font
+     (custom-set-variables
+      '(markdown-header-scaling-values `(,exordium-height-plus-4
+                                         ,exordium-height-plus-3
+                                         ,exordium-height-plus-2
+                                         ,exordium-height-plus-1
+                                         1.0
+                                         1.0))
+      '(markdown-header-scaling t)))))
 
 ;;; Debugging functions
 
