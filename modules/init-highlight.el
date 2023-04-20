@@ -26,6 +26,7 @@
 
 ;;; Highlight the line where the cursor is
 (use-package hl-line
+  :ensure nil
   :when exordium-line-mode
   :config
   (global-hl-line-mode +1))
