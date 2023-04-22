@@ -25,8 +25,11 @@
 (require 'init-prefs)
 
 ;;; Highlight the line where the cursor is
-(when exordium-line-mode
-  (global-hl-line-mode 1))
+(use-package hl-line
+  :ensure nil
+  :when exordium-line-mode
+  :config
+  (global-hl-line-mode +1))
 
 
 ;;; Highlight symbol under point automatically after a small delay.
