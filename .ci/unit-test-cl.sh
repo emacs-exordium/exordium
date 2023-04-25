@@ -8,8 +8,8 @@ EMACS="${EMACS:=emacs}"
 ${EMACS} -Q --batch \
          --eval '
 (progn
-   (setq debug-on-error t
-         user-emacs-directory "'${EMACS_DIR}'")
+   (setq user-emacs-directory "'${EMACS_DIR}'")
    (load-file "'${EMACS_DIR}'/init.el")
+   (setq debug-on-error t)
    (load-file "'${EMACS_DIR}'/modules/init-util-cl.t.el")
    (ert-run-tests-batch-and-exit))'
