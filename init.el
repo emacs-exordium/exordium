@@ -358,6 +358,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;; Docker
 (use-package init-docker :ensure nil)
 
+;; Flycheck
+(use-package init-flycheck :ensure nil)
+
 ;;; LSP
 (use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
 
