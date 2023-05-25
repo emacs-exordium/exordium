@@ -15,4 +15,5 @@ ${EMACS} -Q --batch \
   (load-file "'"${EMACS_DIR}"'/modules/init-bde-style.t.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-forge.t.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-util.t.el")
+  (load-file "'"${EMACS_DIR}"'/modules/init-lib.t.el")
   (ert-run-tests-batch-and-exit))'
