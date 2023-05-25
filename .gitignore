@@ -31,6 +31,8 @@ ido.last
 recentf
 project-explorer-cache
 network-security.data
+/tutorial/
+/.org-id-locations
 
 # Desktop State
 .emacs.desktop
