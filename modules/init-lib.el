@@ -62,5 +62,34 @@ dirs. Input is a string and output is a list of strings."
   (when-let ((url (thing-at-point 'url)))
     (browse-url url)))
 
+(defmacro exordium-setf-when-nil (&rest args)
+  "Like `setf', but check each PLACE before evaluating corresponding VAL.
+When the PLACE is non nil return it.  Otherwise set the PLACE to
+evaluated VAL and return it.  Note, that the VAL will be
+evaluated if and only if when the PLACE is nil.
 
+Example use:
+  (let* ((alist \\='((a . 1)))
+         (a (exordium-setf-when-nil (alist-get \\='a alist) 2))
+         (b (exordium-setf-when-nil (alist-get \\='a alist) 3
+                                    (alist-get \\='b alist) 2)))
+    (format \"alist=%s, a=%s, b=%s\" alist a b))
+yields:
+  \"alist=((b . 2) (a . 1)), a=1, b=2\"
+\=(fn PLACE VAL PLACE VAL ...)"
+  (declare (debug setf))
+  (if (/= (logand (length args) 1) 0)
+      (signal 'wrong-number-of-arguments (list 'setf (length args))))
+  (if (and args (null (cddr args)))
+      (let ((place (pop args))
+            (val (car args)))
+        (gv-letplace (getter setter) place
+          `(or ,getter
+               ,(macroexp-let2 nil v val
+                  (funcall setter `,v)))))
+    (let ((sets nil))
+      (while args
+        (push `(exordium-setf-when-nil ,(pop args) ,(pop args)) sets))
+      (cons 'progn (nreverse sets)))))
+
 (provide 'init-lib)

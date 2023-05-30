@@ -5,10 +5,6 @@
 ;;; Code:
 (require 'init-prefs)
 
-(use-package flycheck
-  :commands flycheck-mode
-  :init (global-flycheck-mode))
-
 (use-package flycheck-pos-tip
   :after flycheck
   :defines flycheck-pos-tip-timeout

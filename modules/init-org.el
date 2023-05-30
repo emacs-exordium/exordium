@@ -40,7 +40,6 @@
   :config
   (add-hook 'org-src-mode-hook
             #'(lambda ()
-                (make-local-variable 'flychek-disabled-checkers)
                 (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)))
   (add-hook 'org-mode-hook #'turn-on-visual-line-mode)
 
