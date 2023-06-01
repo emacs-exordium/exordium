@@ -10,6 +10,8 @@
   :config
   (setq-default docker-use-sudo nil))
 
-(use-package docker-tramp)
+(use-package docker-tramp
+  :defer t
+  :when (version<=  emacs-version "29"))
 
 (provide 'init-docker)
