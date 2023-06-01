@@ -13,6 +13,8 @@ on:
 jobs:
   ci-tests:
     runs-on: ${{ matrix.os }}
+    env:
+      ci_tests: true
     strategy:
       matrix:
         os:
