@@ -12,6 +12,6 @@
 
 (use-package docker-tramp
   :defer t
-  :when (version<=  emacs-version "29"))
+  :when (version<  emacs-version "29"))
 
 (provide 'init-docker)
