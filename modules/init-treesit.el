@@ -1,23 +1,59 @@
+;; -*- lexical-binding: t; -*-
+
 ;;;; Configuration for Treesitter
 
-(use-package treesit-auto
-  :requires treesit
-  :after lsp-mode
-  :config
-  (setq treesit-auto-install 'prompt)
-  (global-treesit-auto-mode))
+(if (version< emacs-version "29")
+    (unless (getenv "ci_tests")
+      (use-package tree-sitter-langs)
+      (use-package tree-sitter
+        :diminish
+        :after (tree-sitter-langs)
+        :hook
+        (tree-sitter-after-on . tree-sitter-hl-mode)
+        :custom
+        (font-lock-maximum-decoration t)
+        :config
+        (when-let ((language-name (alist-get 'ruby-mode
+                                             tree-sitter-major-mode-language-alist)))
+          (add-to-list 'tree-sitter-major-mode-language-alist
+                       (cons 'enh-ruby-mode language-name)))
+        (add-to-list 'tree-sitter-major-mode-language-alist
+                     (cons 'forge-post-mode 'markdown))
+        (global-tree-sitter-mode)))
 
-(use-package treesit
-  :requires treesit
-  :ensure nil
-  :after lsp-mode
-  :config
+  (defun exordium--add-forward-ts-hook (mode)
+    (when-let ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
+               (hook (intern (concat (symbol-name mode) "-mode-hook")))
+               (_ (and (symbolp ts-hook) (symbolp hook))))
+      (add-to-list ts-hook
+                   #'(lambda ()
+                       (run-hooks hook)))))
 
-  (setq rust-ts-mode-hook rust-mode-hook)
-  (setq c-ts-mode-hook c-mode-hook)
-  (setq c++-ts-mode-hook c++-mode-hook)
-  (setq python-ts-mode-hook python-mode-hook)
-  (setq LaTeX-ts-mode-hook LaTeX-mode-hook)
-  (setq treesit-font-lock-level 4))
+  (use-package treesit-auto
+    :requires treesit
+    :after lsp-mode
+    :config
+    (setq treesit-auto-install 'prompt)
+    (global-treesit-auto-mode))
+
+  (use-package treesit
+    :requires treesit
+    :ensure nil
+    :after lsp-mode
+    :config
+    (mapc exordium--add-forward-ts-hook
+      '(
+        LaTeX
+        c
+        c++
+        java
+        go
+        markdown
+        python
+        ruby
+        rust
+        scala
+        ))
+    (setq treesit-font-lock-level 4)))
 
 (provide 'init-treesit)
