@@ -2,7 +2,7 @@
 
 ;;;; Configuration for Treesitter
 
-(if (version< emacs-version "29")
+(if (treesit-available-p)
     (unless (getenv "ci_tests")
       (use-package tree-sitter-langs)
       (use-package tree-sitter
