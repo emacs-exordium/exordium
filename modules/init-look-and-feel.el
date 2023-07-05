@@ -32,27 +32,30 @@
 
 ;;; Font
 
-(defvar exordium-available-preferred-fonts
+(defun exordium-available-preferred-fonts ()
+  "Trim the unavailable fonts from the preferred font list."
   (cl-remove-if-not (lambda (font-and-size)
                       (member (car font-and-size) (font-family-list)))
                     exordium-preferred-fonts))
 
-(defvar exordium-font-size
-  (when exordium-available-preferred-fonts
-    (cdar exordium-available-preferred-fonts)))
+(defun exordium-font-size ()
+  "Find the available preferred font size."
+  (when (exordium-available-preferred-fonts)
+    (cdar (exordium-available-preferred-fonts))))
 
-(defvar exordium-font-name
-  (when exordium-available-preferred-fonts
-    (caar exordium-available-preferred-fonts)))
+(defun exordium-font-name ()
+  "Find the avaliable preferred font name."
+  (when (exordium-available-preferred-fonts)
+    (caar (exordium-available-preferred-fonts))))
 
 (defun exordium-set-font (&optional font size)
-  "Find the preferred fonts that are available and choose the first one."
+  "Find the preferred fonts that are available and choose the first one.  Set FONT and SIZE if they are passed as arguments."
   (interactive
-   (list (completing-read (format "Font (default %s): " exordium-font-name)
-                          exordium-available-preferred-fonts nil nil nil nil exordium-font-name)
-         (read-number "Size: " exordium-font-size)))
-  (let ((font (or font exordium-font-name))
-        (size (or size exordium-font-size)))
+   (list (completing-read (format "Font (default %s): " (exordium-font-name))
+                          (exordium-available-preferred-fonts) nil nil nil nil (exordium-font-name))
+         (read-number "Size: " (exordium-font-size))))
+  (let ((font (or font (exordium-font-name)))
+        (size (or size (exordium-font-size))))
     (when (and font size)
       (message "Setting font family: %s, height: %s" font size)
       (set-face-attribute 'default nil
@@ -64,6 +67,8 @@
 (when exordium-preferred-fonts
   (exordium-set-font))
 
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook 'exordium-set-font))
 
 ;;; User interface
 
