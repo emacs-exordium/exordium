@@ -2,26 +2,9 @@
 
 ;;;; Configuration for Treesitter
 
-(if (and (version< "29" emacs-version ) (treesit-available-p))
-    (unless (getenv "ci_tests")
-      (progn
-        (use-package tree-sitter-langs)
-        (use-package tree-sitter
-          :diminish
-          :after (tree-sitter-langs)
-          :hook
-          (tree-sitter-after-on . tree-sitter-hl-mode)
-          :custom
-          (font-lock-maximum-decoration t)
-          :config
-          (when-let ((language-name (alist-get 'ruby-mode
-                                               tree-sitter-major-mode-language-alist)))
-            (add-to-list 'tree-sitter-major-mode-language-alist
-                         (cons 'enh-ruby-mode language-name)))
-          (add-to-list 'tree-sitter-major-mode-language-alist
-                       (cons 'forge-post-mode 'markdown))
-          (global-tree-sitter-mode)))
-
+(unless (getenv "ci_tests")
+(if (and (version< "29" emacs-version) (treesit-available-p))
+    (progn
       (defun exordium--add-forward-ts-hook (mode)
         (when-let ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
                    (hook (intern (concat (symbol-name mode) "-mode-hook")))
@@ -55,6 +38,24 @@
                 rust
                 scala
                 ))
-        (setq treesit-font-lock-level 4))))
+        (setq treesit-font-lock-level 4)))
+
+  (use-package tree-sitter-langs)
+  (use-package tree-sitter
+    :diminish
+    :after (tree-sitter-langs)
+    :hook
+    (tree-sitter-after-on . tree-sitter-hl-mode)
+    :custom
+    (font-lock-maximum-decoration t)
+    :config
+    (when-let ((language-name (alist-get 'ruby-mode
+                                         tree-sitter-major-mode-language-alist)))
+      (add-to-list 'tree-sitter-major-mode-language-alist
+                   (cons 'enh-ruby-mode language-name)))
+    (add-to-list 'tree-sitter-major-mode-language-alist
+                 (cons 'forge-post-mode 'markdown))
+    (global-tree-sitter-mode)))
+) ;; (unless (getenv "ci_tests")
 
 (provide 'init-treesit)
