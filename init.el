@@ -356,11 +356,11 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;; Flycheck
 (use-package init-flycheck :ensure nil)
 
-;;; LSP
-(use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
-
 ;;; Treesit
 (use-package init-treesit :ensure nil)
+
+;;; LSP
+(use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
 
 ;;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
