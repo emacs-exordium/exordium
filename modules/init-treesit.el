@@ -9,6 +9,7 @@
     (add-hook ts-hook
                  #'(lambda ()
                      (run-hooks hook)))))
+
 (when exordium-treesit-modes-enable
   (unless (getenv "ci_tests")
     (if (and (version< "29" emacs-version) (treesit-available-p))

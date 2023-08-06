@@ -49,6 +49,7 @@ might want to check these links:
   [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows);
   [helpful](https://github.com/Wilfred/helpful) (a better Emacs *help* buffer);
   [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings).
+  [Treesitter]()(Parser-based font lock.)
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
@@ -873,6 +874,11 @@ The `lsp-mode` keymap is bound to `C-c l`.
 LSP mode is available via TRAMP, and in particular via tramp to docker containers.
 
 LSP mode in the shared Exordium base is stable enough for use, but the configuration details are experimental and subject to change without notification.
+
+## Tree-sitter
+Exordium can be configured to use [tree-sitter](https://github.com/tree-sitter/tree-sitter) for parser directed font lock. In emacs versions 29 or greater it uses the new built in  `treesit` mode if emacs was built with treesitter support, otherwise it falls back to using the [tree-sitter](https://github.com/emacs-tree-sitter/elisp-tree-sitter) mode from melpa. In emacs 29, language mode support is via [treesit-auto](https://github.com/renzmann/treesit-auto) and an exordium function that automatically forwards the hook from the new lang-ts-mode modes to the hook for lang-mode, hopefully preserving your customizaations. If treesit is unavailable, [tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs) is used.
+
+The configuration variable is `exordium-treesit-modes-enable` and is disabled by default.
 
 ## Customization
 
