@@ -343,14 +343,9 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 (update-progress-bar)
 
-;;; Local extensions
-(dolist (tapped-file exordium-tapped-after-init-files)
-  (load tapped-file))
-
 ;;; Desktop - close to the end so customisations had a chance to kick in
 (when exordium-desktop
   (use-package init-desktop :ensure nil))
-
 
 (use-package init-powerline :ensure nil
   :if (and exordium-theme exordium-enable-powerline))
@@ -361,8 +356,15 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;; Flycheck
 (use-package init-flycheck :ensure nil)
 
+;;; Treesit
+(use-package init-treesit :ensure nil)
+
 ;;; LSP
 (use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
+
+;;; Local extensions
+(dolist (tapped-file exordium-tapped-after-init-files)
+  (load tapped-file))
 
 (update-progress-bar)
 

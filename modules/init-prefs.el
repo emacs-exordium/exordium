@@ -642,4 +642,10 @@ Default is to choose the first that is found via `executable-find'."
   :group 'exordium
   :type 'boolean)
 
+(defcustom exordium-treesit-modes-enable nil
+  "Enable treesiter.
+For emacs 29 and above enable new -ts-modes and attach forwarding hook."
+  :group 'exordium
+  :type 'boolean)
+
 (provide 'init-prefs)
