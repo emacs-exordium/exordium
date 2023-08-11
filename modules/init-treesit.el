@@ -30,15 +30,25 @@
             (mapc #'exordium--add-forward-ts-hook
                   '(
                     LaTeX
+                    bash
                     c
                     c++
-                    java
+                    cmake
+                    csharp
+                    css
                     go
+                    go-mod
+                    java
+                    js
+                    json
                     markdown
                     python
                     ruby
                     rust
                     scala
+                    toml
+                    typescript
+                    yaml
                     ))
             (setq treesit-font-lock-level 4)))
 
