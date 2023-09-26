@@ -115,8 +115,7 @@ See URL `http://mypy-lang.org/'."
           (with-current-buffer standard-output
             (insert explanation)
             (poly-rst-mode)
-            (use-local-map (copy-keymap poly-rst-mode-map))
-            (local-set-key "q" #'bury-buffer)
+            (view-mode)
             (font-lock-flush)
             (font-lock-ensure))))))
 
