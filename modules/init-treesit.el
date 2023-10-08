@@ -5,10 +5,10 @@
 (defun exordium--add-forward-ts-hook (mode)
   (when-let ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
              (hook (intern (concat (symbol-name mode) "-mode-hook")))
-             (_ (and (symbolp ts-hook) (symbolp hook))))
+             ((and (symbolp ts-hook) (symbolp hook))))
     (add-hook ts-hook
-                 #'(lambda ()
-                     (run-hooks hook)))))
+              #'(lambda ()
+                  (run-hooks hook)))))
 
 (when exordium-treesit-modes-enable
   (unless (getenv "ci_tests")
@@ -17,7 +17,6 @@
           (message "Enabling treesit-auto and builtin treesit")
           (use-package treesit-auto
             :requires treesit
-            :after lsp-mode
             :config
             (setq treesit-auto-install 'prompt)
             (global-treesit-auto-mode))
@@ -25,7 +24,6 @@
           (use-package treesit
             :requires treesit
             :ensure nil
-            :after lsp-mode
             :config
             (mapc #'exordium--add-forward-ts-hook
                   '(
