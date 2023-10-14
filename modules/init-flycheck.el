@@ -115,8 +115,7 @@ See URL `http://mypy-lang.org/'."
           (with-current-buffer standard-output
             (insert explanation)
             (poly-rst-mode)
-            (use-local-map (copy-keymap poly-rst-mode-map))
-            (local-set-key "q" #'bury-buffer)
+            (view-mode)
             (font-lock-flush)
             (font-lock-ensure))))))
 
@@ -167,7 +166,7 @@ See URL `http://pypi.python.org/pypi/ruff'."
               (markdown-view-mode)
               (font-lock-flush)
               (font-lock-ensure))))))
-    :modes python-mode)
+    :modes (python-mode python-ts-mode))
 
   (add-to-list 'flycheck-checkers 'exordium-python-ruff)
   (flycheck-add-next-checker 'exordium-python-ruff '(warning . exordium-python-mypy)))
