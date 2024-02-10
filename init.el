@@ -210,6 +210,12 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)
 
+;;; remove a package from the builtin list so it can be upgraded
+(defun exordium-ignore-builtin (pkg)
+  (assq-delete-all pkg package--builtins)
+  (assq-delete-all pkg package--builtin-versions))
+
+
 ;;; Load Modules
 (use-package bytecomp :ensure nil)
 (defun recompile-modules ()
