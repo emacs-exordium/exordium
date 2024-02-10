@@ -49,7 +49,8 @@
 
 ;;; Highlight dead code between "#if 0" and "#endif"
 (add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
-
+(when exordium-treesit-modes-enable
+  (add-hook 'c-ts--mode-common-hook 'cpp-highlight-dead-code-hook))
 
 ;;; Switch between .h <--> .cpp <--> t.cpp
 
