@@ -132,6 +132,7 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 ;; Initialize the package system
 (require 'seq)
 (require 'package)
+(setq package-install-upgrade-built-in t)
 (when (or (not (string= exordium-melpa-package-repo
                         exordium-pinned-melpa-package-repo))
           (seq-filter (lambda (pkg)
