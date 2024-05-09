@@ -22,7 +22,7 @@
 
 ;;; Enable YAS only for C++
 (add-hook 'c-mode-common-hook
-          '(lambda ()
+          #'(lambda ()
              (yas-minor-mode)))
 
 ;;; Trigger key
