@@ -196,6 +196,8 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 (add-directory-tree-to-load-path exordium-themes-dir)
 (add-directory-tree-to-load-path exordium-local-dir t)
 
+(add-directory-tree-to-load-path exordium-taps-root)
+
 (setq custom-theme-directory exordium-themes-dir)
 
 
