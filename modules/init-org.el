@@ -12,6 +12,7 @@
   "Face for STOP keywords."
   :group 'exordium)
 
+(exordium-ignore-builtin 'org)
 
 (use-package org
   :commands (org-mode)
