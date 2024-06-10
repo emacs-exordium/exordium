@@ -147,7 +147,8 @@ Each element of the list is in the same form as in `package-pinned-packages'."
   (add-to-list 'package-archives
                (cons "gnu" exordium-gnu-package-repo) t))
 
-(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version))
+(setq package-user-dir
+      (locate-user-emacs-file (concat "elpa-" emacs-version)))
 
 (when (fboundp 'native-comp-available-p)
  (setq package-native-compile (native-comp-available-p)))
