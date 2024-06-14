@@ -177,7 +177,17 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 
   (dolist (pkg exordium-extra-packages)
     (update-package pkg has-refreshed)))
-
+
+;; - Some packages (i.e., magit, forge) require seq-2.24.
+;; - Emacs-29 is delivered with seq-2.23.
+;; - Other packages (i.e., compat) require seq-2.23.
+;; - When only magit is installed it requires compat which requires seq-2.23 -> seq is not upgraded
+;; - When only forge is installed is requires magit and compat which requires seq-2.23 -> seq is not upgraded
+;; - When magit is installed followed by installation of forge seq is upgraded to seq-2.24 -> this fails
+;; Force installing the freshest version of seq with errors suppressed:
+(let (debug-on-error)
+  ;; this assumes `package-refresh-contents has been called'
+  (package-install (car (alist-get 'seq package-archive-contents))))
 
 ;;; Path for "require"
 
@@ -195,6 +205,8 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 (add-directory-tree-to-load-path exordium-extensions-dir)
 (add-directory-tree-to-load-path exordium-themes-dir)
 (add-directory-tree-to-load-path exordium-local-dir t)
+
+(add-directory-tree-to-load-path exordium-taps-root)
 
 (setq custom-theme-directory exordium-themes-dir)
 
