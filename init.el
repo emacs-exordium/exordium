@@ -286,7 +286,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Usability
 (use-package init-window-manager :ensure nil)  ; navigate between windows
 (use-package init-util :ensure nil)            ; utilities like match paren, bookmarks...
-(use-package init-ido :ensure nil)             ; supercharged completion engine
+(unless exordium-helm-everywhere
+  (use-package init-ido :ensure nil))          ; supercharged completion engine
 (use-package init-highlight :ensure nil)       ; highlighting current line, symbol under point
 (use-package init-autocomplete :ensure nil
   :if (eq exordium-complete-mode :auto-complete))
