@@ -167,9 +167,10 @@
   (setq isearch-allow-scroll t))
 
 ;;; Evil-mode
-(use-package evil)
-(if (and exordium-enable-evil-mode (fboundp 'evil-mode))
-    (evil-mode t)
+(if exordium-enable-evil-mode
+    (progn (use-package evil)
+           (when (fboundp 'evil-mode)
+             (evil-mode t)))
   ;; Evil mode depends in undo-tree, which thinks it should work by default
   (when (boundp 'global-undo-tree-mode)
     (global-undo-tree-mode -1)))
