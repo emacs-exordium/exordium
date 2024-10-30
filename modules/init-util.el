@@ -503,53 +503,53 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
       ;; string delimeter: first and last two quotes are a separate sexp, and
       ;; the `forward-sexp' only works from the most inner quote.  However,
       ;; in emacs-27, the `forward-sexp' works only from the most outer quote.
-      (when-let ((orig-start (if (region-active-p)
-                                 (let* ((pt (min (region-beginning)
-                                                 (region-end)))
-                                        (c (char-after pt)))
-                                   (when (or (eq c ?\') (eq c ?\"))
-                                     pt))
-                               (when-let ((pos (nth 8 (syntax-ppss)))
-                                          (c (char-after pos)))
-                                 (if (and (< (1+ (point-min)) pos)
-                                          (eq c (char-after (- pos 1)))
-                                          (eq c (char-after (- pos 2))))
-                                     (- pos 2)
-                                   (- pos 0)))))
-                 (orig-quote (char-after orig-start))
-                 (new-quote (pcase orig-quote
-                              (?\' ?\")
-                              (?\" ?\')))
-                 (quote-length (if (and (eq orig-quote
+      (when-let* ((orig-start (if (region-active-p)
+                                  (let* ((pt (min (region-beginning)
+                                                  (region-end)))
+                                         (c (char-after pt)))
+                                    (when (or (eq c ?\') (eq c ?\"))
+                                      pt))
+                                (when-let* ((pos (nth 8 (syntax-ppss)))
+                                            (c (char-after pos)))
+                                  (if (and (< (1+ (point-min)) pos)
+                                           (eq c (char-after (- pos 1)))
+                                           (eq c (char-after (- pos 2))))
+                                      (- pos 2)
+                                    (- pos 0)))))
+                  (orig-quote (char-after orig-start))
+                  (new-quote (pcase orig-quote
+                               (?\' ?\")
+                               (?\" ?\')))
+                  (quote-length (if (and (eq orig-quote
                                              (char-after (+ orig-start 1)))
-                                        (eq orig-quote
-                                            (char-after (+ orig-start 2))))
-                                   3
-                                 1))
-                 (orig-end (if (region-active-p)
-                               (let* ((pt (max (region-beginning)
-                                               (region-end)))
-                                      (c (char-after (1- pt))))
-                                 (when  (eq c orig-quote)
-                                   pt))
-                             (save-excursion
-                               (goto-char orig-start)
-                               (forward-char (if (version< emacs-version "28")
-                                                 0
-                                               (logand quote-length 2)))
-                               (forward-sexp)
-                               (forward-char (if (version< emacs-version "28")
-                                                 0
-                                               (logand quote-length 2)))
-                               (point)))))
+                                         (eq orig-quote
+                                             (char-after (+ orig-start 2))))
+                                    3
+                                  1))
+                  (orig-end (if (region-active-p)
+                                (let* ((pt (max (region-beginning)
+                                                (region-end)))
+                                       (c (char-after (1- pt))))
+                                  (when  (eq c orig-quote)
+                                    pt))
+                              (save-excursion
+                                (goto-char orig-start)
+                                (forward-char (if (version< emacs-version "28")
+                                                  0
+                                                (logand quote-length 2)))
+                                (forward-sexp)
+                                (forward-char (if (version< emacs-version "28")
+                                                  0
+                                                (logand quote-length 2)))
+                                (point)))))
         (goto-char orig-start)
         (delete-char quote-length)
         (insert-char new-quote quote-length)
         (while (< (point) (- orig-end quote-length))
           (if flip-inner
-              (if-let ((a-quote (pcase (char-after)
-                                  (?\' ?\")
-                                  (?\" ?\'))))
+              (if-let* ((a-quote (pcase (char-after)
+                                   (?\' ?\")
+                                   (?\" ?\'))))
                   (progn
                     (delete-char 1)
                     (insert-char a-quote))

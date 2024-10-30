@@ -97,20 +97,20 @@ See URL `http://mypy-lang.org/'."
     :predicate flycheck-buffer-saved-p
     :error-explainer
     (lambda (error)
-      (when-let ((error-code (flycheck-error-id error))
-                 (mypy-version
-                  (replace-regexp-in-string
-                   "mypy \\(\\(?:[0-9]\\.\\)+[0-9]\\).*\n"
-                   "\\1"
-                   (shell-command-to-string "mypy --version")))
-                 (error-codes-alist
-                  (exordium-setf-when-nil
-                   (alist-get (intern mypy-version)
-                              exordium--flycheck-mypy-error-codes-alist)
-                   (exodrium--flycheck-mypy-retrieve-error-codes
-                    mypy-version)))
-                 (explanation (alist-get (intern error-code)
-                                         error-codes-alist)))
+      (when-let* ((error-code (flycheck-error-id error))
+                  (mypy-version
+                   (replace-regexp-in-string
+                    "mypy \\(\\(?:[0-9]\\.\\)+[0-9]\\).*\n"
+                    "\\1"
+                    (shell-command-to-string "mypy --version")))
+                  (error-codes-alist
+                   (exordium-setf-when-nil
+                    (alist-get (intern mypy-version)
+                               exordium--flycheck-mypy-error-codes-alist)
+                    (exodrium--flycheck-mypy-retrieve-error-codes
+                     mypy-version)))
+                  (explanation (alist-get (intern error-code)
+                                          error-codes-alist)))
         (lambda ()
           (with-current-buffer standard-output
             (insert explanation)

@@ -18,12 +18,12 @@
   "Collect results into `exordium--test-found-obsoltete-aliases'.
 
 This is meant to be applied as an advice around `elisp-refs--show-results'."
-  (when-let ((files (mapcar (lambda (result)
-                              (string-trim-right
-                               (string-trim-left (buffer-name (cdr result))
-                                                 " \\*refs-")
-                               "\\*"))
-                            (cl-third args))))
+  (when-let* ((files (mapcar (lambda (result)
+                               (string-trim-right
+                                (string-trim-left (buffer-name (cdr result))
+                                                  " \\*refs-")
+                                "\\*"))
+                             (cl-third args))))
     (add-to-list 'exordium--test-found-obsolete-aliases
                  (cons (cl-first args) files))))
 
