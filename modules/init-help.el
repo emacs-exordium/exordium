@@ -14,6 +14,8 @@
 
 ;;; Which Key - display available keybindings in popup.
 (use-package which-key
+  :if exordium-enable-which-key
+  :pin gnu
   :diminish
   :config
   (which-key-mode))
