@@ -13,6 +13,8 @@ ${EMACS} -Q --batch \
          --eval '
 (progn
    (setq debug-on-error t
+         eval-expression-print-length 100
+         edebug-print-length 500
          user-emacs-directory "'"${EMACS_DIR}"'")
    (defun ask-user-about-lock (file opponent)
      (sleep-for 5)

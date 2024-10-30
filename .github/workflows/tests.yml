@@ -22,25 +22,31 @@ jobs:
           - ubuntu-latest
           - macos-latest
         emacs_version:
-          - 27.1
-          - 27.2
           - 28.1
           - 28.2
           - 29.1
+          - 29.2
+          - 29.3
+          - 29.4
           - snapshot
     steps:
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v4
         with:
           path: '.emacs.d'
+
       - name: First start # So most modules are pulled in from melpa and gnu
         run: '.emacs.d/.ci/first-start.sh .emacs.d'
+
       # - name: Compilation # This pulls extra modules not enabled by default
       #   run: '.emacs.d/.ci/compilation.sh .emacs.d'
+
       - name: Unit tests
         run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+
       - name: Verify no obsolete cl- functions
         run: '.emacs.d/.ci/unit-test-cl.sh .emacs.d'
 
@@ -51,22 +57,21 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-            emacs_version: 27.2
-          - os: macos-latest
-            emacs_version: 29.1
           - os: macos-latest
             emacs_version: snapshot
     steps:
       - uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v4
         with:
           path: '.emacs.d'
-      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v4
         with:
           repository: 'pkryger/exordium-commontap'
           path: '.emacs.d/taps/commontap'
+
       - name: First start # So most modules are pulled in from melpa and gnu
         run: '.emacs.d/.ci/first-start.sh .emacs.d'
