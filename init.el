@@ -158,13 +158,13 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 
 ;; Load the packages we need if they are not installed already
 (let ((package-pinned-packages (append
-                                '((use-package             . "melpa-pinned")
-                                  (diminish                . "melpa-pinned")
+                                '((use-package             . "gnu")
+                                  (diminish                . "gnu")
                                   (bind-key                . "melpa-pinned"))
                                 exordium-extra-pinned))
       (has-refreshed nil))
 
-  (defun update-package (p  has-refreshed)
+  (defun update-package (p has-refreshed)
     (unless (package-installed-p p)
       (unless has-refreshed
         (message "Refreshing package database...")
@@ -220,6 +220,10 @@ Each element of the list is in the same form as in `package-pinned-packages'."
   (require 'use-package))
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
+
+;; Ensure use-package and diminish are from gnu
+(use-package-pin-package 'use-package 'gnu)
+(use-package-pin-package 'diminish 'gnu)
 
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
