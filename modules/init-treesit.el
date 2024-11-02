@@ -3,9 +3,9 @@
 ;;;; Configuration for Treesitter
 
 (defun exordium--add-forward-ts-hook (mode)
-  (when-let ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
-             (hook (intern (concat (symbol-name mode) "-mode-hook")))
-             ((and (symbolp ts-hook) (symbolp hook))))
+  (when-let* ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
+              (hook (intern (concat (symbol-name mode) "-mode-hook")))
+              ((and (symbolp ts-hook) (symbolp hook))))
     (add-hook ts-hook
               #'(lambda ()
                   (run-hooks hook)))))
@@ -60,8 +60,8 @@
           :custom
           (font-lock-maximum-decoration t)
           :config
-          (when-let ((language-name (alist-get 'ruby-mode
-                                               tree-sitter-major-mode-language-alist)))
+          (when-let* ((language-name (alist-get 'ruby-mode
+                                                tree-sitter-major-mode-language-alist)))
             (add-to-list 'tree-sitter-major-mode-language-alist
                          (cons 'enh-ruby-mode language-name)))
           (add-to-list 'tree-sitter-major-mode-language-alist

@@ -59,7 +59,7 @@ dirs. Input is a string and output is a list of strings."
 (defun exordium-browse-url-at-point ()
   "Open an URL at point."
   (interactive)
-  (when-let ((url (thing-at-point 'url)))
+  (when-let* ((url (thing-at-point 'url)))
     (browse-url url)))
 
 (defmacro exordium-setf-when-nil (&rest args)

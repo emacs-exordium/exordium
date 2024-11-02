@@ -42,7 +42,7 @@
   (defun exordium-helm-projectile--exit-helm-and-do-ag ()
     "Exit helm and run ag on first selected candidate."
     (interactive)
-    (if-let ((project (car (helm-marked-candidates))))
+    (if-let* ((project (car (helm-marked-candidates))))
         (helm-run-after-exit #'helm-do-ag
                              project)
       (error "No candidates selected")))
@@ -56,7 +56,7 @@
   (defun exordium-helm-projectile--exit-helm-and-do-rg ()
     "Exit helm and switch project to first selected candidate and run rg there."
     (interactive)
-    (if-let ((project (car (helm-marked-candidates))))
+    (if-let* ((project (car (helm-marked-candidates))))
         (helm-run-after-exit #'exordium-helm-projectile--switch-project-and-do-rg
                              project)
       (error "No candidates selected")))

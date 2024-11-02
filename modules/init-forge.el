@@ -14,7 +14,12 @@
 ;; https://github.com/magit/emacsql/commit/6401226 for more details.
 (unless (and (fboundp 'sqlite-available-p)
              (sqlite-available-p))
- (use-package sqlite3))
+ (let ((debug-on-error (if (and debug-on-error (getenv "ci_tests"))
+                           (progn
+                             (message "Temporarily disable `debug-on-error': `sqlite3-api' cannot be loaded when running in CI")
+                             nil)
+                         debug-on-error)))
+   (use-package sqlite3)))
 
 ;;; Magit Forge
 (use-package forge
@@ -83,26 +88,26 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
   (defun exordium-forge-mark-ready-for-rewiew ()
     "Mark the thing (the PR) at point as ready for review."
     (interactive)
-    (if-let ((url (forge-get-url (or (forge-post-at-point)
-                                     (forge-current-topic))))
-             (_ (string-match
-                 "//\\([^/]+\\)/\\([^/]+\\)/\\([^/]+\\)/pull/\\([0-9]+\\)$"
-                 url))
-             (number (match-string 4 url))
-             (host (car (alist-get (match-string 1 url)
-                                   forge-alist
-                                   nil nil #'string=)))
-             (username (magit-git-string "config"
-                                         (concat "github." host ".user")))
-             (id (exordium-ghub-graphql--pull-request-id
-                  (match-string 2 url)
-                  (match-string 3 url)
-                  (string-to-number number)
-                  :username username :auth 'forge :host host))
-             (not-a-draft-anymore
-              (not (exordium-ghub-grqphql--mark-pull-request-ready-for-review
-                    id
-                    :username username :auth 'forge :host host))))
+    (if-let* ((url (forge-get-url (or (forge-post-at-point)
+                                      (forge-current-topic))))
+              (_ (string-match
+                  "//\\([^/]+\\)/\\([^/]+\\)/\\([^/]+\\)/pull/\\([0-9]+\\)$"
+                  url))
+              (number (match-string 4 url))
+              (host (car (alist-get (match-string 1 url)
+                                    forge-alist
+                                    nil nil #'string=)))
+              (username (magit-git-string "config"
+                                          (concat "github." host ".user")))
+              (id (exordium-ghub-graphql--pull-request-id
+                   (match-string 2 url)
+                   (match-string 3 url)
+                   (string-to-number number)
+                   :username username :auth 'forge :host host))
+              (not-a-draft-anymore
+               (not (exordium-ghub-grqphql--mark-pull-request-ready-for-review
+                     id
+                     :username username :auth 'forge :host host))))
         (message "PR #%s is ready for review." number)
       (user-error "Nothing at point that is a PR or mark failed")))
 
@@ -167,15 +172,15 @@ Each element of TO-DELETE is in the same format as used in
   (defun exordium-forge-cleanup-known-repositories ()
     "Cleanup forge repositories whose worktree doesn't exist anymore."
     (interactive)
-    (if-let ((to-delete (cl-remove-if
-                         (lambda (repo)
-                           (if-let ((worktree (car repo)))
-                               (file-exists-p worktree)
-                             t))
-                         (forge-sql [:select [worktree githost owner name]
-                                             :from repository
-                                             :order-by [(asc owner) (asc name)]]
-                                    [worktree githost owner name]))))
+    (if-let* ((to-delete (cl-remove-if
+                          (lambda (repo)
+                            (if-let* ((worktree (car repo)))
+                                (file-exists-p worktree)
+                              t))
+                          (forge-sql [:select [worktree githost owner name]
+                                              :from repository
+                                              :order-by [(asc owner) (asc name)]]
+                                     [worktree githost owner name]))))
         (when (yes-or-no-p (exordium-forge-cleanup-known-repositories--question
                             to-delete))
           (async-start
@@ -187,7 +192,7 @@ Each element of TO-DELETE is in the same format as used in
               ,(async-inject-variables "\\`\\(to-delete\\|forge-alist\\)\\'")
               (let (results)
                 (dolist (repo to-delete)
-                  (when-let ((forge-repo (forge-get-repository (cdr repo))))
+                  (when-let* ((forge-repo (forge-get-repository (cdr repo))))
                     (let ((t0 (current-time))
                           ;; Timeout is huge (10x what was the default at the
                           ;; time of writing this) as db ops are long sometimes.

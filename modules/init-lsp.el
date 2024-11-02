@@ -101,11 +101,6 @@
   (dap-tooltip-mode 1)
   :commands dap-mode)
 
-(use-package which-key
-  :if exordium-enable-which-key
-  :config
-  (which-key-mode))
-
 
 ;; ;; Terrible hack working around off by one error between TRAMP and lsp-mode
 ;; (defun lsp--make-message@override (params)

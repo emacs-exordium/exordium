@@ -39,7 +39,7 @@
            (when (or (save-match-data (looking-at "\\W"))
                      (= (point) (point-max)))
              (cons (or (match-string 1) "") t)))))
-      (candidates (when-let ((repo (forge-get-repository 'full)))
+      (candidates (when-let* ((repo (forge-get-repository 'full)))
                     (cl-remove-if-not
                      (lambda (assignee)
                        (string-prefix-p arg assignee))
@@ -47,7 +47,7 @@
                                (propertize (cadr assignee)
                                            'full-name (caddr assignee)))
                              (oref repo assignees)))))
-      (annotation (when-let ((assignee (get-text-property 0 'full-name arg)))
+      (annotation (when-let* ((assignee (get-text-property 0 'full-name arg)))
                     (format " [%s]" assignee)))))
 
   :config

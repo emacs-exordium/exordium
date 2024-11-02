@@ -132,6 +132,7 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 ;; Initialize the package system
 (require 'seq)
 (require 'package)
+(setq package-install-upgrade-built-in t)
 (when (or (not (string= exordium-melpa-package-repo
                         exordium-pinned-melpa-package-repo))
           (seq-filter (lambda (pkg)
@@ -157,13 +158,13 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 
 ;; Load the packages we need if they are not installed already
 (let ((package-pinned-packages (append
-                                '((use-package             . "melpa-pinned")
-                                  (diminish                . "melpa-pinned")
+                                '((use-package             . "gnu")
+                                  (diminish                . "gnu")
                                   (bind-key                . "melpa-pinned"))
                                 exordium-extra-pinned))
       (has-refreshed nil))
 
-  (defun update-package (p  has-refreshed)
+  (defun update-package (p has-refreshed)
     (unless (package-installed-p p)
       (unless has-refreshed
         (message "Refreshing package database...")
@@ -219,6 +220,10 @@ Each element of the list is in the same form as in `package-pinned-packages'."
   (require 'use-package))
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
+
+;; Ensure use-package and diminish are from gnu
+(use-package-pin-package 'use-package 'gnu)
+(use-package-pin-package 'diminish 'gnu)
 
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
@@ -285,7 +290,8 @@ the .elc exists. Also discard .elc without corresponding .el"
 ;;; Usability
 (use-package init-window-manager :ensure nil)  ; navigate between windows
 (use-package init-util :ensure nil)            ; utilities like match paren, bookmarks...
-(use-package init-ido :ensure nil)             ; supercharged completion engine
+(unless exordium-helm-everywhere
+  (use-package init-ido :ensure nil))          ; supercharged completion engine
 (use-package init-highlight :ensure nil)       ; highlighting current line, symbol under point
 (use-package init-autocomplete :ensure nil
   :if (eq exordium-complete-mode :auto-complete))

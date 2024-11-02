@@ -97,20 +97,20 @@ See URL `http://mypy-lang.org/'."
     :predicate flycheck-buffer-saved-p
     :error-explainer
     (lambda (error)
-      (when-let ((error-code (flycheck-error-id error))
-                 (mypy-version
-                  (replace-regexp-in-string
-                   "mypy \\(\\(?:[0-9]\\.\\)+[0-9]\\).*\n"
-                   "\\1"
-                   (shell-command-to-string "mypy --version")))
-                 (error-codes-alist
-                  (exordium-setf-when-nil
-                   (alist-get (intern mypy-version)
-                              exordium--flycheck-mypy-error-codes-alist)
-                   (exodrium--flycheck-mypy-retrieve-error-codes
-                    mypy-version)))
-                 (explanation (alist-get (intern error-code)
-                                         error-codes-alist)))
+      (when-let* ((error-code (flycheck-error-id error))
+                  (mypy-version
+                   (replace-regexp-in-string
+                    "mypy \\(\\(?:[0-9]\\.\\)+[0-9]\\).*\n"
+                    "\\1"
+                    (shell-command-to-string "mypy --version")))
+                  (error-codes-alist
+                   (exordium-setf-when-nil
+                    (alist-get (intern mypy-version)
+                               exordium--flycheck-mypy-error-codes-alist)
+                    (exodrium--flycheck-mypy-retrieve-error-codes
+                     mypy-version)))
+                  (explanation (alist-get (intern error-code)
+                                          error-codes-alist)))
         (lambda ()
           (with-current-buffer standard-output
             (insert explanation)
@@ -137,8 +137,17 @@ See URL `http://mypy-lang.org/'."
 To override the path to the ruff executable, set
 `flycheck-exordium-python-ruff-executable'.
 See URL `http://pypi.python.org/pypi/ruff'."
-    :command ("ruff"
-              "--format=text"
+    :command ("ruff" "check"
+              (eval (let ((ruff-version (replace-regexp-in-string
+                                    "ruff \\([0-9]\.\+\\).*\n?" "\\1"
+                                    (shell-command-to-string "ruff --version"))))
+                      (cond
+                       ((version< ruff-version "0.1")
+                        '("--format" "text"))
+                       ((version< ruff-version "0.5")
+                        '("--output-format" "text"))
+                       (t
+                        '("--output-format" "concise")))))
               (eval (when buffer-file-name
                       (concat "--stdin-filename=" buffer-file-name)))
               "-")
@@ -148,24 +157,31 @@ See URL `http://pypi.python.org/pypi/ruff'."
       (let ((errors (flycheck-sanitize-errors errors)))
         (seq-map #'flycheck-flake8-fix-error-level errors)))
     :error-patterns
-    ((warning line-start
+    ((error line-start
+            (file-name) ":" line ":" (optional column ":") " "
+            (id (one-or-more (any alpha digit))) ": "
+            (message (one-or-more not-newline)))
+            (warning line-start
               (file-name) ":" line ":" (optional column ":") " "
               (id (one-or-more (any alpha)) (one-or-more digit)) " "
               (message (one-or-more not-newline))
               line-end))
     :error-explainer
     (lambda (error)
-      (when-let (error-code (flycheck-error-id error))
-        (lambda ()
-          (flycheck-call-checker-process
-           'exordium-python-ruff nil standard-output t "rule" error-code)
-          (with-current-buffer standard-output
-            (let ((markdown-fontify-code-block-default-mode 'python-mode)
-                  (markdown-fontify-code-blocks-natively t)
-                  (markdown-hide-markup t))
-              (markdown-view-mode)
-              (font-lock-flush)
-              (font-lock-ensure))))))
+      (when-let* ((error-code (flycheck-error-id error))
+                  (error-level (flycheck-error-level error)))
+        (if (eq error-level 'error)
+            (message "No explanation for error: %s" error-code)
+          (lambda ()
+            (flycheck-call-checker-process
+             'exordium-python-ruff nil standard-output t "rule" error-code)
+            (with-current-buffer standard-output
+              (let ((markdown-fontify-code-block-default-mode 'python-mode)
+                    (markdown-fontify-code-blocks-natively t)
+                    (markdown-hide-markup t))
+                (markdown-view-mode)
+                (font-lock-flush)
+                (font-lock-ensure)))))))
     :modes (python-mode python-ts-mode))
 
   (add-to-list 'flycheck-checkers 'exordium-python-ruff)
