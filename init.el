@@ -1,8 +1,12 @@
+;;; init.el --- Exordium init.el                     -*- lexical-binding: t -*-
+;;; Commentary:
 ;;;;  ___      __   __   __
 ;;;; |__  \_/ /  \ |__) |  \ | |  |  |\/|
 ;;;; |___ / \ \__/ |  \ |__/ | \__/  |  |
 ;;;;
 ;;;; Emacs Makes All Computing Simple.
+
+;;; Code:
 
 ;; Reduce the frequency of garbage collection by making it happen on
 ;; each 100MB of allocated data (the default is on every 0.76MB). This reduces
@@ -19,93 +23,119 @@
 Check the warnings and messages buffers, or restart with --debug-init")
 
 (defconst exordium-before-init "before-init.el"
-  "name of the before init file")
+  "Name of the before init file.")
 
 (defconst exordium-prefs "prefs.el"
-  "name of the prefs file")
+  "Name of the prefs file.")
 
 (defconst exordium-after-init "after-init.el"
-  "name of the after init file")
+  "Name of the after init file.")
 
 (defconst exordium-custom "emacs-custom.el"
-  "name of the customization file")
+  "Name of the customization file.")
 
 ;; Use this file for HTTP proxy settings if needed for packages.  Also add
 ;; additional packages to exordium-extra-packages for packages to be
 ;; automatically pulled from the elpa archives
 
-(defconst exordium-before-init-file (locate-user-emacs-file exordium-before-init)
-  "location of the master before init file")
+(defconst exordium-before-init-file
+  (expand-file-name (locate-user-emacs-file exordium-before-init))
+  "Location of the master before init file.")
 
-(defconst exordium-modules-dir (locate-user-emacs-file "modules")
-  "location of the modules directory")
-(defconst exordium-themes-dir (locate-user-emacs-file "themes")
-  "location of the themes directory")
-(defconst exordium-extensions-dir (locate-user-emacs-file "extensions")
-  "location of the extensions directory")
-(defconst exordium-local-dir (locate-user-emacs-file "local")
-  "location of the local directory")
+(defconst exordium-modules-dir
+  (expand-file-name (locate-user-emacs-file "modules"))
+  "Location of the modules directory.")
 
-(defconst exordium-prefs-file (locate-user-emacs-file exordium-prefs)
-  "location of the master prefs file")
+(defconst exordium-themes-dir
+  (expand-file-name (locate-user-emacs-file "themes"))
+  "Location of the themes directory.")
 
-(defconst exordium-after-init-file (locate-user-emacs-file exordium-after-init)
-  "location of the master after init file")
+(defconst exordium-extensions-dir
+  (expand-file-name (locate-user-emacs-file "extensions"))
+  "Location of the extensions directory.")
 
-(defconst exordium-custom-file (locate-user-emacs-file exordium-custom)
-  "location of the customization file")
+(defconst exordium-local-dir
+  (expand-file-name (locate-user-emacs-file "local"))
+  "Location of the local directory.")
+
+(defconst exordium-prefs-file
+  (expand-file-name (locate-user-emacs-file exordium-prefs))
+  "Location of the master prefs file.")
+
+(defconst exordium-after-init-file
+  (expand-file-name (locate-user-emacs-file exordium-after-init))
+  "Location of the master after init file.")
+
+(defconst exordium-custom-file
+  (expand-file-name (locate-user-emacs-file exordium-custom))
+  "Location of the customization file.")
 
 ;; Save any custom set variable in exordium-custom-file rather than at the end of init.el:
 (setq custom-file exordium-custom-file)
 
 (defcustom exordium-extra-packages ()
   "A list of additional packages to auto load from elpa repositories."
-    :group 'exordium
-    :type  'list)
+  :group 'exordium
+  :type  '(repeat (symbol :tag "Package")))
 
 (defcustom exordium-extra-pinned ()
   "An alist of additional packages locations to pin to.
 
 Each element of the list is in the same form as in `package-pinned-packages'."
   :group 'exordium
-  :type  'alist)
+  :type  '(alist :key-type (symbol :tag "Package")
+                 :value-type (string :tag "Archive name")))
+
+(defconst exordium-melpa-package-repo "https://melpa.org/packages/"
+  "URL for packages repository.")
+
+(defconst exordium-pinned-melpa-package-repo "https://melpa.org/packages/"
+  "URL for pinned default packages.
+Set to stable melpa.org if you want stable.")
+
+(defconst exordium-gnu-package-repo "https://elpa.gnu.org/packages/"
+  "URL for the GNU package repository.")
 
 ;; Taps definition of before and after files. These are loaded
 ;; after master 'before', 'after', and 'prefs' files
 
-(defconst exordium-taps-root (locate-user-emacs-file "taps")
-  "location of the tapped directories")
+(defconst exordium-taps-root
+  (expand-file-name (locate-user-emacs-file "taps"))
+  "Location of the tapped directories.")
 
-(defconst exordium-tapped-before-init-files ()
-  "all tapped before init files, including master")
+(defvar exordium-tapped-before-init-files ()
+  "All tapped before init files, including master one.")
 
-(defconst exordium-tapped-prefs-files ()
-  "all tapped prefs files, including master")
+(defvar exordium-tapped-prefs-files ()
+  "All tapped prefs files, including master one.")
 
-(defconst exordium-tapped-after-init-files ()
-  "all tapped after init files, including master")
+(defvar exordium-tapped-after-init-files ()
+  "All tapped after init files, including master one.")
 
-(defconst exordium-melpa-package-repo "https://melpa.org/packages/"
-  "URL for packages repository")
+(defun exordium--add-directory-tree-to-load-path (dir &optional ignore-if-absent)
+  "Add DIR and all its subdirs to the load path.
+Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
+  (cond ((file-directory-p dir)
+         (add-to-list 'load-path dir)
+         (let ((default-directory dir))
+           (normal-top-level-add-subdirs-to-load-path)))
+        ((not ignore-if-absent)
+         (warn "Missing directory: %s" dir))))
 
-(defconst exordium-pinned-melpa-package-repo "https://melpa.org/packages/"
-  "URL for pinned default packages. Set to stable melpa.org if you want stable")
-
-(defconst exordium-gnu-package-repo "https://elpa.gnu.org/packages/"
-  "URL for the GNU package repository")
 
 (when (file-accessible-directory-p exordium-taps-root)
-  (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
+  (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.].*")))
     (when (file-accessible-directory-p tap)
-      (let ((tapped (concat (file-name-as-directory tap) exordium-before-init)))
-        (when (file-readable-p tapped)
-          (add-to-list 'exordium-tapped-before-init-files tapped))
-        (setq tapped (concat (file-name-as-directory tap) exordium-prefs))
-        (when (file-readable-p tapped)
-          (add-to-list 'exordium-tapped-prefs-files tapped))
-        (setq tapped (concat (file-name-as-directory tap) exordium-after-init))
-        (when (file-readable-p tapped)
-          (add-to-list 'exordium-tapped-after-init-files tapped))))))
+      (exordium--add-directory-tree-to-load-path tap) ;; @todo: remove?
+      (when-let* ((tapped (file-name-concat tap exordium-before-init))
+                  ((file-readable-p tapped)))
+        (add-to-list 'exordium-tapped-before-init-files tapped))
+      (when-let* ((tapped (file-name-concat tap exordium-prefs))
+                  ((file-readable-p tapped)))
+        (add-to-list 'exordium-tapped-prefs-files tapped))
+      (when-let* ((tapped (file-name-concat tap exordium-after-init))
+                  ((file-readable-p tapped)))
+        (add-to-list 'exordium-tapped-after-init-files tapped)))))
 
 (when (file-readable-p exordium-before-init-file)
   (add-to-list 'exordium-tapped-before-init-files exordium-before-init-file))
@@ -119,15 +149,24 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 (when (file-readable-p exordium-custom-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-custom-file))
 
+;; @todo: remove?
+;;; Path for "require"
+(add-to-list 'load-path exordium-modules-dir)
+(exordium--add-directory-tree-to-load-path exordium-extensions-dir) ;; @todo third party
+(exordium--add-directory-tree-to-load-path exordium-themes-dir)
+(exordium--add-directory-tree-to-load-path exordium-local-dir t)
+
+
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
-  (load tapped-file))
+  (message "Loadding tapped before-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
 
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
 ;; Use M-x `package-list-package' to load and display the list of packages,
-;; then press I to mark for installation and X to execute (it's like dired).
+;; then press I to mark for installation and X to execute (it's like `dired').
 
 ;; Initialize the package system
 (require 'seq)
@@ -152,7 +191,7 @@ Each element of the list is in the same form as in `package-pinned-packages'."
       (locate-user-emacs-file (concat "elpa-" emacs-version)))
 
 (when (fboundp 'native-comp-available-p)
- (setq package-native-compile (native-comp-available-p)))
+  (setq package-native-compile (native-comp-available-p)))
 
 (package-initialize)
 
@@ -162,23 +201,17 @@ Each element of the list is in the same form as in `package-pinned-packages'."
                                   (diminish                . "gnu")
                                   (bind-key                . "melpa-pinned"))
                                 exordium-extra-pinned))
-      (has-refreshed nil))
-
-  (defun update-package (p has-refreshed)
-    (unless (package-installed-p p)
-      (unless has-refreshed
-        (message "Refreshing package database...")
-        (package-refresh-contents)
-        (setq has-refreshed t)
-        (message "Done."))
-      (package-install p)))
-
-  (dolist (pkg package-pinned-packages)
-    (let ((p (car pkg)))
-      (update-package p has-refreshed)))
-
-  (dolist (pkg exordium-extra-packages)
-    (update-package pkg has-refreshed)))
+      has-refreshed)
+  (mapc (lambda (pkg)
+          (unless (package-installed-p pkg)
+            (unless has-refreshed
+              (message "Refreshing package database...")
+              (package-refresh-contents)
+              (setq has-refreshed t)
+              (message "Done."))
+            (package-install pkg)))
+        (append (mapcar #'car package-pinned-packages)
+                exordium-extra-packages)))
 
 ;; - Some packages (i.e., magit, forge) require seq-2.24.
 ;; - Emacs-29.1 is delivered with seq-2.23.
@@ -191,28 +224,6 @@ Each element of the list is in the same form as in `package-pinned-packages'."
   (let (debug-on-error)
     ;; this assumes `package-refresh-contents has been called'
     (package-install (car (alist-get 'seq package-archive-contents)))))
-
-;;; Path for "require"
-
-(add-to-list 'load-path exordium-modules-dir)
-
-(defun add-directory-tree-to-load-path (dir &optional ignore-if-absent)
-  "Add DIR and all its subdirs to the load path."
-  (cond ((file-directory-p dir)
-         (add-to-list 'load-path dir)
-         (let ((default-directory dir))
-           (normal-top-level-add-subdirs-to-load-path)))
-        ((not ignore-if-absent)
-         (warn "Missing directory: %s" dir))))
-
-(add-directory-tree-to-load-path exordium-extensions-dir)
-(add-directory-tree-to-load-path exordium-themes-dir)
-(add-directory-tree-to-load-path exordium-local-dir t)
-
-(add-directory-tree-to-load-path exordium-taps-root)
-
-(setq custom-theme-directory exordium-themes-dir)
-
 
 ;; This is only needed once, near the top of the file
 (eval-when-compile
@@ -229,17 +240,18 @@ Each element of the list is in the same form as in `package-pinned-packages'."
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)
 
-;;; remove a package from the builtin list so it can be upgraded
-(defun exordium-ignore-builtin (pkg)
+(defun exordium--ignore-builtin (pkg)
+  "Remove the PKG from the builtin list so it can be upgraded."
   (assq-delete-all pkg package--builtins)
   (assq-delete-all pkg package--builtin-versions))
 
 
 ;;; Load Modules
-(use-package bytecomp :ensure nil)
-(defun recompile-modules ()
-  "Recompile modules for which the .elc is older than the .el, if
-the .elc exists. Also discard .elc without corresponding .el"
+(require 'bytecomp)
+(defun exordium-recompile-modules ()
+  "Recompile modules.
+For which the .elc is older than the .el, if the .elc exists.
+Also discard .elc without corresponding .el."
   (interactive)
   (dolist (dir (list exordium-modules-dir
                      exordium-themes-dir
@@ -258,139 +270,154 @@ the .elc exists. Also discard .elc without corresponding .el"
           (unless (file-exists-p el)
             (warn "Removing singleton .elc file: %s" elc)
             (delete-file elc)))))))
-(recompile-modules)
+(exordium-recompile-modules)
+
+(eval-and-compile
+  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
 
-(use-package init-lib :ensure nil)         ; utility functions - load this first
-(use-package init-environment :ensure nil) ; environment variables
+(exordium-require 'init-lib)              ; utility functions - load this first
+
+(exordium-require 'init-environment)      ; environment variables
 
 ;;; Local preferences (fonts, frame size etc.)
-(use-package init-prefs :ensure nil)       ; defines variables that prefs.el can override
+(exordium-require 'init-prefs)            ; defines variables that prefs.el can override
+
 (dolist (tapped-file exordium-tapped-prefs-files)
-  (load tapped-file))
+  (message "Loadding tapped prefs file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
 ;;; Themes
 ;;; Note: use "export TERM=xterm-256color" for emacs -nw
-(use-package init-progress-bar :ensure nil)
+(exordium-require 'init-progress-bar nil)
+
 (when exordium-nw
   (set-face-background 'highlight nil))
-(use-package init-themes :ensure nil :if exordium-theme)
+(when exordium-theme
+  (exordium-require 'init-themes))
 
 ;;; Look and feel
-(use-package init-look-and-feel :ensure nil)   ; fonts, UI, keybindings, saving files etc.
-(use-package init-font-lock :ensure nil)       ; enables/disables font-lock globally.
-(use-package init-linum :ensure nil)           ; line numbers
-(use-package init-smooth-scroll
-  :ensure nil
-  :if exordium-smooth-scroll
-  :config (smooth-scroll-mode 1)) ; smooth
-                                                                                                       ; scroll
+(exordium-require 'init-look-and-feel)    ; fonts, UI, keybindings, saving files etc.
+(exordium-require 'init-font-lock)        ; enables/disables font-lock globally.
+(exordium-require 'init-linum)            ; line numbers
+(when exordium-smooth-scroll
+  (exordium-require 'init-smooth-scroll nil)
+  (smooth-scroll-mode 1)) ; smooth scroll
 
 (update-progress-bar)
 
 ;;; Usability
-(use-package init-window-manager :ensure nil)  ; navigate between windows
-(use-package init-util :ensure nil)            ; utilities like match paren, bookmarks...
+(exordium-require 'init-window-manager)  ; navigate between windows
+(exordium-require 'init-util)            ; utilities like match paren, bookmarks...
 (unless exordium-helm-everywhere
-  (use-package init-ido :ensure nil))          ; supercharged completion engine
-(use-package init-highlight :ensure nil)       ; highlighting current line, symbol under point
-(use-package init-autocomplete :ensure nil
-  :if (eq exordium-complete-mode :auto-complete))
-(use-package init-company :ensure nil
-  :if (eq exordium-complete-mode :company))
+  (exordium-require 'init-ido))          ; supercharged completion engine
+(exordium-require 'init-highlight)       ; highlighting current line, symbol under point
 
-(use-package init-helm-projectile :ensure nil
-  :if exordium-helm-projectile)
-(use-package init-helm :ensure nil)            ; setup helm
+(pcase exordium-complete-mode
+  (:auto-complete
+   (exordium-require 'init-autocomplete))
+  (:company
+   (exordium-require 'init-company)))    ; completion
 
-(use-package init-help :ensure nil
-  :if exordium-help-extensions)
+(when exordium-helm-projectile
+  (exordium-require 'init-helm-projectile))
+
+(exordium-require 'init-helm)             ; setup helm
+
+(when exordium-help-extensions
+  (exordium-require 'init-help))           ; extra help
 
 (update-progress-bar)
 
-(use-package init-dired :ensure nil)           ; enable dired+ and wdired permission editing
-(use-package init-git :ensure nil)             ; Magit and git gutter
-(use-package init-git-visit-diffs :ensure nil) ; visit diffs in successive narrowed buffers
-(use-package init-forge :ensure nil)           ; Forge
-(use-package init-flb-mode :ensure nil)        ; frame-local buffers
+(exordium-require 'init-dired)            ; enable dired+ and wdired permission editing
+(exordium-require 'init-git)              ; Magit and git gutter
+(exordium-require 'init-git-visit-diffs)  ; visit diffs in successive narrowed buffers
+(exordium-require 'init-forge)            ; Forge
+(exordium-require 'init-flb-mode)         ; frame-local buffers
 
 (update-progress-bar)
 
 ;;; Prog mode
-(use-package init-prog-mode :ensure nil)
+(exordium-require 'init-prog-mode )
 
 ;;; Shell mode
-(use-package init-shell :ensure nil)
+(exordium-require 'init-prog-mode)
 
 ;;; Major modes
-(use-package init-markdown :ensure nil)
-(use-package init-org :ensure nil)
-(use-package init-xml :ensure nil)
+(exordium-require 'init-markdown)
+(exordium-require 'init-org)
+(exordium-require 'init-xml)
 
 ;;; OS-specific things
-(use-package init-osx :ensure nil :if exordium-osx)
+(when exordium-osx
+  (exordium-require 'init-osx))
 
 ;;; C++
-(use-package init-cpp :ensure nil)
-(use-package init-bde-style :ensure nil)
-(use-package init-yasnippet :ensure nil :if exordium-yasnippet)
-(use-package init-gdb :ensure nil)
+(exordium-require 'init-cpp)
+(exordium-require 'init-bde-style)
+(when exordium-yasnippet
+  (exordium-require 'init-yasnippet))
+(exordium-require 'init-gdb)
 
 ;;; RTags
-(use-package init-rtags :ensure nil)
+(exordium-require 'init-rtags nil
+                  :functions (rtags-auto-complete))
 (when (and (eq exordium-complete-mode :auto-complete)
-       exordium-rtags-auto-complete)
+           exordium-rtags-auto-complete)
   (rtags-auto-complete))
-(use-package init-rtags-helm :ensure nil)
-(use-package init-rtags-cmake :ensure nil)
-(use-package init-rtags-cdb :ensure nil)
+(exordium-require 'init-rtags-helm)
+(exordium-require 'init-rtags-cmake)
+(exordium-require 'init-rtags-cdb)
 
 (update-progress-bar)
 
 ;;; JS
-(use-package init-javascript :ensure nil)
+(exordium-require 'init-javascript)
 
 ;;; Python
-(use-package init-python :ensure nil)
+(exordium-require 'init-python)
 
 ;;; Ruby
-(use-package init-ruby :ensure nil)
+(exordium-require 'init-ruby)
 
 ;;; Lisp
-(use-package init-elisp :ensure nil)
+(exordium-require 'init-elisp)
 
 ;;; Clojure
-(use-package init-clojure :ensure nil :if exordium-clojure)
+(when exordium-clojure
+  (exordium-require 'init-clojure))
 
 ;;; Groovy
-(use-package init-groovy :ensure nil)
+(exordium-require 'init-groovy)
 
 ;;; include-what-you-use
-(use-package init-iwyu :ensure nil)
+(exordium-require 'init-iwyu)
 
 (update-progress-bar)
 
 ;;; Desktop - close to the end so customisations had a chance to kick in
 (when exordium-desktop
-  (use-package init-desktop :ensure nil))
+  (exordium-require 'init-desktop))
 
-(use-package init-powerline :ensure nil
-  :if (and exordium-theme exordium-enable-powerline))
+(when (and exordium-theme exordium-enable-powerline)
+  (exordium-require 'init-powerline))
 
 ;; Docker
-(use-package init-docker :ensure nil)
+(exordium-require 'init-docker)
 
 ;; Flycheck
-(use-package init-flycheck :ensure nil)
+(exordium-require 'init-flycheck)
 
 ;;; Treesit
-(use-package init-treesit :ensure nil)
+(exordium-require 'init-treesit)
 
 ;;; LSP
-(use-package init-lsp :ensure nil :if exordium-lsp-mode-enable)
+(when exordium-lsp-mode-enable
+  (exordium-require 'init-lsp))
 
 ;;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
-  (load tapped-file))
+  (message "Loadding tapped after-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
 (update-progress-bar)
 
@@ -403,4 +430,7 @@ the .elc exists. Also discard .elc without corresponding .el"
 
 " (if current-user (car current-user) exordium-current-user))))
 
-;;; End of file
+
+(provide 'init)
+
+;;; init.el ends here
