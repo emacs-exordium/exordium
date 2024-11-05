@@ -153,9 +153,7 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 ;;; Path for "require"
 (add-to-list 'load-path exordium-modules-dir)
 (exordium--add-directory-tree-to-load-path exordium-extensions-dir) ;; @todo third party
-(exordium--add-directory-tree-to-load-path exordium-themes-dir)
 (exordium--add-directory-tree-to-load-path exordium-local-dir t)
-
 
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
@@ -288,6 +286,7 @@ Also discard .elc without corresponding .el."
 
 ;;; Themes
 ;;; Note: use "export TERM=xterm-256color" for emacs -nw
+(setq custom-theme-directory exordium-themes-dir)
 (exordium-require 'init-progress-bar nil)
 
 (when exordium-nw

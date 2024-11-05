@@ -1,56 +1,65 @@
-;;; color-theme-atom-one.el --- based on the colors from the Atom One theme
-;;;
-;;; Credit: inspired by:
-;;; https://github.com/atom/one-dark-ui
-;;; https://github.com/jonathanchu/atom-one-dark-theme
+;;; color-theme-atom-one.el --- based on the colors from the Atom One theme -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; Credit: inspired by:
+;; https://github.com/atom/one-dark-ui
+;; https://github.com/jonathanchu/atom-one-dark-theme
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 ;;; Theme options
 
 (defcustom exordium-atom-one-search-box t
   "Enable displaying a box around search occurrences.
 This is similar to how Atom displays them, but it makes the line
-width change as search progress which can be distracting. Set
+width change as search progress which can be distracting.  Set
 this to nil for emacs-like search results."
   :group 'exordium
   :type  'boolean)
 
-;;; Color palette
-
-(defconst atom-one-colors
-  '((atom-one-dark-accent   . "#528BFF")
-    (atom-one-dark-fg       . "#ABB2BF")
-    (atom-one-dark-bg       . "#282C34")
-    (atom-one-dark-bg-1     . "#21252b")
-    (atom-one-dark-bg-hl    . "#2F343D")
-    (atom-one-dark-mono-1   . "#ABB2BF")
-    (atom-one-dark-mono-2   . "#828997")
-    (atom-one-dark-mono-3   . "#5C6370")
-    (atom-one-dark-cyan     . "#56B6C2")
-    (atom-one-dark-blue     . "#61AFEF")
-    (atom-one-dark-purple   . "#C678DD")
-    (atom-one-dark-green    . "#98C379")
-    (atom-one-dark-red-1    . "#E06C75")
-    (atom-one-dark-red-2    . "#BE5046")
-    (atom-one-dark-orange-1 . "#D19A66")
-    (atom-one-dark-orange-2 . "#E5C07B")
-    (atom-one-dark-gray     . "#3E4451")
-    (atom-one-dark-silver   . "#AAAAAA")
-    (atom-one-dark-black    . "#0F1011")))
-
 ;;; Theme definition
 
 (defmacro with-atom-one-colors (&rest body)
-  "Execute `BODY' in a scope with variables bound to the atom one colors."
-  `(let ((class '((class color) (min-colors 89)))
-         ,@(mapcar (lambda (cons)
-                     (list (car cons) (cdr cons)))
-                   atom-one-colors))
-     ,@body))
+  "Execute BODY in a scope with variables bound to the atom one colors."
+  ;; Color palette
+  (let ((atom-one-colors
+         '((atom-one-dark-accent   . "#528BFF")
+           (atom-one-dark-fg       . "#ABB2BF")
+           (atom-one-dark-bg       . "#282C34")
+           (atom-one-dark-bg-1     . "#21252b")
+           (atom-one-dark-bg-hl    . "#2F343D")
+           (atom-one-dark-mono-1   . "#ABB2BF")
+           (atom-one-dark-mono-2   . "#828997")
+           (atom-one-dark-mono-3   . "#5C6370")
+           (atom-one-dark-cyan     . "#56B6C2")
+           (atom-one-dark-blue     . "#61AFEF")
+           (atom-one-dark-purple   . "#C678DD")
+           (atom-one-dark-green    . "#98C379")
+           (atom-one-dark-red-1    . "#E06C75")
+           (atom-one-dark-red-2    . "#BE5046")
+           (atom-one-dark-orange-1 . "#D19A66")
+           (atom-one-dark-orange-2 . "#E5C07B")
+           (atom-one-dark-gray     . "#3E4451")
+           (atom-one-dark-silver   . "#AAAAAA")
+           (atom-one-dark-black    . "#0F1011"))))
+    `(let ((class '((class color) (min-colors 89)))
+           ,@(mapcar (lambda (cons)
+                       (list (car cons) (cdr cons)))
+                     atom-one-colors))
+       (ignore class)
+       ,@(mapcar (lambda (cons)
+                   `(ignore ,(car cons)))
+                 atom-one-colors)
+       ,@body)))
 
 (defmacro atom-one-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -447,7 +456,7 @@ names to which it refers are bound."
      )))
 
 (defun define-atom-one-theme ()
-  "Define the atom one theme"
+  "Define the atom one theme."
   (deftheme atom-one "A port of the default theme of the Atom editor")
   (with-atom-one-colors
    (apply 'custom-theme-set-faces 'atom-one (atom-one-face-specs)))
@@ -456,15 +465,12 @@ names to which it refers are bound."
 ;;; Debugging functions
 
 (defun set-colors-atom-one ()
-  "Sets the colors to the monokai theme"
+  "Set the colors to the monokai theme."
   (interactive)
   (with-atom-one-colors
    'default
    (apply 'custom-set-faces (atom-one-face-specs))))
 
-
 (provide 'color-theme-atom-one)
 
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
+;;; color-theme-atom-one.el ends here

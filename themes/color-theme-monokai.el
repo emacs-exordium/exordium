@@ -1,57 +1,19 @@
-;;; color-theme-monokai.el --- a fruity theme.
-;;;
-;;; Credit:
-;;; Inspired by the "Monokai" theme from Kelvin Smith.
+;;; color-theme-monokai.el --- a fruity theme.       -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;;
+;; Credit:
+;; Inspired by the "Monokai" theme from Kelvin Smith.
+
+;;; Code:
 
 (require 'org)
-(require 'init-prefs)
 
-;;; Color palette. Note: only variant of the theme for now ("default").
-
-(defconst monokai-colors
-  '((default .
-      (;; Accented colors
-       (yellow           . "#E6DB74")
-       (orange           . "#FD971F")
-       (red              . "#F92672")
-       (magenta          . "#FD5FF0")
-       (violet           . "#AE81FF")
-       (blue             . "#66D9EF")
-       (cyan             . "#A1EFE4")
-       (green            . "#A6E22E")
-       (gray             . "#474747")
-
-       ;; Darker and lighter accented colors
-       (yellow-hc        . "#F3EA98")
-       (yellow-lc        . "#968B26")
-       (orange-hc        . "#FEB257")
-       (orange-lc        . "#A45E0A")
-       (red-hc           . "#FC5C94")
-       (red-lc           . "#A20C41")
-       (magenta-hc       . "#FE87F4")
-       (magenta-lc       . "#A41F99")
-       (violet-hc        . "#C2A1FF")
-       (violet-lc        . "#562AA6")
-       (blue-hc          . "#8DE6F7")
-       (blue-lc          . "#21889B")
-       (cyan-hc          . "#BBF7EF")
-       (cyan-lc          . "#349B8D")
-       (green-hc         . "#C1F161")
-       (green-lc         . "#67930F")
-       (gray-lc          . "#333333")
-       (gray-hc          . "#6b6b6b")
-
-       ;; Adaptive colors
-       (monokai-fg       . "#F8F8F2")
-       (monokai-bg       . "#272822")
-       (monokai-hl-line  . "#3E3D31")
-       (monokai-hl       . "#49483E")
-       (monokai-emph     . "#F8F8F0")
-       (monokai-comments . "#75715E")
-
-       ;; Adaptive higher/lower contrast accented colors
-       (monokai-fg-hc    . "#141414")
-       (monokai-fg-lc    . "#171A0B")))))
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 ;;; Options
 
@@ -81,53 +43,71 @@
   :group 'monokai)
 
 (defmacro with-monokai-colors (mode &rest body)
-  "Execute `BODY' in a scope with variables bound to the various monokai colors.
-`MODE' should be set to either 'default, ..."
-  `(let ((colors (or (cdr (assoc ,mode monokai-colors))
-                     (error "no such theme flavor"))))
-     (let ((yellow           (cdr (assoc 'yellow colors)))
-           (orange           (cdr (assoc 'orange colors)))
-           (red              (cdr (assoc 'red colors)))
-           (magenta          (cdr (assoc 'magenta colors)))
-           (violet           (cdr (assoc 'violet colors)))
-           (blue             (cdr (assoc 'blue colors)))
-           (cyan             (cdr (assoc 'cyan colors)))
-           (green            (cdr (assoc 'green colors)))
-           (gray             (cdr (assoc 'gray colors)))
-           (yellow-hc        (cdr (assoc 'yellow-hc colors)))
-           (yellow-lc        (cdr (assoc 'yellow-lc colors)))
-           (orange-hc        (cdr (assoc 'orange-hc colors)))
-           (orange-lc        (cdr (assoc 'orange-lc colors)))
-           (red-hc           (cdr (assoc 'red-hc colors)))
-           (red-lc           (cdr (assoc 'red-lc colors)))
-           (magenta-hc       (cdr (assoc 'magenta-hc colors)))
-           (magenta-lc       (cdr (assoc 'magenta-lc colors)))
-           (violet-hc        (cdr (assoc 'violet-hc colors)))
-           (violet-lc        (cdr (assoc 'violet-lc colors)))
-           (blue-hc          (cdr (assoc 'blue-hc colors)))
-           (blue-lc          (cdr (assoc 'blue-lc colors)))
-           (cyan-hc          (cdr (assoc 'cyan-hc colors)))
-           (cyan-lc          (cdr (assoc 'cyan-lc colors)))
-           (green-hc         (cdr (assoc 'green-hc colors)))
-           (green-lc         (cdr (assoc 'green-lc colors)))
-           (gray-hc          (cdr (assoc 'gray-hc colors)))
-           (gray-lc          (cdr (assoc 'gray-lc colors)))
-           (monokai-fg       (cdr (assoc 'monokai-fg colors)))
-           (monokai-bg       (cdr (assoc 'monokai-bg colors)))
-           (monokai-hl-line  (cdr (assoc 'monokai-hl-line colors)))
-           (monokai-hl       (cdr (assoc 'monokai-hl colors)))
-           (monokai-emph     (cdr (assoc 'monokai-emph colors)))
-           (monokai-comments (cdr (assoc 'monokai-comments colors)))
-           (monokai-fg-hc    (cdr (assoc 'monokai-fg-hc colors)))
-           (monokai-fg-lc    (cdr (assoc 'monokai-fg-lc colors)))
+  "Execute BODY in a scope with variables bound to the various monokai colors.
+MODE should be set to either \\='default, ..."
+  ;; Color palette. Note: only variant of the theme for now ("default").
+  (let* ((monokai-colors
+         '((default .
+                    (;; Accented colors
+                     (yellow           . "#E6DB74")
+                     (orange           . "#FD971F")
+                     (red              . "#F92672")
+                     (magenta          . "#FD5FF0")
+                     (violet           . "#AE81FF")
+                     (blue             . "#66D9EF")
+                     (cyan             . "#A1EFE4")
+                     (green            . "#A6E22E")
+                     (gray             . "#474747")
 
+                     ;; Darker and lighter accented colors
+                     (yellow-hc        . "#F3EA98")
+                     (yellow-lc        . "#968B26")
+                     (orange-hc        . "#FEB257")
+                     (orange-lc        . "#A45E0A")
+                     (red-hc           . "#FC5C94")
+                     (red-lc           . "#A20C41")
+                     (magenta-hc       . "#FE87F4")
+                     (magenta-lc       . "#A41F99")
+                     (violet-hc        . "#C2A1FF")
+                     (violet-lc        . "#562AA6")
+                     (blue-hc          . "#8DE6F7")
+                     (blue-lc          . "#21889B")
+                     (cyan-hc          . "#BBF7EF")
+                     (cyan-lc          . "#349B8D")
+                     (green-hc         . "#C1F161")
+                     (green-lc         . "#67930F")
+                     (gray-lc          . "#333333")
+                     (gray-hc          . "#6b6b6b")
+
+                     ;; Adaptive colors
+                     (monokai-fg       . "#F8F8F2")
+                     (monokai-bg       . "#272822")
+                     (monokai-hl-line  . "#3E3D31")
+                     (monokai-hl       . "#49483E")
+                     (monokai-emph     . "#F8F8F0")
+                     (monokai-comments . "#75715E")
+
+                     ;; Adaptive higher/lower contrast accented colors
+                     (monokai-fg-hc    . "#141414")
+                     (monokai-fg-lc    . "#171A0B")))))
+         (colors (or (cdr (assoc (eval mode) monokai-colors))
+                     )))
+    `(let ((class '((class color) (min-colors 89)))
+           ,@(mapcar (lambda (cons)
+                       (list (car cons) (cdr cons)))
+                     colors)
            (s-variable-pitch (if monokai-use-variable-pitch
-                               'variable-pitch 'default))
-           (class            '((class color) (min-colors 89))))
+                                 'variable-pitch
+                               'default)))
+       (ignore class)
+       (ignore s-variable-pitch)
+       ,@(mapcar (lambda (cons)
+                   `(ignore ,(car cons)))
+                 colors)
        ,@body)))
 
 (defmacro monokai-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -576,7 +556,7 @@ names to which it refers are bound."
      )))
 
 (defun define-monokai-theme ()
-  "Define the monokai theme"
+  "Define the monokai theme."
   (deftheme monokai "A fruity theme")
   (with-monokai-colors
    'default
@@ -586,11 +566,12 @@ names to which it refers are bound."
 ;;; Debugging functions
 
 (defun set-colors-monokai ()
-  "Sets the colors to the monokai theme"
+  "Set the colors to the monokai theme."
   (interactive)
   (with-monokai-colors
    'default
    (apply 'custom-set-faces (monokai-face-specs))))
 
 (provide 'color-theme-monokai)
-;;; color-theme-monokai.el ends there
+
+;;; color-theme-monokai.el ends here
