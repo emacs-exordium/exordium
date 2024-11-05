@@ -1,19 +1,25 @@
-;;;; Progress bar.
-;;;
-;;; This module provides a function `update-progress-bar' which display the
-;;; progress of init.el. This function is supposed to be called at various
-;;; intervals of init.el. Constant `exordium-loading-step-count' must be set to
-;;; the number of steps, e.g. the number of times `update-progress-bar' will be
-;;; called.
-;;;
-;;; This idea was shamelessly borrowed from Spacemacs.
-;;;
-;;; Note: this is just for fun. It actually makes the configuration load slower.
+;;; init-progress-bar.el --- Exordium progress bar   -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; This module provides a function `update-progress-bar' which display the
+;; progress of init.el.  This function is supposed to be called at various
+;; intervals of init.el.  Constant `exordium-loading-step-count' must be set to
+;; the number of steps, e.g. the number of times `update-progress-bar' will be
+;; called.
+;;
+;; This idea was shamelessly borrowed from Spacemacs.
+;;
+;; Note: this is just for fun.  It actually makes the configuration load slower.
 
-;;; Set this constant to the number of times `update-progress-bar' is called in
-;;; init.el:
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+
+;; Set this constant to the number of times `update-progress-bar' is called in
+;; init.el:
 (defconst exordium-loading-step-count 6)
 
 ;;; Don't change any of these:
@@ -24,7 +30,7 @@
 (defvar exordium-start-time (current-time))
 
 (defun update-progress-bar ()
-  "Add one more step to the progress bar"
+  "Add one more step to the progress bar."
   (when exordium-progress-bar
     ;; Use this for debugging, each step should take approximately the same time
     ;; (message "update-progress-bar: %s"
@@ -37,3 +43,5 @@
     (redisplay)))
 
 (provide 'init-progress-bar)
+
+;;; init-progress-bar.el ends here
