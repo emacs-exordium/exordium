@@ -1,26 +1,32 @@
-;;;; GDB
-;;;
-;;; Shortcuts:
-;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
-;;;
-;;; This module sets up the same function keys as Eclipse, F5 to F8 (run slow to fast):
-;;;
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; F5             Step into (s)
-;;; F6             Next (n)
-;;; F7             Run to the end of the function
-;;; F8             Run
-;;;
-;;; Functions:
-;;;
-;;; - M-x `gdb-few-windows': split the current frame into 3 windows stacked up
-;;;   on top of each other: gdb command line, source code, program IO.
-;;;   This function completes the native `gdb-many-windows' which displays 6
-;;;   windows (stack, breakpoints, local variables or registers).
+;;; init-gdb.el --- GDB                             -*- lexical-binding: t -*-
 
-(use-package gdb-mi)
+;;; Commentary:
+;;
+;;
+;; Shortcuts:
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
+;;
+;; This module sets up the same function keys as Eclipse, F5 to F8 (run slow to fast):
+;;
+;; -------------- -------------------------------------------------------
+;; Key            Definition
+;; -------------- -------------------------------------------------------
+;; F5             Step into (s)
+;; F6             Next (n)
+;; F7             Run to the end of the function
+;; F8             Run
+;;
+;; Functions:
+;;
+;; - M-x `gdb-few-windows': split the current frame into 3 windows stacked up
+;;   on top of each other: gdb command line, source code, program IO.
+;;   This function completes the native `gdb-many-windows' which displays 6
+;;   windows (stack, breakpoints, local variables or registers).
+
+;;; Code:
+
+(require 'gdb-mi)
+(require 'gud)
 
 ;; Show main source buffer when using GDB.
 (setq gdb-show-main t)
@@ -31,7 +37,7 @@
 
 ;;; Highlight the current line in the source window.
 (defconst gdb-highlight-face 'highlight
-  "face to use for highlighting the current line")
+  "Face to use for highlighting the current line.")
 
 (defvar gud-overlay
   (let ((ov (make-overlay (point-min) (point-min))))
@@ -43,26 +49,26 @@
   "Highlight the current line."
   (let ((ov gud-overlay)
         (bf (gud-find-file true-file)))
-    ;; TODO: should use with-current-buffer?
-    (save-excursion
-      (set-buffer bf)
+    (with-current-buffer bf)
       (move-overlay ov (line-beginning-position) (line-end-position)
-                    (current-buffer)))))
+                    (current-buffer))))
 
 (defun gud-kill-buffer ()
+  "Kill GUD buffer by deleting overlay."
   (if (eq major-mode 'gud-mode)
       (delete-overlay gud-overlay)))
 
-(add-hook 'kill-buffer-hook 'gud-kill-buffer)
+(add-hook 'kill-buffer-hook #'gud-kill-buffer)
 
 
 ;;; Keep the current line in sync with the point and in the center of the
 ;;; buffer. Otherwise the current line may disappear from the buffer as you step
 ;;; into the code. I don't know why this is not the default.
 (defadvice gud-display-line (after gud-display-line-centered activate)
-  "Center the current line in the source code window"
-  (when (and gud-overlay-arrow-position gdb-source-window)
-    (with-selected-window gdb-source-window
+  "Center the current line in the source code window."
+  (when gud-overlay-arrow-position
+    (with-selected-window (gdb-display-buffer
+                           (gdb-get-buffer 'gdb-assembler-buffer))
       ; (marker-buffer gud-overlay-arrow-position)
       (save-restriction
         ;; Compiler-happy equivalent to (goto-line (ad-get-arg 1))
@@ -72,8 +78,8 @@
 
 
 (defun gdb-few-windows ()
-  "Slit the current frame into 3 windows: gdb command line,
-source code, and program IO."
+  "Slit the current frame into 3 windows.
+Windows created are gdb command line, source code, and program IO."
   (interactive)
   (switch-to-buffer gud-comint-buffer)
   (delete-other-windows)
@@ -91,17 +97,25 @@ source code, and program IO."
            (gud-find-file gdb-main-file)
          ;; Put the buffer list in window if we cannot find a source file...
          (list-buffers-noselect))))
-    (setq gdb-source-window (selected-window))
     ;; Give focus to the comint window.
     (set-window-dedicated-p win0 t)
     (select-window win0)))
 
 
 ;;; Keys
+;; Suppress compiler warnings, like in
+;; https://github.com/emacs-mirror/emacs/blob/a0f8fb8/lisp/progmodes/gud.el#L59-L76
+(eval-when-compile
+  (declare-function gud-finish    "gud" (arg))
+  (declare-function gud-cont      "gud" (arg))
+  (declare-function gud-next      "gud" (arg))
+  (declare-function gud-step      "gud" (arg)))
+(keymap-set gud-minor-mode-map "<f5>" #'gud-step)
+(keymap-set gud-minor-mode-map "<f6>" #'gud-next)
+(keymap-set gud-minor-mode-map "<f7>" #'gud-finish)
+(keymap-set gud-minor-mode-map "<f8>" #'gud-cont)
 
-(define-key gud-minor-mode-map [(f5)] #'gud-step)
-(define-key gud-minor-mode-map [(f6)] #'gud-next)
-(define-key gud-minor-mode-map [(f7)] #'gud-finish)
-(define-key gud-minor-mode-map [(f8)] #'gud-cont)
 
 (provide 'init-gdb)
+
+;;; init-gdb.el ends here
