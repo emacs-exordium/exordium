@@ -237,11 +237,6 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)
-
-(defun exordium--ignore-builtin (pkg)
-  "Remove the PKG from the builtin list so it can be upgraded."
-  (assq-delete-all pkg package--builtins)
-  (assq-delete-all pkg package--builtin-versions))
 
 
 ;;; Load Modules

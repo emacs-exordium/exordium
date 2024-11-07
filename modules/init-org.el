@@ -1,6 +1,15 @@
-;;;; Org mode
+;;; init-org.el --- Org mode                         -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
 
 (defface exordium-org-wait '((t (:inherit org-todo)))
   "Face for WAIT keywords."
@@ -15,7 +24,14 @@
 (exordium--ignore-builtin 'org)
 
 (use-package org
-  :commands (org-mode)
+  :functions (exordium--org-babel-after-execute)
+  :autoload (org-in-src-block-p
+             org-babel-get-src-block-info
+             org-babel-process-params)
+  :commands (org-mark-subtree
+             org-display-inline-images
+             org-mode)
+  :defer t
   :mode (("\\.org\\'" . org-mode))
   :bind
   (:map org-mode-map
@@ -38,18 +54,21 @@
   (org-confirm-babel-evaluate (not exordium-no-org-babel-confirm)
                               "Turn off the confirmation for code eval when using org-babel.")
   (org-support-shift-select t)
+
   :config
   (add-hook 'org-src-mode-hook
-            #'(lambda ()
-                (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)))
+            (lambda ()
+              (when (boundp 'flycheck-disabled-checkers)
+                (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))))
+
   (add-hook 'org-mode-hook #'turn-on-visual-line-mode)
 
   (defun exordium--org-babel-after-execute ()
-    "Redisplay inline images in subtree if cursor in source block with :result graphics.
-
-Rationale:
-For some reason `org-babel-execute' is not producing images from .dot format (`org-version' 9.5.4).
-This is a spin off https://stackoverflow.com/a/66911315/519827, but REFRESH is set to nil."
+    "Redisplay inline images in subtree if cursor in source block with :result.
+Rationale: For some reason `org-babel-execute' is not producing
+images from .dot format (`org-version' 9.5.4).  This is a spin
+off https://stackoverflow.com/a/66911315/519827, but REFRESH is
+set to nil."
     (when (org-in-src-block-p)
       (let (beg end)
         (save-excursion
@@ -61,6 +80,7 @@ This is a spin off https://stackoverflow.com/a/66911315/519827, but REFRESH is s
                     (result-params (cdr (assq :result params)))
                     ((string-match-p "graphics" result-params)))
           (org-display-inline-images nil nil beg end)))))
+
   (add-hook 'org-babel-after-execute-hook #'exordium--org-babel-after-execute)
 
   ;; TODO: delete `exordium-enable-org-export'??
@@ -69,28 +89,50 @@ This is a spin off https://stackoverflow.com/a/66911315/519827, but REFRESH is s
     ;; TODO: add extra languages configurable by user
     (org-babel-do-load-languages
      'org-babel-load-languages
-     `((perl       . t)
-       (ruby       . t)
-       (shell      . t)
-       (python     . t)
-       (emacs-lisp . t)
-       (C          . t)
+     `((C          . t)
+       (R          . t)
+       (awk        . t)
+       (clojure    . t)
+       (css        . t)
        (dot        . t)
+       (emacs-lisp . t)
+       (fortran    . t)
+       (gnuplot    . t)
+       (groovy     . t)
+       (java       . t)
+       (js         . t)
+       (latex      . t)
+       (lisp       . t)
+       (lua        . t)
+       (makefile   . t)
+       (org        . t)
+       (perl       . t)
+       (plantuml   . t)
+       (python     . t)
+       (ruby       . t)
+       (scheme     . t)
+       (sed        . t)
+       (shell      . t)
        (sql        . t)))))
 
 
 ;;; Show org-mode bullets as UTF-8 characters.
 (use-package org-superstar
+  :after (org)
+  :defer t
   :hook
-  (org-mode . (lambda () (org-superstar-mode 1))))
+  (org-mode . org-superstar-mode))
 
 (use-package ox-html
   :ensure org
-  :after (org))
+  :defer t
+  :after (org)
+  :if (not exordium-org-export-css))
 
 (use-package ox-html
   :ensure org
   :after (org)
+  :defer t
   :if exordium-org-export-css
   :custom
   (org-html-htmlize-output-type 'css
@@ -101,26 +143,32 @@ This is a spin off https://stackoverflow.com/a/66911315/519827, but REFRESH is s
 (use-package ox-md
   :ensure org
   :after (org)
+  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-beamer
   :ensure org
   :after (org)
+  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-odt
   :ensure org
   :after (org)
+  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-publish
   :ensure org
   :after (org)
+  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-gfm
-  :ensure t
   :after (org)
+  :defer t
   :if exordium-enable-org-export)
 
 (provide 'init-org)
+
+;;; init-org.el ends here

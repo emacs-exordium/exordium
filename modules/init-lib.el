@@ -67,6 +67,13 @@ It makes buffer local variable with an extra back tick added."
   (interactive)
   (when-let* ((url (thing-at-point 'url)))
     (browse-url url)))
+
+
+(defun exordium--ignore-builtin (pkg)
+  "Remove the PKG from the builtin list so it can be upgraded."
+  (assq-delete-all pkg package--builtins)
+  (assq-delete-all pkg package--builtin-versions))
+
 
 (defmacro exordium-setf-when-nil (&rest args)
                                         ; checkdoc-params: (args)
