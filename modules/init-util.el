@@ -1,97 +1,104 @@
-;;;; Small extensions
-;;;
-;;; Commands:
-;;; * M-x `update-config': pulls the latest config from github and recompiles
-;;;       all non-melpa Elisp files. You need to restart Emacs afterwards.
-;;; * M-x `insert-current-time' at cursor position
-;;; * M-x `insert-current-date-time' at cursor position
-;;; * M-x `exordium-flip-string-quotes' change quotes between ?\' and ?\"
-;;;
-;;; Keys:
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; C-%            `goto-matching-paren'
-;;;
-;;; C-c s          Push point onto position stack ("s = save")
-;;; C-c b          Pop point from position stack ("b = back")
-;;;
-;;; C-x C-\        Goto to last change (then second most recent edit, etc.)
-;;; C-x C-|        Add shift to reverse the direction
-;;;
-;;; C-c d          `duplicate-line'
-;;;
-;;; C-\            `delete-horizontal-space-forward'
-;;; C-BACKSPACE    `delete-horizontal-space-backward'
-;;;                (Emacs also has Meta-\ to delete all spaces)
-;;;
-;;; M-d            `delete-word'
-;;; M-BACKSPACE    `backward-delete-word'
-;;;
-;;; C-|            Toggle FCI mode on and off ("Fill columm indicator",
-;;;                e.g. the 80 column ruler)
-;;;
-;;; C-c j          Avy: jump to the beginning of any word on the screen. It
-;;; C-'            asks for the first character of the word you want, and then
-;;;                annotates each word that starts with this character with a
-;;;                unique code of 1 or 2 letters. Type this code to jump
-;;;                directly to the word. Note that the codes it generates are
-;;;                optimized for touch-type.
-;;;
-;;; M-Q            `unfill-paragraph': the opposite of M-q.
-;;;
-;;; Functions:
-;;;
-;;; `kill-all-buffers' does what you expect.
-;;;
-;;; `new-scratch' creates a new scratch buffer with a unique name, in
-;;; fundamental mode. This buffer doesn't need to be saved before being killed.
+;;; init-util.el --- Small extensions                -*- lexical-binding: t -*-
 
-(require 'init-lib)
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; Commands:
+;; * M-x `update-config': pulls the latest config from github and recompiles
+;;       all non-melpa Elisp files.  You need to restart Emacs afterwards.
+;; * M-x `insert-current-time' at cursor position
+;; * M-x `insert-current-date-time' at cursor position
+;; * M-x `exordium-flip-string-quotes' change quotes between ?\' and ?\"
+;;
+;; Keys:
+;; -------------- -------------------------------------------------------
+;; Key            Definition
+;; -------------- -------------------------------------------------------
+;; C-%            `goto-matching-paren'
+;;
+;; C-c s          Push point onto position stack ("s = save")
+;; C-c b          Pop point from position stack ("b = back")
+;;
+;; C-x C-\        Goto to last change (then second most recent edit, etc.)
+;; C-x C-|        Add shift to reverse the direction
+;;
+;; C-c d          `duplicate-line'
+;;
+;; C-\            `delete-horizontal-space-forward'
+;; C-BACKSPACE    `delete-horizontal-space-backward'
+;;                (Emacs also has Meta-\ to delete all spaces)
+;;
+;; M-d            `delete-word'
+;; M-BACKSPACE    `backward-delete-word'
+;;
+;; C-|            Toggle FCI mode on and off ("Fill columm indicator",
+;;                e.g. the 80 column ruler)
+;;
+;; C-c j          Avy: jump to the beginning of any word on the screen.  It
+;; C-'            asks for the first character of the word you want, and then
+;;                annotates each word that starts with this character with a
+;;                unique code of 1 or 2 letters.  Type this code to jump
+;;                directly to the word.  Note that the codes it generates are
+;;                optimized for touch-type.
+;;
+;; M-Q            `unfill-paragraph': the opposite of M-q.
+;;
+;; Functions:
+;;
+;; `kill-all-buffers' does what you expect.
+;;
+;; `new-scratch' creates a new scratch buffer with a unique name, in
+;; fundamental mode.  This buffer doesn't need to be saved before being killed.
 
-(use-package cl-lib :ensure nil)
-(use-package elisp-refs)
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
+(require 'cl-lib)
 
 
 ;;; Match parentheses
 ;;; Ctrl-% = go to match paren
 
-(defun goto-match-paren-or-up (arg)
-  "Go to the matching parenthesis if on parenthesis. Else go to
-   the opening parenthesis one level up."
-     (interactive "p")
-     (cond ((looking-at "\\s\(") (forward-list 1))
-           (t
-            (backward-char 1)
-            (cond ((looking-at "\\s\)")
-                   (forward-char 1) (backward-list 1))
-                  (t
-                   (while (not (looking-at "\\s("))
-                     (backward-char 1)
-                     (cond ((looking-at "\\s\)")
-                            (message "->> )")
-                            (forward-char 1)
-                            (backward-list 1)
-                            (backward-char 1)))))))))
+(defun goto-match-paren-or-up ()
+  "Go to the matching parenthesis if on parenthesis.
+Else go to the opening parenthesis one level up."
+  (interactive)
+  (cond ((looking-at "\\s\(") (forward-list 1))
+        (t
+         (backward-char 1)
+         (cond ((looking-at "\\s\)")
+                (forward-char 1) (backward-list 1))
+               (t
+                (while (not (looking-at "\\s("))
+                  (backward-char 1)
+                  (cond ((looking-at "\\s\)")
+                         (message "->> )")
+                         (forward-char 1)
+                         (backward-list 1)
+                         (backward-char 1)))))))))
 
 (defun goto-match-paren (arg)
-  "Go to the matching parenthesis if on parenthesis, otherwise
-   insert the character typed."
+  "Go to the matching parenthesis if on parenthesis.
+Otherwise insert the character typed.  When called with prefix ARG,
+insert the char that many times."
   (interactive "p")
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t                    (self-insert-command (or arg 1)))))
 
-(global-set-key [(control %)] 'goto-match-paren-or-up)
+(global-set-key [(control %)] #'goto-match-paren-or-up)
 
 
 ;;; Bookmark position stack
 
-(defvar postack-stack '() "The position stack")
+(defvar postack-stack '()
+  "The position stack.")
 
 (defun postack-goto (pos)
-  "Should be marker-goto."
+  "Switch to buffer and got to char of POS marker."
   (switch-to-buffer (marker-buffer pos))
   (goto-char (marker-position pos)))
 
@@ -119,37 +126,38 @@
           (t
            (message "Invalid position in stack")))))
 
-(global-set-key [(control c)(s)] 'postack-push)
-(global-set-key [(control c)(b)] 'postack-pop)
+(global-set-key [(control c)(s)] #'postack-push)
+(global-set-key [(control c)(b)] #'postack-pop)
 
 
 ;;; Goto last change
 
-(use-package goto-chg)
-(define-key global-map [(control x)(control \\)] 'goto-last-change)
-(define-key global-map [(control x)(control |)] 'goto-last-change-reverse)
-(define-key global-map [(control x)(control /)] 'goto-last-change-reverse)
+(use-package goto-chg
+  :bind
+  (("C-x C-\\" . #'goto-last-change)
+   ("C-x C-|" . #'goto-last-change-reverse)
+   ("C-x C-/" . #'goto-last-change-reverse)))
 
 
 ;;; Insert date/time
 
 (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
-  "Format of date to insert with `insert-current-date-time' func
+  "Format of date to insert with `insert-current-date-time' function.
 See help of `format-time-string' for possible replacements")
 
 (defvar current-time-format "%a %H:%M:%S"
-  "Format of date to insert with `insert-current-time' func.
+  "Format of date to insert with `insert-current-time' function.
 Note the weekly scope of the command's precision.")
 
 (defun insert-current-date-time ()
-  "insert the current date and time into current buffer.
+  "Insert the current date and time into current buffer.
 Uses `current-date-time-format' for the formatting the date/time."
   (interactive)
   (insert (format-time-string current-date-time-format (current-time)))
   (insert "\n"))
 
 (defun insert-current-time ()
-  "insert the current time into the current buffer."
+  "Insert the current time into the current buffer."
   (interactive)
   (insert (format-time-string current-time-format (current-time)))
   (insert "\n"))
@@ -158,15 +166,17 @@ Uses `current-date-time-format' for the formatting the date/time."
 ;;; Copy the whole buffer without changing the current position
 
 (defun copy-all ()
-  "Copy the entire buffer to the clipboard"
+  "Copy the entire buffer to the clipboard."
   (interactive)
-  (clipboard-kill-ring-save (point-min) (point-max)))
+  (without-restriction
+    (clipboard-kill-ring-save (point-min) (point-max))))
 
 
 ;;; Duplicate lines
 
 (defun duplicate-line-or-region (arg)
-  "Duplicate current line or region, leaving point in lower line."
+  "Duplicate current line or region, leaving point in lower line.
+When called with ARG, do this that many times."
   (interactive "*p")
   ;; Save the point for undo
   (setq buffer-undo-list (cons (point) buffer-undo-list))
@@ -186,7 +196,7 @@ Uses `current-date-time-format' for the formatting the date/time."
       (let ((line (buffer-substring bol eol))
             (buffer-undo-list t))
         ;; Insert the line arg times
-        (dotimes (i (if (> arg 0) arg 1))
+        (dotimes (_i (if (> arg 0) arg 1))
           (unless (string-suffix-p "\n" line)
             (newline))
           (insert line)))
@@ -198,7 +208,7 @@ Uses `current-date-time-format' for the formatting the date/time."
       ;; Leave the cursor an the same column if we duplicated 1 line
       (move-to-column col))))
 
-(global-set-key [(control c)(d)] 'duplicate-line-or-region)
+(global-set-key [(control c)(d)] #'duplicate-line-or-region)
 
 
 ;;; Deleting Spaces
@@ -215,7 +225,7 @@ Uses `current-date-time-format' for the formatting the date/time."
   (interactive "*")
   (delete-region (point) (progn (skip-chars-backward " \t") (point))))
 
-(global-set-key [(control backspace)] 'delete-horizontal-space-backward)
+(global-set-key [(control backspace)] #'delete-horizontal-space-backward)
 
 
 ;;; Deleting Words
@@ -228,7 +238,7 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 (defun delete-word (arg)
   "Delete characters forward until encountering the end of a word.
-With argument, do this that many times."
+When called with ARG, do this that many times."
   (interactive "p")
   (delete-region (point) (progn (forward-word arg) (point))))
 
@@ -236,11 +246,11 @@ With argument, do this that many times."
 
 (defun backward-delete-word (arg)
   "Delete characters backward until encountering the end of a word.
-With argument, do this that many times."
+When called with ARG, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(define-key global-map [(meta backspace)] 'backward-delete-word)
+(define-key global-map [(meta backspace)] #'backward-delete-word)
 
 
 ;;; Moving between words
@@ -254,19 +264,20 @@ With argument, do this that many times."
 ;;; symetrical. C-Left and C-Right are left unchanged (move by words).
 
 (define-key global-map [(meta right)]
-  #'(lambda (arg)
+  (lambda (arg)
     (interactive "p")
     (forward-same-syntax arg)))
 
 (define-key global-map [(meta left)]
-  #'(lambda (arg)
-      (interactive "p")
-      (forward-same-syntax (- arg))))
+  (lambda (arg)
+    (interactive "p")
+    (forward-same-syntax (- arg))))
 
 
 ;;; FCI: 80-column ruler bound to Ctrl-|
 
 (use-package display-fill-column-indicator
+  :functions (exordium--select-display-fill-column-indicator-character)
   :if exordium-fci-mode
   :ensure nil
   :demand t
@@ -324,15 +335,15 @@ With argument, do this that many times."
 ;;; Note: Avy has other commands, this is the most useful.
 
 (global-set-key [(control c)(j)] #'avy-goto-word-or-subword-1)
-(global-set-key [(control ?\')] 'avy-goto-word-or-subword-1)
+(global-set-key [(control ?\')] #'avy-goto-word-or-subword-1)
 
 
 ;;; Finding lines that are too long (according to some code styles).
 
 (defun goto-long-line (len)
   "Go to the first line that is at least LEN characters long.
-Use a prefix arg to provide LEN.
-Plain `C-u' (no number) uses `fill-column' as LEN."
+Use a prefix arg to provide LEN.  Plain `C-u' (no number) uses
+`fill-column' as LEN."
   (interactive "P")
   (setq len (or len fill-column))
   (let ((start-line (line-number-at-pos))
@@ -355,15 +366,15 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
 (defun kill-all-buffers ()
   "Kill all buffers that are associated with a file."
   (interactive)
-  (mapc #'(lambda (buff)
+  (mapc (lambda (buff)
             (when (buffer-file-name buff)
               (kill-buffer buff)))
         (buffer-list)))
 
 (defun scratch ()
-  "Create a new scratch buffer that does not need to be
-saved. This is useful for editing snippets of text in a temporary
-buffer"
+  "Create a new scratch buffer that does not need to be saved.
+This is useful for editing snippets of text in a temporary
+buffer."
   (interactive)
   (switch-to-buffer (make-temp-name "scratch-")))
 
@@ -371,20 +382,28 @@ buffer"
 ;;; Miscellaneous
 
 (defun unfill-paragraph (&optional region)
-  "Takes a multi-line paragraph and makes it into a single line of text."
+  "Take a multi-line paragraph and make it into a single line of text.
+REGION is t when called interactively and is passed to
+`fill-paragraph', which see."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
   (let ((fill-column (point-max))
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(define-key global-map "\M-Q" 'unfill-paragraph)
+(define-key global-map "\M-Q" #'unfill-paragraph)
 
 
 ;;; Config management
+(defvar exordium-taps-root)
+(defvar exordium-modules-dir)
+(defvar exordium-themes-dir)
+(defvar exordium-extensions-dir)
+(defvar exordium-local-dir)
 
 (defun update-taps ()
-  "Updates each installed tap. Specifically, for each tap it pulls from github."
+  "Update each installed tap.
+For each tap perform \"git pull\"."
   (when (file-accessible-directory-p exordium-taps-root)
     (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
       (when (file-accessible-directory-p tap)
@@ -392,9 +411,9 @@ buffer"
         (shell-command "git pull")))))
 
 (defun update-config ()
-  "Updates the configuration. Specifically, pulls from github and
-compiles all non-melpa elisp files. You need to restart Emacs
-afterwards."
+  "Update the configuration.
+Perfrom \"git pull\" and compile all non-melpa elisp files.
+You need to restart Emacs afterwards."
   (interactive)
   (cd user-emacs-directory)
   (shell-command "git pull")
@@ -407,7 +426,7 @@ afterwards."
                        'face 'error)))
 
 (defun uncompile-modules ()
-  "Uncompiles all modules and themes. This is handy for development"
+  "Un-compile all modules and themes.  This is handy for development."
     (interactive)
     (dolist (dir (list exordium-modules-dir
                        exordium-themes-dir
@@ -419,7 +438,7 @@ afterwards."
         (delete-file elc)))))
 
 (defun force-recompile-modules ()
-  "Recompile all modules and themes"
+  "Recompile all modules and themes."
   (interactive)
   (dolist (dir (list exordium-modules-dir
                      exordium-themes-dir
@@ -434,6 +453,7 @@ afterwards."
             (byte-compile-file el)))))))
 
 (defun link-local-config (local-dir)
+  "Link local config in LOCAL-DIR to `user-emacs-directory'."
   (interactive "Dlocal directory to symlink files from")
   (make-symbolic-link (concat local-dir "prefs.el")
                       (locate-user-emacs-file "prefs.el")
@@ -446,8 +466,7 @@ afterwards."
                       't))
 
 (defun config-status ()
-  "Check if the configuration is up to date and display a
-  message"
+  "Check if the configuration is up to date and display a message."
   (interactive)
   (cl-flet ((sh (cmd)
                 ;; Execute cmd in dir and return output
@@ -599,11 +618,14 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
 
 
 ;; Find obsolete cl aliases
+(use-package elisp-refs
+  :defer t
+  :autoload (elisp-refs--show-results))
 
 (defun exordium-elisp-refs--show-results-maybe (orig-fun &rest args)
   "Only show a *refs* buffer when there are results.
-
-This is meant to be applied as an advice around `elisp-refs--show-results'."
+This is meant to be applied as an advice around ORIG-FUN that is
+`elisp-refs--show-results' with ARGS."
   (when (cl-third args)
     (apply orig-fun args)))
 
@@ -802,9 +824,7 @@ and may require updates."
                  ))
     (advice-add 'elisp-refs--show-results :around exordium-refs-cl-aliases--advice)
     (let ((path (concat (file-name-directory (expand-file-name user-emacs-directory))
-                        (unless show-all "modules")))
-          (new (if (consp fun) (prog1 (cdr fun) (setq fun (car fun)))
-                 (intern (format "cl-%s" fun)))))
+                        (unless show-all "modules"))))
       (cond
        ((functionp fun)
         (elisp-refs-function fun path))
@@ -812,4 +832,7 @@ and may require updates."
         (elisp-refs-macro fun path))))
     (advice-remove 'elisp-refs--show-results exordium-refs-cl-aliases--advice)))
 
-(provide 'init-util)
+
+(provide 'init-util)
+
+;;; init-util.el ends here
