@@ -1,43 +1,41 @@
-;;;; A theme for Powerline
+;;; init-powerline.el --- A theme for Powerline.     -*- lexical-binding: t -*-
 
-(use-package powerline)
-(use-package all-the-icons)
-(require 'init-themes)
-(require 'init-prefs)
+;;; Commentary:
+;;
+;;; Code:
 
-;;; Fix the graphical bug with Emacs24.4 on OS-X (the angles in powerline are
-;;; not rendered correctly); see
-;;; https://github.com/milkypostman/powerline/issues/54
-;;;
-;;; You may not want to use it with the zenburn theme because it makes all
-;;; colors a bit washed up; see
-;;; http://emacsredux.com/blog/2013/08/21/color-themes-redux/
-;;; Basically you should use Emacs from brew or port instead of Emacs for OS-X.
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
-(when (and exordium-osx
-           exordium-fix-powerline-osx-bug)
-  (message "Fixing OS-X powerline bug")
-  (setq ns-use-srgb-colorspace nil))
+(use-package powerline
+  :autoload (powerline-set-selected-window))
 
+(use-package all-the-icons
+  :autoload (all-the-icons-octicon
+             all-the-icons-octicon-family))
 
-;;; Colorize the name of the current project in the modeline.
-
-(defface exordium-project-name '((t (:inherit mode-line)))
-  "Face for the name of the current project in the modeline"
-  :group 'exordium)
-
-(when (featurep 'init-helm-projectile)
-  (eval-after-load "projectile"
-    `(setq projectile-mode-line
-           `(:eval (if (file-remote-p default-directory)
-                       (list " ["
-                             (propertize "*remote*"
-                                         'face 'exordium-project-name)
-                             "]")
-                     (list " ["
-                            (propertize (projectile-project-name)
-                                        'face 'exordium-project-name)
-                            "]"))))))
+;; TODO: The following feature seems to has changed and a new solution needs to
+;; be developed.  Probably involving setting up `projectile-mode-line-function'
+;; to something based on `projectile-default-mode-line'.
+;; ;;; Colorize the name of the current project in the modeline.
+;; (defface exordium-project-name '((t (:inherit mode-line)))
+;;   "Face for the name of the current project in the modeline."
+;;   :group 'exordium)
+;;
+;; (when (featurep 'init-helm-projectile)
+;;   (eval-after-load "projectile"
+;;     `(setq projectile-mode-line
+;;            `(:eval (if (file-remote-p default-directory)
+;;                        (list " ["
+;;                              (propertize "*remote*"
+;;                                          'face 'exordium-project-name)
+;;                              "]")
+;;                      (list " ["
+;;                             (propertize (projectile-project-name)
+;;                                         'face 'exordium-project-name)
+;;                             "]"))))))
 
 
 ;;; Faces for our powerline theme. They are defined here and customized within
@@ -52,38 +50,38 @@
   :group 'exordium)
 
 (defface exordium-powerline-active3 '((t (:inherit mode-line)))
-  "Powerline active face 3 (buffer name)"
+  "Powerline active face 3 (buffer name)."
   :group 'exordium)
 
 (defface exordium-powerline-active4 '((t (:inherit mode-line)))
-  "Powerline active face 4 (RTags buffer name with errors)"
+  "Powerline active face 4 (RTags buffer name with errors)."
   :group 'exordium)
 
 (defface exordium-powerline-active5 '((t (:inherit mode-line)))
-  "Powerline active face 5 (RTags buffer name without error)"
+  "Powerline active face 5 (RTags buffer name without error)."
   :group 'exordium)
 
 (defface exordium-powerline-inactive1 '((t (:inherit mode-line-inactive)))
-  "Powerline inactive face 1"
+  "Powerline inactive face 1."
   :group 'exordium)
 
 (defface exordium-powerline-inactive2 '((t (:inherit mode-line-inactive)))
-  "Powerline inactive face 2"
+  "Powerline inactive face 2."
   :group 'exordium)
 
 (defface exordium-powerline-inactive3 '((t (:inherit mode-line-inactive)))
-  "Powerline inactive face 3 (buffer name)"
+  "Powerline inactive face 3 (buffer name)."
   :group 'exordium)
 
 ;;; Our Powerline theme.
 
 (defun exordium-powerline-buffer-face (active)
-  "Return the face to use for the buffer name"
+  "Return the face to use for the buffer name depending on whether it is ACTIVE."
   (cond ((not active)
          ;; Gray
          'exordium-powerline-inactive3)
         ((and (eq major-mode 'c++-mode)
-              (featurep 'rtags)
+              (fboundp 'rtags-has-diagnostics)
               (rtags-has-diagnostics))
          ;; Green or red
          (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
@@ -95,8 +93,8 @@
          'exordium-powerline-active3)))
 
 (defun exordium-powerline-git (face)
-  "Return the git branch string to display including a branch
-icon, using the specified face."
+  "Return the git branch string to display using the specified FACE.
+This includes a branch icon."
   (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
     (concat
      ;; branch icon
@@ -108,8 +106,8 @@ icon, using the specified face."
      (format " %s" branch))))
 
 (defun exordium-powerline-svn (face)
-  "Return the SVN revision number string to display including a
-branch icon, using the specified face."
+  "Return the SVN revision number string to display using the specified FACE.
+This includes a branch icon."
   (let ((revision (cadr (split-string vc-mode "-"))))
     (concat
      ;; branch icon
@@ -121,9 +119,8 @@ branch icon, using the specified face."
      (format " %s" revision))))
 
 (defun exordium-powerline-vc (face)
-  "Return the version control string to display, using the
-specified face, or nil if the current buffer is not under version
-control"
+  "Return the version control string to display using the specified FACE.
+Return nil if the current buffer is not under version control"
   (when vc-mode
     (cond
      ((string-match "Git[:-]" vc-mode)
@@ -191,7 +188,7 @@ control"
                 (powerline-render rhs)))))))
 
 (defun display-powerline ()
-  "(Re)Displays Powerline"
+  "(Re)Displays Powerline."
   (powerline-set-selected-window)
   (exordium-powerline-theme)
   (redraw-display))
@@ -206,7 +203,4 @@ control"
 
 (provide 'init-powerline)
 
-;; Local Variables:
-;; no-byte-compile: t
-;; indent-tabs-mode: nil
-;; End:
+;;; init-powerline.el ends here

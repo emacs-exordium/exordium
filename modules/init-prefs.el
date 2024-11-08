@@ -293,16 +293,6 @@ second is enough."
   :group 'exordium
   :type  'integer)
 
-(defcustom exordium-fix-powerline-osx-bug t
-  "Fix the graphical bug with Emacs24.4 on OS-X.
-The bug causes the angles in Powerline to be not rendered
-correctly.  It makes the colors a bit washed up, especially with
-the `zenburn-theme' See these links:
-https://github.com/milkypostman/powerline/issues/54
-http://emacsredux.com/blog/2013/08/21/color-themes-redux"
-  :group 'exordium
-  :type  'boolean)
-
 (defcustom exordium-powerline-theme :angle
   "Control the shape of Powerline separators, and other things.
 Possible values are :angle, :wave"
