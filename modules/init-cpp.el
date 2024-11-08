@@ -49,7 +49,9 @@
 
 ;;; Highlight dead code between "#if 0" and "#endif"
 (add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
-(when exordium-treesit-modes-enable
+(when (and exordium-treesit-modes-enable
+           ;; same conditions as in init-treesit.el
+           (version< "29" emacs-version) (treesit-available-p))
   (progn
     (add-hook 'c-ts-mode-hook #'(lambda () (run-hooks 'c-mode-common-hook)))
     (add-hook 'c++-ts-mode-hook #'(lambda () (run-hooks 'c-mode-common-hook)))

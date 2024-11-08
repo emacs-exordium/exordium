@@ -402,7 +402,8 @@ Also discard .elc without corresponding .el."
 (exordium-require 'init-flycheck)
 
 ;;; Treesit
-(exordium-require 'init-treesit)
+(when exordium-treesit-modes-enable
+  (exordium-require 'init-treesit))
 
 ;;; LSP
 (when exordium-lsp-mode-enable
