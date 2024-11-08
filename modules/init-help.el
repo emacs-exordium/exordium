@@ -1,24 +1,33 @@
-;;;; Help extensions
-;;;
-;;; ----------------- ---------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- ---------------------------------------------------------
-;;; C-c C-o           Open URL at point (in `help-mode' and `helpful-mode')
-;;; C-h f             Show help for function, macro or special form
-;;; C-h F             Show help for function
-;;; C-h v             Show help for variable
-;;; C-h k             Show help for interactive command bound to key sequence
-;;; C-h C             Show help for interactive command
-;;; C-c C-d           Show help for thing at point (in `emacs-lisp-mode')
+;;; init-help.el --- Help extensions                 -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; ----------------- ---------------------------------------------------------
+;; Key               Definition
+;; ----------------- ---------------------------------------------------------
+;; C-c C-o           Open URL at point (in `help-mode' and `helpful-mode')
+;; C-h f             Show help for function, macro or special form
+;; C-h F             Show help for function
+;; C-h v             Show help for variable
+;; C-h k             Show help for interactive command bound to key sequence
+;; C-h C             Show help for interactive command
+;; C-c C-d           Show help for thing at point (in `emacs-lisp-mode')
 
 
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-lib)
+
 ;;; Which Key - display available keybindings in popup.
-(use-package which-key
-  :if exordium-enable-which-key
-  :pin gnu
-  :diminish
-  :config
-  (which-key-mode))
+(when exordium-enable-which-key
+  (use-package which-key
+    :pin gnu
+    :diminish
+    :config
+    (which-key-mode)))
 
 
 ;; Tune keys in `help-mode' - i.e., works when reading package information in
@@ -31,11 +40,6 @@
         ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 
-(use-package page-break-lines
-  :diminish
-  :hook
-  (help-mode . page-break-lines-mode))
-
 (use-package helpful
   :bind
   (;; Note that the built-in `describe-function' includes both functions
@@ -61,10 +65,14 @@
         ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 (use-package helm
+  :after (helpful)
   :diminish
   :custom
   (helm-describe-variable-function #'helpful-variable)
   (helm-describe-function-function #'helpful-function))
 
 
+
 (provide 'init-help)
+
+;;; init-help.el ends here
