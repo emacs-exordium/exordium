@@ -1,9 +1,17 @@
-;;; Unit tests for init-forge.el.
-;;; To run all tests:
-;;;     M-x eval-buffer
-;;;     M-x ert
+;;; init-forge.t.el --- Unit tests for init-forge.el -*- lexical-binding: t -*-
 
-(require 'init-forge)
+;;; Commentary:
+;;
+;; To run all tests:
+;;     M-x eval-buffer
+;;     M-x ert
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-forge)
 (require 's)
 (require 'ert)
 (require 'cl-lib)
@@ -63,6 +71,6 @@
                              "owner-2/name-2 @host-2")
                      (exordium-forge-cleanup-known-repositories--concat to-delete)))))
 
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
+(provide 'init-forge.t)
+
+;;; init-forge.t.el ends here
