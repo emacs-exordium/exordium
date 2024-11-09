@@ -1,30 +1,73 @@
-;;;; Configuration for Emacs Lisp
+;;; init-elisp.el --- Configuration for Emacs Lisp   -*- lexical-binding: t -*-
 
-;;; Bind M-. to find-function instead of find-tag
-(define-key emacs-lisp-mode-map [(meta .)] 'find-function)
+;;; Commentary:
+;;
+;; ----------------- ---------------------------------------------------------
+;; Key               Definition
+;; ----------------- ---------------------------------------------------------
+;; M-C-g             `helm-imenu' (lists functions and variables in buffer)
+;; C-c M-e           `pp-eval-last-sexp'
 
-;;; Bind M-C-g to helm-imenu (lists functions and variables in buffer)
-(define-key emacs-lisp-mode-map [(meta control g)] 'helm-imenu)
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-helm)
+
+(when exordium-help-extensions
+  (exordium-require 'init-help))
+
+(use-package elisp-mode
+  :ensure nil
+  :defer t
+  :bind
+  (:map emacs-lisp-mode-map
+        ("M-C-g" . #'helm-imenu)
+        ("C-c M-e" . #'pp-eval-last-sexp)
+        ("M-." . #'xref-find-definitions)
+        ("M-," . #'xref-go-back)
+        ("M-r" . #'xref-find-references)
+    :map lisp-interaction-mode-map
+        ("M-C-g" . #'helm-imenu)
+        ("C-c M-e" . #'pp-eval-last-sexp)
+        ("M-." . #'xref-find-definitions)
+        ("M-," . #'xref-go-back)
+        ("M-r" . #'xref-find-references)))
+
+(use-package elisp-mode
+  :ensure nil
+  :defer t
+  :if exordium-help-extensions
+  :bind
+  (:map emacs-lisp-mode-map
+        ("M-?" . #'helpful-at-point)
+    :map lisp-interaction-mode-map
+        ("M-?" . #'helpful-at-point)))
+
 
-(defun exordium-page-break-lines-hook ()
-  "Enable `page-break-lines' mode.
-When in TUI enable line truncation as well to prevent a rendering
-bug (page break lines wrap around)."
-  (unless (display-graphic-p)
-    (set (make-local-variable 'truncate-lines) t))
-  (page-break-lines-mode))
-
 ;;; Display page breaks with an horizontal line instead of ^L.
 ;;; Note: To insert a page break: C-q C-l
 ;;;       To jump to the previous/next page break: C-x [ and C-x ]
 (use-package page-break-lines
   :diminish
+  :init
+  (defun exordium-page-break-lines-hook ()
+    "Enable `page-break-lines' mode.
+When in TUI enable line truncation as well to prevent a rendering
+bug (page break lines wrap around)."
+    (unless (display-graphic-p)
+      (set (make-local-variable 'truncate-lines) t))
+    (page-break-lines-mode))
   :hook
-  (emacs-lisp-mode . exordium-page-break-lines-hook))
+  ((emacs-lisp-mode . exordium-page-break-lines-hook)
+   ((compilation-mode help-mode) . page-break-lines-mode)))
 
 ;;; Animation when evaluating a defun or a region:
-(require 'facemenu)  ;; no longer preloaded in emacs 28, but used by `highlight' without require
-(use-package highlight)
-(use-package eval-sexp-fu)
+;; The `eval-sexp-fu-mode' is global so it makes no sense to add it to relevant hooks.
+;; Package install advices as part of initialisation.
+(use-package eval-sexp-fu
+  :demand t)
 
 (provide 'init-elisp)
+
+;;; init-elisp.el ends here
