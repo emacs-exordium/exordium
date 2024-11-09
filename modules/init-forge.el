@@ -1,16 +1,34 @@
-;;;; Forge - work with Git forges Magit
-;;;
-;;; ----------------- ---------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- ---------------------------------------------------------
-;;; C-c C-p           Markdown preview (in `forge-post-mode')
-;;; C-c C-d           Forge post submit as draft (in `forge-post-mode')
-;;; C-c C-d           Forge mark pull request at point mark as ready for review
-;;;                   (in `magit-status-mode' and in `forge-topic-mode')
+;;; init-forge.el --- Forge - work with Git forges Magit -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; ----------------- ---------------------------------------------------------
+;; Key               Definition
+;; ----------------- ---------------------------------------------------------
+;; C-c C-p           Markdown preview (in `forge-post-mode')
+;; C-c C-d           Forge post submit as draft (in `forge-post-mode')
+;; C-c C-d           Forge mark pull request at point mark as ready for review
+;;                   (in `magit-status-mode' and in `forge-topic-mode')
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-git)
+(exordium-require 'init-markdown)
+
+(use-package async
+  :autoload (async-inject-variables))
+(use-package ghub
+  :autoload (ghub-graphql)
+  :defer t)
+
+(require 'cl-lib)
 
 
-;; `emacsql' (a dependency of `forge') requires sqlite3 support. How the
-;; support is provided changes with emacs-29 (i.e., built-in). See
+;; `emacsql' (a dependency of `forge') requires sqlite3 support.  How the
+;; support is provided changes with emacs-29 (i.e., built-in).  See
 ;; https://github.com/magit/emacsql/commit/6401226 for more details.
 (unless (and (fboundp 'sqlite-available-p)
              (sqlite-available-p))
@@ -23,6 +41,16 @@
 
 ;;; Magit Forge
 (use-package forge
+  :functions (exordium-forge--add-draft
+              exordium-ghub-graphql--pull-request-id
+              exordium-ghub-grqphql--mark-pull-request-ready-for-review
+              exordium-forge-markdown-preview
+              exordium-forge-post-submit-draft
+              exordium-forge-mark-ready-for-rewiew)
+  :commands (forge-post-submit)
+  :autoload (forge-post-at-point
+             forge-current-topic
+             forge-get-repository) ; required by init-company.el
   :defer t
   :init
 
@@ -90,9 +118,9 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
     (interactive)
     (if-let* ((url (forge-get-url (or (forge-post-at-point)
                                       (forge-current-topic))))
-              (_ (string-match
-                  "//\\([^/]+\\)/\\([^/]+\\)/\\([^/]+\\)/pull/\\([0-9]+\\)$"
-                  url))
+              ((string-match
+                "//\\([^/]+\\)/\\([^/]+\\)/\\([^/]+\\)/pull/\\([0-9]+\\)$"
+                url))
               (number (match-string 4 url))
               (host (car (alist-get (match-string 1 url)
                                     forge-alist
@@ -123,12 +151,12 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
    :map forge-topic-mode-map
         ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
 
-(use-package async)
-(use-package cl-lib :ensure nil)
 (use-package forge
-  :after async
+  :functions (exordium-forge-cleanup-known-repositories--concat
+              exordium-forge-cleanup-known-repositories--question)
+  :commands (exordium-forge-cleanup-known-repositories)
+  :autoload (forge-sql)
   :init
-
   (defun exordium-forge-cleanup-known-repositories--question (to-delete &optional number)
     "Return a question about deletion of up to NUMBER of TO-DELETE repositories.
 
@@ -186,24 +214,24 @@ Each element of TO-DELETE is in the same format as used in
           (async-start
            ;; Deletion can be very slow and could block UI. To be executed in a
            ;; child process.
-           `(lambda ()
-              (package-initialize)
-              (require 'forge)
-              ,(async-inject-variables "\\`\\(to-delete\\|forge-alist\\)\\'")
-              (let (results)
-                (dolist (repo to-delete)
-                  (when-let* ((forge-repo (forge-get-repository (cdr repo))))
-                    (let ((t0 (current-time))
-                          ;; Timeout is huge (10x what was the default at the
-                          ;; time of writing this) as db ops are long sometimes.
-                          ;; And this is happening in a child process anyway.
-                          (emacsql-global-timeout 300))
-                      (closql-delete forge-repo)
-                      (setq results
-                            (cons (append (cdr repo)
-                                          (list (float-time (time-since t0))))
-                                  results)))))
-                results))
+           (lambda ()
+             (package-initialize)
+             (require 'forge)
+             (async-inject-variables "\\`\\(to-delete\\|forge-alist\\)\\'")
+             (let (results)
+               (dolist (repo to-delete)
+                 (when-let* ((forge-repo (forge-get-repository (cdr repo))))
+                   (let ((t0 (current-time))
+                         ;; Timeout is huge (10x what was the default at the
+                         ;; time of writing this) as db ops are long sometimes.
+                         ;; And this is happening in a child process anyway.
+                         (emacsql-global-timeout 300))
+                     (closql-delete forge-repo)
+                     (setq results
+                           (cons (append (cdr repo)
+                                         (list (float-time (time-since t0))))
+                                 results)))))
+               results))
            (lambda (results)
              (when results (magit-refresh))
              (dolist (repo results)
@@ -215,4 +243,7 @@ Each element of TO-DELETE is in the same format as used in
                       (if (= 1 (length results)) "repository" "repositories")))))
       (message "Nothing to cleanup"))))
 
+
 (provide 'init-forge)
+
+;;; init-forge.el ends here
