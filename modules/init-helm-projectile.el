@@ -1,14 +1,10 @@
-;;; init-helm-projectile.el --- Projectile - see http://batsov.com/projectile/ -*- lexical-binding: t -*-
+;;; init-helm-projectile.el --- Setup helm with projectile -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;
 ;; ----------------- -------------------------------------------------------
 ;; Key               Definition
 ;; ----------------- -------------------------------------------------------
-;; C-c p p           [Opt remap] Select project and open file with helm.
-;; C-c p f           [Opt remap] Open file with helm-projectile (current project).
-;; C-c p s g         Grep in project.
-;; ... and many more under C-c p
 ;; C-c h             Open file with helm-projectile (current project).
 ;; C-c H             Same but first select the project.
 ;; or C-c M-h
@@ -19,7 +15,6 @@
 ;; C-S-r             Search with ripgrep: in current projectile project.
 ;;                   See also`init-helm.el'.
 
-
 ;;; Code:
 
 (eval-when-compile
@@ -28,23 +23,6 @@
 (exordium-require 'init-prefs)
 (exordium-require 'init-helm)
 (exordium-require 'init-projectile)
-
-(use-package projectile
-  :diminish
-  :bind
-  (:map projectile-command-map
-        ("." . #'helm-projectile-find-file-dwim))
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :config
-  (projectile-mode)
-  ;; Prevent Projectile from indexing the build directory.
-  (when exordium-rtags-cmake-build-dir
-    (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
-      ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
-      (when top-level
-        (setq projectile-globally-ignored-directories
-              (cons top-level projectile-globally-ignored-directories))))))
 
 (use-package helm-projectile
   :functions (exordium-projectile-switch-project-find-file-other-window

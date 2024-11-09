@@ -371,11 +371,18 @@ If set to nil do not enable `flyspell'."
   :type  'string)
 
 
-;;; See init-helm-projectile.el
+;;; See init-projectile.el and init-helm-projectile.el
 (defcustom exordium-helm-projectile t
-  "Whether Helm and Projectile are enabled or not."
+  "Whether Helm and Projectile are enabled or not.
+Note that for this variable to have an effect when it is set to
+t, the `exordium-projectile' needs to be set to t as well."
   :group 'exordium
   :type  'boolean)
+
+(defcustom exordium-projectile exordium-helm-projectile
+  "Whether Projectile is enabled."
+  :group 'exordium
+  :type 'boolean)
 
 ;;; See init-git.el
 ;;; exordium-git-gutter displays a git diff icon in the left fringe, while

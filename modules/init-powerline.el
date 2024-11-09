@@ -16,28 +16,6 @@
   :autoload (all-the-icons-octicon
              all-the-icons-octicon-family))
 
-;; TODO: The following feature seems to has changed and a new solution needs to
-;; be developed.  Probably involving setting up `projectile-mode-line-function'
-;; to something based on `projectile-default-mode-line'.
-;; ;;; Colorize the name of the current project in the modeline.
-;; (defface exordium-project-name '((t (:inherit mode-line)))
-;;   "Face for the name of the current project in the modeline."
-;;   :group 'exordium)
-;;
-;; (when (featurep 'init-helm-projectile)
-;;   (eval-after-load "projectile"
-;;     `(setq projectile-mode-line
-;;            `(:eval (if (file-remote-p default-directory)
-;;                        (list " ["
-;;                              (propertize "*remote*"
-;;                                          'face 'exordium-project-name)
-;;                              "]")
-;;                      (list " ["
-;;                             (propertize (projectile-project-name)
-;;                                         'face 'exordium-project-name)
-;;                             "]"))))))
-
-
 ;;; Faces for our powerline theme. They are defined here and customized within
 ;;; each theme.
 
