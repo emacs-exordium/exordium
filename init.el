@@ -312,10 +312,9 @@ Also discard .elc without corresponding .el."
   (:company
    (exordium-require 'init-company)))    ; completion
 
+(exordium-require 'init-helm)             ; setup helm
 (when exordium-helm-projectile
   (exordium-require 'init-helm-projectile))
-
-(exordium-require 'init-helm)             ; setup helm
 
 (when exordium-help-extensions
   (exordium-require 'init-help))           ; extra help

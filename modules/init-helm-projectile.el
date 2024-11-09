@@ -1,23 +1,33 @@
-;;;; Projectile - see http://batsov.com/projectile/
-;;;
-;;; ----------------- -------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- -------------------------------------------------------
-;;; C-c p p           [Opt remap] Select project and open file with helm.
-;;; C-c p f           [Opt remap] Open file with helm-projectile (current project).
-;;; C-c p s g         Grep in project.
-;;; ... and many more under C-c p
-;;; C-c h             Open file with helm-projectile (current project).
-;;; C-c H             Same but first select the project.
-;;; or C-c M-h
-;;; C-c e             treemacs: toggle the directory tree.
-;;; C-c E             Open treemacs with a projectile project.
-;;; C-S-a             Search with Ag: in current projectile project. (see also`init-helm.el')
-;;; C-S-r             Search with ripgrep: in current projectile project. (see also`init-helm.el')
+;;; init-helm-projectile.el --- Projectile - see http://batsov.com/projectile/ -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; ----------------- -------------------------------------------------------
+;; Key               Definition
+;; ----------------- -------------------------------------------------------
+;; C-c p p           [Opt remap] Select project and open file with helm.
+;; C-c p f           [Opt remap] Open file with helm-projectile (current project).
+;; C-c p s g         Grep in project.
+;; ... and many more under C-c p
+;; C-c h             Open file with helm-projectile (current project).
+;; C-c H             Same but first select the project.
+;; or C-c M-h
+;; C-c e             treemacs: toggle the directory tree.
+;; C-c E             Open treemacs with a projectile project.
+;; C-S-a             Search with Ag: in current projectile project.
+;;                   See also`init-helm.el'.
+;; C-S-r             Search with ripgrep: in current projectile project.
+;;                   See also`init-helm.el'.
 
-(use-package helm-rg)
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-helm)
+(exordium-require 'init-projectile)
 
 (use-package projectile
   :diminish
@@ -37,7 +47,13 @@
               (cons top-level projectile-globally-ignored-directories))))))
 
 (use-package helm-projectile
-  :after (projectile)
+  :functions (exordium-projectile-switch-project-find-file-other-window
+              exordium-helm-projectile--switch-project-and-do-rg
+              exordium-helm-projectile--exit-helm-and-do-ag
+              exordium-helm-projectile--exit-helm-and-do-rg)
+  :autoload (projectile-switch-project-by-name)
+  :commands (helm-projectile-switch-project)
+  :after (projectile helm)
   :init
   (defun exordium-helm-projectile--exit-helm-and-do-ag ()
     "Exit helm and run ag on first selected candidate."
@@ -86,15 +102,18 @@ project's file using completion and show it in another window."
                              #'helm-do-ag
                              helm-source-projectile-projects)
 
-  (helm-add-action-to-source "ripgrep (arg) in project `C-S-r'"
+  (helm-add-action-to-source "ripgrep (rg) in project `C-S-r'"
                              #'exordium-helm-projectile--switch-project-and-do-rg
                              helm-source-projectile-projects)
   (when exordium-helm-everywhere
     (helm-projectile-on)))
 
 (use-package treemacs-projectile
+  :after (projectile)
   :bind
   (("C-c e" . #'treemacs)
    ("C-c E" . #'treemacs-projectile)))
 
 (provide 'init-helm-projectile)
+
+;;; init-helm-projectile.el ends here
