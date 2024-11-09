@@ -1,12 +1,25 @@
-;;;; company-mode
+;;; init-company.el --- company-mode                 -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-forge)
+
+(eval-when-compile
+  (use-package rtags)) ; init-rtags
 
 (use-package company
   :diminish "CA"
-  :after (rtags forge)
-  :defer
-
+  :after (forge)
+  :commands (company-begin-backend
+             company-abort)
   :init
-  (defun exordium-company-assignees (command &optional arg &rest ignored)
+  (defun exordium-company-assignees (command &optional arg &rest _ignored)
     "A `company-mode' backend for assigneees in `forge-mode' repository."
     (interactive (list 'interactive))
     (cl-case command
@@ -25,7 +38,7 @@
                                          (or alphanumeric
                                              (seq (any "-/") alphanumeric))))))
                      (max (- (point) 40)
-                          (point-at-bol))))
+                          (line-beginning-position))))
            ;; IDK how to match end of a 'symbol' that is equal to an "@" or is
            ;; equal to "@foo" in neither `git-commit-mode' nor
            ;; `forge-post-mode'. Hence it's handled manually.  The
@@ -39,14 +52,17 @@
            (when (or (save-match-data (looking-at "\\W"))
                      (= (point) (point-max)))
              (cons (or (match-string 1) "") t)))))
-      (candidates (when-let* ((repo (forge-get-repository 'full)))
+      (candidates (when-let* ((repo (forge-get-repository :tracked?))
+                              ((slot-exists-p repo 'assignees))
+                              ((slot-boundp repo 'assignees))
+                              (assignees (oref repo assignees)))
                     (cl-remove-if-not
                      (lambda (assignee)
                        (string-prefix-p arg assignee))
                      (mapcar (lambda (assignee)
                                (propertize (cadr assignee)
                                            'full-name (caddr assignee)))
-                             (oref repo assignees)))))
+                             assignees))))
       (annotation (when-let* ((assignee (get-text-property 0 'full-name arg)))
                     (format " [%s]" assignee)))))
 
@@ -66,8 +82,10 @@
 
 (use-package company-statistics
   :ensure t
-  :after company
-  :init
+  :after (company)
+  :config
   (company-statistics-mode))
 
 (provide 'init-company)
+
+;;; init-company.el ends here
