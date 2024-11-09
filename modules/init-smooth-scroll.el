@@ -1,53 +1,57 @@
-;;; Smooth scroll.
-;;;
-;;; This module implements smooth scrolling similar to OS X or iOS
-;;; scrolling. It makes using a track pad on a macbook a lot easier.
-;;; To enable it, edit ~/.emacs.d/prefs.el and add this line:
-;;;
-;;; (setq exordium-smooth-scroll t)
-;;;
-;;; Alternatively, you can enable it only on OS X using this line:
-;;;
-;;; (setq exordium-smooth-scroll exordium-osx)
-;;;
-;;; The scrolling speed is controlled by 2 constants: `smooth-scroll-weight'
-;;; and `smooth-scroll-drift' (called weight and drift thereafter). Any scroll
-;;; operation like page-up or page-down is divided into a sequence of `weight'
-;;; + `drift' scroll steps which are progressively smaller. The first `weight'
-;;; steps scroll N lines, with N decreasing step after step. The last `drift'
-;;; steps consist of scrolling a single line each step.
-;;;
-;;; For example if `weight' = 3 `drift' = 2, scolling forward 20 lines will be
-;;; performed using this sequence: (9 6 3 1 1) i.e. scroll 9 lines, then 6
-;;; lines, etc. Notice that the sum is 20. `weight' defines the first 3 steps
-;;; which may be greater than 1, and `drift' defines the last 2 steps, which
-;;; are always 1.
-;;;
-;;; Credit: the algorithm is from the Sublimity plugin, but fine-tuned.
-;;; See https://github.com/zk-phi/sublimity
+;;; init-smooth-scroll.el --- Smooth scroll -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
+;;; Commentary:
+;;
+;; This module implements smooth scrolling similar to OS X or iOS scrolling.
+;; It makes using a track pad on a macbook a lot easier.  To enable it, edit
+;; ~/.emacs.d/prefs.el and add this line:
+;;
+;; (setq exordium-smooth-scroll t)
+;;
+;; Alternatively, you can enable it only on OS X using this line:
+;;
+;; (setq exordium-smooth-scroll exordium-osx)
+;;
+;; The scrolling speed is controlled by 2 constants: `smooth-scroll-weight' and
+;; `smooth-scroll-drift' (called weight and drift thereafter).  Any scroll
+;; operation like page-up or page-down is divided into a sequence of `weight' +
+;; `drift' scroll steps which are progressively smaller.  The first `weight'
+;; steps scroll N lines, with N decreasing step after step.  The last `drift'
+;; steps consist of scrolling a single line each step.
+;;
+;; For example if `weight' = 3 `drift' = 2, scolling forward 20 lines will be
+;; performed using this sequence: (9 6 3 1 1) i.e. scroll 9 lines, then 6
+;; lines, etc. Notice that the sum is 20. `weight' defines the first 3 steps
+;; which may be greater than 1, and `drift' defines the last 2 steps, which are
+;; always 1.
+;;
+;; Credit: the algorithm is from the Sublimity plugin, but fine-tuned.
+;; See https://github.com/zk-phi/sublimity
 
+
+;;; Code:
+
+(require 'cl-lib)
 
 ;;; Customizable variables
 
 (defcustom smooth-scroll-weight 10
-  "Number of scroll steps with decreasing motion"
+  "Number of scroll steps with decreasing motion."
   :group 'exordium
   :type  'integer)
 
 (defcustom smooth-scroll-drift 5
-  "Number of scroll steps with very slow motion (1 line or column at a time)"
+  "Number of scroll steps with very slow motion (1 line or column at a time)."
   :group 'exordium
   :type  'integer)
 
 (defcustom smooth-scroll-criteria ()
-  "User-defined list of conditions disabling smooth scroll. This should
-be a list of sexp; if any of the sexps evaluates to nil, smooth
-scrolling will be disabled. For example:
-'((or (not (boundp 'cua--rectangle)) (not cua--rectangle))
-  (or (not (boundp 'multiple-cursors-mode)) (not multiple-cursors-mode))
-  (not (eq major-mode 'shell-mode)))"
+  "User-defined list of conditions disabling smooth scroll.
+This should be a list of sexps.  If any of the sexps evaluates to
+nil, smooth scrolling will be disabled.  For example:
+\\='((or (not (boundp \\='cua--rectangle)) (not cua--rectangle))
+  (or (not (boundp \\='multiple-cursors-mode)) (not multiple-cursors-mode))
+  (not (eq major-mode \\='shell-mode)))"
   :group 'exordium
   :type  'sexp)
 
@@ -65,29 +69,25 @@ scrolling will be disabled. For example:
 (defvar smooth-scroll-previous-window (selected-window))
 
 
+(require 'mwheel)
 ;;; Minor mode
 
 (define-minor-mode smooth-scroll-mode
-  "smooth-scrolling mode"
-  ;; Initial value:
-  nil
-  ;; Indicator for mode line:
-  nil ; "Smooth"
-  ;; Key bindings:
-  nil
+  "Smooth-scrolling mode."
   ;; Flags:
   :global t
+  :group 'exordium
   ;; body
   (cond (smooth-scroll-mode
          (setq smooth-scroll-auto-hscroll-mode auto-hscroll-mode
                smooth-scroll-mouse-wheel-progressive-speed mouse-wheel-progressive-speed)
          (setq auto-hscroll-mode nil
                mouse-wheel-progressive-speed nil)
-         (add-hook 'pre-command-hook 'smooth-scroll-pre-command nil)
-         (add-hook 'post-command-hook 'smooth-scroll-post-command t))
+         (add-hook 'pre-command-hook #'smooth-scroll-pre-command nil)
+         (add-hook 'post-command-hook #'smooth-scroll-post-command t))
         (t
-         (remove-hook 'pre-command-hook 'smooth-scroll-pre-command)
-         (remove-hook 'post-command-hook 'smooth-scroll-post-command)
+         (remove-hook 'pre-command-hook #'smooth-scroll-pre-command)
+         (remove-hook 'post-command-hook #'smooth-scroll-post-command)
          (setq auto-hscroll-mode smooth-scroll-auto-hscroll-mode
                mouse-wheel-progressive-speed smooth-scroll-mouse-wheel-progressive-speed))))
 
@@ -95,15 +95,14 @@ scrolling will be disabled. For example:
 ;;; Animation functions
 
 (defun smooth-scroll-speeds (amount)
-  "Return a list of numbers, the sum of which being equal to
-AMOUNT. AMOUNT is a positive or negative integer representing a
-number of lines or columns to scroll to. The returned list
-defines the different motion steps to execute in order to obtain
-a smooth scrolling effect. This function uses the two constants
-WEIGHT and DRIFT to calculate the list. The numer of elements in
-the list is WEIGHT + DRIFT.
-For example, if WEIGHT = 3, DRIFT = 2 and AMOUNT = 10, the result
-is (4 2 1 1 1)"
+  "Return a list of numbers, the sum of which being equal to AMOUNT.
+AMOUNT is a positive or negative integer representing a number
+of lines or columns to scroll to.  The returned list defines the
+different motion steps to execute in order to obtain a smooth
+scrolling effect.  This function uses the two constants WEIGHT and
+DRIFT to calculate the list.  The numer of elements in the list is
+WEIGHT + DRIFT.  For example, if WEIGHT = 3, DRIFT = 2 and AMOUNT
+= 10, the result is (4 2 1 1 1)"
   (cl-labels ((fix-list (lst &optional eax)
                 (if (null lst)
                     nil
@@ -129,8 +128,7 @@ is (4 2 1 1 1)"
                      (make-list smooth-scroll-drift 1)))))))
 
 (defun smooth-scroll-vscroll (lines)
-  "Scroll vertically a number of LINES (positive or negative)
-with animation"
+  "Scroll vertically a number of LINES (positive or negative) with animation."
   (cl-flet ((vscroll (l)
               ;; Scroll window vertically L lines (positive or negative)
               (goto-char (window-start))
@@ -145,8 +143,7 @@ with animation"
           (redisplay))))))
 
 (defun smooth-scroll-hscroll (cols)
-  "Scroll right or left a numer of COLS (positive or negative)
-with animation"
+  "Scroll right or left a numer of COLS (positive or negative) with animation."
   (cl-flet ((hscroll (c)
               ;; Scroll window horizontally C columns (positive or negative)
               (if (< c 0)
@@ -161,6 +158,7 @@ with animation"
           (redisplay))))))
 
 (defun smooth-scroll-horizontal-recenter ()
+  "Recenter horizonally."
   (let ((cols (- (current-column)
                  (window-hscroll)
                  (/ (window-width) 2))))
@@ -172,14 +170,14 @@ with animation"
 ;;; Hooks
 
 (defun smooth-scroll-pre-command ()
-  "Pre-command hook for smooth-scroll-mode"
+  "Pre-command hook for smooth-scroll-mode."
   (setq smooth-scroll-previous-line (line-number-at-pos (window-start))
         smooth-scroll-previous-col (window-hscroll)
         smooth-scroll-previous-buffer (current-buffer)
         smooth-scroll-previous-window (selected-window)))
 
 (defun smooth-scroll-post-command ()
-  "Post-command hook for smooth-scroll-mode"
+  "Post-command hook for smooth-scroll-mode."
   (let ((do-scroll (and (eq smooth-scroll-previous-buffer (current-buffer))
                         (eq smooth-scroll-previous-window (selected-window))
                         (not (memq this-command '(scroll-bar-drag
@@ -213,3 +211,5 @@ with animation"
 
 
 (provide 'init-smooth-scroll)
+
+;;; init-smooth-scroll.el ends here
