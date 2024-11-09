@@ -1,21 +1,30 @@
-;;;; Helm - see http://tuhdo.github.io/helm-intro.html
-;;;
-;;; ----------------- -------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- -------------------------------------------------------
-;;; M-x               Remap standard: Execute command with helm.
-;;; M-y               Remap standard: Yank with helm.
-;;; C-x b             Remap standard: Switch buffer with helm.
-;;; C-x C-f           Remap standard: Find file with helm.
-;;; C-x C-r           Open recent file with Helm (see also `init-ido.el').
-;;; C-h b             Describe keybindings using Helm.
-;;; C-S-r             Search with ripgrep: in current project root. (see also`init-helm-porojectile.el')
-;;; C-S-d             Search with Ag: ask for directory first.
-;;; C-S-f             Search with Ag: this file (like Swoop).
-;;; C-S-a             Search with Ag: in current project root. (see also`init-helm-porojectile.el')
-;;; C-S-s             Helm Swoop
+;;; init-helm.el --- Helm - see http://tuhdo.github.io/helm-intro.html -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; ----------------- -------------------------------------------------------
+;; Key               Definition
+;; ----------------- -------------------------------------------------------
+;; M-x               Remap standard: Execute command with helm.
+;; M-y               Remap standard: Yank with helm.
+;; C-x b             Remap standard: Switch buffer with helm.
+;; C-x C-f           Remap standard: Find file with helm.
+;; C-x C-r           Open recent file with Helm (see also `init-ido.el').
+;; C-h b             Describe keybindings using Helm.
+;; C-S-r             Search with ripgrep: in current project root.
+;;                   See also`init-helm-porojectile.el'
+;; C-S-d             Search with Ag: ask for directory first.
+;; C-S-f             Search with Ag: this file (like Swoop).
+;; C-S-a             Search with Ag: in current project root.
+;;                   See also`init-helm-porojectile.el'.
+;; C-S-s             Helm Swoop
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 (use-package helm
   :diminish
@@ -51,10 +60,12 @@
   (helm-mode))
 
 (use-package helm-descbinds
+  :after (helm)
   :bind
   (("C-h b" . #'helm-descbinds)))
 
 (use-package helm-ag
+  :after (helm)
   :custom
   (helm-ag-insert-at-point 'symbol)
   :bind
@@ -62,16 +73,22 @@
    ("C-S-f" . #'helm-do-ag-this-file)))
 
 (use-package helm-ag
+  :after (helm)
   :unless exordium-helm-projectile
   :bind
   (("C-S-a" . #'helm-ag-project-root)))
 
 (use-package helm-rg
+  :after (helm)
   :unless exordium-helm-projectile
   :bind
   (("C-S-r" . #'helm-rg)))
 
 (use-package helm-swoop
+  :after (helm)
+  :commands (helm-swoop--edit-complete
+             helm-swoop--edit-cancel
+             helm-swoop--edit-delete-all-lines)
   :custom
   (helm-swoop-split-direction 'split-window-horizontally)
   :bind
@@ -82,6 +99,12 @@
         ("C-c C-k" . #'helm-swoop--edit-cancel)
         ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
 
+(use-package helm-xref
+  :after helm
+  :if exordium-helm-everywhere
+  :commands helm-xref
+  :config
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
 
 
@@ -104,3 +127,5 @@
 
 
 (provide 'init-helm)
+
+;;; init-helm.el ends here
