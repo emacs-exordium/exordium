@@ -1,9 +1,19 @@
-;;; Unit tests for init-util.el.
-;;; To run all tests:
-;;;     M-x eval-buffer
-;;;     M-x ert
+;;; init-util.t.el --- Unit tests for init-util.el   -*- lexical-binding: t -*-
 
-(require 'init-util)
+;;; Commentary:
+;;
+;; To run all tests:
+;;     M-x eval-buffer
+;;     M-x ert
+
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-util)
+
 (require 'ert)
 (require 'cl-lib)
 (require 'cl-macs)
@@ -14,14 +24,15 @@
 ;; The following is useful when need to transfer an expression from, say a
 ;; `python-mode' to elisp. This has proven useful when creating test cases
 ;; below, but I don't think it's a general purpose function.
-(defun exordium-yank-quoted-string ()
+
+(defun exordium-t-yank-quoted-string ()
   "Yank a string escaping it for emacs-lisp."
   (interactive)
   (insert (cl-prin1-to-string (substring-no-properties (current-kill 0)))))
 
 (cl-defstruct exordium-flip-string-test-case
-  "A test case describing a buffer for `exordium-flip-string-quotes' functions
-family. The following slots are defined:
+  "A test case describing a buffer for `exordium-flip-string-quotes'.
+The following slots are defined:
 
 - INPUT: the text to be used in a temp buffer before test is run,
 
@@ -36,13 +47,16 @@ family. The following slots are defined:
 (defmacro with-exordium-flip-string-test-case (test-case &rest body)
   "Execute BODY using a temporary buffer created according to TEST-CASE.
 Return the BODY return value"
-  (declare (ident defun))
+  (declare (indent defun))
   `(let ((input (exordium-flip-string-test-case-input ,test-case))
          (point-or-region (exordium-flip-string-test-case-point-or-region ,test-case)))
      (with-temp-buffer
        ;; Use `python-mode' for it richness of supported string formats.
        (when (numberp point-or-region)
-         (let (python-mode-hook)
+         (let ((python-mode-hook nil)
+               (python-indent-guess-indent-offset-verbose nil))
+           (ignore python-mode-hook
+                   python-indent-guess-indent-offset-verbose)
            (python-mode)))
        (insert input)
        (cond
@@ -214,6 +228,7 @@ Return the BODY return value"
       (should (string= expected
                        (exordium-flip-string-test-case-output test-case))))))
 
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
+
+(provide 'init-util.t)
+
+;;; init-util.t.el ends here
