@@ -1,6 +1,14 @@
-;;;; Font Lock
-;;;
-;;; exordium-font-lock turns on or off the syntax highighting globally.
+;;; init-font-lock.el --- Font Lock                  -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; exordium-font-lock turns on or off the syntax highighting globally.
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 (cond (exordium-font-lock
        (global-font-lock-mode 1)
@@ -19,16 +27,18 @@
                     jit-lock-stealth-time 5
                     jit-lock-stealth-verbose nil)
               (jit-lock-mode t))
-             ((fboundp 'turn-on-lazy-shot)
-              (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot))
-             ((fboundp 'turn-on-lazy-lock)
-              (add-hook 'font-lock-mode-hook 'turn-on-lazy-lock)
+             ((fboundp 'turn-on-lazy-shot) ; before Emacs-29
+              (add-hook 'font-lock-mode-hook #'turn-on-lazy-shot))
+             ((fboundp 'turn-on-lazy-lock) ; before Emacs-29
+              (add-hook 'font-lock-mode-hook #'turn-on-lazy-lock)
+              (defvar lazy-lock-stealth-time)
               (setq lazy-lock-stealth-time 10)
-              (setq lazy-lock-minimum-size 10000)))
-       ;;(fci-always-use-textual-rule t)
-       )
+              (defvar lazy-lock-minimum-size)
+              (setq lazy-lock-minimum-size 10000))))
       (t
        ;; Disable font lock completely.
        (global-font-lock-mode -1)))
 
 (provide 'init-font-lock)
+
+;;; init-font-lock.el ends here
