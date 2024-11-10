@@ -1,20 +1,31 @@
-;;;; include-what-you-use - see `https://include-what-you-use.org'
-;;;
-;;; include-what-you-use keys use prefix C-c w
-;;; ---------- ----------------------------------------------------------------
-;;; Key        Function
-;;; ---------- ----------------------------------------------------------------
-;;; C-c w e    `iwyu-reparse'
-;;; C-c w d    `iwyu-show-diagnostics-buffer'
-;;; g          `iwyu-start-process-for' (in `IWYU-mode' buffer)
+;;; init-iwyu.el --- include-what-you-use - see `https://include-what-you-use.org' -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
-(use-package compile)
+;;; Commentary:
+;;
+;;
+;; include-what-you-use keys use prefix C-c w
+;; ---------- ----------------------------------------------------------------
+;; Key        Function
+;; ---------- ----------------------------------------------------------------
+;; C-c w e    `iwyu-reparse'
+;; C-c w d    `iwyu-show-diagnostics-buffer'
+;; g          `iwyu-start-process-for' (in `IWYU-mode' buffer)
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-projectile)
+
+(require 'cl-lib)
+(require 'compile)
 
 ;;;###autoload
 (define-derived-mode iwyu-mode compilation-mode "IWYU mode"
-  "IWYU is a mode to display include what you use results. Use `g' to reparse
-recent file (similar to `recompile' in `compilation-mode')."
+  "IWYU is a mode to display include what you use results.
+Use \\[iwyu-start-process-for] (substitution to \\[recompile]
+typically bound to g) to reparse recent file."
   (font-lock-add-keywords
    nil
    `((,(concat "^\\(\- \\)?\\(#include\\) "
@@ -29,8 +40,8 @@ recent file (similar to `recompile' in `compilation-mode')."
       (3 font-lock-function-name-face)))))
 
 (defun iwyu-show-diagnostics-buffer ()
-  "Show/hide the diagnostics buffer in a dedicated
-window (similar to `iwyu-reparse' but without reparsing)."
+  "Show/hide the diagnostics buffer in a dedicated window.
+Similar to `iwyu-reparse' but without reparsing."
   (interactive)
   (let* ((buffer-name "*IWYU*")
          (buffer (get-buffer buffer-name)))
@@ -51,15 +62,16 @@ window (similar to `iwyu-reparse' but without reparsing)."
       (message "IWYU has not been run for current buffer (Use C-c w e)"))))
 
 (defun iwyu-prepare-args (command)
-  "Returns the list of arguments extracted from the specified `command'. The
-first word (assumed: the compiler) is skipped. The 'backslash double quote'
-sequences of arguments are returned as single element."
+  "Return list of arguments extracted from COMMAND.
+The first word (assumed: the compiler) is skipped.  The
+\\='backslash double quote\\=' sequences of arguments are
+returned as single element."
   (let* ((quote-match
-          #'(lambda (list start)
-              (cl-position-if
-               '(lambda (x) (string-match "\\\"" x))
-               list
-               :start start)))
+          (lambda (list start)
+            (cl-position-if
+             (lambda (x) (string-match "\\\"" x))
+             list
+             :start start)))
          (args (cdr (split-string command)))
          (start (funcall quote-match args 0))
          (end (funcall quote-match args
@@ -76,15 +88,17 @@ sequences of arguments are returned as single element."
     args))
 
 (defun iwyu-start-process-for (compile-commands-db file)
-  "Start the `include-what-you-use' process and put its output into `*IWYU*'
-buffer. The buffer is cleared before starting the process. It search for the
-specified `file' inside the specified `compile-commands-json' compilation
-database.
+  "Start the `include-what-you-use' process for FILE.
+The process output is redirected to *IWYU* buffer.  The buffer is
+cleared before starting the process.  The is FILE is searched
+inside the specified COMPILE-COMMANDS-DB compilation database,
+typically `compile-commands.json'..
 
-The arguments for `include-what-you-use' are constructed as follows.
-From the JSON value of `command' property it filters out any flag that matches
-`exordium-iwyu-filter-args'. Such constructed list is appended to
-arguments in `exordium-iwyu-extra-args'."
+The arguments for `include-what-you-use' are constructed as
+follows.  From the JSON value of \\='command\\=' property it
+filters out any flag that matches `exordium-iwyu-filter-args'.
+Such constructed list then is appended to arguments in
+`exordium-iwyu-extra-args'."
   (let* ((json-object-type 'plist)
          (json-array-type 'list)
          (compile-commands-json
@@ -104,9 +118,9 @@ arguments in `exordium-iwyu-extra-args'."
               (iwyu-mode)
               (substitute-key-definition
                'recompile
-               `(lambda ()
-                  (interactive)
-                  (iwyu-start-process-for ',compile-commands-db ',file))
+               (lambda ()
+                 (interactive)
+                 (iwyu-start-process-for compile-commands-db file))
                 (current-local-map)))
             (apply
              'start-process
@@ -115,7 +129,7 @@ arguments in `exordium-iwyu-extra-args'."
              "include-what-you-use"
              (append
               exordium-iwyu-extra-args
-              (cl-remove-if '(lambda (x) (member x exordium-iwyu-filter-args))
+              (cl-remove-if (lambda (x) (member x exordium-iwyu-filter-args))
                             (iwyu-prepare-args (plist-get entry :command)))))
             (display-buffer buffer-name)
             (other-window 1)
@@ -125,9 +139,10 @@ arguments in `exordium-iwyu-extra-args'."
       (message (format "Cannot find file %s in compile_commands.json" file)))))
 
 (defun iwyu-reparse ()
-  "Reparse the current buffer with `include-what-you-use'. For headers (files
-with '.h' extension) it uses the corresponding implementation, i.e., the file
-with '.cpp' extension."
+  "Reparse the current buffer with `include-what-you-use'.
+For headers (files with \\='.h\\=' extension) it uses the
+corresponding implementation, i.e., the file with \\='.cpp\\='
+extension."
   (interactive)
   (if-let* ((compile-commands-json
              (cl-find-if #'file-exists-p
@@ -144,9 +159,15 @@ with '.cpp' extension."
          file-name))
     (message "Cannot find compile_commands.json for this project")))
 
-
-(define-key c-mode-base-map [(control c)(w)(d)] 'iwyu-show-diagnostics-buffer)
-(define-key c-mode-base-map [(control c)(w)(e)] 'iwyu-reparse)
+(use-package cc-mode
+  :ensure nil
+  :bind
+  (:map c-mode-base-map
+        ("C-c w d" . #'iwyu-show-diagnostics-buffer)
+        ("C-c w e" . #'iwyu-reparse)))
 
 
+
 (provide 'init-iwyu)
+
+;;; init-iwyu.el ends here
