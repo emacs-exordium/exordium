@@ -13,6 +13,7 @@ ${EMACS} -Q --batch \
    (setq debug-on-error t
          eval-expression-print-length 100
          edebug-print-length 500
-         user-emacs-directory "'"${EMACS_DIR}"'")
+         user-emacs-directory "'"${EMACS_DIR}"'"
+         exordium-spell-check nil)
    (load-file "'"${EMACS_DIR}"'/init.el"))' \
          -f batch-byte-compile "${EMACS_DIR}"/{modules,extensions}/*.el

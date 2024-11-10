@@ -10,7 +10,8 @@ EMACS=${EMACS:=emacs}
 ${EMACS} -Q --batch \
          --eval '
 (progn
-  (setq user-emacs-directory "'"${EMACS_DIR}"'")
+  (setq user-emacs-directory "'"${EMACS_DIR}"'"
+        exordium-spell-check nil)
   (load-file "'"${EMACS_DIR}"'/init.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-bde-style.t.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-forge.t.el")

@@ -15,7 +15,8 @@ ${EMACS} -Q --batch \
    (setq debug-on-error t
          eval-expression-print-length 100
          edebug-print-length 500
-         user-emacs-directory "'"${EMACS_DIR}"'")
+         user-emacs-directory "'"${EMACS_DIR}"'"
+         exordium-spell-check nil)
    (defun ask-user-about-lock (file opponent)
      (sleep-for 5)
      t)
