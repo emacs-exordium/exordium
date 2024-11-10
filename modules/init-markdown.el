@@ -32,6 +32,7 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
 (exordium-require 'init-lib)
+(exordium-require 'init-window-manager)
 
 
 (use-package markdown-mode
@@ -62,7 +63,6 @@
 
 
 ;;; Impatient markdown mode
-
 (use-package impatient-mode
   :defer t)
 (use-package simple-httpd
