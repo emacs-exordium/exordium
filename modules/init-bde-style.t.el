@@ -1,37 +1,44 @@
-;;; Unit tests for bde-style.el.
-;;; To run all tests:
-;;;     M-x eval-buffer
-;;;     M-x ert
+;;; init-bde-style.t.el --- Unit tests for bde-style.el -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; To run all tests:
+;;     M-x eval-buffer
+;;     M-x ert
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-bde-style)
 
 (require 'cl-lib)
-(require 'init-bde-style)
 
 ;; Test apparatus
+
+;;; Code:
 
 (cl-defstruct test-case
   input               ;; string: initial buffer content
   (output nil)        ;; string: expected final buffer content
-  (use-region nil)    ;; select the whole buffer?
   (cursor-pos 0))     ;; move cursor to this position (nil = end of buffer)
 
 (defmacro with-test-case-output (tst &rest body)
   "Execute BODY using a temporary buffer created according to test case TST.
 TST defines the inital content, cursor position, and if a region
-is selected or not. Then compare the content of the buffer with
-the expected output as defined in TST. Return the final buffer
+is selected or not.  Then compare the content of the buffer with
+the expected output as defined in TST.  Return the final buffer
 content string"
   (declare (indent defun))
   `(let ((input      (test-case-input ,tst))
          (output     (test-case-output ,tst))
-         (use-region (test-case-use-region ,tst))
          (cursor-pos (test-case-cursor-pos ,tst)))
+     (ignore output)
      (with-temp-buffer
        ;; Set the initial state of the buffer
        (rename-buffer "mqbnet_foo.h")
        (c++-mode)
        (insert input)
        (when cursor-pos (goto-char cursor-pos))
-       (when use-region (mark-whole-buffer))
        ;; Execute body
        ,@body
        ;; Return the content of the buffer as raw string (without font-lock)
@@ -40,10 +47,9 @@ content string"
 (defmacro with-test-case-return (tst &rest body)
   "Execute BODY using a temporary buffer created according to test case TST.
 TST defines the inital content, cursor position, and if a region
-is selected or not. Return the body return value."
+is selected or not.  Return the body return value."
   (declare (indent defun))
   `(let ((input      (test-case-input ,tst))
-         (use-region (test-case-use-region ,tst))
          (cursor-pos (test-case-cursor-pos ,tst)))
      (with-temp-buffer
        ;; Set the initial state of the buffer
@@ -51,7 +57,6 @@ is selected or not. Return the body return value."
        (c++-mode)
        (insert input)
        (when cursor-pos (goto-char cursor-pos))
-       (when use-region (mark-whole-buffer))
        ;; Execute body
        ,@body)))
 
@@ -59,7 +64,7 @@ is selected or not. Return the body return value."
 ;; Tests for `bde-insert-redundant-include-guard-region'
 
 (ert-deftest test-redundant-include-guard-1 ()
-  "Breathing test: single #include, no region"
+  "Breathing test: single #include, no region."
   (let ((tst (make-test-case :input "#include <mqbscm_version.h>
 "
                              :output "#ifndef INCLUDED_MQBSCM_VERSION
@@ -71,7 +76,7 @@ is selected or not. Return the body return value."
                    (test-case-output tst)))))
 
 (ert-deftest test-redundant-include-guard-2 ()
-  "Test bugfix: output was wrong without a trailing newline"
+  "Test bugfix: output was wrong without a trailing newline."
   (let ((tst (make-test-case :input "#include <mqbscm_version.h>" ; no newline
                              :output "#ifndef INCLUDED_MQBSCM_VERSION
 #include <mqbscm_version.h>
@@ -1275,6 +1280,6 @@ int c)
     void foo(b")))))
     (should-not (with-test-case-return tst (exordium-bde-bounds-of-arglist-at-point)))))
 
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
+(provide 'init-bde-style.t)
+
+;;; init-bde-style.t.el ends here
