@@ -39,16 +39,21 @@ jobs:
           path: '.emacs.d'
 
       - name: First start # So most modules are pulled in from melpa and gnu
-        run: '.emacs.d/.ci/first-start.sh .emacs.d'
-
-      # - name: Compilation # This pulls extra modules not enabled by default
-      #   run: '.emacs.d/.ci/compilation.sh .emacs.d'
+        run: .emacs.d/.ci/first-start.sh
 
       - name: Unit tests
-        run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+        run: .emacs.d/.ci/unit-tests.sh
 
       - name: Verify no obsolete cl- functions
-        run: '.emacs.d/.ci/unit-test-cl.sh .emacs.d'
+        run: .emacs.d/.ci/unit-test-cl.sh
+
+      - name: 'Lint: Install bash' # Needed for mapfile on macOS
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version) && matrix.os == 'macos-latest'
+        run: 'brew install bash'
+
+      - name: 'Lint: compilation' # At the end, to avoid compilation shenanigans
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: .emacs.d/.ci/batch-byte-compile.sh
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}

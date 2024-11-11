@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -x
 set -e
 
-EMACS_DIR="$(cd "${GITHUB_WORKSPACE:-~}"/"${1:-.emacs.d}"; pwd -P)/"
+EMACS_DIR="$(cd "${GITHUB_WORKSPACE:-${HOME}}/${1:-.emacs.d}" && pwd -P)"
 EMACS=${EMACS:=emacs}
 
 # Redefine ask-user-about-lock as the melpa seems to stumble on it
@@ -12,12 +12,13 @@ EMACS=${EMACS:=emacs}
 ${EMACS} -Q --batch \
          --eval '
 (progn
-   (setq debug-on-error t
-         eval-expression-print-length 100
-         edebug-print-length 500
-         user-emacs-directory "'"${EMACS_DIR}"'"
-         exordium-spell-check nil)
-   (defun ask-user-about-lock (file opponent)
-     (sleep-for 5)
-     t)
-   (load-file "'"${EMACS_DIR}"'/init.el"))'
+  (setq debug-on-error t
+        eval-expression-print-length 100
+        edebug-print-length 500
+        user-emacs-directory "'"${EMACS_DIR}"'/"
+        exordium-spell-check nil)
+  (fmakunbound '"'"'ask-user-about-lock)
+  (defun ask-user-about-lock (file opponent)
+    (sleep-for (+ 1.0 (/ (random 100) 100.0)))
+    t)
+  (load-file "'"${EMACS_DIR}"'/init.el"))'

@@ -6,6 +6,9 @@
 ;; @todo: how to use
 
 ;;; Code:
+(defvar exordium--require-package-archives nil
+  "Package archives to be used when compiling.")
+
 (defvar exordium--require-nesting-list nil
   "Record recursive calls of `exordium-require'.
 From `require' implementation: A certain amount of recursive
@@ -66,7 +69,7 @@ that is passed to `defvar' (which see)."
                           (error "Wrong type argument: symbolp, %S" var)))
                       (plist-get declarations :variables)))))
         `(eval-and-compile
-           (let (package-archives)
+           (let ((package-archives exordium--require-package-archives))
              (with-demoted-errors
                  ,(format "(exordium-require) Cannot load %s: %%S" feature)
                (unless (featurep ,feature)
