@@ -194,12 +194,12 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
   (setq package-native-compile (native-comp-available-p)))
 
 (package-initialize)
-
+
 ;; Load the packages we need if they are not installed already
 (let ((package-pinned-packages (append
                                 '((use-package             . "gnu")
                                   (diminish                . "gnu")
-                                  (bind-key                . "melpa-pinned"))
+                                  (bind-key                . "gnu"))
                                 exordium-extra-pinned))
       has-refreshed)
   (mapc (lambda (pkg)
@@ -212,6 +212,27 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
             (package-install pkg)))
         (append (mapcar #'car package-pinned-packages)
                 exordium-extra-packages)))
+;; This is only needed once, near the top of the file
+(require 'use-package)
+
+(eval-and-compile
+  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
+(exordium-require 'init-prefs)            ; defines variables that prefs.el can override
+(exordium-require 'init-lib)              ; utility functions - load this first
+
+(use-package use-package
+  :exordium-force-elpa gnu
+  :custom
+  (use-package-always-ensure t)
+  (use-package-compute-statistics t))
+(use-package diminish
+  :exordium-force-elpa gnu)
+(use-package bind-key
+  :exordium-force-elpa gnu)
+
+(dolist (pkg-pin exordium-extra-pinned)
+  (use-package-pin-package (car pkg-pin) (cdr pkg-pin)))
+
 
 ;; - Some packages (i.e., magit, forge) require seq-2.24.
 ;; - Emacs-29.1 is delivered with seq-2.23.
@@ -223,24 +244,10 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 (when (version< emacs-version "29.2")
   (let (debug-on-error)
     ;; this assumes `package-refresh-contents has been called'
-    (package-install (car (alist-get 'seq package-archive-contents)))))
+    (use-package seq
+      :exordium-force-elpa gnu)))
 
-;; This is only needed once, near the top of the file
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
 
-;; Ensure use-package and diminish are from gnu
-(use-package-pin-package 'use-package 'gnu)
-(use-package-pin-package 'diminish 'gnu)
-
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
-(setq use-package-compute-statistics t)
-
-
 ;;; Load Modules
 (require 'bytecomp)
 (defun exordium-recompile-modules ()
@@ -267,15 +274,8 @@ Also discard .elc without corresponding .el."
             (delete-file elc)))))))
 (exordium-recompile-modules)
 
-(eval-and-compile
-  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
-
-(exordium-require 'init-lib)              ; utility functions - load this first
 
 (exordium-require 'init-environment)      ; environment variables
-
-;;; Local preferences (fonts, frame size etc.)
-(exordium-require 'init-prefs)            ; defines variables that prefs.el can override
 
 (dolist (tapped-file exordium-tapped-prefs-files)
   (message "Loadding tapped prefs file: %s" tapped-file)
