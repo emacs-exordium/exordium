@@ -11,6 +11,7 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
 
+(require 'cl-lib)
 
 ;;; Files
 
@@ -69,11 +70,77 @@ It makes buffer local variable with an extra back tick added."
     (browse-url url)))
 
 
-(defun exordium--ignore-builtin (pkg)
-  "Remove the PKG from the builtin list so it can be upgraded."
-  (assq-delete-all pkg package--builtins)
-  (assq-delete-all pkg package--builtin-versions))
+;; Packages management
+(require 'package)
+(eval-when-compile
+  (use-package use-package
+    :autoload (use-package-only-one
+               use-package-process-keywords)))
 
+(defun use-package-normalize/:exordium-force-elpa (_name keyword args)
+                                        ; checkdoc-params: (keyword args)
+  "Allow either a single string or a single symbol."
+  (use-package-only-one (symbol-name keyword) args
+    #'(lambda (_label arg)
+        (cond
+         ((stringp arg) arg)
+         ((use-package-non-nil-symbolp arg) (symbol-name arg))
+         (t
+          (use-package-error
+           ":exordium-force-elpa wants an archive name (a string)"))))))
+
+(defun use-package-handler/:exordium-force-elpa (name _keyword archive-name rest state)
+                                        ; checkdoc-params: (rest state)
+  "Pin package NAME to ELPA archive ARCHIVE-NAME and install it from there.
+Installation and pinning only hapens when the package is a
+built-in package and the archive ARCHIVE-NAME has a newer
+version of it (according to `version-list-<').
+
+Note that after the package NAME has been forcefully installed
+from ELPA archive it shadows the built-in package and it becomes
+eligible for upgrading while, i.e., `package-upgrade' is called,
+see Info node `(emacs) Package Installation'."
+  (let ((body (use-package-process-keywords name rest state))
+        (force-elpa-form
+         (when archive-name
+           `(let ((package ',(use-package-as-symbol name)))
+              (package-read-all-archive-contents)
+              (when-let* (((package-built-in-p package))
+                          (builtin-version (alist-get package package--builtin-versions))
+                          (archive-desc (or
+                                         (cl-find-if (lambda (desc)
+                                                       (equal (package-desc-archive desc)
+                                                              ,archive-name))
+                                                     (alist-get package
+                                                                package-archive-contents))
+                                         (progn
+                                           (package-refresh-contents)
+                                           (cl-find-if (lambda (desc)
+                                                         (equal (package-desc-archive desc)
+                                                                ,archive-name))
+                                                       (alist-get package
+                                                                  package-archive-contents)))))
+                          (archive-version (package-desc-version archive-desc))
+                          ((not (package-installed-p package archive-version)))
+                          ((version-list-< builtin-version archive-version)))
+                (use-package-pin-package package ,archive-name)
+                (condition-case-unless-debug err
+                    (let ((package-install-upgrade-built-in t))
+                      (package-install-from-archive archive-desc)
+                      t)
+                  (error
+                   (display-warning 'use-package
+                                    (format "Failed to force ELPA installation %s: %s"
+                                            name (error-message-string err))
+                                    :error))))))))
+    ;; Pinning should occur just before ensuring
+    ;; See `use-package-handler/:ensure'.
+    (if (bound-and-true-p byte-compile-current-file)
+        (eval force-elpa-form)              ; Eval when byte-compiling,
+      (push force-elpa-form body))          ; or else wait until runtime.
+    body))
+
+(add-to-list 'use-package-keywords :exordium-force-elpa)
 
 (defmacro exordium-setf-when-nil (&rest args)
                                         ; checkdoc-params: (args)

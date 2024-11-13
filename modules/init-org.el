@@ -21,7 +21,6 @@
   "Face for STOP keywords."
   :group 'exordium)
 
-(exordium--ignore-builtin 'org)
 
 (use-package org
   :functions (exordium--org-babel-after-execute)
@@ -32,6 +31,7 @@
              org-display-inline-images
              org-mode)
   :defer t
+  :exordium-force-elpa gnu
   :mode (("\\.org\\'" . org-mode))
   :bind
   (:map org-mode-map

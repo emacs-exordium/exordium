@@ -151,6 +151,12 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 
 (exordium--add-directory-tree-to-load-path exordium-local-dir t)
 
+;; Bind this early, and only if it has not been bound already,
+;; so customisation from other places (i.e., before-init files)
+;; are not overwritten.
+(unless (boundp 'package-install-upgrade-built-in)
+  (setq package-install-upgrade-built-in t))
+
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
   (message "Loadding tapped before-init file: %s" tapped-file)
@@ -165,7 +171,7 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 ;; Initialize the package system
 (require 'seq)
 (require 'package)
-(setq package-install-upgrade-built-in t)
+
 (when (or (not (string= exordium-melpa-package-repo
                         exordium-pinned-melpa-package-repo))
           (seq-filter (lambda (pkg)
