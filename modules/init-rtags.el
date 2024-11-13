@@ -1,152 +1,169 @@
-;;;; Rtags - see `https://github.com/Andersbakken/rtags'
-;;;
-;;; Rtags keys use prefix C-c r
-;;; ---------- ----------------------------------------------------------------
-;;; Key        Function
-;;; ---------- ----------------------------------------------------------------
-;;; C-c r .    `rtags-find-symbol-at-point'
-;;; M-.
-;;; C-c r ,    `rtags-find-references-at-point'
-;;; M-,
-;;;
-;;; C-c r >    `rtags-find-symbol' (prompts for symbol name)
-;;; C-c r <    `rtags-find-references' (prompts for symbol name)
-;;;
-;;; M-C-g      List all buffer symbols with Helm
-;;;
-;;; ---------- ----------------------------------------------------------------
-;;; C-c r v    `rtags-find-virtuals-at-point' list all impl. of function
-;;; C-c r ;    `rtags-find-file' find file in project using partial name
-;;;
-;;; C-c r R    `rtags-rename-symbol'
-;;; C-c r F    `rtags-fixit' fix the error using clang "did you mean".
-;;;
-;;; C-c r [    `rtags-location-stack-back' go back to previous location
-;;; C-{
-;;; C-c r ]    `rtags-location-stack-forward' the opposite
-;;; C-}
-;;;
-;;; ---------- ----------------------------------------------------------------
-;;;            `rtags-start': start rdm in a subprocess and start RTags
-;;;            diagnostics.
-;;;            `rtags-stop': kill rdm subprocess and RTags diagnostics.
-;;; C-c r l    `rtags-show-rdm-buffer' show rdm log buffer.
-;;;            `rtags-set-current-project' switch between projects
-;;; C-c r e    `rtags-reparse-file' force recompile current buffer.
-;;;
-;;; ---------- ----------------------------------------------------------------
-;;; C-c r D    `rtags-diagnostics' start diagnostics/force reparse
-;;; C-c r Q    `rtags-stop-diagnostics' stop the diagnostic subprocess
-;;; C-c r d    `rtags-show-diagnostics-buffer' toggle diag window
-;;;            (without reparsing)
-;;; C-c r down `rtags-next-diag' goes to the next problem.
-;;; C-c r up   `rtags-previous-diag' goes to previous problem.
-;;; C-c r c    `rtags-clear-diagnostics' clears any error or warning overlay.
-;;;            `rtags-stop-diagnostics' stops the process.
-;;;
-;;; ---------- ----------------------------------------------------------------
-;;; C-c r U    `rtags-print-cursorinfo' show what we know about symbol
-;;; C-c r P    `rtags-print-dependencies' show all includes
-;;; C-c r T    `rtags-taglist' show all tags in a window on left side
-;;;
-;;;
-;;; Building rtags
-;;; ==============
-;;; $ git clone https://github.com/Andersbakken/rtags.git
-;;; $ cd rtags
-;;; $ git submodule init && git submodule update
-;;; $ cmake .
-;;; $ make
-;;;
-;;; Files
-;;; =====
-;;; Rtags uses the following files:
-;;; `~/.rtags' (created automatically)
-;;;     Where rdm stores its index files. They are reloaded when it restarts.
-;;; `~/.rdmrc' (optional)
-;;;     Config file for rdm (see rdm.cpp) containing default command line args.
-;;; `.rtags-config' (optional, located in project root dir)
-;;;     Project configuration file. Not needed if there is a .git or .svn at
-;;;     the project root.
-;;; `compile_commands.json' (optional, located in project root dir)
-;;;     Compilation database for a given project, containing for each file the
-;;;     clang command to build it. Not needed if you use RTags's compiler
-;;;     wrapper scripts.
-;;;
-;;; Running rdm in a shell
-;;; ======================
-;;; Run `rdm' in a shell or in the background. Use -L to specify a log file.
-;;; Use --help for the list of options. You can stop it gracefully with: rc -q
-;;;
-;;; You can control rdm with the rc client (use --help to see all options):
-;;; $ rc -w
-;;;     List the loaded projects and show the active one.
-;;; $ rc -w proj
-;;;     Make "proj" the active project ("proj" is a regex).
-;;; $ rc -J
-;;;     Reload the compilation DB from the current directory.
-;;; $ rc -W proj
-;;;     Delete project.
-;;; $ rc --find-project-root /path/to/sourcefile.cpp
-;;;     Print what it determines to be the correct project root.
-;;; $ rc -T sourcefile.cpp
-;;;     Say wether this component is indexed or not.
-;;; $ rc -q
-;;;     Shutdown rdm.
-;;;
-;;; Running rdm in Emacs
-;;; ====================
-;;; M-x `rtags-start'. A buffer will be created with rdm logs; you can show
-;;; it with "C-c r l".
-;;; M-x `rtags-stop' to kill it.
-;;;
-;;; Setting up a new project
-;;; ========================
-;;; 1. If the project root dir does not contain a .git or .svn repo, create a
-;;;    file `.rtags-config' in the root dir with the specified content:
-;;;    project: /path/to/project
-;;;
-;;; 2. The next step is to create the compilation database
-;;;    `compile_commands.json'. For that, use CMake or use module
-;;;     init-rtags-cdb.el.
-;;;
-;;; Diagnostics mode
-;;; ================
-;;; RTags diagnostics is a subprocess that highlight compilation errors and
-;;; warnings in the code (using flymake or flycheck). Click on a highlighted
-;;; region to view the error message. Use "C-c r d" (lowercase d) to display
-;;; the diagnostics buffer containing the error messages without forcing a
-;;; reparsing of the current file.
-;;;
-;;; It is started by default, but you can control it with:
-;;; - "C-c r D" or M-x `rtags-diagnostics' to start,
-;;; - "C-c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
+;;; init-rtags.el --- Rtags - see `https://github.com/Andersbakken/rtags' -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
-(require 'init-lib)
-(require 'init-prefs)
-(use-package rtags)
+;;; Commentary:
+;;
+;; Rtags keys use prefix C-c r
+;; ---------- ----------------------------------------------------------------
+;; Key        Function
+;; ---------- ----------------------------------------------------------------
+;; C-c r .    `rtags-find-symbol-at-point'
+;; M-.
+;; C-c r ,    `rtags-find-references-at-point'
+;; M-,
+;;
+;; C-c r >    `rtags-find-symbol' (prompts for symbol name)
+;; C-c r <    `rtags-find-references' (prompts for symbol name)
+;;
+;; M-C-g      List all buffer symbols with Helm
+;;
+;; ---------- ----------------------------------------------------------------
+;; C-c r v    `rtags-find-virtuals-at-point' list all impl of function
+;; C-c r ;    `rtags-find-file' find file in project using partial name
+;;
+;; C-c r R    `rtags-rename-symbol'
+;; C-c r F    `rtags-fixit' fix the error using clang "did you mean".
+;;
+;; C-c r [    `rtags-location-stack-back' go back to previous location
+;; C-{
+;; C-c r ]    `rtags-location-stack-forward' the opposite
+;; C-}
+;;
+;; ---------- ----------------------------------------------------------------
+;;            `rtags-start': start rdm in a subprocess and start RTags
+;;            diagnostics.
+;;            `rtags-stop': kill rdm subprocess and RTags diagnostics.
+;; C-c r l    `rtags-show-rdm-buffer' show rdm log buffer.
+;;            `rtags-set-current-project' switch between projects
+;; C-c r e    `rtags-reparse-file' force recompile current buffer.
+;;
+;; ---------- ----------------------------------------------------------------
+;; C-c r D    `rtags-diagnostics' start diagnostics/force reparse
+;; C-c r Q    `rtags-stop-diagnostics' stop the diagnostic subprocess
+;; C-c r d    `rtags-show-diagnostics-buffer' toggle diag window
+;;            (without reparsing)
+;; C-c r down `rtags-next-diag' goes to the next problem.
+;; C-c r up   `rtags-previous-diag' goes to previous problem.
+;; C-c r c    `rtags-clear-diagnostics' clears any error or warning overlay.
+;;            `rtags-stop-diagnostics' stops the process.
+;;
+;; ---------- ----------------------------------------------------------------
+;; C-c r U    `rtags-print-cursorinfo' show what we know about symbol
+;; C-c r P    `rtags-print-dependencies' show all includes
+;; C-c r T    `rtags-taglist' show all tags in a window on left side
+;;
+;;
+;; Building rtags
+;; ==============
+;; $ git clone https://github.com/Andersbakken/rtags.git
+;; $ cd rtags
+;; $ git submodule init && git submodule update
+;; $ cmake .
+;; $ make
+;;
+;; Files
+;; =====
+;; Rtags uses the following files:
+;; `~/.rtags' (created automatically)
+;;     Where rdm stores its index files.  They are reloaded when it restarts.
+;; `~/.rdmrc' (optional)
+;;     Config file for rdm (see rdm.cpp) containing default command line args.
+;; `.rtags-config' (optional, located in project root dir)
+;;     Project configuration file.  Not needed if there is a .git or .svn at
+;;     the project root.
+;; `compile_commands.json' (optional, located in project root dir)
+;;     Compilation database for a given project, containing for each file the
+;;     clang command to build it.  Not needed if you use RTags's compiler
+;;     wrapper scripts.
+;;
+;; Running rdm in a shell
+;; ======================
+;; Run `rdm' in a shell or in the background.  Use -L to specify a log file.
+;; Use --help for the list of options.  You can stop it gracefully with: rc -q
+;;
+;; You can control rdm with the rc client (use --help to see all options):
+;; $ rc -w
+;;     List the loaded projects and show the active one.
+;; $ rc -w proj
+;;     Make "proj" the active project ("proj" is a regex).
+;; $ rc -J
+;;     Reload the compilation DB from the current directory.
+;; $ rc -W proj
+;;     Delete project.
+;; $ rc --find-project-root /path/to/sourcefile.cpp
+;;     Print what it determines to be the correct project root.
+;; $ rc -T sourcefile.cpp
+;;     Say wether this component is indexed or not.
+;; $ rc -q
+;;     Shutdown rdm.
+;;
+;; Running rdm in Emacs
+;; ====================
+;; M-x `rtags-start'.  A buffer will be created with rdm logs; you can show
+;; it with "C-c r l".
+;; M-x `rtags-stop' to kill it.
+;;
+;; Setting up a new project
+;; ========================
+;; 1. If the project root dir does not contain a .git or .svn repo, create a
+;;    file `.rtags-config' in the root dir with the specified content:
+;;    project: /path/to/project
+;;
+;; 2. The next step is to create the compilation database
+;;    `compile_commands.json'.  For that, use CMake or use module
+;;     init-rtags-cdb.el.
+;;
+;; Diagnostics mode
+;; ================
+;; RTags diagnostics is a subprocess that highlight compilation errors and
+;; warnings in the code (using flymake or flycheck).  Click on a highlighted
+;; region to view the error message.  Use "C-c r d" (lowercase d) to display
+;; the diagnostics buffer containing the error messages without forcing a
+;; reparsing of the current file.
+;;
+;; It is started by default, but you can control it with:
+;; - "C-c r D" or M-x `rtags-diagnostics' to start,
+;; - "C-c r q" or M-x `rtags-stop-diagnostics' to terminate the subprocess.
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
+(when (eq exordium-rtags-syntax-checker :flycheck)
+  (exordium-require 'init-flycheck))
+
+(require 'cl-lib)
+
+(use-package rtags
+  :autoload (rtags-has-diagnostics)
+  :defer t)
 (pcase exordium-complete-mode
   (:auto-complete
-   (use-package ac-rtags)
-   (use-package auto-complete-c-headers))
+   (exordium-require 'init-autocomplete)
+   (use-package ac-rtags
+     :defer t)
+   (use-package auto-complete-c-headers
+     :defer t))
   (:company
-   (use-package company-rtags)))
+   (use-package company-rtags
+     :defer t)))
 
 
 ;;; Turn on flycheck support when requested
-(use-package flycheck-rtags
-  :if (eq exordium-rtags-syntax-checker :flycheck)
-  :init
-  ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
-  (defun exordium--setup-flycheck-rtags ()
-    (flycheck-select-checker 'rtags)
-    (setq-local flycheck-highlighting-mode nil)
-    (setq-local flycheck-check-syntax-automatically nil))
-  :hook
-  (c-mode . exordium--setup-flycheck-rtags)
-  (c++-mode . exordium--setup-flycheck-rtags)
-  (objc-mode . exordium--setup-flycheck-rtags))
+(when (eq exordium-rtags-syntax-checker :flycheck)
+  (use-package flycheck-rtags
+    :init
+    ;; As per: https://github.com/Andersbakken/rtags#rtags-flycheck-integration
+    (defun exordium--setup-flycheck-rtags ()
+      (flycheck-select-checker 'rtags)
+      (setq-local flycheck-highlighting-mode nil)
+      (setq-local flycheck-check-syntax-automatically nil))
+    :hook
+    (c-mode . exordium--setup-flycheck-rtags)
+    (c++-mode . exordium--setup-flycheck-rtags)
+    (objc-mode . exordium--setup-flycheck-rtags)))
 
 ;;; Key bindings
 
@@ -160,7 +177,7 @@
   (lambda (other-window)
     (interactive "P")
     (let ((rtags-after-find-file-hook rtags-after-find-file-hook))
-      (add-hook 'rtags-after-find-file-hook #'(lambda () (recenter)))
+      (add-hook 'rtags-after-find-file-hook (lambda () (recenter)))
       (rtags-find-symbol-at-point other-window))))
 
 ;; Alias for C-c r ,
@@ -183,14 +200,14 @@
 ;;; Start rdm as a subprocess, with output in a buffer
 
 (defun exordium-rtags-start-rdm-maybe ()
-  "Start rdm if not already running. Return t if started and nil
-otherwise."
+  "Start rdm if not already running.
+Return t if started and nil otherwise."
   (unless (exordium-rtags-rdm-running-p)
     (exordium-rtags-start-rdm-impl nil)
     t))
 
 (defun exordium-rtags-rdm-running-p ()
-  "Predicate testing if rdm is running"
+  "Predicate testing if rdm is running."
   (let ((process (get-process "rdm")))
     (or
      ;; Rdm runs in a process started from Emacs
@@ -209,8 +226,8 @@ otherwise."
               (cl-return t))))))))
 
 (defun exordium-rtags-start-rdm-impl (&optional open-buffer)
-  "Start rdm in a subprocess. Open the rdm log buffer if
-open-buffer is true."
+  "Start rdm in a subprocess.
+Open the rdm log buffer if OPEN-BUFFER is t."
   (let ((buffer (get-buffer-create "*RTags rdm*")))
     (when open-buffer
       (switch-to-buffer buffer))
@@ -226,8 +243,8 @@ open-buffer is true."
     (push 'company-rtags company-backends)))
 
 (defun rtags-start ()
-  "Start the rdm deamon in a subprocess and display output in a
-buffer. Also start the RTag diagostics mode."
+  "Start the rdm deamon in a subprocess.
+Redirect output to *RTags Diagnostics*.  Also start the RTag diagostics mode."
   (interactive)
   (setq rtags-autostart-diagnostics t)
   (exordium-rtags-start-rdm-impl t))
@@ -253,7 +270,7 @@ buffer. Also start the RTag diagostics mode."
       (kill-buffer "*RTags rdm*"))))
 
 (defun rtags-show-rdm-buffer ()
-  "Show/hide the rdm log buffer"
+  "Show/hide the rdm log buffer."
   (interactive)
   (let* ((buffer-name "*RTags rdm*")
          (buffer (get-buffer buffer-name))
@@ -276,7 +293,7 @@ buffer. Also start the RTag diagostics mode."
   "Search forward from point for a log line matching REGEXP.
 Set point to the end of the occurrence found, and return point.
 An optional second argument BOUND bounds the search: the match
-found must not extend after that position. This function also
+found must not extend after that position.  This function also
 sets `match-data' to the entire match."
   (let ((org-pos (point)))
     (cl-block while-loop
@@ -312,7 +329,7 @@ sets `match-data' to the entire match."
         '(rtags-rdm-match-record-warning 0 'compilation-warning)
         '(rtags-rdm-match-record-note 0 'compilation-info)
         '(rtags-rdm-match-record-done 0 'underline))
-  "Describes how to syntax highlight keywords in rtags-rdm-mode.")
+  "Describes how to syntax highlight keywords in `rtags-rdm-mode'.")
 
 (defconst rtags-rdm-mode-syntax-table
   ;; Defines a "comment" as anything that starts with a square bracket, e.g.
@@ -324,7 +341,7 @@ sets `match-data' to the entire match."
 
 (define-derived-mode rtags-rdm-mode fundamental-mode
   "rdm-log"
-  "Mode for viewing rdm logs"
+  "Mode for viewing rdm logs."
   :syntax-table rtags-rdm-mode-syntax-table
   ;; Syntax highlighting:
   (setq font-lock-defaults '(rtags-rdm-mode-keywords t t)))
@@ -333,8 +350,8 @@ sets `match-data' to the entire match."
 ;;; Using the diagnostics buffer
 
 (defun rtags-show-diagnostics-buffer ()
-  "Show/hide the diagnostics buffer in a dedicated
-window (similar to `rtags-diagnostics' but without reparsing)."
+  "Show/hide the diagnostics buffer in a dedicated window.
+Similar to `rtags-diagnostics' but without reparsing."
   (interactive)
   (if (rtags-has-diagnostics)
       (let* ((buffer-name "*RTags Diagnostics*")
@@ -356,7 +373,7 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 
 ;; Used in powerline:
 (defun rtags-diagnostics-has-errors ()
-  "Return t or nil depending if RTags diagnostics displays errors"
+  "Return t or nil depending if RTags diagnostics displays errors."
   (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
     (if (and diag-buff
              rtags-diagnostics-process
@@ -370,93 +387,97 @@ window (similar to `rtags-diagnostics' but without reparsing)."
 ;;; FIXME: this is broken, need to revisit the whole thing.
 
 ;;; AC source for #include
-(when (eq exordium-complete-mode :auto-complete)
+;; (when (eq exordium-complete-mode :auto-complete)
 
-;;; The following function fixes a bug in achead:documentation-for-candidate
-  (defun my-documentation-for-candidate (candidate)
-    "Generate documentation for a candidate `candidate'. For now,
-just returns the path and content of the header file which
-`candidate' specifies."
-    (let ((path
-           (assoc-default candidate achead:ac-latest-results-alist 'string=)))
-      (ignore-errors
-        (with-temp-buffer
-          (insert path)
-          (unless (file-directory-p path)
-            (insert "\n--------------------------\n")
-            (insert-file-contents path nil 0 200)) ;; first 200 content bytes
-          (buffer-string)))))
+;; ;;; The following function fixes a bug in achead:documentation-for-candidate
+;;   (defun my-documentation-for-candidate (candidate)
+;;     "Generate documentation for a candidate `candidate'. For now,
+;; just returns the path and content of the header file which
+;; `candidate' specifies."
+;;     (let ((path
+;;            (assoc-default candidate achead:ac-latest-results-alist 'string=)))
+;;       (ignore-errors
+;;         (with-temp-buffer
+;;           (insert path)
+;;           (unless (file-directory-p path)
+;;             (insert "\n--------------------------\n")
+;;             (insert-file-contents path nil 0 200)) ;; first 200 content bytes
+;;           (buffer-string)))))
+;;   ;; FIXME: broken
+;;   ;; (ac-define-source my-c-headers
+;;   ;;   `((init       . (setq achead:include-cache nil))
+;;   ;;     (candidates . achead:ac-candidates)
+;;   ;;     (prefix     . ,achead:ac-prefix)
+;;   ;;     (document   . my-documentation-for-candidate)
+;;   ;;     (requires   . 0)
+;;   ;;     (symbol     . "h")
+;;   ;;     (action     . ac-start)
+;;   ;;     (limit      . nil)))
 
-  (ac-define-source my-c-headers
-    `((init       . (setq achead:include-cache nil))
-      (candidates . achead:ac-candidates)
-      (prefix     . ,achead:ac-prefix)
-      (document   . my-documentation-for-candidate)
-      (requires   . 0)
-      (symbol     . "h")
-      (action     . ac-start)
-      (limit      . nil)))
+;; ;;; AC source for RTags
 
-;;; AC source for RTags
+;;   (defun ac-rtags-init ()
+;;     (unless rtags-diagnostics-process
+;;       (rtags-diagnostics)))
 
-  (defun ac-rtags-init ()
-    (unless rtags-diagnostics-process
-      (rtags-diagnostics)))
+;;   ;; FIXME: broken
+;;   ;; (ac-define-source my-rtags
+;;   ;;   '((init       . rtags-ac-init)
+;;   ;;     (prefix     . rtags-ac-prefix)
+;;   ;;     (candidates . rtags-ac-candidates)
+;;   ;;     (action     . rtags-ac-action)
+;;   ;;     (document   . rtags-ac-document)
+;;   ;;     (requires   . 0)
+;;   ;;     (symbol     . "r")))
 
-  (ac-define-source my-rtags
-    '((init       . rtags-ac-init)
-      (prefix     . rtags-ac-prefix)
-      (candidates . rtags-ac-candidates)
-      (action     . rtags-ac-action)
-      (document   . rtags-ac-document)
-      (requires   . 0)
-      (symbol     . "r")))
+;; ;;; Functions to enable auto-complete
+;;   (defun rtags-auto-complete ()
+;;     "Enables auto-complete with RTags.
+;; Note that RTags becomes the only source for auto-complete in all
+;; C and C++ buffers. Also note that RTags Diagostics must be turned
+;; on."
+;;     (interactive)
+;;     (unless (eq exordium-complete-mode :auto-complete)
+;;       (error "The `exordium-complete-mode' is not :auto-complete"))
+;;     (setq rtags-completions-enabled t)
+;;     ;; (add-hook 'c++-mode-hook
+;;     ;;           (lambda ()
+;;     ;;             (setq ac-sources '(ac-source-my-rtags))))
+;;     )
 
-;;; Functions to enable auto-complete
-  (defun rtags-auto-complete ()
-    "Enables auto-complete with RTags.
-Note that RTags becomes the only source for auto-complete in all
-C and C++ buffers. Also note that RTags Diagostics must be turned
-on."
-    (interactive)
-    (unless (eq exordium-complete-mode :auto-complete)
-      (error "The `exordium-complete-mode' is not :auto-complete"))
-    (setq rtags-completions-enabled t)
-    (add-hook 'c++-mode-hook
-              (lambda ()
-                (setq ac-sources '(ac-source-my-rtags)))))
+;;   (defun rtags-diagnostics-auto-complete ()
+;;     "Starts diagnostics and auto-complete with RTags and #includes.
+;; Note that this function replaces all other sources of auto-complete
+;;  for C++ files. Any previously opened C++ file needs to be reopen
+;; for this to be effective."
+;;     (interactive)
+;;     ;; Require
+;;     ;; Start RTags diagnostics
+;;     (unless rtags-diagnostics-process
+;;       (rtags-diagnostics))
+;;     ;; FIXME: this is broken, should not depend on compile_includes
+;;     ;; Create an auto-complete source for headers using compile_includes
+;;     ;; (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
+;;     ;;   (dolist (dir (plist-get plist :src-dirs))
+;;     ;;     (add-to-list 'achead:include-directories dir))
+;;     ;;   (dolist (dir (plist-get plist :include-dirs))
+;;     ;;     (add-to-list 'achead:include-directories dir)))
+;;     ;; Turn on RTags auto-complete
+;;     (setq rtags-completions-enabled t)
 
-  (defun rtags-diagnostics-auto-complete ()
-    "Starts diagnostics and auto-complete with RTags and #includes.
-Note that this function replaces all other sources of auto-complete
- for C++ files. Any previously opened C++ file needs to be reopen
-for this to be effective."
-    (interactive)
-    ;; Require
-    ;; Start RTags diagnostics
-    (unless rtags-diagnostics-process
-      (rtags-diagnostics))
-    ;; FIXME: this is broken, should not depend on compile_includes
-    ;; Create an auto-complete source for headers using compile_includes
-    ;; (let ((plist (rtags-load-compile-includes-file (projectile-project-root))))
-    ;;   (dolist (dir (plist-get plist :src-dirs))
-    ;;     (add-to-list 'achead:include-directories dir))
-    ;;   (dolist (dir (plist-get plist :include-dirs))
-    ;;     (add-to-list 'achead:include-directories dir)))
-    ;; Turn on RTags auto-complete
-    (setq rtags-completions-enabled t)
-    (add-hook 'c++-mode-hook
-              (lambda ()
-                (setq ac-sources '(ac-source-my-rtags
-                                   ;;ac-source-my-c-headers
-                                   )))))
+;;     ;; FIXME: broken
+;;     ;; (add-hook 'c++-mode-hook
+;;     ;;          (lambda ()
+;;     ;;            (setq ac-sources '(ac-source-my-rtags
+;;     ;;                                ;;ac-source-my-c-headers
+;;     ;;                                )))))
 
 
-  (define-key c-mode-base-map [(control c)(r)(A)]
-    'rtags-diagnostics-auto-complete))
+;;   (define-key c-mode-base-map [(control c)(r)(A)]
+;;     'rtags-diagnostics-auto-complete))
 
 
+
 (provide 'init-rtags)
-;; Local Variables:
-;; byte-compile-warnings: (not cl-functions)
-;; End:
+
+;;; init-rtags.el ends here
