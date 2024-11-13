@@ -10,17 +10,17 @@ exit_code=0
 
 cleanup () {
     exit_code=$?
-    rm -vf "${EMACS_DIR}"/{init.elc,{modules,themes}/*.elc}
+    rm -vf "${EMACS_DIR}"/{init.elc,{modules,themes,.ci}/*.elc}
     exit $exit_code
 }
 
 trap cleanup ERR INT TERM
 
-# Byte compile init.el and all *.el files in modules and themes directories.
-# Directory extensions is skipped because this is not Exordium code.  Split
-# them into smaller chunks, because Emacs on GitHub worker tends to core dump
-# when there's too much to compile in one go.
-for pattern in "modules/*.el" "init.el" "themes/*.el"; do
+# Byte compile init.el and all *.el files in modules, themes, and .ci
+# directories.  Directory extensions is skipped because this is not Exordium
+# code.  Split them into smaller chunks, because Emacs on GitHub worker tends
+# to segmentation fault when there's too much to compile in one go.
+for pattern in "modules/*.el" "init.el" "themes/*.el" ".ci/*.el"; do
     echo "===Byte compiling: ${pattern}==="
 
     # Use find to find file names such that globs are expanded while prevent

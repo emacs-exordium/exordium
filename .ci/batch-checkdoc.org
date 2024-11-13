@@ -1,0 +1,81 @@
+* Run Checkdoc as part of CI
+** Use compile command from =flymake=
+Run this snippet in an ~org-mode~ buffer:
+#+begin_src elisp
+(when-let* ((flycheck-command (let (temp-file)
+                                (unwind-protect
+                                    (progn
+                                      (setq temp-file (make-temp-file "exordium-checkdoc"))
+                                      (with-current-buffer (find-file-noselect temp-file)
+                                        (emacs-lisp-mode)
+                                        (flycheck-checker-shell-command 'emacs-lisp-checkdoc)))
+                                  (when temp-file
+                                    (delete-file temp-file)))))
+            (unescaped-command (replace-regexp-in-string (rx "\\" (group any)) "\\1" flycheck-command))
+            (flycheck-script (replace-regexp-in-string
+                              (rx (one-or-more any) " --eval " (group (one-or-more any)) " -- " (one-or-more any))
+                              "(quote \\1)"
+                              unescaped-command)))
+  (pp
+   (eval (car (read-from-string flycheck-script)))))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+(progn
+  (defvar jka-compr-inhibit)
+  (unwind-protect
+      (let
+          ((jka-compr-inhibit t))
+        (when
+            (equal
+             (car command-line-args-left)
+             "--")
+          (setq command-line-args-left
+                (cdr command-line-args-left)))
+        (unless
+            (require 'elisp-mode nil 'no-error)
+          (require 'lisp-mode))
+        (require 'checkdoc)
+        (let
+            ((source
+              (car command-line-args-left))
+             (process-default-directory default-directory))
+          (with-temp-buffer
+            (insert-file-contents source 'visit)
+            (setq buffer-file-name source)
+            (setq default-directory process-default-directory)
+            (with-demoted-errors "Error in checkdoc: %S"
+              (delay-mode-hooks
+                (emacs-lisp-mode))
+              (setq delayed-mode-hooks nil)
+              (checkdoc-current-buffer t)
+              (with-current-buffer checkdoc-diagnostic-buffer
+                (princ
+                 (buffer-substring-no-properties
+                  (point-min)
+                  (point-max)))
+                (kill-buffer))))))
+    (setq command-line-args-left nil)))
+#+end_example
+
+Modify the output above to process multiple files and signal error when anything has been reported. See [[file:batch-checkdoc.el][batch-checkdoc.el]].
+
+** Use package =checkdoc-batch= - not pursued
+*** Manual download to =extensions=
+Available [[https://download.tuxfamily.org/user42/checkdoc-batch.el][here]]
+*** Install package
+#+begin_src elisp
+;; checkdoc-batch
+(require 'package)
+(add-to-list 'package-archives
+    '("user42" . "https://download.tuxfamily.org/user42/elpa/packages/"))
+
+(let (package-check-signature) ;; signature is out date
+  (package-refresh-contents)
+  (package-install 'checkdoc-batch))
+
+(require 'checkdoc-batch)
+(checkdoc-batch)
+#+end_src
+Did initial check, but the file seems a bit stale and the usrer42 ELPA lacks a signature. Could download the file, but it already has errors.

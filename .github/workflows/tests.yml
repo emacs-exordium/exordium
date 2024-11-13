@@ -38,6 +38,12 @@ jobs:
         with:
           path: '.emacs.d'
 
+      - name: Install bash # Needed for mapfile on macOS,
+                           # Installing early so all scripts run in
+                           # the same environment
+        if: matrix.os == 'macos-latest'
+        run: brew install bash
+
       - name: First start # So most modules are pulled in from melpa and gnu
         run: .emacs.d/.ci/first-start.sh
 
@@ -47,11 +53,12 @@ jobs:
       - name: Verify no obsolete cl- functions
         run: .emacs.d/.ci/unit-test-cl.sh
 
-      - name: 'Lint: Install bash' # Needed for mapfile on macOS
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version) && matrix.os == 'macos-latest'
-        run: 'brew install bash'
+      - name: 'Lint: checkdoc'
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: .emacs.d/.ci/batch-checkdoc.sh
 
-      - name: 'Lint: compilation' # At the end, to avoid compilation shenanigans
+      - name: 'Lint: compilation' # At the end, to let other builds escape errors
+                                  # caused by compilation shenanigans
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
         run: .emacs.d/.ci/batch-byte-compile.sh
 
