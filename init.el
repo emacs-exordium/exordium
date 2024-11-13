@@ -149,10 +149,6 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 (when (file-readable-p exordium-custom-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-custom-file))
 
-;; @todo: remove?
-;;; Path for "require"
-(add-to-list 'load-path exordium-modules-dir)
-(exordium--add-directory-tree-to-load-path exordium-extensions-dir) ;; @todo third party
 (exordium--add-directory-tree-to-load-path exordium-local-dir t)
 
 ;; Load before init files
