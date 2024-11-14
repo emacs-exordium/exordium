@@ -20,7 +20,14 @@ trap cleanup ERR INT TERM
 # directories.  Directory extensions is skipped because this is not Exordium
 # code.  Split them into smaller chunks, because Emacs on GitHub worker tends
 # to segmentation fault when there's too much to compile in one go.
-for pattern in "modules/*.el" "init.el" "themes/*.el" ".ci/*.el"; do
+for pattern in \
+        "modules/init-[a-f]*.el" \
+        "modules/init-[g-l]*.el" \
+        "modules/init-[m-r]*.el" \
+        "modules/init-[s-z]*.el" \
+        "init.el" \
+        "themes/*.el" \
+        ".ci/*.el"; do
     echo "===Byte compiling: ${pattern}==="
 
     # Use find to find file names such that globs are expanded while prevent
@@ -31,18 +38,24 @@ for pattern in "modules/*.el" "init.el" "themes/*.el" ".ci/*.el"; do
     ${EMACS} -Q --batch \
              --eval '
 (progn
-   (setq debug-on-error t
-         eval-expression-print-length 100
-         edebug-print-length 500
-         user-emacs-directory "'"${EMACS_DIR}"'/"
-         exordium-spell-check nil
-         treesit-auto-install nil
-         tree-sitter-langs--testing t) ; tree-sitter-langs is for pre Emacs-29
-   (load-file "'"${EMACS_DIR}"'/init.el")
-   (setq exordium--require-package-archives package-archives)
-   (message "===Byte compilation start===")
-   (batch-byte-compile))' \
-             "${files[@]}"
+  (setq debug-on-error t
+        eval-expression-print-length 100
+        edebug-print-length 500
+        user-emacs-directory "'"${EMACS_DIR}"'/"
+        exordium-spell-check nil
+        treesit-auto-install nil)
+  (fmakunbound '"'"'ask-user-about-lock)
+  (defun ask-user-about-lock (file opponent)
+    (sleep-for (+ 1.0 (/ (random 100) 100.0)))
+    t)
+  (load-file "'"${EMACS_DIR}"'/init.el")
+  (setq exordium--require-package-archives package-archives)
+  (message "===Byte compilation start: %s==="
+           (mapcar (lambda (f)
+                     (file-name-nondirectory f))
+                   command-line-args-left))
+  (batch-byte-compile))' \
+            "${files[@]}"
 done
 
 cleanup
