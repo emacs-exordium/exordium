@@ -44,9 +44,18 @@ These are restored by `exordium-magit-quit-session'.")
               exordium-magit-blame
               exordium-magit-log-buffer
               exordium-magit-log
-              exordium--magit-fullscreen)
+              exordium--magit-fullscreen
+              exordium-projectile-add-known-project)
+
+  :autoload (magit-refresh   ; required by init-forge.el
+             magit-git-string)  ; required by init-forge.el
+
   :defines (magit-last-seen-setup-instructions)
   :init
+  (defun exordium-projectile-add-known-project
+        (_repo directory _args)
+      (projectile-add-known-project directory))
+
   (defun exordium-magit-log-buffer ()
     (interactive)
     (if (fboundp 'magit-log-buffer-file)
@@ -136,14 +145,13 @@ with `exordium-magit-quit-session'."
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
       (advice-add 'magit-status-internal :around #'exordium--magit-fullscreen)))
 
-  (define-advice magit-clone-regular (:after
-                                      (_repo directory _args)
-                                      exordium-projectile-add-known-project)
-    (projectile-add-known-project directory)))
+  (advice-add 'magit-clone-regular :after #'exordium-projectile-add-known-project))
 
+
 ;;; Don't show "MRev" in the modeline
-(when (bound-and-true-p magit-auto-revert-mode)
-  (diminish 'magit-auto-revert-mode))
+(use-package magit-autorevert
+  :ensure magit
+  :diminish magit-auto-revert-mode)
 
 
 ;; SMerge Dispatch
@@ -161,6 +169,9 @@ with `exordium-magit-quit-session'."
 
 (use-package transient
   :functions exordium-smerge-dispatch
+  :autoload (transient-prefix
+             transient-setup
+             transient-suffix)
   :config
   (transient-define-suffix exordium-smerge:undo ()
     :description "undo"
