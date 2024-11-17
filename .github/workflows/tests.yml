@@ -16,6 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       ci_tests: true
+      EMACS_TEST_VERBOSE: true
+      EMACS_TEST_JUNIT_REPORT: true
     strategy:
       matrix:
         os:
@@ -49,6 +51,12 @@ jobs:
 
       - name: Unit tests
         run: .emacs.d/.ci/unit-tests.sh
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure() # Always run even if the previous step fails
+        with:
+          report_paths: '.emacs.d/modules/*.t.xml'
 
       - name: Verify no obsolete cl- functions
         run: .emacs.d/.ci/unit-test-cl.sh
