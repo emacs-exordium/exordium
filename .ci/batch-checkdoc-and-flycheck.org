@@ -79,3 +79,9 @@ Available [[https://download.tuxfamily.org/user42/checkdoc-batch.el][here]]
 (checkdoc-batch)
 #+end_src
 Did initial check, but the file seems a bit stale and the usrer42 ELPA lacks a signature. Could download the file, but it already has errors.
+
+* Run Flycheck as part of CI
+** Use =flycheck-compile=
+In essence ~flycheck-compile~ is calling ~compilation-start~ with ~flycheck-checker-shell-command~ as a command line. The latter is flexible enough, such that it can be used in a similar mechanism to what [[*Use compile command from =flymake=][Use compile command from =flymake=]] did.
+
+The output is processed to find relevant warnings and errors, while filtering some things which we may not need to fix in Exordium, see [[file:batch-flycheck.el][batch-flycheck.el]].

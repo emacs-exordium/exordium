@@ -3,8 +3,9 @@
 ;;; Commentary:
 ;; This is a transformation of
 ;;   (flycheck-checker-shell-command 'emacs-lisp-checkdoc)
-;; See batch-checkdoc.org file for a tips how to get a template to fiddle with
-;; to produce function `batch-checkdoc'.
+;;
+;; See batch-checkdoc-and-flycheck.org file for a tips how to get a template to
+;; fiddle with to produce function `batch-checkdoc'.
 
 ;;; Code:
 

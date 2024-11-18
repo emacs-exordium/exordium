@@ -3,7 +3,7 @@
 set -x
 set -e
 
-EMACS_DIR="$(cd "${GITHUB_WORKSPACE:-${HOME}}/${1:-.emacs.d}" && pwd -P)"
+EMACS_DIR="$(cd "${HOME}/${1:-.emacs.d}" && pwd -P)"
 EMACS=${EMACS:=emacs}
 
 # Redefine ask-user-about-lock as the melpa seems to stumble on it

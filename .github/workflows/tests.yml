@@ -40,6 +40,9 @@ jobs:
         with:
           path: '.emacs.d'
 
+      - name: Link $GITHUB_WORKSPACE/.emacs.d to $HOME/.emacs.d
+        run: ln -s "${GITHUB_WORKSPACE}/.emacs.d" "${HOME}/.emacs.d"
+
       - name: Install bash # Needed for mapfile on macOS,
                            # Installing early so all scripts run in
                            # the same environment
@@ -47,10 +50,10 @@ jobs:
         run: brew install bash
 
       - name: First start # So most modules are pulled in from melpa and gnu
-        run: .emacs.d/.ci/first-start.sh
+        run: '"${HOME}/.emacs.d/.ci/first-start.sh"'
 
       - name: Unit tests
-        run: .emacs.d/.ci/unit-tests.sh
+        run: '"${HOME}/.emacs.d/.ci/unit-tests.sh"'
 
       - name: Publish test report
         uses: mikepenz/action-junit-report@v5
@@ -59,16 +62,20 @@ jobs:
           report_paths: '.emacs.d/modules/*.t.xml'
 
       - name: Verify no obsolete cl- functions
-        run: .emacs.d/.ci/unit-test-cl.sh
+        run: '"${HOME}/.emacs.d/.ci/unit-test-cl.sh"'
 
       - name: 'Lint: checkdoc'
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
-        run: .emacs.d/.ci/batch-checkdoc.sh
+        run: '"${HOME}/.emacs.d/.ci/batch-checkdoc.sh"'
 
-      - name: 'Lint: compilation' # At the end, to let other builds escape errors
+      - name: 'Lint: compilation' # Close to the end, to let other builds escape errors
                                   # caused by compilation shenanigans
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
-        run: .emacs.d/.ci/batch-byte-compile.sh
+        run: '"${HOME}/.emacs.d/.ci/batch-byte-compile.sh"'
+
+      - name: 'Lint: flycheck' # After compilation that should install all packages
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-flycheck.sh"'
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}
@@ -93,5 +100,8 @@ jobs:
           repository: 'pkryger/exordium-commontap'
           path: '.emacs.d/taps/commontap'
 
+      - name: Link $GITHUB_WORKSPACE/.emacs.d to $HOME/.emacs.d
+        run: ln -s "${GITHUB_WORKSPACE}/.emacs.d" "${HOME}/.emacs.d"
+
       - name: First start # So most modules are pulled in from melpa and gnu
-        run: '.emacs.d/.ci/first-start.sh .emacs.d'
+        run: '"${HOME}/.emacs.d/.ci/first-start.sh"'
