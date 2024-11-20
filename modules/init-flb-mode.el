@@ -38,6 +38,10 @@
 ;; TODO: implement support for bury-buffer in FLB mode
 
 ;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-git)
 
 (require 'cl-lib)
 
@@ -157,13 +161,14 @@ Designed to be run as a hook function that runs after every command."
 
 ;;; Quick workaround to make magit work when FLB mode is turned on.
 ;;; TODO: there must be a better way...
-
-(when (fboundp 'magit-save-repository-buffers)
-  (defadvice magit-save-repository-buffers (around magit-disable-flb activate)
-    (let ((previously-on flb-mode))
-      (when flb-mode (flb-deactivate t))
-      ad-do-it
-      (when previously-on (flb-activate t)))))
+(defun exordium--magit-disable-flb (orig-fun &rest args)
+  "Ensure `flb-mode' is temporarily disabled, then call ORIG-FUN with ARGS."
+  (let ((previously-on flb-mode))
+    (when flb-mode (flb-deactivate t))
+    (apply orig-fun args)
+    (when previously-on (flb-activate t))))
+(advice-add 'magit-save-repository-buffers :around
+            #'exordium--magit-disable-flb)
 
 (provide 'init-flb-mode)
 

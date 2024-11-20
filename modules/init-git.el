@@ -48,7 +48,8 @@ These are restored by `exordium-magit-quit-session'.")
               exordium-projectile-add-known-project)
 
   :autoload (magit-refresh   ; required by init-forge.el
-             magit-git-string)  ; required by init-forge.el
+             magit-git-string ; required by init-forge.el
+             magit-save-repository-buffers) ; required by init-flb-mode.el
 
   :defines (magit-last-seen-setup-instructions)
   :init
