@@ -44,10 +44,6 @@ for pattern in \
         user-emacs-directory "'"${EMACS_DIR}"'/"
         exordium-spell-check nil
         treesit-auto-install nil)
-  (fmakunbound '"'"'ask-user-about-lock)
-  (defun ask-user-about-lock (file opponent)
-    (sleep-for (+ 1.0 (/ (random 100) 100.0)))
-    t)
   (load-file "'"${EMACS_DIR}"'/init.el")
   (setq exordium--require-package-archives package-archives)
   (message "===Byte compilation start: %s==="

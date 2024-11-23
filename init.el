@@ -273,8 +273,93 @@ Also discard .elc without corresponding .el."
             (warn "Removing singleton .elc file: %s" elc)
             (delete-file elc)))))))
 (exordium-recompile-modules)
-
 
+
+;; Exordium's CI sometimes signals `ask-user-about-lock' cannot be used in non
+;; interactive mode.  It used to be that `helm' (and perhaps other packages as
+;; well) unconditionally turned on `async-bytecomp-package-mode'.  The
+;; `async-bytecomp-package-mode' suffers from a data race when multiple async
+;; compilation processes race with each other and with parent Emacs while
+;; accessing `async-byte-compile-log-file', see
+;; https://github.com/jwiegley/emacs-async/pull/194.  The latter doesn't seem
+;; to be accepted, so will use a workaround is implemented here.  Should a
+;; solution be found the following can be reduced to:
+;;
+;; (use-package async
+;;   :autoload (async-bytecomp-package-mode)
+;;   :config
+;;   (async-bytecomp-package-mode))
+
+(defvar exordium--async-bytecomp-log-alist nil
+  "List of temporary files for async bytecompile functions.
+Each entry is a from (FILE-OR-DIRECTORY . TEMP-FILE) where
+FILE-OR-DIRECTORY is file or directory being compiled and the
+TEMP-FILE is the temporary log file to communicate compilation
+results to parrent Emacs.")
+
+(use-package async
+  :autoload (async-bytecomp-package-mode)
+  :defines (async-byte-compile-log-file)
+  :functions (exordium--async-cleanup-temp-file
+              exordium--async-generate-temp-file
+              exordium--async-with-temp-file)
+  :init
+  (defun exordium--async-cleanup-temp-file (file-or-directory)
+    "Remove the file associated with FILE-OR-DIRECTORY.
+Also remove the FILE-OR-DIRECTORY from `exordium--async-bytecomp-log-alist'."
+    (when-let* ((temp-file (alist-get file-or-directory
+                                      exordium--async-bytecomp-log-alist
+                                      nil nil #'equal))
+                ((file-exists-p temp-file)))
+      (delete-file temp-file))
+    (setf (alist-get file-or-directory
+                     exordium--async-bytecomp-log-alist
+                     nil 'remove #'equal)
+          nil))
+
+  (defun exordium--async-generate-temp-file (orig-fun &rest args)
+    "Call ORIG-FUN with ARGS with a newly generated temp file.
+The `async-byte-compile-log-file' is bound to the temp file.
+Also register the temp file in
+`exordium--async-bytecomp-log-alist'."
+    (let* ((file-or-directory (car args))
+           (temp-file (make-temp-file "async-bytecomp.log."))
+           (async-byte-compile-log-file temp-file))
+      (push (cons file-or-directory temp-file)
+            exordium--async-bytecomp-log-alist)
+      (condition-case err
+          (apply orig-fun args)
+        (error
+         (exordium--async-cleanup-temp-file file-or-directory)
+         (signal (car err) (cdr err))))))
+
+  (defun exordium--async-with-temp-file (orig-fun &rest args)
+    "Call ORIG-FUN with ARGS with a corresponding temp file.
+The `async-byte-compile-log-file' is bound to the temp file.
+Also remove temp file and relevant entry from
+`exordium--async-bytecomp-log-alist'."
+    (let* ((file-or-directory (car args))
+           (temp-file
+            (alist-get file-or-directory
+                             exordium--async-bytecomp-log-alist
+                             nil nil #'equal))
+           (async-byte-compile-log-file
+            (if (and temp-file (file-exists-p temp-file)
+                     (< 0 (file-attribute-size
+                           (file-attributes temp-file))))
+                temp-file
+              async-byte-compile-log-file)))
+      (unwind-protect
+          (apply orig-fun args)
+        (exordium--async-cleanup-temp-file file-or-directory))))
+
+  :config
+  (advice-add 'async-byte-compile-file :around #'exordium--async-generate-temp-file)
+  (advice-add 'async-byte-recompile-directory :around #'exordium--async-generate-temp-file)
+  (advice-add 'async-bytecomp--file-to-comp-buffer :around #'exordium--async-with-temp-file)
+  (async-bytecomp-package-mode))
+
+
 (exordium-require 'init-environment)      ; environment variables
 
 (dolist (tapped-file exordium-tapped-prefs-files)
