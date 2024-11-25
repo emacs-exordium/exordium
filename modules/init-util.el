@@ -378,6 +378,19 @@ buffer."
   (interactive)
   (switch-to-buffer (make-temp-name "scratch-")))
 
+(defun exordium--scratch-kill-buffer-query-function ()
+  "Ask whether to kill scratch buffers that don't have backing file."
+  (or buffer-file-name
+      (not (cl-member (buffer-name) '("scratch-" "*scratch")
+                      :test (lambda (buffer-name prefix)
+                              (string-prefix-p prefix buffer-name))))
+      (yes-or-no-p
+	   (format "Buffer %S has not been written to a file; kill it? "
+		       (buffer-name (current-buffer))))))
+
+(add-hook 'kill-buffer-query-functions
+          #'exordium--scratch-kill-buffer-query-function)
+
 
 ;;; Miscellaneous
 

@@ -14,6 +14,11 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-util)
 
+(use-package el-mock
+  :ensure t
+  :autoload (mocklet
+             mocklet-function))
+
 (require 'ert)
 (require 'cl-lib)
 (require 'cl-macs)
@@ -229,6 +234,57 @@ Return the BODY return value"
                        (exordium-flip-string-test-case-output test-case))))))
 
 
+(ert-deftest test-exordium--scratch-kill-buffer-query-function-1 ()
+  (let ((buffer (with-current-buffer (scratch)
+                  (current-buffer))))
+    (unwind-protect
+        (progn
+          (should buffer)
+          (with-current-buffer buffer
+            (mocklet ((yes-or-no-p => t :times 1))
+              (should (exordium--scratch-kill-buffer-query-function))))
+          (with-current-buffer buffer
+            (mocklet ((yes-or-no-p => nil :times 1))
+              (should-not (exordium--scratch-kill-buffer-query-function)))))
+      (when buffer
+        (mocklet ((yes-or-no-p => t :times 1))
+          (kill-buffer buffer))
+        (should-not (buffer-live-p buffer))))))
+
+(ert-deftest test-exordium--scratch-kill-buffer-query-function-2 ()
+  (let* ((kill-buffer nil)
+         (buffer (or (get-buffer "*scratch*")
+                     (prog1
+                         (get-buffer-create "*scratch*")
+                       (setq kill-buffer t)))))
+    (unwind-protect
+        (progn
+          (should buffer)
+          (with-current-buffer buffer
+            (mocklet ((yes-or-no-p => t :times 1))
+              (should (exordium--scratch-kill-buffer-query-function))))
+          (with-current-buffer buffer
+            (mocklet ((yes-or-no-p => nil :times 1))
+              (should-not (exordium--scratch-kill-buffer-query-function)))))
+      (when (and buffer kill-buffer)
+        (mocklet ((yes-or-no-p => t :times 1))
+          (kill-buffer buffer))
+        (should-not (buffer-live-p buffer))))))
+
+(ert-deftest test-exordium--scratch-kill-buffer-query-function-3 ()
+  (let ((file (make-temp-file "scratch-")))
+    (unwind-protect
+        (progn
+          (should file)
+          (should (file-exists-p file))
+          (with-current-buffer (find-file-noselect file)
+            (mocklet ((yes-or-no-p not-called))
+              (should (exordium--scratch-kill-buffer-query-function)))))
+      (when (and file (file-exists-p file))
+        (delete-file file)))))
+
+
+
 (provide 'init-util.t)
 
 ;;; init-util.t.el ends here
