@@ -885,79 +885,111 @@ The configuration variable is `exordium-treesit-modes-enable` and is disabled by
 The main file of the configuration is `init.el`. It looks like this:
 
 ```lisp
-;;; 1. Load all before-init.el files. The ~/.emacs.d/before-init.el
-;;; comes first (if exists), followed by any existing before-init.el
-;;; file from all ~/.emacs.d/taps/subdirs.
+;; 1. Load all before-init.el files.  The ~/.emacs.d/before-init.el comes first
+;; (if exists), followed by all existing before-init.el files from all
+;; ~/.emacs.d/taps/subdirs.
+;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
-  (load tapped-file))
+  (message "Loadding tapped before-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
-;;; 2. Define the list of Melpa packages that we need, and load any missing
-;;; one. Note that they are NOT updated automatically.
+;; 2. Define the list of Melpa packages that we need, and load any missing one.
+;; Note that they are NOT updated automatically.
+;; [...]
 
-;;; 3. Local preferences: load all prefs.el. The ~/.emacs.d/prefs.el
-;;; comes first (if exists), followed by any existing prefs.el
-;;; file from all ~/.emacs.d/taps/subdirs.
-(require 'init-prefs)       ; defines variables that prefs.el can override
+;; 3. Local preferences: load all prefs.el.  The ~/.emacs.d/prefs.el comes
+;; first (if exists), followed by all existing prefs.el file from all
+;; ~/.emacs.d/taps/subdirs.
 (dolist (tapped-file exordium-tapped-prefs-files)
-  (load tapped-file))
+  (message "Loadding tapped prefs file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
-;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
+;; 4. Load the default theme in ~/.emacs.d/themes. See below.
 
-;;; 5. Load the default theme in ~/.emacs.d/themes.
+;; 5. Load the "modules" in ~/.emacs.d/modules. See below.
 
-;;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el
-;;; comes first (if exists), followed by any existing after-init.el
-;;; file from all ~/.emacs.d/taps/subdirs.
+;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el comes first (if
+;; exists), followed by all existing after-init.el file from all
+;; ~/.emacs.d/taps/subdirs.
+;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
-  (load tapped-file))
+  (message "Loadding tapped after-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 ```
 
 Modules can be individually commented out if needed:
 
 ```lisp
-;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
-;;; or evaluate the require expression with M-C-x.
+;; Themes
+;; Note: use "export TERM=xterm-256color" for emacs -nw
+(setq custom-theme-directory exordium-themes-dir)
+(exordium-require 'init-progress-bar nil)
 
-;;; Look and feel
-(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
-(require 'init-linum)           ; line numbers
+(when exordium-nw
+  (set-face-background 'highlight nil))
+(when exordium-theme
+  (exordium-require 'init-themes))
 
-;;; Usability
-(require 'init-window-manager)  ; navigate between windows
-(require 'init-util)            ; utilities like match paren, bookmarks...
-(require 'init-ido)             ; supercharged completion engine
-(require 'init-highlight)       ; highlighting current line, symbol under point
-(cond ((eq exordium-complete-mode :auto-complete)
-       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
-      ((eq exordium-complete-mode :company)
-       (require 'init-company))) ; company mode (rtags are on by default)
-(when exordium-helm-projectile  ; find files anywhere in project
-  (require 'init-helm-projectile))
-(require 'init-helm)            ; setup helm
+;; Look and feel
+(exordium-require 'init-look-and-feel)     ; fonts, UI, keybindings, saving files etc.
+(exordium-require 'init-font-lock)         ; enables/disables font-lock globally.
+(exordium-require 'init-linum)             ; line numbers
+(when exordium-smooth-scroll
+  (exordium-require 'init-smooth-scroll)
+  (smooth-scroll-mode 1))                  ; smooth scroll
 
-;;; Magit and git gutter
-(require 'init-git)
+(update-progress-bar)
 
-;;; Themes
-(if exordium-nw
-    (set-face-background 'highlight nil)
-  ;; Using Emacs with GUI:
-  (require 'init-themes)
-  (require 'init-powerline))
+;; Usability
+(exordium-require 'init-window-manager)   ; navigate between windows
+(exordium-require 'init-util)             ; utilities like match paren, bookmarks...
+(unless exordium-helm-everywhere
+  (exordium-require 'init-ido))           ; supercharged completion engine
+(exordium-require 'init-highlight)        ; highlighting current line, symbol under point
 
-;;; Shell mode
-(require 'init-shell)
+(pcase exordium-complete-mode
+  (:auto-complete
+   (exordium-require 'init-autocomplete))
+  (:company
+   (exordium-require 'init-company)))     ; completion
 
-;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
+(exordium-require 'init-helm)             ; setup helm
+(when exordium-projectile
+  (exordium-require 'init-projectile))
+(when (and exordium-projectile exordium-helm-projectile)
+  (exordium-require 'init-helm-projectile))
 
-;;; OS-specific things
-(when *environment-osx*
-  (require 'init-osx))
+(when exordium-help-extensions
+  (exordium-require 'init-help))           ; extra help
 
-;;; Etc.
+(update-progress-bar)
+
+(exordium-require 'init-dired)            ; enable dired+ and wdired permission editing
+(exordium-require 'init-git)              ; Magit and git gutter
+(exordium-require 'init-git-visit-diffs)  ; visit diffs in successive narrowed buffers
+(exordium-require 'init-forge)            ; Forge
+(exordium-require 'init-flb-mode)         ; frame-local buffers
+
+(update-progress-bar)
+
+;; Prog mode
+(exordium-require 'init-prog-mode )
+
+;; Shell mode
+(exordium-require 'init-prog-mode)
+
+;; Major modes
+(exordium-require 'init-markdown)
+(exordium-require 'init-org)
+(exordium-require 'init-xml)
+
+;; OS-specific things
+(when exordium-osx
+  (exordium-require 'init-osx))
+
+;; C++
+(exordium-require 'init-cpp)
+;; Etc.
 ```
 
 If you are looking for a specific feature or key binding,

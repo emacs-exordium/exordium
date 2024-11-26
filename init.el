@@ -349,12 +349,13 @@ Also remove temp file and relevant entry from
 
 (exordium-require 'init-environment)      ; environment variables
 
+
 (dolist (tapped-file exordium-tapped-prefs-files)
   (message "Loadding tapped prefs file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
-;;; Themes
-;;; Note: use "export TERM=xterm-256color" for emacs -nw
+;; Themes
+;; Note: use "export TERM=xterm-256color" for emacs -nw
 (setq custom-theme-directory exordium-themes-dir)
 (exordium-require 'init-progress-bar nil)
 
@@ -363,28 +364,28 @@ Also remove temp file and relevant entry from
 (when exordium-theme
   (exordium-require 'init-themes))
 
-;;; Look and feel
-(exordium-require 'init-look-and-feel)    ; fonts, UI, keybindings, saving files etc.
-(exordium-require 'init-font-lock)        ; enables/disables font-lock globally.
-(exordium-require 'init-linum)            ; line numbers
+;; Look and feel
+(exordium-require 'init-look-and-feel)     ; fonts, UI, keybindings, saving files etc.
+(exordium-require 'init-font-lock)         ; enables/disables font-lock globally.
+(exordium-require 'init-linum)             ; line numbers
 (when exordium-smooth-scroll
-  (exordium-require 'init-smooth-scroll nil)
-  (smooth-scroll-mode 1)) ; smooth scroll
+  (exordium-require 'init-smooth-scroll)
+  (smooth-scroll-mode 1))                  ; smooth scroll
 
 (update-progress-bar)
 
-;;; Usability
-(exordium-require 'init-window-manager)  ; navigate between windows
-(exordium-require 'init-util)            ; utilities like match paren, bookmarks...
+;; Usability
+(exordium-require 'init-window-manager)   ; navigate between windows
+(exordium-require 'init-util)             ; utilities like match paren, bookmarks...
 (unless exordium-helm-everywhere
-  (exordium-require 'init-ido))          ; supercharged completion engine
-(exordium-require 'init-highlight)       ; highlighting current line, symbol under point
+  (exordium-require 'init-ido))           ; supercharged completion engine
+(exordium-require 'init-highlight)        ; highlighting current line, symbol under point
 
 (pcase exordium-complete-mode
   (:auto-complete
    (exordium-require 'init-autocomplete))
   (:company
-   (exordium-require 'init-company)))    ; completion
+   (exordium-require 'init-company)))     ; completion
 
 (exordium-require 'init-helm)             ; setup helm
 (when exordium-projectile
@@ -405,29 +406,29 @@ Also remove temp file and relevant entry from
 
 (update-progress-bar)
 
-;;; Prog mode
+;; Prog mode
 (exordium-require 'init-prog-mode )
 
-;;; Shell mode
+;; Shell mode
 (exordium-require 'init-prog-mode)
 
-;;; Major modes
+;; Major modes
 (exordium-require 'init-markdown)
 (exordium-require 'init-org)
 (exordium-require 'init-xml)
 
-;;; OS-specific things
+;; OS-specific things
 (when exordium-osx
   (exordium-require 'init-osx))
 
-;;; C++
+;; C++
 (exordium-require 'init-cpp)
 (exordium-require 'init-bde-style)
 (when exordium-yasnippet
   (exordium-require 'init-yasnippet))
 (exordium-require 'init-gdb)
 
-;;; RTags
+;; RTags
 (exordium-require 'init-rtags nil
                   :functions (rtags-auto-complete))
 (when (and (eq exordium-complete-mode :auto-complete)
@@ -439,33 +440,29 @@ Also remove temp file and relevant entry from
 
 (update-progress-bar)
 
-;;; JS
+;; JS
 (exordium-require 'init-javascript)
 
-;;; Python
+;; Python
 (exordium-require 'init-python)
 
-;;; Ruby
+;; Ruby
 (exordium-require 'init-ruby)
 
-;;; Lisp
+;; Lisp
 (exordium-require 'init-elisp)
 
-;;; Clojure
+;; Clojure
 (when exordium-clojure
   (exordium-require 'init-clojure))
 
-;;; Groovy
+;; Groovy
 (exordium-require 'init-groovy)
 
-;;; include-what-you-use
+;; include-what-you-use
 (exordium-require 'init-iwyu)
 
 (update-progress-bar)
-
-;;; Desktop - close to the end so customisations had a chance to kick in
-(when exordium-desktop
-  (exordium-require 'init-desktop))
 
 (when (and exordium-theme exordium-enable-powerline)
   (exordium-require 'init-powerline))
@@ -476,22 +473,26 @@ Also remove temp file and relevant entry from
 ;; Flycheck
 (exordium-require 'init-flycheck)
 
-;;; Treesit
+;; Treesit
 (when exordium-treesit-modes-enable
   (exordium-require 'init-treesit))
 
-;;; LSP
+;; LSP
 (when exordium-lsp-mode-enable
   (exordium-require 'init-lsp))
 
-;;; Local extensions
+;; Desktop - close to the end so customisations had a chance to kick in
+(when exordium-desktop
+  (exordium-require 'init-desktop))
+
+;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
   (message "Loadding tapped after-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
 (update-progress-bar)
 
-;;; Greetings
+;; Greetings
 (setq initial-scratch-message
       (let ((current-user (split-string (user-full-name) " ")))
         (format ";; -*- lexical-binding: t -*-
