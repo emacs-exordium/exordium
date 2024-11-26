@@ -995,6 +995,19 @@ your `~/.emacs.d` are always first in each respective tapped list. Each tapped
 list is processed (each file from it is loaded) as a replacement for a
 respective [Local file](#local-files).
 
+Note that Exordium doesn't add any directory to a load path. If your tap expects
+that it's directory tree is in load path, you can use the following code to
+update the load-path:
+
+```lisp
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-lib)
+(when (bound-and-true-p load-file-name)
+  (exordium-add-directory-tree-to-load-path (file-name-directory load-file-name)))
+```
+
 Exordium-specific emacs functions are WIP.
 
 ### Preferences

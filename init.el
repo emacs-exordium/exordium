@@ -112,21 +112,10 @@ Set to stable melpa.org if you want stable.")
 (defvar exordium-tapped-after-init-files ()
   "All tapped after init files, including master one.")
 
-(defun exordium--add-directory-tree-to-load-path (dir &optional ignore-if-absent)
-  "Add DIR and all its subdirs to the load path.
-Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
-  (cond ((file-directory-p dir)
-         (add-to-list 'load-path dir)
-         (let ((default-directory dir))
-           (normal-top-level-add-subdirs-to-load-path)))
-        ((not ignore-if-absent)
-         (warn "Missing directory: %s" dir))))
-
 
 (when (file-accessible-directory-p exordium-taps-root)
   (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.].*")))
     (when (file-accessible-directory-p tap)
-      (exordium--add-directory-tree-to-load-path tap) ;; @todo: remove?
       (when-let* ((tapped (file-name-concat tap exordium-before-init))
                   ((file-readable-p tapped)))
         (add-to-list 'exordium-tapped-before-init-files tapped))
@@ -148,8 +137,6 @@ Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
 
 (when (file-readable-p exordium-custom-file)
   (add-to-list 'exordium-tapped-after-init-files exordium-custom-file))
-
-(exordium--add-directory-tree-to-load-path exordium-local-dir t)
 
 ;; Bind this early, and only if it has not been bound already,
 ;; so customisation from other places (i.e., before-init files)

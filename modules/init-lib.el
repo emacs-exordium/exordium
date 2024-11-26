@@ -45,6 +45,16 @@ Input is a string and output is a list of strings."
   "Return the path of the DIR's parent directory."
   (file-name-directory (directory-file-name dir)))
 
+(defun exordium-add-directory-tree-to-load-path (dir &optional ignore-if-absent)
+  "Add DIR and all its subdirs to the load path.
+Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
+  (cond ((file-directory-p dir)
+         (add-to-list 'load-path dir)
+         (let ((default-directory dir))
+           (normal-top-level-add-subdirs-to-load-path)))
+        ((not ignore-if-absent)
+         (warn "Missing directory: %s" dir))))
+
 
 ;;; String manipulation functions
 
