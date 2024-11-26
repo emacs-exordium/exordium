@@ -99,6 +99,79 @@ It makes buffer local variable with an extra back tick added."
           (use-package-error
            ":exordium-force-elpa wants an archive name (a string)"))))))
 
+(defun exordium--use-package-force-elpa (pkg archive)
+  "Return the form that enforces installation of a built-in PKG from ARCHIVE."
+  `(let ((package ',(use-package-as-symbol pkg)))
+     (package-read-all-archive-contents)
+     (when-let* (((package-built-in-p package))
+                 (builtin-version (alist-get package package--builtin-versions))
+                 (pkg-desc (or
+                            (cl-find-if (lambda (desc)
+                                          (equal (package-desc-archive desc)
+                                                 ,archive))
+                                        (alist-get package
+                                                   package-archive-contents))
+                            (progn
+                              (package-refresh-contents)
+                              (cl-find-if (lambda (desc)
+                                            (equal (package-desc-archive desc)
+                                                   ,archive))
+                                          (alist-get package
+                                                     package-archive-contents)))))
+                 (archive-version (package-desc-version pkg-desc))
+                 ((not (package-installed-p package archive-version)))
+                 ((version-list-< builtin-version archive-version)))
+       (use-package-pin-package package ,archive)
+       (condition-case-unless-debug err
+           (let* ((package-install-upgrade-built-in t)
+                  (transaction (package-compute-transaction
+                                (list pkg-desc)
+                                (package-desc-reqs pkg-desc)))
+                  (transaction-load-path (mapcar
+                                          (lambda (desc)
+                                            (expand-file-name
+                                             (package-desc-full-name desc)
+                                             package-user-dir))
+                                          transaction))
+                  (with-load-path
+                   (lambda (orig-fun &rest args)
+                     (let (new-load-path)
+                       ;; Ensure the newly installed package and its
+                       ;; dependencies are is in `load-path', when they are
+                       ;; reloaded.
+                       (let ((load-path (append transaction-load-path load-path)))
+                         (apply orig-fun args)
+                         (setq new-load-path load-path))
+                       ;; After reload, ensure all directories that were added
+                       ;; during reload are in the original `load-path'.
+                       (dolist (dir new-load-path)
+                         (unless (or (member dir transaction-load-path)
+                                     (member dir load-path))
+                           (push dir load-path)))))))
+             (unwind-protect
+                 (progn
+                   ;; `packgage-activate-1' calls
+                   ;; `package--reload-previously-loaded' and then adds the
+                   ;; newly installed package's directory to `load-path'. This
+                   ;; however may be not sufficient when some files `require'
+                   ;; files from the package.  Ensure such `require'd files are
+                   ;; visible for the latter call, and allow the original
+                   ;; `load-path' to be updated by the former (likely when
+                   ;; loading package autoloads).
+                   (advice-add 'package--reload-previously-loaded
+                               :around
+                               with-load-path)
+                   (package-download-transaction transaction)
+                   (package--quickstart-maybe-refresh)
+                   t)
+               (advice-remove 'package--reload-previously-loaded
+                              with-load-path)))
+         (error
+          (display-warning 'use-package
+                           (format "Failed to force ELPA installation %s: %s"
+                                   name (error-message-string err))
+                           :error))))))
+
 (defun use-package-handler/:exordium-force-elpa (name _keyword archive-name rest state)
                                         ; checkdoc-params: (rest state)
   "Pin package NAME to ELPA archive ARCHIVE-NAME and install it from there.
@@ -111,38 +184,9 @@ from ELPA archive it shadows the built-in package and it becomes
 eligible for upgrading while, i.e., `package-upgrade' is called,
 see Info node `(emacs) Package Installation'."
   (let ((body (use-package-process-keywords name rest state))
-        (force-elpa-form
-         (when archive-name
-           `(let ((package ',(use-package-as-symbol name)))
-              (package-read-all-archive-contents)
-              (when-let* (((package-built-in-p package))
-                          (builtin-version (alist-get package package--builtin-versions))
-                          (archive-desc (or
-                                         (cl-find-if (lambda (desc)
-                                                       (equal (package-desc-archive desc)
-                                                              ,archive-name))
-                                                     (alist-get package
-                                                                package-archive-contents))
-                                         (progn
-                                           (package-refresh-contents)
-                                           (cl-find-if (lambda (desc)
-                                                         (equal (package-desc-archive desc)
-                                                                ,archive-name))
-                                                       (alist-get package
-                                                                  package-archive-contents)))))
-                          (archive-version (package-desc-version archive-desc))
-                          ((not (package-installed-p package archive-version)))
-                          ((version-list-< builtin-version archive-version)))
-                (use-package-pin-package package ,archive-name)
-                (condition-case-unless-debug err
-                    (let ((package-install-upgrade-built-in t))
-                      (package-install-from-archive archive-desc)
-                      t)
-                  (error
-                   (display-warning 'use-package
-                                    (format "Failed to force ELPA installation %s: %s"
-                                            name (error-message-string err))
-                                    :error))))))))
+        (force-elpa-form (when archive-name
+                           (exordium--use-package-force-elpa name
+                                                             archive-name))))
     ;; Pinning should occur just before ensuring
     ;; See `use-package-handler/:ensure'.
     (if (bound-and-true-p byte-compile-current-file)
