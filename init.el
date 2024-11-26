@@ -217,24 +217,16 @@ Set to stable melpa.org if you want stable.")
 (use-package bind-key
   :exordium-force-elpa gnu)
 
+;; Some packages (i.e., magit, forge) require relatively new package `seq'.
+;; Unfortunately, `package' is unable to bump the built-in `seq'.  Ensure it is
+;; installed in the newest available version.
+(use-package seq
+  :exordium-force-elpa gnu)
+
 (dolist (pkg-pin exordium-extra-pinned)
   (use-package-pin-package (car pkg-pin) (cdr pkg-pin)))
 
 
-;; - Some packages (i.e., magit, forge) require seq-2.24.
-;; - Emacs-29.1 is delivered with seq-2.23.
-;; - Other packages (i.e., compat) require seq-2.23.
-;; - When only magit is installed it requires compat which requires seq-2.23 -> seq is not upgraded
-;; - When only forge is installed is requires magit and compat which requires seq-2.23 -> seq is not upgraded
-;; - When magit is installed followed by installation of forge seq is upgraded to seq-2.24 -> this fails
-;; Force installing the freshest version of seq with errors suppressed:
-(when (version< emacs-version "29.2")
-  (let (debug-on-error)
-    ;; this assumes `package-refresh-contents has been called'
-    (use-package seq
-      :exordium-force-elpa gnu)))
-
-
 ;;; Load Modules
 (require 'bytecomp)
 (defun exordium-recompile-modules ()
