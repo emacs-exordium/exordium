@@ -172,29 +172,30 @@
 ;; "Ctrl-c r" is not defined by default, so we get the whole keyboard.
 (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
 
+;; Disable "M-." and "M-," as they conflict with standard `xref'
 ;; Alias for C-c r . This key recenters the buffer if needed.
-(define-key c-mode-base-map "\M-."
-  (lambda (other-window)
-    (interactive "P")
-    (let ((rtags-after-find-file-hook rtags-after-find-file-hook))
-      (add-hook 'rtags-after-find-file-hook (lambda () (recenter)))
-      (rtags-find-symbol-at-point other-window))))
-
+;; (bind-key "M-."
+;;   (lambda (other-window)
+;;     (interactive "P")
+;;     (let ((rtags-after-find-file-hook rtags-after-find-file-hook))
+;;       (add-hook 'rtags-after-find-file-hook (lambda () (recenter)))
+;;       (rtags-find-symbol-at-point other-window)))
+;;   c-mode-base-map)
 ;; Alias for C-c r ,
-(define-key c-mode-base-map "\M-," (function rtags-find-references-at-point))
+;; (bind-key "M-," #'rtags-find-references-at-point c-mode-base-map)
 
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control c) (r) (left)] (function rtags-location-stack-back))
+(bind-key "C-c r <left>" #'rtags-location-stack-back c-mode-base-map)
 ;; Alias for C-c r [
-(define-key c-mode-base-map [(control c) (r) (right)] (function rtags-location-stack-forward))
+(bind-key "C-c r <right>" #'rtags-location-stack-forward c-mode-base-map)
 
-(define-key c-mode-base-map [(meta control g)] (function rtags-imenu))
+(bind-key "M-C-g" #'rtags-imenu c-mode-base-map)
 
-(define-key c-mode-base-map [(control c) (r) (down)] (function rtags-next-diag))
-(define-key c-mode-base-map [(control c) (r) (up)] (function rtags-previous-diag))
-(define-key c-mode-base-map [(control c) (r) (c)] (function rtags-clear-diagnostics))
+(bind-key "C-c r <down>" #'rtags-next-diag c-mode-base-map)
+(bind-key "C-c r <up>" #'rtags-previous-diag c-mode-base-map)
+(bind-key "C-c r c" #'rtags-clear-diagnostics c-mode-base-map)
 
-(define-key c-mode-base-map "\C-crQ" (function rtags-stop-diagnostics))
+(bind-key  "C-c r S-q" #'rtags-stop-diagnostics c-mode-base-map)
 
 
 ;;; Start rdm as a subprocess, with output in a buffer
@@ -283,7 +284,7 @@ Redirect output to *RTags Diagnostics*.  Also start the RTag diagostics mode."
           (t
            (message "Rtags rdm is not running (use M-x rtags-start)")))))
 
-(define-key c-mode-base-map [(control c)(r)(l)] 'rtags-show-rdm-buffer)
+(bind-key "C-c r l" #'rtags-show-rdm-buffer c-mode-base-map)
 
 
 ;;; Mode for rdm log output
@@ -369,7 +370,7 @@ Similar to `rtags-diagnostics' but without reparsing."
                (other-window -1))))
     (message "Rtags diagnostics is not running (use C-c r D)")))
 
-(define-key c-mode-base-map [(control c)(r)(d)] 'rtags-show-diagnostics-buffer)
+(bind-key "C-c r d" #'rtags-show-diagnostics-buffer c-mode-base-map)
 
 ;; Used in powerline:
 (defun rtags-diagnostics-has-errors ()
@@ -473,8 +474,7 @@ Similar to `rtags-diagnostics' but without reparsing."
 ;;     ;;                                )))))
 
 
-;;   (define-key c-mode-base-map [(control c)(r)(A)]
-;;     'rtags-diagnostics-auto-complete))
+;;   (bind-key "C-c r S-A" #'rtags-diagnostics-auto-complete c-mode-base-map)
 
 
 

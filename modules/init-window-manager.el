@@ -109,7 +109,7 @@
              (current-buffer))))
 
 ;;; Note: apparently there is no Pause key on an Apple keyboard...
-(define-key global-map [pause] 'exordium-toggle-window-dedicated)
+(bind-key "<pause>" #'exordium-toggle-window-dedicated)
 
 
 ;;; Ace-window

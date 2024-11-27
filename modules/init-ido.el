@@ -54,7 +54,7 @@
                         (mapcar 'abbreviate-file-name recentf-list)
                         nil t)))
 
-(define-key global-map [(control x)(control r)] 'ido-find-recentf)
+(bind-key "C-x C-r" #'ido-find-recentf)
 
 
 

@@ -77,7 +77,7 @@
   :bind
   (("C-." . #'company-complete)
    :map company-active-map
-        ("<escape>" . #'company-abort)))
+        ("ESC" . #'company-abort)))
 
 
 (use-package company-statistics

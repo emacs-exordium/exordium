@@ -32,8 +32,8 @@
 (require 'vc-git)
 
 (defvar exordium-git-map nil)
-(define-prefix-command 'exordium-git-map)
-(global-set-key (kbd "C-c g") 'exordium-git-map)
+
+(bind-key "C-c g" (define-prefix-command 'exordium-git-map))
 
 (defvar-local exordium--magit-fullscreen-configuration nil
   "A screen configuration and a point marker.
@@ -296,14 +296,17 @@ with `exordium-magit-quit-session'."
 
 
 ;;; Git Grep
+(defun exordium-helm-do-git-grep ()
+  "Call `helm-grep-do-git-grep' with prefix ARG to git-grep whole repository."
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively #'helm-grep-do-git-grep)))
 
-(define-key exordium-git-map (kbd "g")
-  (if exordium-helm-everywhere
-      (lambda()
-        (interactive)
-        (setq current-prefix-arg '(4))
-        (call-interactively 'helm-grep-do-git-grep))
-    (function vc-git-grep)))
+(bind-key "g"
+          (if exordium-helm-everywhere
+              #'exordium-helm-do-git-grep
+            #'vc-git-grep)
+  exordium-git-map)
 
 
 ;;; Make backtick an electric pair
@@ -337,14 +340,16 @@ http://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-
 
   (defun exordium--add-copy-both-to-ediff-mode-map ()
     (when ediff-merge-job
-      (define-key ediff-mode-map "A"
-                  (lambda ()
-                    (interactive)
-                    (exordium-ediff-copy-both-to-C "A" "B")))
-      (define-key ediff-mode-map "B"
-                  (lambda ()
-                    (interactive)
-                    (exordium-ediff-copy-both-to-C "B" "A")))))
+      (bind-key "A"
+                (lambda ()
+                  (interactive)
+                  (exordium-ediff-copy-both-to-C "A" "B"))
+                ediff-mode-map)
+      (bind-key "B"
+                (lambda ()
+                  (interactive)
+                  (exordium-ediff-copy-both-to-C "B" "A"))
+                ediff-mode-map)))
 
   (defconst exordium--ediff-long-help-message-merge
     "

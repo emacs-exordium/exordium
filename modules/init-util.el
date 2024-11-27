@@ -89,7 +89,7 @@ insert the char that many times."
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t                    (self-insert-command (or arg 1)))))
 
-(global-set-key [(control %)] #'goto-match-paren-or-up)
+(bind-key "C-%" #'goto-match-paren-or-up)
 
 
 ;;; Bookmark position stack
@@ -126,8 +126,8 @@ insert the char that many times."
           (t
            (message "Invalid position in stack")))))
 
-(global-set-key [(control c)(s)] #'postack-push)
-(global-set-key [(control c)(b)] #'postack-pop)
+(bind-key "C-c s" #'postack-push)
+(bind-key "C-c b" #'postack-pop)
 
 
 ;;; Goto last change
@@ -208,7 +208,7 @@ When called with ARG, do this that many times."
       ;; Leave the cursor an the same column if we duplicated 1 line
       (move-to-column col))))
 
-(global-set-key [(control c)(d)] #'duplicate-line-or-region)
+(bind-key "C-c d" #'duplicate-line-or-region)
 
 
 ;;; Deleting Spaces
@@ -218,14 +218,14 @@ When called with ARG, do this that many times."
   (interactive "*")
   (delete-region (point) (progn (skip-chars-forward " \t") (point))))
 
-(global-set-key [(control \\)] 'delete-horizontal-space-forward)
+(bind-key "C-\\" #'delete-horizontal-space-forward)
 
 (defun delete-horizontal-space-backward ()
   "Delete all spaces and tabs before point."
   (interactive "*")
   (delete-region (point) (progn (skip-chars-backward " \t") (point))))
 
-(global-set-key [(control backspace)] #'delete-horizontal-space-backward)
+(bind-key "C-<backspace>" #'delete-horizontal-space-backward)
 
 
 ;;; Deleting Words
@@ -242,7 +242,7 @@ When called with ARG, do this that many times."
   (interactive "p")
   (delete-region (point) (progn (forward-word arg) (point))))
 
-(define-key global-map [(meta d)] 'delete-word)
+(bind-key "M-d" #'delete-word)
 
 (defun backward-delete-word (arg)
   "Delete characters backward until encountering the end of a word.
@@ -250,7 +250,7 @@ When called with ARG, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(define-key global-map [(meta backspace)] #'backward-delete-word)
+(bind-key  "M-<backspace>" #'backward-delete-word)
 
 
 ;;; Moving between words
@@ -263,12 +263,12 @@ When called with ARG, do this that many times."
 ;;; and M-right to move following the syntax: the motion is slower but
 ;;; symetrical. C-Left and C-Right are left unchanged (move by words).
 
-(define-key global-map [(meta right)]
+(bind-key "M-<right>"
   (lambda (arg)
     (interactive "p")
     (forward-same-syntax arg)))
 
-(define-key global-map [(meta left)]
+(bind-key "M-<left>"
   (lambda (arg)
     (interactive "p")
     (forward-same-syntax (- arg))))
@@ -333,9 +333,10 @@ When called with ARG, do this that many times."
 ;;; Avy - go to any word on the screen in just 2 or 3 keystrokes.
 ;;; C-c j => asks for a character, then one or 2 keys to jump.
 ;;; Note: Avy has other commands, this is the most useful.
-
-(global-set-key [(control c)(j)] #'avy-goto-word-or-subword-1)
-(global-set-key [(control ?\')] #'avy-goto-word-or-subword-1)
+(use-package avy
+  :bind
+  (("C-c j" . #'avy-goto-word-or-subword-1)
+   ("C-'" . #'avy-goto-word-or-subword-1)))
 
 
 ;;; Finding lines that are too long (according to some code styles).
@@ -404,7 +405,7 @@ REGION is t when called interactively and is passed to
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(define-key global-map "\M-Q" #'unfill-paragraph)
+(bind-key "M-S-q" #'unfill-paragraph)
 
 
 ;;; Config management

@@ -15,8 +15,8 @@
 ;; may be highlighted at one time, using different colors.  Feel free to rebind
 ;; function `exordium-highlight-symbol-at-point' to a better key, like for example:
 ;;
-;; (global-set-key [(control return)] #'exordium-highlight-symbol-at-point)
-;; (global-set-key [(f6)] #'exordium-highlight-symbol-at-point)
+;; (bind-key "C-RET" #'exordium-highlight-symbol-at-point)
+;; (bind-key "<f6>" #'exordium-highlight-symbol-at-point)
 ;;
 ;; Notes: Exordium uses 2 packages for highlighting the symbol under
 ;; point.  One is "highlight-symbol" used for automatic highlighting after a

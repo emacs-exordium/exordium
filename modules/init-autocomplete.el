@@ -29,8 +29,8 @@
   (;; Key to force trigger auto-complete (useful if ac-auto-start is set to nil)
    ("C-." . #'auto-complete)
    :map ac-completing-map
-        ("<escape>" . #'ac-stop)
-        ([return] . #'ac-complete)))
+        ("ESC" . #'ac-stop)
+        ("RET" . #'ac-complete)))
 
 (provide 'init-autocomplete)
 

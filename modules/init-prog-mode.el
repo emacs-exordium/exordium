@@ -48,19 +48,19 @@
 
 ;;; The return key
 (cond (exordium-enable-newline-and-indent
-       (define-key prog-mode-map (kbd "<return>") (function newline-and-indent))
-       (define-key prog-mode-map (kbd "<S-return>") (function newline)))
+       (bind-key "RET" #'newline-and-indent prog-mode-map)
+       (bind-key "S-RET" #'newline prog-mode-map))
       (t
-       (define-key prog-mode-map (kbd "<S-return>") (function newline-and-indent))))
+       (bind-key "S-RET" #'newline-and-indent prog-mode-map)))
 
 
 ;;; Fill comments, comment regions
 (setq comment-auto-fill-only-comments 1)
-(define-key prog-mode-map (kbd "\C-c\C-c") (function comment-region))
+(bind-key "C-c C-c" #'comment-dwim prog-mode-map)
 
 ;;; Step through compile errors
-(global-set-key (quote [f10]) (quote next-error))
-(global-set-key (quote [(control f10)]) (quote previous-error))
+(bind-key "<f10>" #'next-error)
+(bind-key "C-<f10>" #'previous-error)
 
 
 ;;; Font lock changes

@@ -111,10 +111,10 @@ Windows created are gdb command line, source code, and program IO."
   (declare-function gud-cont      "gud" (arg))
   (declare-function gud-next      "gud" (arg))
   (declare-function gud-step      "gud" (arg)))
-(keymap-set gud-minor-mode-map "<f5>" #'gud-step)
-(keymap-set gud-minor-mode-map "<f6>" #'gud-next)
-(keymap-set gud-minor-mode-map "<f7>" #'gud-finish)
-(keymap-set gud-minor-mode-map "<f8>" #'gud-cont)
+(bind-key "<f5>" #'gud-step gud-minor-mode-map)
+(bind-key "<f6>" #'gud-next gud-minor-mode-map)
+(bind-key "<f7>" #'gud-finish gud-minor-mode-map)
+(bind-key "<f8>" #'gud-cont gud-minor-mode-map)
 
 
 (provide 'init-gdb)

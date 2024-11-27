@@ -163,7 +163,7 @@ Set FONT and SIZE if they are passed as arguments."
 
 ;; Use ESC as Control-G
 (when exordium-keyboard-escape
-  (global-set-key (kbd "<escape>") 'keyboard-quit))
+  (bind-key "ESC" #'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
 (when exordium-enable-y-or-n
@@ -197,16 +197,15 @@ Set FONT and SIZE if they are passed as arguments."
         (insert-for-yank text)))))
 
 (when exordium-enable-insert-gui-primary-selection
-  (global-set-key [(meta insert)] #'insert-gui-primary-selection))
+  (bind-key "M-<insert>" #'insert-gui-primary-selection))
 
 
 ;;; Shortcut keys
 
-(global-set-key [(meta g)] (function goto-line))
+(bind-key "M-g" #'goto-line)
 (when exordium-keyboard-ctrl-z-undo
-  (define-key global-map [(control z)] (function undo)))
-(global-set-key [(control ?`)] (function kill-this-buffer))
-
+  (bind-key "C-z" #'undo))
+(bind-key "C-`" #'kill-this-buffer)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
@@ -214,10 +213,10 @@ Set FONT and SIZE if they are passed as arguments."
   (interactive)
   (switch-to-buffer (other-buffer)))
 
-(define-key global-map [(meta control l)] (function switch-to-other-buffer))
+(bind-key "M-C-l" #'switch-to-other-buffer)
 
 ;;; C-x C-b = ibuffer (better than list-buffers)
-(define-key global-map [(control x)(control b)] (function ibuffer))
+(bind-key "C-x C-b" #'ibuffer)
 
 ;;; Zoom
 (use-package default-text-scale
@@ -267,8 +266,8 @@ Set FONT and SIZE if they are passed as arguments."
   (interactive "r\np")
   (move-region start end (if (null n) 1 n)))
 
-(global-set-key (kbd "M-<up>") 'move-region-up)
-(global-set-key (kbd "M-<down>") 'move-region-down)
+(bind-key "M-<up>" #'move-region-up)
+(bind-key "M-<down>" #'move-region-down)
 
 
 ;;; File saving and opening

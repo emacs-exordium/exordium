@@ -388,8 +388,8 @@ backspace, delete, left or right."
   (bde-insert-class-header ?-))
 
 ;;; Ctrl-C = and Ctrl-C - for class header
-(keymap-set c-mode-base-map "C-c =" #'bde-insert-define-class-header)
-(keymap-set c-mode-base-map "C-c -" #'bde-insert-declare-class-header)
+(bind-key "C-c =" #'bde-insert-define-class-header c-mode-base-map)
+(bind-key "C-c -" #'bde-insert-declare-class-header c-mode-base-map)
 
 
 ;;; BDE's right style comments such as // RETURN or // LOCK
@@ -418,7 +418,7 @@ works even if point is in a C++ comment."
       (message "Sorry, not enough space...")))
   (move-end-of-line nil))
 ;;; Ctrl-> to right-aligh the text after point
-(keymap-set c-mode-base-map "C->" #'bde-align-right)
+(bind-key "C->" #'bde-align-right c-mode-base-map)
 
 
 ;;; Insert redundant include guards
@@ -478,7 +478,7 @@ guard around it."
          ;; No region: just insert one guard for the current line
          (bde-insert-redundant-include-guard))))
 
-(keymap-set c-mode-base-map "C-c i" #'bde-insert-redundant-include-guard-region)
+(bind-key "C-c i" #'bde-insert-redundant-include-guard-region  c-mode-base-map)
 
 
 ;;; Align stuff
@@ -809,7 +809,7 @@ declaration or definition."
       (when (looking-at "\\s\(")
         (end-of-thing 'arglist)))))
 
-(keymap-set c-mode-base-map "C-c a" #'bde-align-fundecl)
+(bind-key "C-c a" #'bde-align-fundecl c-mode-base-map)
 
 ;;; Align arguments in a function call
 
@@ -882,7 +882,7 @@ call.  It puts one argument per line and aligns to the right."
     (when (looking-at "\\s\(")
       (forward-list 1))))
 
-(keymap-set c-mode-base-map "C-c f" #'bde-align-funcall)
+(bind-key "C-c f" #'bde-align-funcall c-mode-base-map)
 
 ;;; Align members in a class
 
@@ -1032,7 +1032,7 @@ all comments start at column 40."
         (t
          (message "No region"))))
 
-(keymap-set c-mode-base-map "C-c m" #'bde-align-class-members)
+(bind-key "C-c m" #'bde-align-class-members c-mode-base-map)
 
 
 ;;; Repunctuate: the BDE comment style requires 2 spaces at the end of each

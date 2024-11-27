@@ -124,6 +124,8 @@ See the [Customization](#customization) section below for more details.
 
 ## Keymap
 
+Exordium uses `bind-key` to set up key bindings, which keeps track of all bindings made. You can display a comprehensive list using <kbd>M-x describe-personal-keybindings</kbd>.
+
 General:
 
 Keybinding           | Description
@@ -139,20 +141,20 @@ Keybinding           | Description
 
 Editing:
 
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>RETURN</kbd>   | Return and indent by default; use <kbd>S-RETURN</kbd> for just return.
-<kbd>M-BCKSP</kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
-<kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
-<kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
-<kbd>M-\\</kbd>     | Delete all spaces around cursor.
-<kbd>M-LEFT</kbd> and <kbd>M-RIGHT</kbd> | Move cursor by semantic units (use <kbd>C-LEFT</kbd> and <kbd>C-RIGHT</kbd> to move by words).
-<kbd>C-c d</kbd>    | Duplicate line.
-<kbd>C-=</kbd>      | Expand region by semantic units.
-<kbd>M-C-=</kbd>    | Contract region by semantic units.
-<kbd>M-<up></kbd>   | Move region one line up
-<kbd>M-<down></kbd> | Move region one line down
-<kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
+Keybinding                | Description
+--------------------------|----------------------------------------------------------
+<kbd>RET</kbd>            | Return and indent by default; use <kbd>S-RET</kbd> for just return.
+<kbd>M-<backspace></kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
+<kbd>C-\\</kbd>           | Delete spaces after cursor (`delete-horizontal-space-forward`).
+<kbd>C-<backspace></kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
+<kbd>M-\\</kbd>           | Delete all spaces around cursor.
+<kbd>M-<left></kbd> and <kbd>M-<right></kbd> | Move cursor by semantic units (use <kbd>C-<left></kbd> and <kbd>C-<right></kbd> to move by words).
+<kbd>C-c d</kbd>          | Duplicate line.
+<kbd>C-=</kbd>            | Expand region by semantic units.
+<kbd>M-C-=</kbd>          | Contract region by semantic units.
+<kbd>M-<up></kbd>         | Move region one line up
+<kbd>M-<down></kbd>       | Move region one line down
+<kbd>C-&#124;</kbd>       | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
 
@@ -343,7 +345,7 @@ Treemacs displays the git status of files (added, modified, ignored etc.) using
 different faces.
 
 With the cursor in the Treemacs window, you can use <kbd>TAB</kbd> to
-open/close directories, <kbd>RETURN</kbd> to open a file, and <kbd>q</kbd> to
+open/close directories, <kbd>RET</kbd> to open a file, and <kbd>q</kbd> to
 quit. Use <kbd>?</kbd> to view all the available keys. See the documentation of
 Treemacs for details.
 
@@ -465,7 +467,7 @@ and auto-complete/company-complete. You can easily use a function key if you pre
 by adding this in your `after-init.el`:
 
 ```lisp
-(define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
+(bind-key "<f2>" #'yas-expand yas-minor-mode-map)
 ```
 
 Snippets are stored in `~/.emacs.d/snippets/c++-mode`. Here are
@@ -714,8 +716,8 @@ Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
 Keybinding                                   | Description
 ---------------------------------------------|---------------------------------
-<kbd>C-c r LEFT</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>C-c r RIGHT</kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
+<kbd>C-c r <left></kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-c r <right></kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 

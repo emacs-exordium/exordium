@@ -188,7 +188,7 @@ For example: classes, functions, variables, enums and other."
              (candidates . ,(rtags-helm-sort-list macros))
              (action . rtags-helm-jump-to-line))))))
 
-(define-key c-mode-base-map [(meta control g)] 'rtags-helm-select-taglist)
+(bind-key "M-C-g" #'rtags-helm-select-taglist c-mode-base-map)
 
 
 (provide 'init-rtags-helm)

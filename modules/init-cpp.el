@@ -167,7 +167,7 @@ With argument, switch to the second choice.  For example, from a
             (t (message "This is not a C/C++ file"))))))
 
 ;;; Ctrl-Tab to switch between .h and .cpp
-(define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
+(bind-key "C-TAB" #'cpp-switch-h-cpp c-mode-base-map)
 
 
 ;;; C++11 keywords
