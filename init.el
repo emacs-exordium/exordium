@@ -281,7 +281,8 @@ results to parrent Emacs.")
   :defines (async-byte-compile-log-file)
   :functions (exordium--async-cleanup-temp-file
               exordium--async-generate-temp-file
-              exordium--async-with-temp-file)
+              exordium--async-with-temp-file
+              exordium--async-package-reload-previously-loaded)
   :init
   (defun exordium--async-cleanup-temp-file (file-or-directory)
     "Remove the file associated with FILE-OR-DIRECTORY.
@@ -332,10 +333,26 @@ Also remove temp file and relevant entry from
           (apply orig-fun args)
         (exordium--async-cleanup-temp-file file-or-directory))))
 
+  (defun exordium--async-package-reload-previously-loaded (&rest args)
+    "Reload a previously loaded package when descriptor exists in car ARGS.
+This is to mimic what `package-unpack' does: it reloads package
+after it's been byte compiled."
+    (when-let* ((desc (package-load-descriptor (car args))))
+      (cond
+       ((fboundp 'package--reload-previously-loaded) ;; Since Emacs-29
+        (package--reload-previously-loaded desc))
+       ((fboundp 'package--load-files-for-activation) ;; Until Emacs-28
+        (package--load-files-for-activation desc :reload)))))
+
   :config
-  (advice-add 'async-byte-compile-file :around #'exordium--async-generate-temp-file)
-  (advice-add 'async-byte-recompile-directory :around #'exordium--async-generate-temp-file)
-  (advice-add 'async-bytecomp--file-to-comp-buffer :around #'exordium--async-with-temp-file)
+  (advice-add 'async-byte-compile-file
+              :around #'exordium--async-generate-temp-file)
+  (advice-add 'async-byte-recompile-directory
+              :around #'exordium--async-generate-temp-file)
+  (advice-add 'async-bytecomp--file-to-comp-buffer
+              :around #'exordium--async-with-temp-file)
+  (advice-add 'async-bytecomp--file-to-comp-buffer
+              :after #'exordium--async-package-reload-previously-loaded)
   (async-bytecomp-package-mode))
 
 
