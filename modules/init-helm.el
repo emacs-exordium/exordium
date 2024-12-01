@@ -82,6 +82,10 @@
 
 (use-package helm-rg
   :after (helm)
+  :defer t)
+
+(use-package helm-rg
+  :after (helm)
   :unless exordium-helm-projectile
   :bind
   (("C-S-r" . #'helm-rg)))
