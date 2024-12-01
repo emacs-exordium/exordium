@@ -54,11 +54,25 @@
     ;; is the mode that is turned on (`hi-lock-mode' is not turned on), so
     ;; let's keep that implementation, by ensuring load order.
     :after (hi-lock)
+    ;; Also, the `highlight-symbol-flush' implementation is not accounting for
+    ;; `jit-lock-mode', which causes a few seconds delay when automatically
+    ;; highlighted symbols.  Call `font-lock-ensure' to speed things up, but
+    ;; limit it to the visible portion of a buffer.
+    :functions (exordium--highlight-symbol-ensure)
+    :init
+    (defun exordium--highlight-symbol-ensure ()
+      (when (eq (font-lock-value-in-major-mode font-lock-support-mode)
+              'jit-lock-mode)
+        (font-lock-ensure (window-start) (window-end))))
+
     :diminish highlight-symbol-mode
     :hook ((prog-mode . highlight-symbol-mode)
            (prog-mode . highlight-symbol-nav-mode))
     :custom
-    (highlight-symbol-on-navigation-p t)))
+    (highlight-symbol-on-navigation-p t)
+    :config
+    (advice-add 'highlight-symbol-flush
+                :after #'exordium--highlight-symbol-ensure)))
 
 
 ;;; Highlight/unhighlight symbol under point using a key.
