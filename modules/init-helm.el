@@ -30,6 +30,7 @@
   :diminish
   :custom
   (helm-split-window-default-side 'other)
+  (helm-split-window-other-side-when-one-window 'right)
   (helm-buffer-details-flag nil)
 
   :config
@@ -48,6 +49,7 @@
   :custom
   (history-delete-duplicates t)
   (helm-M-x-always-save-history t)
+  (helm-M-x-show-short-doc t)
   :bind
   (([remap execute-extended-command] . #'helm-M-x) ; M-x
    ([remap yank-pop] . #'helm-show-kill-ring) ; M-y
