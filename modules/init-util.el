@@ -334,6 +334,8 @@ When called with ARG, do this that many times."
 ;;; C-c j => asks for a character, then one or 2 keys to jump.
 ;;; Note: Avy has other commands, this is the most useful.
 (use-package avy
+  :custom
+  (avy-all-windows 'all-frames)
   :bind
   (("C-c j" . #'avy-goto-word-or-subword-1)
    ("C-'" . #'avy-goto-word-or-subword-1)))
