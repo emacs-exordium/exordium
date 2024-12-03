@@ -146,7 +146,7 @@ Set to stable melpa.org if you want stable.")
 
 ;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
-  (message "Loadding tapped before-init file: %s" tapped-file)
+  (message "Loading tapped before-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
 
@@ -363,7 +363,7 @@ after it's been byte compiled."
 
 
 (dolist (tapped-file exordium-tapped-prefs-files)
-  (message "Loadding tapped prefs file: %s" tapped-file)
+  (message "Loading tapped prefs file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
 ;; Themes
@@ -499,7 +499,7 @@ after it's been byte compiled."
 
 ;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
-  (message "Loadding tapped after-init file: %s" tapped-file)
+  (message "Loading tapped after-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
 (update-progress-bar)
