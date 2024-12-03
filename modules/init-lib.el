@@ -83,7 +83,9 @@ It makes buffer local variable with an extra back tick added."
 ;; Packages management
 (require 'package)
 (eval-when-compile
-  (use-package use-package
+  (use-package use-package-core
+    :ensure use-package
+    :defer t
     :autoload (use-package-only-one
                use-package-process-keywords)))
 

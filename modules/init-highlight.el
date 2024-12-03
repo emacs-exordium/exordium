@@ -67,7 +67,9 @@
 
     :diminish highlight-symbol-mode
     :hook ((prog-mode . highlight-symbol-mode)
-           (prog-mode . highlight-symbol-nav-mode))
+           (prog-mode . highlight-symbol-nav-mode)
+           (help-mode . highlight-symbol-mode)
+           (help-mode . highlight-symbol-nav-mode))
     :custom
     (highlight-symbol-on-navigation-p t)
     :config

@@ -12,7 +12,7 @@
   (("C-x C-j" . #'dired-jump)
    ("C-x 4 C-j" . #'dired-jump-other-window)
    :map dired-mode-map
-        ("<mouse-3>" . #'dired-mouse-find-file-other-window)))
+   ("<mouse-3>" . #'dired-mouse-find-file-other-window)))
 
 (use-package wdired
   :ensure nil

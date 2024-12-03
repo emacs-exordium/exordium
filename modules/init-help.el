@@ -20,6 +20,8 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-lib)
+(exordium-require 'init-helm)
+(exordium-require 'init-highlight)
 
 ;;; Which Key - display available keybindings in popup.
 (when exordium-enable-which-key
@@ -37,10 +39,21 @@
   :ensure nil
   :bind
   (:map help-mode-map
-        ("C-c C-o" . #'exordium-browse-url-at-point)))
+   ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 
 (use-package helpful
+  :init
+  (use-package helm
+    :defer t
+    :custom
+    (helm-describe-variable-function #'helpful-variable)
+    (helm-describe-function-function #'helpful-function))
+  (when exordium-highlight-symbol
+    (use-package highlight-symbol
+      :defer t
+      :hook ((helpful-mode . highlight-symbol-mode)
+             (helpful-mode . highlight-symbol-nav-mode))))
   :bind
   (;; Note that the built-in `describe-function' includes both functions
    ;; and macros. `helpful-function' is functions only, so we provide
@@ -56,20 +69,9 @@
    ;; By default, C-h C is bound to describe `describe-coding-system'.
    ;; Apparently it's frequently useful to only look at interactive functions.
    ("C-h C" . #'helpful-command)
-   ;; Lookup the current symbol at point. C-c C-d is a common keybinding
-   ;; for this in lisp modes.
-   :map emacs-lisp-mode-map
-        ("C-c C-d" . #'helpful-at-point)
    :map helpful-mode-map
-        ("C-c C-d" . #'helpful-at-point)
-        ("C-c C-o" . #'exordium-browse-url-at-point)))
-
-(use-package helm
-  :after (helpful)
-  :diminish
-  :custom
-  (helm-describe-variable-function #'helpful-variable)
-  (helm-describe-function-function #'helpful-function))
+   ("C-c C-d" . #'helpful-at-point)
+   ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 
 

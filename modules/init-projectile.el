@@ -21,7 +21,7 @@
   :diminish
   :bind
   (:map projectile-command-map
-        ("." . #'helm-projectile-find-file-dwim))
+   ("." . #'helm-projectile-find-file-dwim))
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config

@@ -29,10 +29,23 @@
               exordium-helm-projectile--switch-project-and-do-rg
               exordium-helm-projectile--exit-helm-and-do-ag
               exordium-helm-projectile--exit-helm-and-do-rg)
-  :autoload (projectile-switch-project-by-name)
   :commands (helm-projectile-switch-project)
-  :after (projectile helm)
   :init
+  (defun exordium-projectile-switch-project-find-file-other-window ()
+    "Switch to a project we have visited before then jump to a
+project's file using completion and show it in another window."
+    (interactive)
+    (let ((projectile-switch-project-action #'projectile-find-file-other-window))
+      (projectile-switch-project)))
+
+  (use-package projectile
+    :defer t
+    :autoload (projectile-switch-project-by-name)
+    :bind
+    (:map projectile-command-map
+     ("p" . #'helm-projectile-switch-project)
+     ("4 p" . #'exordium-projectile-switch-project-find-file-other-window)))
+
   (defun exordium-helm-projectile--exit-helm-and-do-ag ()
     "Exit helm and run ag on first selected candidate."
     (interactive)
@@ -55,13 +68,6 @@
                              project)
       (error "No candidates selected")))
 
-  (defun exordium-projectile-switch-project-find-file-other-window ()
-    "Switch to a project we have visited before then jump to a
-project's file using completion and show it in another window."
-    (interactive)
-    (let ((projectile-switch-project-action #'projectile-find-file-other-window))
-      (projectile-switch-project)))
-
   :bind
   (("C-c h"   . #'helm-projectile)
    ("C-c H"   . #'helm-projectile-switch-project)
@@ -69,11 +75,8 @@ project's file using completion and show it in another window."
    ("C-S-a"   . #'helm-projectile-ag)
    ("C-S-r"   . #'helm-projectile-rg)
    :map helm-projectile-projects-map
-        ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
-        ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg)
-   :map projectile-command-map
-        ("p" . #'helm-projectile-switch-project)
-        ("4 p" . #'exordium-projectile-switch-project-find-file-other-window))
+   ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
+   ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg))
 
   :config
   (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
@@ -87,7 +90,6 @@ project's file using completion and show it in another window."
     (helm-projectile-on)))
 
 (use-package treemacs-projectile
-  :after (projectile)
   :bind
   (("C-c e" . #'treemacs)
    ("C-c E" . #'treemacs-projectile)))

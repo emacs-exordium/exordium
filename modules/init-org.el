@@ -24,18 +24,22 @@
 
 (use-package org
   :functions (exordium--org-babel-after-execute)
-  :autoload (org-in-src-block-p
-             org-babel-get-src-block-info
-             org-babel-process-params)
+  :autoload (org-in-src-block-p)
   :commands (org-mark-subtree
              org-display-inline-images
              org-mode)
   :defer t
+  :init
+  (use-package ob-core
+    :ensure nil
+    :defer t
+    :autoload (org-babel-get-src-block-info
+               org-babel-process-params))
   :exordium-force-elpa gnu
   :mode (("\\.org\\'" . org-mode))
   :bind
   (:map org-mode-map
-        ([remap org-toggle-comment] . iedit-mode))
+   ([remap org-toggle-comment] . iedit-mode))
   :custom
   (org-todo-keywords
    '((sequence "TODO(t)" "WORK(w!/!)" "WAIT(a@/!)" "|" "STOP(s@/!)" "DONE(d!/!)")))

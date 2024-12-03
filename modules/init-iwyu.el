@@ -161,10 +161,11 @@ extension."
 
 (use-package cc-mode
   :ensure nil
+  :defer t
   :bind
   (:map c-mode-base-map
-        ("C-c w d" . #'iwyu-show-diagnostics-buffer)
-        ("C-c w e" . #'iwyu-reparse)))
+   ("C-c w d" . #'iwyu-show-diagnostics-buffer)
+   ("C-c w e" . #'iwyu-reparse)))
 
 
 

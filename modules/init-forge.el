@@ -18,17 +18,11 @@
 (exordium-require 'init-git)
 (exordium-require 'init-markdown)
 
-(use-package async
-  :autoload (async-inject-variables))
-(use-package ghub
-  :autoload (ghub-graphql)
-  :defer t)
-
 (require 'cl-lib)
 
 
 ;; `emacsql' (a dependency of `forge') requires sqlite3 support.  How the
-;; support is provided changes with emacs-29 (i.e., built-in).  See
+;; support is provided changes with Emacs-29 (i.e., built-in).  See
 ;; https://github.com/magit/emacsql/commit/6401226 for more details.
 (unless (and (fboundp 'sqlite-available-p)
              (sqlite-available-p))
@@ -47,12 +41,28 @@
               exordium-forge-markdown-preview
               exordium-forge-post-submit-draft
               exordium-forge-mark-ready-for-rewiew)
-  :commands (forge-post-submit)
-  :autoload (forge-post-at-point
-             forge-current-topic
-             forge-get-repository) ; required by init-company.el
   :defer t
   :init
+  (use-package ghub-graphql
+    :ensure ghub
+    :defer t
+    :autoload (ghub-graphql))
+  (use-package forge-post
+    :ensure forge
+    :defer t
+    :commands (forge-post-submit)
+    :autoload (forge-post-at-point))
+  (use-package forge-topic
+    :ensure forge
+    :defer t
+    :autoload (forge-current-topic))
+  (use-package magit-git
+    :ensure magit
+    :defer t
+    :autoload (magit-git-string))
+  (use-package markdown-mode
+    :defer t
+    :autoload (markdown-preview))
 
   (defun exordium-forge-markdown-preview ()
     "Preview current buffer as a preview in a `markdown-mode' buffer would do."
@@ -139,24 +149,36 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
         (message "PR #%s is ready for review." number)
       (user-error "Nothing at point that is a PR or mark failed")))
 
+  (use-package magit
+    :defer t
+    :bind
+    (:map magit-status-mode-map
+     ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
   :hook
   (forge-post-mode . (lambda ()
                        (set-fill-column 1000)))
   :bind
   (:map forge-post-mode-map
-        ("C-c C-p" . #'exordium-forge-markdown-preview)
-        ("C-c C-d" . #'exordium-forge-post-submit-draft)
-   :map magit-status-mode-map
-        ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)
+   ("C-c C-p" . #'exordium-forge-markdown-preview)
+   ("C-c C-d" . #'exordium-forge-post-submit-draft)
    :map forge-topic-mode-map
-        ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
+   ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
 
-(use-package forge
+(use-package forge-db
+  :ensure forge
   :functions (exordium-forge-cleanup-known-repositories--concat
-              exordium-forge-cleanup-known-repositories--question)
-  :commands (exordium-forge-cleanup-known-repositories)
+              exordium-forge-cleanup-known-repositories--question
+              exordium-forge-cleanup-known-repositories)
   :autoload (forge-sql)
   :init
+  (use-package async
+    :defer t
+    :autoload (async-inject-variables))
+  (use-package magit-mode
+    :ensure magit
+    :defer t
+    :autoload (magit-refresh))
+
   (defun exordium-forge-cleanup-known-repositories--question (to-delete &optional number)
     "Return a question about deletion of up to NUMBER of TO-DELETE repositories.
 

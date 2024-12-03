@@ -43,6 +43,11 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-git)
 
+(use-package magit-mode
+  :ensure magit
+  :defer t
+  :autoload (magit-save-repository-buffers))
+
 (require 'cl-lib)
 
 (define-minor-mode flb-mode

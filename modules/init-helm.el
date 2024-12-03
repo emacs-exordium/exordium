@@ -101,9 +101,9 @@
   (("C-S-s" . #'helm-swoop)
    ;; Use similar bindings to `helm-ag-edit'
    :map helm-swoop-edit-map
-        ("C-c C-c" . #'helm-swoop--edit-complete)
-        ("C-c C-k" . #'helm-swoop--edit-cancel)
-        ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
+   ("C-c C-c" . #'helm-swoop--edit-complete)
+   ("C-c C-k" . #'helm-swoop--edit-cancel)
+   ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
 
 (use-package helm-xref
   :after helm

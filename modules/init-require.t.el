@@ -11,7 +11,9 @@
 (eval-when-compile
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
-(use-package use-package
+(use-package use-package-core
+  :ensure use-package
+  :defer t
   :autoload (use-package-statistics-convert
              use-package-reset-statistics))
 

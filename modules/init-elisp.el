@@ -22,17 +22,17 @@
   :defer t
   :bind
   (:map emacs-lisp-mode-map
-        ("M-C-g" . #'helm-imenu)
-        ("C-c M-e" . #'pp-eval-last-sexp)
-        ("M-." . #'xref-find-definitions)
-        ("M-," . #'xref-go-back)
-        ("M-r" . #'xref-find-references)
-    :map lisp-interaction-mode-map
-        ("M-C-g" . #'helm-imenu)
-        ("C-c M-e" . #'pp-eval-last-sexp)
-        ("M-." . #'xref-find-definitions)
-        ("M-," . #'xref-go-back)
-        ("M-r" . #'xref-find-references)))
+   ("M-C-g" . #'helm-imenu)
+   ("C-c M-e" . #'pp-eval-last-sexp)
+   ("M-." . #'xref-find-definitions)
+   ("M-," . #'xref-go-back)
+   ("M-r" . #'xref-find-references)
+   :map lisp-interaction-mode-map
+   ("M-C-g" . #'helm-imenu)
+   ("C-c M-e" . #'pp-eval-last-sexp)
+   ("M-." . #'xref-find-definitions)
+   ("M-," . #'xref-go-back)
+   ("M-r" . #'xref-find-references)))
 
 (use-package elisp-mode
   :ensure nil
@@ -40,9 +40,11 @@
   :if exordium-help-extensions
   :bind
   (:map emacs-lisp-mode-map
-        ("M-?" . #'helpful-at-point)
-    :map lisp-interaction-mode-map
-        ("M-?" . #'helpful-at-point)))
+   ("M-?" . #'helpful-at-point)
+   ("C-c C-d" . #'helpful-at-point)
+   :map lisp-interaction-mode-map
+   ("M-?" . #'helpful-at-point)
+   ("C-c C-d" . #'helpful-at-point)))
 
 
 ;;; Display page breaks with an horizontal line instead of ^L.

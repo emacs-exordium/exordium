@@ -10,6 +10,7 @@
 (exordium-require 'init-prefs)
 
 (require 'newcomment)
+(require 'prog-mode)
 
 (use-package cmake-mode
   :defer t)
@@ -37,8 +38,9 @@
   :hook
   (prog-mode . flyspell-prog-mode)
   :bind
+  ;; unbind as it colides with company, see init-company.el
   (:map flyspell-mode-map
-        ("C-." . nil))) ;; unbind as it colides with company, see init-company.el
+   ("C-." . nil)))
 
 ;;; Electric pair: automatically close parenthesis, curly brace etc.
 ;;; `electric-pair-open-newline-between-pairs'.

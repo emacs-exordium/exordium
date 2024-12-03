@@ -277,13 +277,16 @@ TEMP-FILE is the temporary log file to communicate compilation
 results to parrent Emacs.")
 
 (use-package async
-  :autoload (async-bytecomp-package-mode)
-  :defines (async-byte-compile-log-file)
   :functions (exordium--async-cleanup-temp-file
               exordium--async-generate-temp-file
               exordium--async-with-temp-file
               exordium--async-package-reload-previously-loaded)
   :init
+  (use-package async-bytecomp
+    :ensure async
+    :defer t
+    :autoload (async-bytecomp-package-mode)
+    :defines (async-byte-compile-log-file))
   (defun exordium--async-cleanup-temp-file (file-or-directory)
     "Remove the file associated with FILE-OR-DIRECTORY.
 Also remove the FILE-OR-DIRECTORY from `exordium--async-bytecomp-log-alist'."

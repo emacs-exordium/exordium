@@ -18,6 +18,7 @@
 (exordium-require 'init-prefs)
 (exordium-require 'init-lib)
 (exordium-require 'init-markdown)
+(exordium-require 'init-helm)
 
 (require 'cc-mode)
 
@@ -31,11 +32,17 @@
       (flycheck-mode)
       (diminish 'flycheck-mode))
     (helm-flycheck))
-  :bind
-  (:map c-mode-base-map
-        ("C-c r r" . #'exordium-helm-flycheck)
-   :map helm-command-map
-   ("f" . #'exordium-helm-flycheck)))
+  (use-package cc-mode
+    :ensure nil
+    :defer t
+    :bind
+    (:map c-mode-base-map
+     ("C-c r r" . #'exordium-helm-flycheck)))
+  (use-package helm
+    :defer t
+    :bind
+    (:map helm-command-map
+    ("f" . #'exordium-helm-flycheck))))
 
 (use-package poly-rst
   :defer t)
@@ -55,8 +62,6 @@ mypy error code and BODY is a rst body of the code.")
              flycheck-call-checker-process
              flycheck-flake8-fix-error-level
              flycheck-sanitize-errors)
-
-  :commands flycheck-mode
   :custom
   (flycheck-global-modes '(not c++-mode c-mode org-mode))
   :hook

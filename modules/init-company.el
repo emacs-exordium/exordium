@@ -15,10 +15,14 @@
 
 (use-package company
   :diminish "CA"
-  :after (forge)
   :commands (company-begin-backend
              company-abort)
   :init
+  (use-package forge-core
+    :ensure forge
+    :defer t
+    :autoload (forge-get-repository))
+
   (defun exordium-company-assignees (command &optional arg &rest _ignored)
     "A `company-mode' backend for assigneees in `forge-mode' repository."
     (interactive (list 'interactive))
@@ -77,7 +81,7 @@
   :bind
   (("C-." . #'company-complete)
    :map company-active-map
-        ("ESC" . #'company-abort)))
+   ("ESC" . #'company-abort)))
 
 
 (use-package company-statistics

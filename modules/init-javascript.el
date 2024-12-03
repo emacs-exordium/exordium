@@ -28,7 +28,7 @@
                           activebase)))
   :bind
   (:map js-mode-map
-        ("C-M-g" . #'helm-imenu))
+   ("C-M-g" . #'helm-imenu))
   :config
   ;; js2-mode provides 4 level of syntax highlighting. They are:
   ;; - 0 or a negative value means none.

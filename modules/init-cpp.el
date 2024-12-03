@@ -19,10 +19,13 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
 (exordium-require 'init-lib)
+(when exordium-help-extensions
+  (exordium-require 'init-help))
 
 (require 'cl-lib)
 
 (use-package cc-mode
+  :ensure nil
   :config
   ;;; Open a header file in C++ mode by default
   (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode)))
@@ -30,9 +33,33 @@
 
 ;;; IEdit: rename the symbol under point
 (use-package iedit
+  :custom
+  ;; Fix A bug: normal key is "C-;", but we're going to roll our own bindings
+  ;; with bind-key
+  (iedit-toggle-key-default nil)
   :init
-  ;;; Fix A bug (normal key is "C-;")
-  :bind ("C-c ;" . #'iedit-mode))
+  (use-package isearch
+    :ensure nil
+    :defer t
+    :bind
+    (:map isearch-mode-map
+     ("C-c ;" . #'iedit-mode-from-isearch)))
+  (use-package help
+    :ensure nil
+    :defer t
+    :bind
+    (:map help-map
+     ("C-;" . #'iedit-mode-toggle-on-function)))
+  (when exordium-help-extensions
+    (use-package helpful
+      :defer t
+      :bind
+      (:map helpful-mode-map
+       ("C-;" . #'iedit-mode-toggle-on-function))))
+  :bind
+  (("C-c ;" . #'iedit-mode)
+   :map esc-map
+   ("C-;" . #'iedit-execute-last-modification)))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
@@ -40,7 +67,8 @@
 
 ;;; Highlight dead code between #if 0 and #endif
 
-(use-package cpp)
+(use-package cpp
+  :ensure nil)
 (defun cpp-highlight-dead-code ()
   "Highlight c/c++ #if 0 #endif macros."
   (let ((color (face-background 'shadow)))

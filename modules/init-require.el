@@ -59,7 +59,31 @@
 ;; different Exordium modules.  One example is the `:diminish'/`:delight' which
 ;; may be clobbered by later `use-package' that doesn't specify it.
 ;;
-;; For a non built-in package use the `use-package' form. Exordium sets
+;; The exception is when some package's `:autoload', `:command', `:hook',
+;; `:custom' or `:bind' family with `:map' is required to implement
+;; configuration in another package.  This effectively means that the former
+;; package is embedded in the latter.  Make sure to `exordium-require' the
+;; primary Exordium's module for the former package as well as use appropriate
+;; `:ensure' (when referring to libraries or built-in packages) and add
+;; `:defer' t to avoid reloading the former package.  For example:
+;;
+;; (exordium-require 'init-projectile)
+;; ...
+;; (use-package helm-projectile)
+;;   ...
+;;   :init
+;;   ...
+;;   (use-package projectile
+;;     :defer t
+;;     :autoload (projectile-switch-project-by-name)
+;;     :bind
+;;     (:map projectile-command-map
+;;      ("p" . #'helm-projectile-switch-project)
+;;      ("4 p" . #'exordium-projectile-switch-project-find-file-other-window))
+;;   ...
+;;   )
+;;
+;; For a non built-in package use the `use-package' form.  Exordium sets
 ;; `use-package-always-ensure' to t, so the `:ensure' is not necessary.  It may
 ;; be advisable to add `:defer' keyword when there are sufficient autoloads set
 ;; up by the package itself and it is not inferred from other keywords, which

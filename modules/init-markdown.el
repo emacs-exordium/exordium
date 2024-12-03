@@ -37,7 +37,6 @@
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
-  :autoload (markdown-preview) ; required by init-forge.el
   :mode
   (("README\\.md\\'" . gfm-mode)
    ("\\.md\\'" . markdown-mode)
@@ -66,6 +65,7 @@
 (use-package impatient-mode
   :defer t)
 (use-package simple-httpd
+  :defer t
   :autoload (httpd-send-header))
 
 (define-minor-mode impatient-markdown-mode

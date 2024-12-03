@@ -47,10 +47,6 @@ These are restored by `exordium-magit-quit-session'.")
               exordium--magit-fullscreen
               exordium-projectile-add-known-project)
 
-  :autoload (magit-refresh   ; required by init-forge.el
-             magit-git-string ; required by init-forge.el
-             magit-save-repository-buffers) ; required by init-flb-mode.el
-
   :defines (magit-last-seen-setup-instructions)
   :init
   (defun exordium-projectile-add-known-project
@@ -119,13 +115,13 @@ with `exordium-magit-quit-session'."
 
   :bind
   (:map exordium-git-map
-        ("s" . #'magit-status)
-        ("l" . #'exordium-magit-log)
-        ("f" . #'exordium-magit-log-buffer)
-        ("b" . #'exordium-magit-blame)
-        ("c" . #'magit-clone)
+   ("s" . #'magit-status)
+   ("l" . #'exordium-magit-log)
+   ("f" . #'exordium-magit-log-buffer)
+   ("b" . #'exordium-magit-blame)
+   ("c" . #'magit-clone)
    :map magit-status-mode-map
-        ("q" . #'exordium-magit-quit-session))
+   ("q" . #'exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
@@ -221,7 +217,7 @@ with `exordium-magit-quit-session'."
   :defer t
   :bind
   (:map smerge-mode-map
-        ("C-c ^ d" . #'exordium-smerge-dispatch)))
+  ("C-c ^ d" . #'exordium-smerge-dispatch)))
 
 (defun exordium-smerge-dispatch-maybe ()
   "Display `exordium-smerge-dispatch' when buffer is in `smerge-mode'."
@@ -268,12 +264,12 @@ with `exordium-magit-quit-session'."
   :diminish git-gutter-mode
   :bind
   (:map exordium-git-map
-        ("<down>" . #'git-gutter:next-hunk)
-        ("n" . #'git-gutter:next-hunk)
-        ("<up>" . #'git-gutter:previous-hunk)
-        ("p" . #'git-gutter:previous-hunk)
-        ("d" . #'git-gutter:popup-hunk)
-        ("r" . #'git-gutter:revert-hunk))
+   ("<down>" . #'git-gutter:next-hunk)
+   ("n" . #'git-gutter:next-hunk)
+   ("<up>" . #'git-gutter:previous-hunk)
+   ("p" . #'git-gutter:previous-hunk)
+   ("d" . #'git-gutter:popup-hunk)
+   ("r" . #'git-gutter:revert-hunk))
   :config
   (exordium-global-git-gutter-mode t)
 
@@ -315,7 +311,7 @@ with `exordium-magit-quit-session'."
 
 (use-package ediff
   :ensure nil
-  :commands (exordium-ediff-copy-both-to-C)
+  :functions (exordium-ediff-copy-both-to-C)
   :autoload (ediff-copy-diff
              ediff-get-region-contents)
   :init
@@ -326,8 +322,10 @@ This command should be called form `ediff''s control buffer.
 Adapted from:
 http://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-how-can-i-take-the-changes-of-both-version"
     (interactive
-     (let ((first-string (completing-read "First: " '("A" "B") nil t "A"))
-           (second-string (completing-read "Second: " '("A" "B") nil t "B")))
+     (let* ((first-string (completing-read "First: " '("A" "B") nil t "A"))
+            (second-string (completing-read "Second: " '("A" "B") nil t
+                                            (if (equal first-string "A")
+                                                "B" "A"))))
        (list first-string second-string)))
     (let ((first (or first "A"))
           (second (or second "B")))

@@ -24,15 +24,11 @@
   :diminish yas-minor-mode
   :bind
   (:map yas-minor-mode-map
-        ("TAB" . nil)
-        ("C-c y" . #'yas-expand-from-trigger-key))
+   ("C-c y" . #'yas-expand-from-trigger-key))
   :config
   ;; Directory tree where to find snippets (subdirectories must be mode names).
   ;; The t means JIT loading, which saves time during Emacs startup.
-  (yas-load-directory (locate-user-emacs-file "snippets") t)
-
-  ;;(yas-global-mode 1) ; always on
-  )
+  (yas-load-directory (locate-user-emacs-file "snippets") t))
 
 ;;; Variables for file templates
 (defvar *bde-component-author* exordium-yasnippet-author
