@@ -501,11 +501,22 @@ They are passed \\='as is\\=' to \"include-what-you-use\" executable."
   :group 'exordium
   :type  'boolean)
 
-(defcustom exordium-helm-fuzzy-match t
+(defcustom exordium-helm-completion-style 'helm
+  "Completion style to be used for Helm."
+  :group 'exordium
+  :type '(choice (symbol :tag "helm" 'helm)
+                 (symbol :tag "helm-fuzzy" 'helm-fuzzy)
+                 (symbol :tag "orderless" 'orderless)))
+
+(defcustom exordium-helm-fuzzy-match nil
   "Whether Helm should use fuzzy matching for searches."
   :group 'exordium
   :type  'boolean)
-
+(make-obsolete-variable
+ 'exordium-helm-fuzzy-match
+ "Use 'helm-fuzzy for `exordium-helm-completion-style' instead"
+ "20241204"
+ 'set)
 
 ;;; Desktop state
 (defcustom exordium-desktop nil

@@ -32,16 +32,20 @@
   (helm-split-window-default-side 'other)
   (helm-split-window-other-side-when-one-window 'right)
   (helm-buffer-details-flag nil)
+  (helm-completion-style (cond
+                          ((and exordium-helm-fuzzy-match
+                                (eq exordium-helm-completion-style 'helm))
+                           ;; backward compatibility
+                           'helm-fuzzy)
+                          ((eq exordium-helm-completion-style 'orderless)
+                           'emacs)
+                          (t exordium-helm-completion-style))))
 
-  :config
-  (when exordium-helm-fuzzy-match
-    ;; following advice from `helm-completion-style' doc
-    (let ((style (or
-                  (car (assq 'flex completion-styles-alist))
-                  (car (assq 'helm-flex completion-styles-alist)))))
-      (if style
-          (add-to-list 'completion-styles style)
-        (customize-set-variable 'helm-completion-style 'helm-fuzzy)))))
+(when (eq exordium-helm-completion-style 'orderless)
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))))))
 
 (use-package helm
   :diminish
