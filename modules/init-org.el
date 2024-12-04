@@ -129,14 +129,12 @@ set to nil."
 
 (use-package ox-html
   :ensure org
-  :defer t
   :after (org)
   :if (not exordium-org-export-css))
 
 (use-package ox-html
   :ensure org
   :after (org)
-  :defer t
   :if exordium-org-export-css
   :custom
   (org-html-htmlize-output-type 'css
@@ -147,30 +145,25 @@ set to nil."
 (use-package ox-md
   :ensure org
   :after (org)
-  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-beamer
   :ensure org
   :after (org)
-  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-odt
   :ensure org
   :after (org)
-  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-publish
   :ensure org
   :after (org)
-  :defer t
   :if exordium-enable-org-export)
 
 (use-package ox-gfm
   :after (org)
-  :defer t
   :if exordium-enable-org-export)
 
 (provide 'init-org)

@@ -371,6 +371,11 @@ after it's been byte compiled."
 (setq custom-theme-directory exordium-themes-dir)
 (exordium-require 'init-progress-bar nil)
 
+;; `org' may be upgraded from ELPA (for example, as a part of a first start)
+;; and some packages depend on it.  To prevent loading a built in version by
+;; such packages upgrade it early.
+(exordium-require 'init-org)
+
 (when exordium-nw
   (set-face-background 'highlight nil))
 (when exordium-theme
@@ -426,7 +431,6 @@ after it's been byte compiled."
 
 ;; Major modes
 (exordium-require 'init-markdown)
-(exordium-require 'init-org)
 (exordium-require 'init-xml)
 
 ;; OS-specific things
