@@ -104,6 +104,8 @@ It makes buffer local variable with an extra back tick added."
 (defun exordium--use-package-force-elpa (pkg archive)
   "Return the form that enforces installation of a built-in PKG from ARCHIVE."
   `(let ((package ',(use-package-as-symbol pkg)))
+     ;; Ensure package is pinned even if it won't be installed
+     (use-package-pin-package package ,archive)
      (package-read-all-archive-contents)
      (when-let* (((package-built-in-p package))
                  (builtin-version (alist-get package package--builtin-versions))
@@ -123,7 +125,8 @@ It makes buffer local variable with an extra back tick added."
                  (archive-version (package-desc-version pkg-desc))
                  ((not (package-installed-p package archive-version)))
                  ((version-list-< builtin-version archive-version)))
-       (use-package-pin-package package ,archive)
+       (package--save-selected-packages (cons package
+                                              package-selected-packages))
        (condition-case-unless-debug err
            (let* ((package-install-upgrade-built-in t)
                   (transaction (package-compute-transaction
