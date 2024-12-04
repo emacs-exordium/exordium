@@ -15,7 +15,8 @@
 
 (use-package company
   :diminish "CA"
-  :commands (company-begin-backend
+  :commands (company-other-backend
+             company-begin-backend
              company-abort)
   :init
   (use-package forge-core
@@ -30,9 +31,9 @@
       (interactive (company-begin-backend 'exordium-company-assignees))
       (prefix
        (save-match-data
-         (when (and (or (and (boundp 'git-commit-mode)
-                             git-commit-mode)
-                        (derived-mode-p 'forge-post-mode))
+         (when (and (or (bound-and-true-p git-commit-mode)
+                        (derived-mode-p 'forge-post-mode
+                                        'git-commit-elisp-text-mode))
                     (forge-get-repository 'full)
                     (looking-back
                      (rx "@"
@@ -70,25 +71,34 @@
       (annotation (when-let* ((assignee (get-text-property 0 'full-name arg)))
                     (format " [%s]" assignee)))))
 
+  :custom
+  (company-idle-delay nil)
+  (company-files-exclusions '(".git/" ".gitignore" ".gitmodules" ".DS_Store"
+                              ".vscode/" ".envrc" ".direnv/" ".clangd"
+                              "venv/" ".venv/"))
+  (company-transformers '(delete-consecutive-dups))
+
   :config
   (setq rtags-completions-enabled t)
+  (add-to-list 'company-backends
+               '(company-capf company-yasnippet company-files
+                 :with company-dabbrev-code))
+  (add-to-list 'company-backends 'exordium-company-assignees)
   ;; Turn on company mode everywhere
   (global-company-mode)
-  (add-to-list 'company-backends '(company-capf company-dabbrev))
-  (add-to-list 'company-backends 'exordium-company-assignees)
-  (setq company-idle-delay nil)
 
   :bind
   (("C-." . #'company-complete)
+   ("C-c C-\\" . #'company-other-backend)
    :map company-active-map
    ("ESC" . #'company-abort)))
 
-
 (use-package company-statistics
-  :ensure t
   :after (company)
   :config
-  (company-statistics-mode))
+  (company-statistics-mode)
+  (add-to-list 'company-transformers
+               'company-sort-by-backend-importance 'append))
 
 (provide 'init-company)
 
