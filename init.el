@@ -74,7 +74,7 @@ Check the warnings and messages buffers, or restart with --debug-init")
 (setq custom-file exordium-custom-file)
 
 (defcustom exordium-extra-packages ()
-  "A list of additional packages to auto load from elpa repositories."
+  "A list of additional packages to auto load from ELPA repositories."
   :group 'exordium
   :type  '(repeat (symbol :tag "Package")))
 
@@ -87,14 +87,13 @@ Each element of the list is in the same form as in `package-pinned-packages'."
                  :value-type (string :tag "Archive name")))
 
 (defconst exordium-melpa-package-repo "https://melpa.org/packages/"
-  "URL for packages repository.")
+  "URL for MELPA packages repository.
+Default for Exordium.")
 
-(defconst exordium-pinned-melpa-package-repo "https://melpa.org/packages/"
-  "URL for pinned default packages.
-Set to stable melpa.org if you want stable.")
-
-(defconst exordium-gnu-package-repo "https://elpa.gnu.org/packages/"
-  "URL for the GNU package repository.")
+(defconst exordium-stable-melpa-package-repo "https://stable.melpa.org/packages/"
+  "URL for stable MELPA packages repository.
+Only active when there are `exordium-extra-pinned' packages from
+melpa-stable.")
 
 ;; Taps definition of before and after files. These are loaded
 ;; after master 'before', 'after', and 'prefs' files
@@ -159,20 +158,15 @@ Set to stable melpa.org if you want stable.")
 (require 'seq)
 (require 'package)
 
-(when (or (not (string= exordium-melpa-package-repo
-                        exordium-pinned-melpa-package-repo))
-          (seq-filter (lambda (pkg)
-                        (string= "melpa" (cdr pkg)))
-                      exordium-extra-pinned))
-  (add-to-list 'package-archives
-               (cons "melpa" exordium-melpa-package-repo) t))
 (add-to-list 'package-archives
-             (cons "melpa-pinned" exordium-pinned-melpa-package-repo) t)
-(unless (seq-filter (lambda (repo)
-                      (string= exordium-gnu-package-repo (cdr repo)))
-                    package-archives)
+             (cons "melpa" exordium-melpa-package-repo) t)
+
+(when (seq-filter (lambda (pkg)
+                    (string= "melpa-stable" (cdr pkg)))
+                  exordium-extra-pinned)
   (add-to-list 'package-archives
-               (cons "gnu" exordium-gnu-package-repo) t))
+               (cons "melpa-stable" exordium-stable-melpa-package-repo) t))
+
 
 (setq package-user-dir
       (locate-user-emacs-file (concat "elpa-" emacs-version)))
