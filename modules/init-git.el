@@ -49,6 +49,10 @@ These are restored by `exordium-magit-quit-session'.")
 
   :defines (magit-last-seen-setup-instructions)
   :init
+  (use-package magit-process
+    :ensure nil
+    :defer t
+    :autoload (magit-process-git))
   (defun exordium-projectile-add-known-project
         (_repo directory _args)
       (projectile-add-known-project directory))
