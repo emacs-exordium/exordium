@@ -75,10 +75,14 @@ off https://stackoverflow.com/a/66911315/519827, but REFRESH is
 set to nil."
     (when (org-in-src-block-p)
       (let (beg end)
-        (save-excursion
-          (org-mark-subtree)
-          (setq beg (point))
-          (setq end (mark)))
+        (save-mark-and-excursion
+          (condition-case nil
+              (progn
+                (org-mark-subtree)
+                (setq beg (point)
+                      end (mark)))
+            (error (setq beg (point-min)
+                         end (point-max)))))
         (when-let* ((info (org-babel-get-src-block-info t))
                     (params (org-babel-process-params (nth 2 info)))
                     (result-params (cdr (assq :result params)))
