@@ -148,6 +148,8 @@ melpa-stable.")
   (message "Loading tapped before-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
+(eval-and-compile
+  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
 
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
@@ -155,73 +157,76 @@ melpa-stable.")
 ;; then press I to mark for installation and X to execute (it's like `dired').
 
 ;; Initialize the package system
-(require 'seq)
 (require 'package)
 
 (add-to-list 'package-archives
              (cons "melpa" exordium-melpa-package-repo) t)
 
-(when (seq-filter (lambda (pkg)
-                    (string= "melpa-stable" (cdr pkg)))
-                  exordium-extra-pinned)
+(when (let (match)
+        (mapc (lambda (pkg)
+                (when (equal "melpa-stable" (cdr pkg))
+                  (setq match t)))
+              exordium-extra-pinned)
+        match)
   (add-to-list 'package-archives
                (cons "melpa-stable" exordium-stable-melpa-package-repo) t))
-
 
 (setq package-user-dir
       (locate-user-emacs-file (concat "elpa-" emacs-version)))
 
-(when (fboundp 'native-comp-available-p)
+(when (fboundp 'native-comp-available-p) ;; check needed before Emacs-28
   (setq package-native-compile (native-comp-available-p)))
 
 (package-initialize)
-
-;; Load the packages we need if they are not installed already
-(let ((package-pinned-packages (append
-                                '((use-package             . "gnu")
-                                  (diminish                . "gnu")
-                                  (bind-key                . "gnu"))
-                                exordium-extra-pinned))
-      has-refreshed)
-  (mapc (lambda (pkg)
-          (unless (package-installed-p pkg)
-            (unless has-refreshed
-              (message "Refreshing package database...")
-              (package-refresh-contents)
-              (setq has-refreshed t)
-              (message "Done."))
-            (package-install pkg)))
-        (append (mapcar #'car package-pinned-packages)
-                exordium-extra-packages)))
+
+(unless (package-installed-p 'use-package)  ;; Before Emacs-29
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 ;; This is only needed once, near the top of the file
 (require 'use-package)
 
-(eval-and-compile
-  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
-(exordium-require 'init-prefs)            ; defines variables that prefs.el can override
-(exordium-require 'init-lib)              ; utility functions - load this first
+(exordium-require 'init-force-elpa)
+
+;; Pin user extra packages early, in case they are dependencies of some other
+;; packages that are installed early.
+(dolist (pkg exordium-extra-pinned)
+  (use-package-pin-package (car pkg) (cdr pkg)))
 
 (use-package use-package
   :exordium-force-elpa gnu
   :custom
   (use-package-always-ensure t)
   (use-package-compute-statistics t))
-(use-package diminish
-  :exordium-force-elpa gnu)
-(use-package bind-key
-  :exordium-force-elpa gnu)
 
 ;; Some packages (i.e., magit, forge) require relatively new package `seq'.
 ;; Unfortunately, `package' is unable to bump the built-in `seq'.  Ensure it is
 ;; installed in the newest available version.
 (use-package seq
+  :defer t
   :exordium-force-elpa gnu)
 
-(dolist (pkg-pin exordium-extra-pinned)
-  (use-package-pin-package (car pkg-pin) (cdr pkg-pin)))
+;; `org' may be upgraded from ELPA (for example, as a part of a first start)
+;; and some packages depend on it.  To prevent loading a built in version by
+;; such packages make sure `org' has been upgraded early.
+(use-package org
+  :defer t
+  :exordium-force-elpa gnu)
 
+(use-package diminish
+  :exordium-force-elpa gnu)
+
+(use-package bind-key
+  :exordium-force-elpa gnu)
+
+(dolist (pkg (append
+              exordium-extra-packages
+              (mapcar #'car exordium-extra-pinned)))
+  (unless (package-installed-p pkg)
+    (package-install pkg)))
 
-;;; Load Modules
+;; Byte recompile modules, if necessary
+
 (require 'bytecomp)
 (defun exordium-recompile-modules ()
   "Recompile modules.
@@ -353,6 +358,10 @@ after it's been byte compiled."
   (async-bytecomp-package-mode))
 
 
+;;; Load Modules
+
+(exordium-require 'init-prefs)            ; Defines variables that prefs.el can override
+(exordium-require 'init-lib)              ; Utility functions - load this first
 (exordium-require 'init-environment)      ; environment variables
 
 
@@ -364,11 +373,6 @@ after it's been byte compiled."
 ;; Note: use "export TERM=xterm-256color" for emacs -nw
 (setq custom-theme-directory exordium-themes-dir)
 (exordium-require 'init-progress-bar nil)
-
-;; `org' may be upgraded from ELPA (for example, as a part of a first start)
-;; and some packages depend on it.  To prevent loading a built in version by
-;; such packages upgrade it early.
-(exordium-require 'init-org)
 
 (when exordium-nw
   (set-face-background 'highlight nil))
@@ -425,6 +429,7 @@ after it's been byte compiled."
 
 ;; Major modes
 (exordium-require 'init-markdown)
+(exordium-require 'init-org)
 (exordium-require 'init-xml)
 
 ;; OS-specific things
