@@ -422,10 +422,10 @@ after it's been byte compiled."
 (update-progress-bar)
 
 ;; Prog mode
-(exordium-require 'init-prog-mode )
+(exordium-require 'init-prog-mode)
 
 ;; Shell mode
-(exordium-require 'init-prog-mode)
+(exordium-require 'init-shell)
 
 ;; Major modes
 (exordium-require 'init-markdown)
