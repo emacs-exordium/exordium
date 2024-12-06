@@ -138,7 +138,8 @@ see Info node `(emacs) Package Installation'."
       (push force-elpa-form body))          ; or else wait until runtime.
     body))
 
-(add-to-list 'use-package-keywords :exordium-force-elpa)
+(eval-after-load 'use-package-core
+  '(add-to-list 'use-package-keywords :exordium-force-elpa))
 
 (provide 'init-force-elpa)
 

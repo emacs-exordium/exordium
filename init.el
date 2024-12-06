@@ -148,8 +148,6 @@ melpa-stable.")
   (message "Loading tapped before-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
-(eval-and-compile
-  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
 
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
@@ -179,13 +177,25 @@ melpa-stable.")
 
 (package-initialize)
 
-(unless (package-installed-p 'use-package)  ;; Before Emacs-29
-  (package-refresh-contents)
+(package-refresh-contents)
+
+;; If there's a new use-package to upgrade it needs to happen before any other
+;; work.  Otherwise the new version is not visible when something tries to pull
+;; it in.
+(when-let* ((package-pinned-packages '(use-package . "gnu"))
+            (package-install-upgrade-built-in t)
+            (desc (cl-find-if
+                   (lambda (desc) (equal "gnu" (package-desc-archive desc)))
+                   (alist-get 'use-package package-archive-contents)))
+            (archive-version (package-desc-version desc))
+            ((not (package-installed-p 'use-package archive-version))))
   (package-install 'use-package))
 
 ;; This is only needed once, near the top of the file
 (require 'use-package)
 
+(eval-and-compile
+  (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
 (exordium-require 'init-force-elpa)
 
 ;; Pin user extra packages early, in case they are dependencies of some other
