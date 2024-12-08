@@ -8,7 +8,7 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 
-(exordium-require 'color-theme-zenburn "themes" define-zenburn-theme)
+(exordium-require 'color-theme-zenburn :location "themes")
 
 (define-zenburn-theme)
 

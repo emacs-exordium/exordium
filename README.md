@@ -925,7 +925,7 @@ Modules can be individually commented out if needed:
 ;; Themes
 ;; Note: use "export TERM=xterm-256color" for emacs -nw
 (setq custom-theme-directory exordium-themes-dir)
-(exordium-require 'init-progress-bar nil)
+(exordium-require 'init-progress-bar)
 
 (when exordium-nw
   (set-face-background 'highlight nil))

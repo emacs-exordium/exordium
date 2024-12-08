@@ -8,7 +8,7 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 
-(exordium-require 'color-theme-tomorrow "themes")
+(exordium-require 'color-theme-tomorrow :location "themes")
 
 (define-tomorrow-theme night)
 

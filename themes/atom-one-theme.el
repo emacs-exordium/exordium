@@ -7,7 +7,7 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 
-(exordium-require 'color-theme-atom-one "themes" define-atom-one-theme)
+(exordium-require 'color-theme-atom-one :location "themes")
 
 (define-atom-one-theme)
 

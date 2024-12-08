@@ -34,7 +34,7 @@
     :config
     (exec-path-from-shell-initialize)))
 
-(exordium-require 'clojure "extensions")
+(exordium-require 'clojure :location "extensions")
 
 ;;; Hippie expand - don't try to complete with file names
 (setq hippie-expand-try-functions-list

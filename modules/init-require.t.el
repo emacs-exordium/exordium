@@ -106,7 +106,8 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
   ;; delay `exordium-require' macro expansion to test execution
   (ignore-errors (unload-feature 'init-require.t-dummy))
   (should (eq 'init-require.t-dummy
-              (eval '(exordium-require 'init-require.t-dummy "modules"))))
+              (eval '(exordium-require 'init-require.t-dummy
+                       :location "modules"))))
   (should (featurep 'init-require.t-dummy)))
 
 (ert-deftest exordium-require-with-location-and-declarations ()
@@ -116,7 +117,7 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
    (eq 'init-require.t-dummy
        (eval '(exordium-require
                   'init-require.t-dummy
-                  "modules"
+                :location "modules"
                 :functions (require.t-dummy-1
                             (require.t-dummy-2 . (arg1 arg2)))
                 :defines (require.t-dummy-3)))))
@@ -142,7 +143,8 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
   (ignore-errors (unload-feature 'init-require.t-dummy))
   (let* ((debug-on-error nil))
     (should-not (eq 'init-require.t-dummy
-                    (eval '(exordium-require 'init-require.t-dummy "themes")))))
+                    (eval '(exordium-require 'init-require.t-dummy
+                             :location "themes")))))
   (should-not (featurep 'init-require.t-dummy)))
 
 (ert-deftest exordium-require-signals-error-with-non-existing-location-while-debug ()
@@ -168,126 +170,107 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
                              init-require.t-dummy)))))
 
 (ert-deftest exordium-require-signals-error-with-wrong-location-type ()
-  (should-error (eval '(exordium-require 'init-require.t-dummy t)))
-  (should-error (eval '(exordium-require 'init-require.t-dummy 42)))
-  (should-error (eval '(exordium-require 'init-require.t-dummy ? )))
-  (should-error (eval '(exordium-require 'init-require.t-dummy 'modules)))
-  (should-error (eval '(exordium-require 'init-require.t-dummy :modules)))
-  (should-error (eval '(exordium-require 'init-require.t-dummy modules)))
-  (should-error (eval '(exordium-require
-                           'init-require.t-dummy
-                           (if t "modules" "themes")))))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location "")))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location t)))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location 42)))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location ? )))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location 'modules)))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location :modules)))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                         :location modules)))
+  (should-error (eval '(exordium-require 'init-require.t-dummy
+                           :location (if t "modules" "themes")))))
 
 
 (ert-deftest exordium-require-signals-error-with-wrong-defines-type ()
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines (nil))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines (t))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines (42))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines ("var"))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines ('var))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines (:var))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :defines ((if t 'var 'var))))))
 
 (ert-deftest exordium-require-signals-error-with-wrong-functions-type ()
   ;; invalid function without args
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (nil))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (t))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (42))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ("fn"))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ('fn))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (:fn))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((nil . (arg))))))
   ;; invalid function with valid arg
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((t . (arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((42 . (arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (("fn" . (arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions (('fn . (arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((:fn . (arg))))))
   ;; valid function with invalid arg
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . (nil))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . (t))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . (42))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . ("arg"))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . ('arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . (:arg))))))
   (should-error (eval '(exordium-require
                            'init-require.t-dummy
-                           "modules"
                          :functions ((fn . '(arg)))))))
 
 (provide 'init-require.t)

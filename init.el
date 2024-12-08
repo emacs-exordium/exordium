@@ -382,7 +382,7 @@ after it's been byte compiled."
 ;; Themes
 ;; Note: use "export TERM=xterm-256color" for emacs -nw
 (setq custom-theme-directory exordium-themes-dir)
-(exordium-require 'init-progress-bar nil)
+(exordium-require 'init-progress-bar)
 
 (when exordium-nw
   (set-face-background 'highlight nil))
@@ -454,8 +454,8 @@ after it's been byte compiled."
 (exordium-require 'init-gdb)
 
 ;; RTags
-(exordium-require 'init-rtags nil
-                  :functions (rtags-auto-complete))
+(exordium-require 'init-rtags
+  :functions (rtags-auto-complete))
 (when (and (eq exordium-complete-mode :auto-complete)
            exordium-rtags-auto-complete)
   (rtags-auto-complete))

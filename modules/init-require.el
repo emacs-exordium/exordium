@@ -22,7 +22,8 @@
 ;; and `defvars' forms, should the compiler not infer them from the loaded
 ;; module.  For example, the folllowing expression:
 ;;
-;; (exordium-require 'init-foo "foo-dir"
+;; (exordium-require 'init-foo
+;;                   :location "foo-dir"
 ;;                   :functions (foo-simple (foo-args . (arg1 arg2)))
 ;;                   :defines (foo-var))
 ;;
@@ -187,32 +188,37 @@ for `exordium-require', which see."
       (load file nomessage))))
 
 ;;;###autoload
-(defmacro exordium-require (feature &optional location &rest declarations)
-  "If FEATURE is not already loaded, load it from Exordium LOCATION.
-Like `require', but concatenate LOCATION, that is relative in
-Exordium project, with printname of FEATURE as FILE passed to
-`load' (which see).  Default LOCATION is \"modules\".
+(defmacro exordium-require (feature &rest options)
+  "If FEATURE is not already loaded, load it from Exordium modules directory.
+OPTIONS is a plist, with up to three properties: `:location',
+`:functions', and `:defines'.
 
-To suppress compiler warnings use DECLARATIONS which is a plist
-with two properties: `:functions' and `:defines'.  The `:functions'
-is a list where each element either is a function FN or is a
-cons (FN ARGLIST) that are passed to `declare-function' (which
-see).  Note that `declare-function' forms has FILE argument set
-to nil.  The `:defines' is a list where each element is a SYMBOL
-that is passed to `defvar' (which see).
+Like `require', but concatenate :location, that is relative in
+Exordium project, with printname of FEATURE as a FILE argument passed to
+`load' (which see).  Default :location is \"modules\".
+
+To suppress compiler warnings use `:functions' and `:defines'
+keywords in OPTIONS argument.  The `:functions' is a list where
+each element either is a function FN or is a cons (FN ARGLIST)
+that are passed to `declare-function' (which see).  Note that
+`declare-function' forms has FILE argument set to nil.  The
+`:defines' is a list where each element is a SYMBOL that is
+passed to `defvar' (which see).
 
 Please see Commentary in init-require.el for more details."
-  (declare (debug t) (indent 2))
+  (declare (debug t) (indent 1))
   (when-let* (((if (and (consp feature) (eq #'quote (car feature))
                         (consp (cdr feature)) (symbolp (cadr feature))
                         (not (keywordp (cadr feature)))
                         (not (cddr feature)))
-                   ;; 'symbol is a (cons #'quote (cons symbol nil))
-                   t (error "Wrong type argument: symbolp, %S" feature)))
+                 ;; 'symbol is a (cons #'quote (cons symbol nil))
+                 t (error "Wrong type argument: symbolp, %S" feature)))
 
-              ((if (or (stringp location) (and (symbolp location) (not location)))
-                   ;; "string" is a string, nil is a symbol
-                   t (error "Wrong type argument: stringp or nil, %S" location)))
+              ((let ((location (plist-get options :location)))
+                 (if (or (and (stringp location) (< 0 (length location)))
+                         (and (symbolp location) (not location)))
+                     ;; "string" is a string, nil is a symbol
+                     t (error "Wrong type argument: stringp or nil, %S" location))))
               (declare-forms
                (or (append
                     (mapcar (lambda (fn)
@@ -232,13 +238,13 @@ Please see Commentary in init-require.el for more details."
                                 (error
                                  "Wrong type argument: symbolp or (and (consp) (symbolp car)), %S"
                                  fn))))
-                            (plist-get declarations :functions))
+                            (plist-get options :functions))
                     (mapcar (lambda (var)
                               (if (and (symbolp var) (not (memq var '(nil t quote)))
                                        (not (string-prefix-p ":" (symbol-name var))))
                                   `(defvar ,var)
                                 (error "Wrong type argument: symbolp, %S" var)))
-                            (plist-get declarations :defines)))
+                            (plist-get options :defines)))
                    t)))
     (append
      `(progn
@@ -265,7 +271,9 @@ Please see Commentary in init-require.el for more details."
                  (with-demoted-errors
                      ,(format "(exordium-require) Cannot load %s: %%S" feature)
                    (unless (featurep ,feature)
-                     (exordium--require-load ,feature ,location t))))
+                     (exordium--require-load ,feature
+                                             ,(plist-get options :location)
+                                             t))))
                ,@(when (listp declare-forms)
                    declare-forms))
              ,@(when (bound-and-true-p use-package-compute-statistics)
@@ -284,7 +292,8 @@ Please see Commentary in init-require.el for more details."
                           "Recursive `exordium-require' for feature `%s', require-nesting-list: %s"
                           ,feature exordium--require-nesting-list)
                        (push ,feature exordium--require-nesting-list)
-                       (exordium--require-load ,feature ,location)
+                       (exordium--require-load ,feature
+                                               ,(plist-get options :location))
                        (if (featurep ,feature)
                            ,feature
                          (if-let* ((file (caar load-history)))

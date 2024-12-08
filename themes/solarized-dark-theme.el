@@ -8,7 +8,7 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 
-(exordium-require 'color-theme-solarized "themes")
+(exordium-require 'color-theme-solarized :location "themes")
 
 (define-solarized-theme dark)
 
