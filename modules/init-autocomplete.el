@@ -14,7 +14,6 @@
   :commands (ac-stop
              ac-complete)
   :defer t
-  :if (eq exordium-complete-mode :auto-complete)
   :custom
   ;; Case sensitivity is important when finding matches
   ;; Values are: t, nil, or 'smart
