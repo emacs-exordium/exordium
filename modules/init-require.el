@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 ;;
-;; The `exoridum-require' has been designed to be used in Exordium as a
+;; The `exordium-require' has been designed to be used in Exordium as a
 ;; replacement to built-in `load', `require', and `use-package'.  It is heavily
 ;; influenced by implementations of `require' and `use-package'.
 ;;
@@ -20,7 +20,7 @@
 ;;
 ;; The DECLARATION is a plist that can be used to generate `declare-function'
 ;; and `defvars' forms, should the compiler not infer them from the loaded
-;; module.  For example, a code in a file:
+;; module.  For example, the folllowing expression:
 ;;
 ;; (exordium-require 'init-foo "foo-dir"
 ;;                   :functions (foo-simple (foo-args . (arg1 arg2)))
@@ -33,7 +33,7 @@
 ;;  - when the file containing the `exordium-require' is compiled the following
 ;;    forms will be generated:
 ;;
-;; (declare-function foo-simle nil)
+;; (declare-function foo-simple nil)
 ;; (declare-function foo-args nil (arg1 arg2))
 ;; (defvar foo-var)
 ;;
@@ -54,10 +54,11 @@
 ;;
 ;; to install, load, and configure the package X.  The form may be repeated if
 ;; necessary, for example to allow for different configurations or to split
-;; long configurations into functional parts.  This is dictated by difficulty
-;; syncing different calls of `use-package' when these are spread across
-;; different Exordium modules.  One example is the `:diminish'/`:delight' which
-;; may be clobbered by later `use-package' that doesn't specify it.
+;; long configurations into functional parts.  This is dictated by the
+;; difficulty of syncing different calls to `use-package' when these are spread
+;; across different Exordium modules.  One example is the
+;; `:diminish'/`:delight' which may be clobbered by later `use-package' that
+;; doesn't specify it.
 ;;
 ;; The exception is when some package's `:autoload', `:command', `:hook',
 ;; `:custom' or `:bind' family with `:map' is required to implement
