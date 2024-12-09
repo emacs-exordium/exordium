@@ -8,7 +8,9 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
-(exordium-require 'init-forge)
+
+(when (version< "29.1" emacs-version)
+  (exordium-require 'init-forge))
 
 (eval-when-compile
   (use-package rtags)) ; init-rtags
@@ -17,8 +19,34 @@
   :diminish "CA"
   :demand t
   :commands (company-other-backend
-             company-begin-backend
              company-abort)
+  :custom
+  (company-idle-delay nil)
+  (company-files-exclusions '(".git/" ".gitignore" ".gitmodules" ".DS_Store"
+                              ".vscode/" ".envrc" ".direnv/" ".clangd"
+                              "venv/" ".venv/"))
+  (company-transformers '(delete-consecutive-dups))
+
+  :config
+  (setq rtags-completions-enabled t)
+  (add-to-list 'company-backends
+               '(company-capf company-yasnippet company-files
+                 :with company-dabbrev-code))
+
+  ;; Turn on company mode everywhere
+  (global-company-mode)
+
+  :bind
+  (("C-." . #'company-complete)
+   ("C-c C-\\" . #'company-other-backend)
+   :map company-active-map
+   ("ESC" . #'company-abort)))
+
+(use-package company
+  :diminish "CA"
+  :if (version< "29.1" emacs-version)
+  :defer t
+  :commands (company-begin-backend)
   :init
   (use-package forge-core
     :ensure forge
@@ -71,28 +99,9 @@
                              assignees))))
       (annotation (when-let* ((assignee (get-text-property 0 'full-name arg)))
                     (format " [%s]" assignee)))))
-
-  :custom
-  (company-idle-delay nil)
-  (company-files-exclusions '(".git/" ".gitignore" ".gitmodules" ".DS_Store"
-                              ".vscode/" ".envrc" ".direnv/" ".clangd"
-                              "venv/" ".venv/"))
-  (company-transformers '(delete-consecutive-dups))
-
   :config
-  (setq rtags-completions-enabled t)
-  (add-to-list 'company-backends
-               '(company-capf company-yasnippet company-files
-                 :with company-dabbrev-code))
-  (add-to-list 'company-backends 'exordium-company-assignees)
-  ;; Turn on company mode everywhere
-  (global-company-mode)
-
-  :bind
-  (("C-." . #'company-complete)
-   ("C-c C-\\" . #'company-other-backend)
-   :map company-active-map
-   ("ESC" . #'company-abort)))
+  ;; This is block is deferred , so this backed will end up first
+  (add-to-list 'company-backends 'exordium-company-assignees))
 
 (use-package company-statistics
   :after (company)

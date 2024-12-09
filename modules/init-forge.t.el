@@ -7,14 +7,16 @@
 ;;     M-x ert
 
 ;;; Code:
+(require 's)
+(require 'ert)
+(require 'cl-lib)
 
+(when (version< "29.1" emacs-version)
+
 (eval-when-compile
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-forge)
-(require 's)
-(require 'ert)
-(require 'cl-lib)
 
 ;; Tests for `exordium-forge-cleanup-known-repositories--question'
 
@@ -70,7 +72,10 @@
     (should (string= (concat "owner-1/name-1 @host-1, "
                              "owner-2/name-2 @host-2")
                      (exordium-forge-cleanup-known-repositories--concat to-delete)))))
+
 
+) ;; (version< "29.1" emacs-version)
+
 (provide 'init-forge.t)
 
 ;;; init-forge.t.el ends here

@@ -426,7 +426,9 @@ after it's been byte compiled."
 (exordium-require 'init-dired)            ; enable dired+ and wdired permission editing
 (exordium-require 'init-git)              ; Magit and git gutter
 (exordium-require 'init-git-visit-diffs)  ; visit diffs in successive narrowed buffers
-(exordium-require 'init-forge)            ; Forge
+(when (version< "29.1" emacs-version)
+  (exordium-require 'init-forge))         ; Forge
+
 (exordium-require 'init-flb-mode)         ; frame-local buffers
 
 (update-progress-bar)
