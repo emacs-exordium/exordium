@@ -7,7 +7,9 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
-(exordium-require 'init-company)
+
+(when (eq exordium-complete-mode :company)
+  (exordium-require 'init-company))
 
 (use-package treemacs
   :custom
@@ -49,10 +51,11 @@
   (when (featurep 'which-key)
       (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
-  ;; TODO: the following settings are changing the global configuration
-  ;;       they probably should be moved to buffer local variables
-  (setq company-minimum-prefix-length 1
-        company-idle-delay 0.0)
+  (when (eq exordium-complete-mode :company)
+    ;; TODO: the following settings are changing the global configuration
+    ;;       they probably should be moved to buffer local variables
+    (setq company-minimum-prefix-length 1
+          company-idle-delay 0.0))
 
   ;; process buffer for the LSP server needs to be larger
   (setq read-process-output-max (* 1024 1024))) ;; 1mb
