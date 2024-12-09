@@ -49,11 +49,16 @@
     :custom
     (helm-describe-variable-function #'helpful-variable)
     (helm-describe-function-function #'helpful-function))
-  (when exordium-highlight-symbol
-    (use-package highlight-symbol
-      :defer t
-      :hook ((helpful-mode . highlight-symbol-mode)
-             (helpful-mode . highlight-symbol-nav-mode))))
+
+  ;; TODO: seems like `font-lock-add-keywords' destroys all formating in
+  ;; `helpful-mode'.  The former is used by `highlight-symbol' so will
+  ;; not enable it now.
+  ;; (when exordium-highlight-symbol
+  ;;   (use-package highlight-symbol
+  ;;     :defer t
+  ;;     :hook ((helpful-mode . highlight-symbol-mode)
+  ;;            (helpful-mode . highlight-symbol-nav-mode))))
+
   :bind
   (;; Note that the built-in `describe-function' includes both functions
    ;; and macros. `helpful-function' is functions only, so we provide
