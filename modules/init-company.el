@@ -38,9 +38,7 @@
 
   :bind
   (("C-." . #'company-complete)
-   ("C-c C-\\" . #'company-other-backend)
-   :map company-active-map
-   ("ESC" . #'company-abort)))
+   ("C-c C-\\" . #'company-other-backend)))
 
 (use-package company
   :diminish "CA"
