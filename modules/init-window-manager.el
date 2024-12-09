@@ -116,9 +116,7 @@
 (use-package posframe)
 
 (use-package ace-window
-  :defer t
-  :after (posframe)
-  :diminish "AW"
+  :diminish
   :custom
   (aw-scope 'frame)
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -126,7 +124,8 @@
                                   (if (eq ?\M-o c) ?n c)))
   :bind ("M-o" . #'ace-window)
   :config
-  (when (and (require 'posframe nil t) (posframe-workable-p))
+  (when (and (require 'posframe nil t)
+             (posframe-workable-p))
     (ace-window-posframe-mode)))
 
 (provide 'init-window-manager)
