@@ -15,6 +15,7 @@
 
 (use-package company
   :diminish "CA"
+  :demand t
   :commands (company-other-backend
              company-begin-backend
              company-abort)
