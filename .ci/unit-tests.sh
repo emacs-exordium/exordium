@@ -18,6 +18,7 @@ ${EMACS} -Q --batch \
   (load-file "'"${EMACS_DIR}"'/modules/init-util.t.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-lib.t.el")
   (load-file "'"${EMACS_DIR}"'/modules/init-require.t.el")
+  (load-file "'"${EMACS_DIR}"'/modules/init-highlight.t.el")
   (let ((print-level 50)
         (eval-expression-print-level 50)
         (eval-expression-print-length 1000)

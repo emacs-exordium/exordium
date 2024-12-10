@@ -21,7 +21,6 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-lib)
 (exordium-require 'init-helm)
-(exordium-require 'init-highlight)
 
 ;;; Which Key - display available keybindings in popup.
 (when exordium-enable-which-key
@@ -49,15 +48,6 @@
     :custom
     (helm-describe-variable-function #'helpful-variable)
     (helm-describe-function-function #'helpful-function))
-
-  ;; TODO: seems like `font-lock-add-keywords' destroys all formating in
-  ;; `helpful-mode'.  The former is used by `highlight-symbol' so will
-  ;; not enable it now.
-  ;; (when exordium-highlight-symbol
-  ;;   (use-package highlight-symbol
-  ;;     :defer t
-  ;;     :hook ((helpful-mode . highlight-symbol-mode)
-  ;;            (helpful-mode . highlight-symbol-nav-mode))))
 
   (use-package paren
     :ensure nil
