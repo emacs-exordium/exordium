@@ -59,6 +59,10 @@
   ;;     :hook ((helpful-mode . highlight-symbol-mode)
   ;;            (helpful-mode . highlight-symbol-nav-mode))))
 
+  (use-package paren
+    :ensure nil
+    :commands (show-paren-local-mode))
+
   :bind
   (;; Note that the built-in `describe-function' includes both functions
    ;; and macros. `helpful-function' is functions only, so we provide
@@ -76,7 +80,11 @@
    ("C-h C" . #'helpful-command)
    :map helpful-mode-map
    ("C-c C-d" . #'helpful-at-point)
-   ("C-c C-o" . #'exordium-browse-url-at-point)))
+   ("C-c C-o" . #'exordium-browse-url-at-point))
+  :config
+  ;; By default `show-paren-mode' is disabled in modes deriving from
+  ;; `special-mode'.  Force it for `helpful'.
+  (add-hook 'helpful-mode-hook #'show-paren-local-mode))
 
 
 
