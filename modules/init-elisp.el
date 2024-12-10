@@ -24,12 +24,14 @@
   (:map emacs-lisp-mode-map
    ("M-C-g" . #'helm-imenu)
    ("C-c M-e" . #'pp-eval-last-sexp)
+   ("C-c C-M-e" . #'pp-macroexpand-last-sexp)
    ("M-." . #'xref-find-definitions)
    ("M-," . #'xref-go-back)
    ("M-r" . #'xref-find-references)
    :map lisp-interaction-mode-map
    ("M-C-g" . #'helm-imenu)
    ("C-c M-e" . #'pp-eval-last-sexp)
+   ("C-c C-M-e" . #'pp-macroexpand-last-sexp)
    ("M-." . #'xref-find-definitions)
    ("M-," . #'xref-go-back)
    ("M-r" . #'xref-find-references)))
