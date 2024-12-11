@@ -34,7 +34,7 @@
 (use-package flyspell
   :ensure nil
   :if (eq exordium-spell-check :prog)
-  :diminish 'flyspell-mode
+  :diminish flyspell-mode
   :hook
   (prog-mode . flyspell-prog-mode)
   :bind
