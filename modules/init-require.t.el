@@ -59,7 +59,7 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
   (should-error (use-package-statistics-convert 'init-require.t-dummy)))
 
 
-(macroexpand '(ert-deftest exordium-require-while-byte-compile ()
+(ert-deftest exordium-require-while-byte-compile ()
   (use-package-reset-statistics)
   (ignore-errors (unload-feature 'init-require.t-dummy))
   (let ((byte-compile-current-file t)
@@ -71,7 +71,7 @@ Recursion is in order: FORM, (car FORM), (cdr FORM)."
      (exordium--require-t-calls-exordium--require-load-within-eval-and-compile
       form)))
   (should (featurep 'init-require.t-dummy))
-  (should-error (use-package-statistics-convert 'init-require.t-dummy))))
+  (should-error (use-package-statistics-convert 'init-require.t-dummy)))
 
 (ert-deftest exordium-require-with-stats ()
   (use-package-reset-statistics)
