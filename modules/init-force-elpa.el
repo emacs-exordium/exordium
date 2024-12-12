@@ -28,7 +28,7 @@
     :autoload (use-package-only-one
                use-package-process-keywords)))
 
-(defun use-package-normalize/:exordium-force-elpa (_name keyword args)
+(defun exordium--use-package-force-elpa-normalize (_name keyword args)
                                         ; checkdoc-params: (keyword args)
   "Allow either a single string or a single symbol."
   (use-package-only-one (symbol-name keyword) args
@@ -116,7 +116,7 @@
                                    name (error-message-string err))
                            :error))))))
 
-(defun use-package-handler/:exordium-force-elpa (name _keyword archive-name rest state)
+(defun exordium--use-package-handler-force-elpa (name _keyword archive-name rest state)
                                         ; checkdoc-params: (rest state)
   "Pin package NAME to ELPA archive ARCHIVE-NAME and install it from there.
 Installation and pinning only hapens when the package is a
@@ -137,6 +137,12 @@ see Info node `(emacs) Package Installation'."
         (eval force-elpa-form)              ; Eval when byte-compiling,
       (push force-elpa-form body))          ; or else wait until runtime.
     body))
+
+(defalias 'use-package-normalize/:exordium-force-elpa
+  #'exordium--use-package-force-elpa-normalize)
+
+(defalias 'use-package-handler/:exordium-force-elpa
+  #'exordium--use-package-handler-force-elpa)
 
 (eval-after-load 'use-package-core
   '(add-to-list 'use-package-keywords :exordium-force-elpa))
