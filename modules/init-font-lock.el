@@ -17,24 +17,13 @@
                (c-mode . t)
                (C++-mode . 1) ;; t or 1 or 2
                (t . t)))
-       ;;
-       ;; Lazy font-lock to avoid the bug in Emacs 24
-       (cond ((fboundp 'jit-lock-mode)
-              (setq jit-lock-chunk-size 5000
-                    jit-lock-context-time 0.2
-                    jit-lock-defer-time .1
-                    jit-lock-stealth-nice 0.2
-                    jit-lock-stealth-time 5
-                    jit-lock-stealth-verbose nil)
-              (jit-lock-mode t))
-             ((fboundp 'turn-on-lazy-shot) ; before Emacs-29
-              (add-hook 'font-lock-mode-hook #'turn-on-lazy-shot))
-             ((fboundp 'turn-on-lazy-lock) ; before Emacs-29
-              (add-hook 'font-lock-mode-hook #'turn-on-lazy-lock)
-              (defvar lazy-lock-stealth-time)
-              (setq lazy-lock-stealth-time 10)
-              (defvar lazy-lock-minimum-size)
-              (setq lazy-lock-minimum-size 10000))))
+       (setq jit-lock-chunk-size 5000
+             jit-lock-context-time 0.2
+             jit-lock-defer-time .1
+             jit-lock-stealth-nice 0.2
+             jit-lock-stealth-time 5
+             jit-lock-stealth-verbose nil)
+       (jit-lock-mode t))
       (t
        ;; Disable font lock completely.
        (global-font-lock-mode -1)))
