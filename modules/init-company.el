@@ -9,7 +9,7 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
 
-(when (version< "29.1" emacs-version)
+(when (version< "29" emacs-version)
   (exordium-require 'init-forge))
 
 (eval-when-compile
@@ -42,7 +42,7 @@
 
 (use-package company
   :diminish "CA"
-  :if (version< "29.1" emacs-version)
+  :if (version< "29" emacs-version)
   :defer t
   :commands (company-begin-backend)
   :init
