@@ -48,20 +48,25 @@
      (package-read-all-archive-contents)
      (when-let* (((package-built-in-p package))
                  (builtin-version (alist-get package package--builtin-versions))
+                 (find-archive-desc
+                  (lambda ()
+                    (cl-find-if (lambda (desc)
+                                  (equal (package-desc-archive desc)
+                                         ,archive))
+                                (alist-get package
+                                           package-archive-contents))))
                  (pkg-desc (or
-                            (cl-find-if (lambda (desc)
-                                          (equal (package-desc-archive desc)
-                                                 ,archive))
-                                        (alist-get package
-                                                   package-archive-contents))
+                            (funcall find-archive-desc)
                             (progn
                               (package-refresh-contents)
-                              (cl-find-if (lambda (desc)
-                                            (equal (package-desc-archive desc)
-                                                   ,archive))
-                                          (alist-get package
-                                                     package-archive-contents)))))
+                              (funcall find-archive-desc))))
                  (archive-version (package-desc-version pkg-desc))
+                 ;; package has been previously installed, either not a
+                 ;; built-in package or a built-in package has been shadowed by
+                 ;; installation
+                 ((not (assq package package-alist)))
+                 ;; package with archive-version that is higher than the
+                 ;; built-in one
                  ((not (package-installed-p package archive-version)))
                  ((version-list-< builtin-version archive-version)))
        (package--save-selected-packages (cons package
