@@ -147,10 +147,15 @@ extension."
   (if-let* ((compile-commands-json
              (cl-find-if #'file-exists-p
                          (mapcar (lambda (build-dir)
-                                   (concat (file-name-as-directory (concat (projectile-project-root)
-                                                                           build-dir))
-                                           "compile_commands.json"))
-                                 '("cmake.bld/Linux" "build" "cmake-build" "cmake-build/linux_64_static_ninja_Debug"))))
+                                   (expand-file-name
+                                    "compile_commands.json"
+                                    (expand-file-name build-dir
+                                                      (projectile-project-root))))
+                                 '("cmake.bld/Linux" "build" "bld" "cmake-build"
+                                   "cmake-build/linux_64_static_ninja_Debug"
+                                   "cmake-build/linux_64_static_make_Debug"
+                                   "cmake-build/linux_64_static_ninja_Release"
+                                   "cmake-build/linux_64_static_make_Release"))))
             (file-name (file-name-nondirectory buffer-file-name)))
       (iwyu-start-process-for
        compile-commands-json

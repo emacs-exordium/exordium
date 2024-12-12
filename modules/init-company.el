@@ -12,9 +12,6 @@
 (when (version< "29" emacs-version)
   (exordium-require 'init-forge))
 
-(eval-when-compile
-  (use-package rtags)) ; init-rtags
-
 (use-package company
   :diminish "CA"
   :demand t
@@ -28,7 +25,6 @@
   (company-transformers '(delete-consecutive-dups))
 
   :config
-  (setq rtags-completions-enabled t)
   (add-to-list 'company-backends
                '(company-capf company-yasnippet company-files
                  :with company-dabbrev-code))

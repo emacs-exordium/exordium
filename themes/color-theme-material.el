@@ -218,18 +218,6 @@ names to which it refers are bound."
      (compilation-mode-line-fail ((t (:foreground ,red))))
      (compilation-mode-line-run ((t (:foreground ,blue))))
 
-     ;; RTags
-     (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,red :foreground ,background)
-                                `(:underline (:color ,red :style wave))))))
-     (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,orange :foreground ,background)
-                                 `(:underline (:color ,orange :style wave))))))
-     (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,light-green-500 :foreground ,background)
-                                  `(:underline (:color ,light-green-500 :style wave))))))
-     (rtags-skippedline ((t :background ,far-background)))
-
      ;; Magit
      (magit-branch ((t (:foreground ,light-green-500))))
      (magit-diff-add ((t (:inherit diff-added))))

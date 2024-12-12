@@ -450,18 +450,6 @@ names to which it refers are bound."
        (t (:foreground ,zenburn-green-1 :weight bold :underline t))))
 
 
-     ;; Rtags
-     (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,zenburn-red :foreground ,zenburn-bg)
-                                `(:underline (:color ,zenburn-red :style wave))))))
-     (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,zenburn-orange :foreground ,zenburn-bg)
-                                 `(:underline (:color ,zenburn-orange :style wave))))))
-     (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,zenburn-green :foreground ,zenburn-bg)
-                                  `(:underline (:color ,zenburn-green :style wave))))))
-     (rtags-skippedline ((t (:background ,zenburn-bg+1))))
-
      ;; flyspell
      (flyspell-duplicate
       ((((supports :underline (:style wave)))

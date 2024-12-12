@@ -194,18 +194,6 @@ names to which it refers are bound."
                                            :foreground ,red :weight bold))))
      (compilation-mode-line-run ((t (:foreground ,orange :weight bold))))
 
-     ;; RTags
-     (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,red :foreground ,monokai-bg)
-                                `(:underline (:color ,red :style wave))))))
-     (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,orange :foreground ,monokai-bg)
-                                 `(:underline (:color ,orange :style wave))))))
-     (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,green :foreground ,monokai-bg)
-                                  `(:underline (:color ,green :style wave))))))
-     (rtags-skippedline ((t (:background ,monokai-hl-line))))
-
      ;; cua
      (cua-global-mark ((t (:background ,yellow :foreground ,monokai-bg))))
      (cua-rectangle ((t (:inherit region :background ,magenta :foreground ,monokai-bg))))

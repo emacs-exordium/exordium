@@ -193,18 +193,6 @@ names to which it refers are bound."
      (info-xref ((t (:foreground ,blue))))
      (info-xref-visited ((t (:foreground ,magenta :inherit info-xref))))
 
-     ;; RTags
-     (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                  `(:background ,red :foreground ,back)
-                                `(:underline (:color ,red :style wave))))))
-     (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                   `(:background ,orange :foreground ,back)
-                                 `(:underline (:color ,orange :style wave))))))
-     (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                                    `(:background ,green :foreground ,back)
-                                  `(:underline (:color ,green :style wave))))))
-     (rtags-skippedline ((t (:background ,base01))))
-
      ;; outline
      (outline-1 ((t (:foreground ,blue))))
      (outline-2 ((t (:foreground ,cyan))))

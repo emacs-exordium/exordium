@@ -31,14 +31,6 @@
   "Powerline active face 3 (buffer name)."
   :group 'exordium)
 
-(defface exordium-powerline-active4 '((t (:inherit mode-line)))
-  "Powerline active face 4 (RTags buffer name with errors)."
-  :group 'exordium)
-
-(defface exordium-powerline-active5 '((t (:inherit mode-line)))
-  "Powerline active face 5 (RTags buffer name without error)."
-  :group 'exordium)
-
 (defface exordium-powerline-inactive1 '((t (:inherit mode-line-inactive)))
   "Powerline inactive face 1."
   :group 'exordium)
@@ -58,14 +50,6 @@
   (cond ((not active)
          ;; Gray
          'exordium-powerline-inactive3)
-        ((and (eq major-mode 'c++-mode)
-              (fboundp 'rtags-has-diagnostics)
-              (rtags-has-diagnostics))
-         ;; Green or red
-         (let ((diag-buff (get-buffer "*RTags Diagnostics*")))
-           (if (and diag-buff (> (buffer-size diag-buff) 0))
-               'exordium-powerline-active4
-             'exordium-powerline-active5)))
         (t
          ;; Purple
          'exordium-powerline-active3)))
@@ -122,9 +106,7 @@ Return nil if the current buffer is not under version control"
              (mode-line (if active 'mode-line 'mode-line-inactive))
              (face1 (if active 'exordium-powerline-active1 'exordium-powerline-inactive1))
              (face2 (if active 'exordium-powerline-active2 'exordium-powerline-inactive2))
-             (face3 (if exordium-powerline-shows-rtags-diagnostics
-                        (exordium-powerline-buffer-face active)
-                      (if active 'exordium-powerline-active3 'exordium-powerline-inactive3)))
+             (face3 (if active 'exordium-powerline-active3 'exordium-powerline-inactive3))
              (separator-left (intern
                               (format "powerline-%s-%s"
                                       powerline-default-separator

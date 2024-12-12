@@ -163,8 +163,6 @@ When buffer matches either of the `exordium-inhibit-line-numbers-modes',
                                                  iwyu-mode
                                                  magit-mode
                                                  org-mode
-                                                 rtags-diagnostics-mode
-                                                 rtags-rdm-mode
                                                  shell-mode
                                                  treemacs-mode)
   "List of modes for which line numbers should not be displayed."
@@ -246,7 +244,7 @@ i.e., with \"git pull\"."
 (defcustom exordium-complete-mode :auto-complete
   "Select the completion engine for exordium.
 Possible values are `:auto-complete',`:company', and nil.
-Default is `:auto-complete'.  See also `exordium-rtags-auto-complete'."
+Default is `:auto-complete'."
   :group 'exordium
   :type  'symbol)
 
@@ -265,13 +263,6 @@ Otherwise use one of the following:
 - atom-one."
   :group 'exordium
   :type  'symbol)
-
-(defcustom exordium-theme-use-loud-rtags-faces nil
-  "Whether RTags error/warning/fixit faces are loud or not.
-It depends on the theme but generally setting this to t will use
-reverse video, while setting it to nil will use underline waves."
-  :group 'exordium
-  :type  'boolean)
 
 (defcustom exordium-theme-use-big-font t
   "Whether the theme uses big fonts for titles and top-level items.
@@ -298,13 +289,6 @@ second is enough."
 Possible values are :angle, :wave"
   :group 'exordium
   :type  'symbol)
-
-(defcustom exordium-powerline-shows-rtags-diagnostics t
-  "Whether Powerline shows RTags Diagnostics results.
-If there are errors, the buffer name is displayed in red instead
-of the default color."
-  :group 'exordium
-  :type  'boolean)
 
 (defcustom exordium-powerline-enable-icons nil
   "Whether Powerline displays icons for git branches and other things."
@@ -426,57 +410,6 @@ If set to :modern use `modern-cpp-font-lock'."
   "Whether the development environment for Clojure is enabled or not."
   :group 'exordium
   :type  'boolean)
-
-
-;;; RTags
-
-;;; See init-rtags.el
-(defcustom exordium-rtags-rdm-args nil
-  "Command-line arguments passed to \"rdm\".
-This should be a list of strings."
-  :group 'exordium
-  :type  'sexp)
-
-(defcustom exordium-rtags-auto-complete nil
-  "Whether RTags is used as the source for auto-complete in C++ mode.
-This is considered only when `exordium-complete-mode' is :auto-complete."
-  :group 'exordium
-  :type  'boolean)
-
-(defcustom exordium-rtags-syntax-checker :flymake
-  "The syntax checker to be used with rtags.
-If set to :flycheck the `flycheck-rtags' will be used.
-Otherwise, the built-in flymake will be used."
-  :group 'exordium
-  :type  'symbol)
-
-;;; See init-rtags-helm.el
-(defcustom exordium-rtags-helm-everywhere t
-  "Whether RTags uses Helm to display list of results.
-If nil use its own UI."
-  :group 'exordium
-  :type  'boolean)
-
-;;; see init-rtags-cmake.el
-(defcustom exordium-rtags-cmake nil
-  "Whether RTags is used automatically for CMake-enabled projects."
-  :group 'exordium
-  :type  'boolean)
-
-(defcustom exordium-rtags-cmake-build-dir "cmake.bld/<arch>"
-  "Relative path of the build directory inside a CMake-enabled repo.
-The special token \\='<arch>\\=' is replaced by the local
-machine's architecture."
-  :group 'exordium
-  :type  'string)
-
-;;; See init-rtags-cdb.el
-(defcustom exordium-rtags-source-file-extensions '("*.cpp" "*.c")
-  "List of source file extension patterns for creating a compilation database.
-The compilation database is created using command
-`rtags-create-compilation-database'.  Not needed for CMake projects."
-  :group 'exordium
-  :type  'sexp)
 
 
 (defcustom exordium-iwyu-filter-args '("-fno-default-inline")

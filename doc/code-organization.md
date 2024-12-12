@@ -17,10 +17,10 @@ Note: *vendor* should be removed (code should move to *extensions*).
 ## init.el
 
 [init.el](../init.el) is
-the entry point. It includes all other files using the ```require```
-feature. Any "required" module file must end with a ```provide```
-statement. The name of the file and the symbol in ```provide``` and
-```require``` must all be identical, otherwise Emacs can't find it.
+the entry point. It includes all other files using the `require`
+feature. Any "required" module file must end with a `provide`
+statement. The name of the file and the symbol in `provide` and
+`require` must all be identical, otherwise Emacs can't find it.
 
 If a file *before-init.el* is present, it is loaded at the very beginning. If a
 file *after-init.el* is present, it is loaded at the very end.
@@ -80,9 +80,9 @@ pull. For example you can put something like this in your *prefs.el*:
 * [init-helm.el](../modules/init-helm.el):
   configures Helm.
 * [init-autocomplete.el](../modules/init-autocomplete.el):
-  configures autocomplete with default sources (non-RTags).
+  configures autocomplete with default sources.
 * [init-company.el](../modules/init-company.el):
-  configures company mode with default sources and RTags.
+  configures company mode with default sources.
 * [init-projectile.el](../modules/init-projectile.el):
   configures Projectile.
 * [init-helm-projectile.el](../modules/init-helm-projectile.el):
@@ -109,12 +109,6 @@ pull. For example you can put something like this in your *prefs.el*:
   an attempt to make the BDE style fit easier into Emacs.
 * [init-yassnippet.el](../modules/init-yasnippet.el):
   configuration of YASnippet.
-* [init-cedet.el](../modules/init-cedet.el):
-  configuration of CEDET (not used anymore and should probably be removed).
-* [init-rtags.el](../modules/init-rtags.el):
-  configuration of RTags.
-* [init-header-autocomplete.el](../modules/init-header-autocomplete.el):
-  experimental autocomplete for header file names (which RTags does not do).
 
 ### Other languages
 
