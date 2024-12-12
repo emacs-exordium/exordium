@@ -221,18 +221,6 @@ names to which it refers are bound."
      (compilation-mode-line-fail ((t (:foreground ,atom-one-dark-red-1))))
      (compilation-mode-line-run ((t (:foreground ,atom-one-dark-blue))))
 
-     ;; RTags
-     (rtags-errline ((t ,(if exordium-theme-use-loud-rtags-faces
-                             `(:background ,atom-one-dark-red-2 :foreground ,atom-one-dark-bg)
-                           `(:underline (:color ,atom-one-dark-red-2 :style wave))))))
-     (rtags-warnline ((t ,(if exordium-theme-use-loud-rtags-faces
-                              `(:background ,atom-one-dark-orange-2 :foreground ,atom-one-dark-bg)
-                            `(:underline (:color ,atom-one-dark-orange-2 :style wave))))))
-     (rtags-fixitline ((t ,(if exordium-theme-use-loud-rtags-faces
-                               `(:background ,atom-one-dark-green :foreground ,atom-one-dark-bg)
-                             `(:underline (:color ,atom-one-dark-green :style wave))))))
-     (rtags-skippedline ((t (:background ,atom-one-dark-bg-1))))
-
      ;; Magit
      (magit-section-highlight ((t (:background ,atom-one-dark-bg-hl))))
      (magit-section-heading ((t (:foreground ,atom-one-dark-orange-2 :weight bold))))

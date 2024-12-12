@@ -490,16 +490,6 @@ after it's been byte compiled."
   (exordium-require 'init-yasnippet))
 (exordium-require 'init-gdb)
 
-;; RTags
-(exordium-require 'init-rtags
-  :functions (rtags-auto-complete))
-(when (and (eq exordium-complete-mode :auto-complete)
-           exordium-rtags-auto-complete)
-  (rtags-auto-complete))
-(exordium-require 'init-rtags-helm)
-(exordium-require 'init-rtags-cmake)
-(exordium-require 'init-rtags-cdb)
-
 (update-progress-bar)
 
 ;; JS

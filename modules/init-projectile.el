@@ -26,13 +26,10 @@
   ("C-c p" . projectile-command-map)
   :config
   (projectile-mode)
-  ;; Prevent Projectile from indexing the build directory.
-  (when exordium-rtags-cmake-build-dir
-    (let ((top-level (car (split-string exordium-rtags-cmake-build-dir "/"))))
-      ;; By default, top-level = "cmake.bld" (excluding the "<arch>")
-      (when top-level
-        (setq projectile-globally-ignored-directories
-              (cons top-level projectile-globally-ignored-directories)))))
+  (add-to-list 'projectile-globally-ignored-directories "cmake.bld")
+  (add-to-list 'projectile-globally-ignored-directories "build")
+  (add-to-list 'projectile-globally-ignored-directories "bld")
+  (add-to-list 'projectile-globally-ignored-directories "cmake-build")
 
   ;; TODO: The following feature seems to has changed and a new solution needs to
   ;; be developed.  Probably involving setting up `projectile-mode-line-function'
