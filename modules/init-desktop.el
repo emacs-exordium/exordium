@@ -11,9 +11,9 @@
 
 (defun exordium--restore-desktop ()
   "Restore desktop."
-  (setq desktop-path `(,user-emacs-directory))
+  (setq desktop-path (list user-emacs-directory))
   (setq desktop-save t)
-  (message (format "loading desktop from %s" desktop-path))
+  (message (format "Loading desktop from %s" desktop-path))
   (desktop-read)
   (desktop-save-mode 1))
 
