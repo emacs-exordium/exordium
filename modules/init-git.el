@@ -246,7 +246,8 @@ with `exordium-magit-quit-session'."
   :group 'exordium)
 
 (use-package git-gutter
-  :if (and exordium-git-gutter exordium-git-gutter-non-fringe)
+  :if (and exordium-git-gutter exordium-git-gutter-non-fringe
+           (version< "29" emacs-version)) ;; TODO: fails in Emacs-28
   :init
   (setq exordium-git-gutter nil)
   :config
@@ -254,7 +255,8 @@ with `exordium-magit-quit-session'."
   :diminish)
 
 (use-package git-gutter-fringe
-  :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
+  :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe)
+           (version< "29" emacs-version)) ;; TODO: fails in Emacs-28
   :diminish git-gutter-mode
   :bind
   (:map exordium-git-map
