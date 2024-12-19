@@ -66,15 +66,15 @@
   "Go to the matching parenthesis if on parenthesis.
 Else go to the opening parenthesis one level up."
   (interactive)
-  (cond ((looking-at "\\s\(") (forward-list 1))
+  (cond ((looking-at "\\s(") (forward-list 1))
         (t
          (backward-char 1)
-         (cond ((looking-at "\\s\)")
+         (cond ((looking-at "\\s)")
                 (forward-char 1) (backward-list 1))
                (t
                 (while (not (looking-at "\\s("))
                   (backward-char 1)
-                  (cond ((looking-at "\\s\)")
+                  (cond ((looking-at "\\s)")
                          (message "->> )")
                          (forward-char 1)
                          (backward-list 1)
@@ -85,8 +85,8 @@ Else go to the opening parenthesis one level up."
 Otherwise insert the character typed.  When called with prefix ARG,
 insert the char that many times."
   (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+  (cond ((looking-at "\\s(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s)") (forward-char 1) (backward-list 1))
         (t                    (self-insert-command (or arg 1)))))
 
 (bind-key "C-%" #'goto-match-paren-or-up)
@@ -421,7 +421,9 @@ REGION is t when called interactively and is passed to
   "Update each installed tap.
 For each tap perform \"git pull\"."
   (when (file-accessible-directory-p exordium-taps-root)
-    (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.][^\.]?*+")))
+    (dolist (tap (nreverse (directory-files
+                            exordium-taps-root t
+                            directory-files-no-dot-files-regexp)))
       (when (file-accessible-directory-p tap)
         (cd tap)
         (shell-command "git pull")))))
@@ -449,7 +451,7 @@ You need to restart Emacs afterwards."
                        exordium-extensions-dir
                        exordium-local-dir))
     (when (file-directory-p dir)
-      (dolist (elc (directory-files dir t "\\.elc$"))
+      (dolist (elc (directory-files dir t "\\.elc\\'"))
         (warn "Removing .elc file: %s" elc)
         (delete-file elc)))))
 
@@ -461,7 +463,7 @@ You need to restart Emacs afterwards."
                      exordium-extensions-dir
                      exordium-local-dir))
     (when (file-directory-p dir)
-      (dolist (el (directory-files dir t "\\.el$"))
+      (dolist (el (directory-files dir t "\\.el\\'"))
         (unless (string-suffix-p ".t.el" el)
           (let ((elc (byte-compile-dest-file el)))
             (when (file-exists-p elc)

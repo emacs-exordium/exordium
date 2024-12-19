@@ -169,11 +169,11 @@
 
 ;; Hexadecimal colors
 (defconst exordium-hex-colors-font-lock-keywords
-  '(("[^&]\\(#\\(?:[0-9a-fA-F]\\{3\\}\\)+\\{1,4\\}\\)"
+  '(("[^&]\\(#\\(?:[0-9a-fA-F]\\{3\\}\\)\\{1,4\\}\\)"
      (1 (exordium-colorize-itself 1))))
   "Font-lock keywords to add for hexadecimal colors.")
 
-(defun highlight-colors-from-list (arg)
+(defun highlight-colors-from-alist (arg)
   "Highlight any hex color code and any symbol associated with ARG.
 ARG is an expression evaluating to an a-list like:
 \((symbol . hex-string) (symbol . hex-string))"

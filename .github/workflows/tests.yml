@@ -77,6 +77,10 @@ jobs:
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-flycheck.sh"'
 
+      - name: 'Lint: relint'
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-relint.sh"'
+
   pkryger-taps:
     runs-on: ${{ matrix.os }}
     env:

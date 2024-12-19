@@ -21,8 +21,8 @@
   :ensure nil
   :defer t
   :functions (exordium--pp-last-sexp-filter-quote)
+  :mode ("/Cask\\'" . emacs-lisp-mode)
   :init
-
   (defun exordium--pp-output-setup ()
     "Enable `lexical-binding' and disable `flycheck-checkdoc' in PP output buffers."
     (when (string-match-p (rx string-start
@@ -89,6 +89,12 @@ bug (page break lines wrap around)."
 ;; Package install advices as part of initialisation.
 (use-package eval-sexp-fu
   :demand t)
+
+;;; Scans Emacs Lisp files for mistakes in regexps
+;; Use M-x `relint-current-buffer' to see report.
+(use-package relint
+  :defer t)
+
 
 (provide 'init-elisp)
 
