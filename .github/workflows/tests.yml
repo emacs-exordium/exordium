@@ -49,6 +49,12 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install bash
 
+      - name: Install sqlite3
+        # `emacsql' (a dependency of `forge') requires sqlite3 support.  How the
+        # support is provided changes with Emacs-29 (i.e., built-in).  See
+        # https://github.com/magit/emacsql/commit/6401226 for more details.
+        run: nix profile install nixpkgs#sqlite^dev
+
       - name: First start # So most modules are pulled in from melpa and gnu
         run: '"${HOME}/.emacs.d/.ci/first-start.sh"'
 
