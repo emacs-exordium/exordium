@@ -16,27 +16,14 @@ cleanup () {
 
 trap cleanup ERR INT TERM
 
-# Byte compile init.el and all *.el files in modules, themes, and .ci
-# directories.  Directory extensions is skipped because this is not Exordium
-# code.  Split them into smaller chunks, because Emacs on GitHub worker tends
-# to segmentation fault when there's too much to compile in one go.
-for pattern in \
-        "modules/init-[a-f]*.el" \
-        "modules/init-[g-l]*.el" \
-        "modules/init-[m-r]*.el" \
-        "modules/init-[s-z]*.el" \
-        "init.el" \
-        "themes/*.el" \
-        ".ci/*.el"; do
-    echo "===Byte compiling: ${pattern}==="
-
-    # Use find to find file names such that globs are expanded while prevent
-    # splitting paths on spaces
-    mapfile -t files <<< \
-            "$(find "${EMACS_DIR}" -type f -path "${EMACS_DIR}/${pattern}")"
-
-    ${EMACS} -Q --batch \
-             --eval '
+# Use find to find file names such that globs are expanded while prevent
+# splitting paths on spaces
+mapfile -t files <<< \
+        "$(for pattern in "modules/*.el" "init.el" "themes/*.el" ".ci/*.el"; do
+               find "${EMACS_DIR}" -type f -path "${EMACS_DIR}/${pattern}"
+           done)"
+${EMACS} -Q --batch \
+         --eval '
 (progn
   (setq debug-on-error t
         eval-expression-print-length 100
@@ -51,7 +38,6 @@ for pattern in \
                      (file-name-nondirectory f))
                    command-line-args-left))
   (batch-byte-compile))' \
-            "${files[@]}"
-done
+         "${files[@]}"
 
 cleanup

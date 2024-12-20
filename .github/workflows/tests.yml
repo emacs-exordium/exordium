@@ -11,6 +11,9 @@ on:
       - '**.md'
       - '.gitignore'
 
+permissions:
+  checks: write
+
 jobs:
   ci-tests:
     runs-on: ${{ matrix.os }}
@@ -59,6 +62,7 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: success() || failure() # Always run even if the previous step fails
         with:
+          include_passed: true
           report_paths: '.emacs.d/modules/*.t.xml'
 
       - name: Verify no obsolete cl- functions
