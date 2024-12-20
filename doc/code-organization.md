@@ -83,6 +83,8 @@ pull. For example you can put something like this in your *prefs.el*:
   configures autocomplete with default sources (non-RTags).
 * [init-company.el](../modules/init-company.el):
   configures company mode with default sources and RTags.
+* [init-projectile.el](../modules/init-projectile.el):
+  configures Projectile.
 * [init-helm-projectile.el](../modules/init-helm-projectile.el):
   configures Helm when used with Projectile.
 * [init-git.el](../modules/init-git.el):

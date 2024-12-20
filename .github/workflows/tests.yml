@@ -16,6 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       ci_tests: true
+      EMACS_TEST_VERBOSE: true
+      EMACS_TEST_JUNIT_REPORT: true
     strategy:
       matrix:
         os:
@@ -38,17 +40,42 @@ jobs:
         with:
           path: '.emacs.d'
 
-      - name: First start # So most modules are pulled in from melpa and gnu
-        run: '.emacs.d/.ci/first-start.sh .emacs.d'
+      - name: Link $GITHUB_WORKSPACE/.emacs.d to $HOME/.emacs.d
+        run: ln -s "${GITHUB_WORKSPACE}/.emacs.d" "${HOME}/.emacs.d"
 
-      # - name: Compilation # This pulls extra modules not enabled by default
-      #   run: '.emacs.d/.ci/compilation.sh .emacs.d'
+      - name: Install bash # Needed for mapfile on macOS,
+                           # Installing early so all scripts run in
+                           # the same environment
+        if: matrix.os == 'macos-latest'
+        run: brew install bash
+
+      - name: First start # So most modules are pulled in from melpa and gnu
+        run: '"${HOME}/.emacs.d/.ci/first-start.sh"'
 
       - name: Unit tests
-        run: '.emacs.d/.ci/unit-tests.sh .emacs.d'
+        run: '"${HOME}/.emacs.d/.ci/unit-tests.sh"'
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure() # Always run even if the previous step fails
+        with:
+          report_paths: '.emacs.d/modules/*.t.xml'
 
       - name: Verify no obsolete cl- functions
-        run: '.emacs.d/.ci/unit-test-cl.sh .emacs.d'
+        run: '"${HOME}/.emacs.d/.ci/unit-test-cl.sh"'
+
+      - name: 'Lint: checkdoc'
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-checkdoc.sh"'
+
+      - name: 'Lint: compilation' # Close to the end, to let other builds escape errors
+                                  # caused by compilation shenanigans
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-byte-compile.sh"'
+
+      - name: 'Lint: flycheck' # After compilation that should install all packages
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-flycheck.sh"'
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}
@@ -56,9 +83,11 @@ jobs:
       ci_tests: true
     strategy:
       matrix:
-        include:
-          - os: macos-latest
-            emacs_version: snapshot
+        os:
+          - macos-latest
+        emacs_version:
+          - 29.4
+          - snapshot
     steps:
       - uses: purcell/setup-emacs@master
         with:
@@ -73,5 +102,8 @@ jobs:
           repository: 'pkryger/exordium-commontap'
           path: '.emacs.d/taps/commontap'
 
+      - name: Link $GITHUB_WORKSPACE/.emacs.d to $HOME/.emacs.d
+        run: ln -s "${GITHUB_WORKSPACE}/.emacs.d" "${HOME}/.emacs.d"
+
       - name: First start # So most modules are pulled in from melpa and gnu
-        run: '.emacs.d/.ci/first-start.sh .emacs.d'
+        run: '"${HOME}/.emacs.d/.ci/first-start.sh"'

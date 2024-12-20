@@ -1,6 +1,19 @@
-;;;; Autocomplete
+;;; init-autocomplete.el --- Autocomplete -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 (use-package auto-complete
+  :commands (ac-stop
+             ac-complete)
+  :defer t
   :custom
   ;; Case sensitivity is important when finding matches
   ;; Values are: t, nil, or 'smart
@@ -15,7 +28,9 @@
   (;; Key to force trigger auto-complete (useful if ac-auto-start is set to nil)
    ("C-." . #'auto-complete)
    :map ac-completing-map
-        ("<escape>" . #'ac-stop)
-        ([return] . #'ac-complete)))
+   ("ESC" . #'ac-stop)
+   ("RET" . #'ac-complete)))
 
 (provide 'init-autocomplete)
+
+;;; init-autocomplete.el ends here

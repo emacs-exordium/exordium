@@ -1,9 +1,19 @@
-;;;; Configuration of desktop state and history
+;;; init-desktop.el --- Configuration of desktop state and history -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+
+;;; Code:
+
+(require 'saveplace)
+(require 'savehist)
+(require 'desktop)
 
 (defun exordium--restore-desktop ()
-  (setq desktop-path '("~/.emacs.d/"))
+  "Restore desktop."
+  (setq desktop-path (list user-emacs-directory))
   (setq desktop-save t)
-  (message (format "loading desktop from %s" desktop-path))
+  (message (format "Loading desktop from %s" desktop-path))
   (desktop-read)
   (desktop-save-mode 1))
 
@@ -15,8 +25,8 @@
 
 (setq save-place-file
       (locate-user-emacs-file "saveplace"))   ;; location to save point
-(setq-default save-place t)                   ;; activate it for all buffers
-(use-package saveplace)                          ;; Automatically save place in files
-
+(save-place-mode)                             ;; activate it for all buffers
 
 (provide 'init-desktop)
+
+;;; init-desktop.el ends here

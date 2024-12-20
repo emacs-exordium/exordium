@@ -1,11 +1,17 @@
-;;; color-theme-tomorrow.el --- A series of 5 pastel color themes.
-;;;
-;;; Credit:
-;;; Inspired by the "Tomorrow" theme from Chris Kempson (MIT license).
-;;; See https://github.com/chriskempson/tomorrow-theme
+;;; color-theme-tomorrow.el --- A series of 5 pastel color themes. -*- lexical-binding: t -*-
+;;; Commentary:
+;;
+;; Credit:
+;; Inspired by the "Tomorrow" theme from Chris Kempson (MIT license).
+;; See https://github.com/chriskempson/tomorrow-theme
 
-(require 'init-prefs)
+;;; Code:
+
 (require 'org)
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 ;;; Theme options
 
@@ -92,11 +98,11 @@ Inspired by the apropospriate-theme."
 ;;; Theme definition
 
 (defmacro with-tomorrow-colors (mode &rest body)
-  "Execute `BODY' in a scope with variables bound to the various tomorrow colors.
-`MODE' should be set to either 'day, 'night, 'night-eighties,
-'night-blue or 'night-bright."
+  "Execute BODY in a scope with variables bound to the various tomorrow colors.
+MODE should be set to either \\='day, \\='night, \\='night-eighties,
+\\='night-blue, or \\='night-bright."
   `(let ((colors (or (cdr (assoc ,mode tomorrow-colors))
-                     (error "no such theme flavor"))))
+                     (error "No such theme flavor"))))
      (let ((background   (cdr (assoc 'background colors)))
            (current-line (cdr (assoc 'current-line colors)))
            (selection    (cdr (assoc 'selection colors)))
@@ -112,10 +118,11 @@ Inspired by the apropospriate-theme."
            (purple       (cdr (assoc 'purple colors)))
            (black        (cdr (assoc 'black colors)))
            (class        '((class color) (min-colors 89))))
+       (ignore class)
        ,@body)))
 
 (defmacro tomorrow-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -538,35 +545,35 @@ names to which it refers are bound."
 ;; Debugging functions
 
 (defun set-colors-tomorrow-day ()
-  "Sets the colors to the tomorrow day theme"
+  "Set the colors to the tomorrow day theme."
   (interactive)
   (with-tomorrow-colors
    'day
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night ()
-  "Sets the colors to the tomorrow night theme"
+  "Set the colors to the tomorrow night theme."
   (interactive)
   (with-tomorrow-colors
    'night
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night-bright ()
-  "Sets the colors to the tomorrow night bright theme"
+  "Set the colors to the tomorrow night bright theme."
   (interactive)
   (with-tomorrow-colors
    'night-bright
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night-eighties ()
-  "Sets the colors to the tomorrow night night 80's theme"
+  "Set the colors to the tomorrow night night 80's theme."
   (interactive)
   (with-tomorrow-colors
    'night-eighties
    (apply 'custom-set-faces (tomorrow-face-specs))))
 
 (defun set-colors-tomorrow-night-blue ()
-  "Sets the colors to the tomorrow night blue theme"
+  "Set the colors to the tomorrow night blue theme."
   (interactive)
   (with-tomorrow-colors
    'night-blue

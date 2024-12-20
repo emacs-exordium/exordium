@@ -1,34 +1,40 @@
-;;;; Custom Themes
-;;;
-;;; These config provides several themes:
-;;; - Tomorrow, which comes in several flavors:
-;;;   tomorrow-day,
-;;;   tomorrow-night,
-;;;   tomorrow-night-bright,
-;;;   tomorrow-night-blue,
-;;;   tomorrow-night-eighties.
-;;; - Monokai.
-;;; - Solarized-dark and solarized-light.
-;;; - Zenburn.
-;;; - Material.
-;;; The default theme is tomorrow-night.
-;;;
-;;; Usage:
-;;; Edit ~/.emacs.d/prefs.el and set your favorite theme like so:
-;;;   (setq exordium-theme 'zenburn)
-;;;
-;;; At runtime, change the theme with: M-x load-theme <tab>
-;;; or evaluate something like: (load-theme 'tomorrow-night t)
+;;; init-themes.el --- Custom Themes.                -*- lexical-binding: t -*-
 
-(require 'init-prefs)
+;;; Commentary:
+;;
+;;
+;; These config provides several themes:
+;; - Tomorrow, which comes in several flavors:
+;;   tomorrow-day,
+;;   tomorrow-night,
+;;   tomorrow-night-bright,
+;;   tomorrow-night-blue,
+;;   tomorrow-night-eighties.
+;; - Monokai.
+;; - Solarized-dark and Solarized-light.
+;; - Zenburn.
+;; - Material.
+;; The default theme is tomorrow-night.
+;;
+;; Usage:
+;; Edit ~/.emacs.d/prefs.el and set your favorite theme like so:
+;;   (setq exordium-theme 'zenburn)
+;;
+;; At runtime, change the theme with: M-x load-theme <tab>
+;; or evaluate something like: (load-theme 'tomorrow-night t)
+
+;;; Code:
+
 (eval-when-compile
-  (use-package powerline))
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 (when exordium-theme
   (load-theme exordium-theme t))
 
 (defun current-theme ()
-  "Return the current theme, or nil if no custom theme is enabled"
+  "Return the current theme, or nil if no custom theme is enabled."
   (car custom-enabled-themes))
 
 
@@ -54,7 +60,7 @@
 ;;; Utilities
 
 (defun switch-theme (theme)
-  "Prompt for a theme name with auto-complete and loads it.
+  "Prompt for a THEME name with auto-complete and load it.
 Use this function rather than `load-theme' because it makes
 Powerline follow."
   (interactive
@@ -64,10 +70,11 @@ Powerline follow."
                                      (custom-available-themes))))))
   (load-theme theme t nil)
   (setq exordium-theme theme)
-  (powerline-reset))
+  (when (fboundp 'powerline-reset)
+    (powerline-reset)))
 
 (defun what-face (pos)
-  "Display the face at point"
+  "Display the face at POS."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
@@ -94,4 +101,7 @@ Powerline follow."
   (add-hook 'server-after-make-frame-hook #'reload-current-theme-in-frame))
 
 
+
 (provide 'init-themes)
+
+;;; init-themes.el ends here

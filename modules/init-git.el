@@ -1,31 +1,58 @@
-;;;; All git-related stuff, except for forge
-;;;
-;;; All keys are C-c g <one-more-key>:
-;;;
-;;; ----------------- ---------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- ---------------------------------------------------------
-;;; C-c g s           Magit status
-;;; C-c g l           Magit log
-;;; C-c g f           Magit file log
-;;; C-c g b           Toggle Magit blame mode
-;;; C-c g c           Magit clone
-;;;
-;;; C-c g down        Goto next hunk in buffer
-;;; C-c g n           Goto next hunk in buffer
-;;; C-c g up          Goto previous hunk in buffer
-;;; C-c g p           Goto previous hunk in buffer
-;;; C-c g d           Diff current hunk
-;;; C-c g r           Revert current hunk (asks for confirmation)
-;;;
-;;; C-c ^ d           Show SMerge Dispatch
+;;; init-git.el --- All git-related stuff, except for forge -*- lexical-binding: t -*-
 
-;;; Magit
-(define-prefix-command 'exordium-git-map nil)
-(global-set-key (kbd "C-c g") 'exordium-git-map)
+;;; Commentary:
+;;
+;; All keys are C-c g <one-more-key>:
+;;
+;; ----------------- ---------------------------------------------------------
+;; Key               Definition
+;; ----------------- ---------------------------------------------------------
+;; C-c g s           Magit status
+;; C-c g l           Magit log
+;; C-c g f           Magit file log
+;; C-c g b           Toggle Magit blame mode
+;; C-c g c           Magit clone
+;;
+;; C-c g down        Goto next hunk in buffer
+;; C-c g n           Goto next hunk in buffer
+;; C-c g up          Goto previous hunk in buffer
+;; C-c g p           Goto previous hunk in buffer
+;; C-c g d           Diff current hunk
+;; C-c g r           Revert current hunk (asks for confirmation)
+;;
+;; C-c ^ d           Show SMerge Dispatch
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
+
+(require 'vc-git)
+
+(defvar exordium-git-map nil)
+
+(bind-key "C-c g" (define-prefix-command 'exordium-git-map))
+
+(defvar-local exordium--magit-fullscreen-configuration nil
+  "A screen configuration and a point marker.
+These are restored by `exordium-magit-quit-session'.")
 
 (use-package magit
+  :functions (exordium-magit-quit-session
+              exordium-magit-blame
+              exordium-magit-log-buffer
+              exordium-magit-log
+              exordium--magit-fullscreen
+              exordium-projectile-add-known-project)
+
+  :defines (magit-last-seen-setup-instructions)
   :init
+  (defun exordium-projectile-add-known-project
+        (_repo directory _args)
+      (projectile-add-known-project directory))
+
   (defun exordium-magit-log-buffer ()
     (interactive)
     (if (fboundp 'magit-log-buffer-file)
@@ -52,10 +79,6 @@
     "A temporary (cached) screen configuration and a point-marker that are set by a
 first executing `exordium--magit-fullscreen'.")
 
-  (defvar-local exordium--magit-fullscreen-configuration nil
-    "A screen configuration and a point-marker that are to be restored by
-`exordium-magit-quit-session'.")
-
   (defun exordium-magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer."
     (interactive)
@@ -67,12 +90,13 @@ first executing `exordium--magit-fullscreen'.")
         (goto-char (cadr configuration)))))
 
   (defun exordium--magit-fullscreen (orig-fun &rest args)
-    "Store the current window configuration, call ORIG-FUN with ARGS, and delete other windows.
+    "Store window configuration, call ORIG-FUN with ARGS, and delete other windows.
+The window configuration (including `point-marker') is stored in
+a very beginning and cached, so that when the function is called
+again, the cached version is used.
 
-The window configuration (including `point-marker') is stored in a very beginning
-and cached, so that when the function is called again, the cached version is used.
-
-The function is meant to be used as an advice with conjunction with `exordium-magit-quit-session'."
+The function is meant to be used as an advice with conjunction
+with `exordium-magit-quit-session'."
     (let ((exordium--magit-fullscreen-configuration-tmp
            (or exordium--magit-fullscreen-configuration-tmp
                (list (current-window-configuration) (point-marker)))))
@@ -91,13 +115,13 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 
   :bind
   (:map exordium-git-map
-        ("s" . #'magit-status)
-        ("l" . #'exordium-magit-log)
-        ("f" . #'exordium-magit-log-buffer)
-        ("b" . #'exordium-magit-blame)
-        ("c" . #'magit-clone)
+   ("s" . #'magit-status)
+   ("l" . #'exordium-magit-log)
+   ("f" . #'exordium-magit-log-buffer)
+   ("b" . #'exordium-magit-blame)
+   ("c" . #'magit-clone)
    :map magit-status-mode-map
-        ("q" . #'exordium-magit-quit-session))
+   ("q" . #'exordium-magit-quit-session))
 
   :hook
   (magit-status-mode . exordium-magit--dont-insert-symbol-for-search)
@@ -106,11 +130,11 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   (magit-diff-refine-hunk t)
 
   :config
-;;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
-;;; `magit-dired-log'), `magit-status-setup-buffer' (called from `magit-clone'),
-;;; and `magit-status-internal' (called from `projectile-vc') to run alone in
-;;; the frame, and then restore the old window configuration when you quit out
-;;; of magit.
+  ;; Make `magit-status',`exordium-magit-log' (a wrapper around `magit-log' and
+  ;; `magit-dired-log'), `magit-status-setup-buffer' (called from
+  ;; `magit-clone'), and `magit-status-internal' (called from `projectile-vc')
+  ;; to run alone in the frame, and then restore the old window configuration
+  ;; when you quit out of magit.
   (when exordium-use-magit-fullscreen
     (advice-add 'magit-status :around #'exordium--magit-fullscreen)
     (advice-add 'exordium-magit-log :around #'exordium--magit-fullscreen)
@@ -118,14 +142,7 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
       (advice-add 'magit-status-internal :around #'exordium--magit-fullscreen)))
 
-  (define-advice magit-clone-regular (:after
-                                      (_repo directory _args)
-                                      exordium-projectile-add-known-project)
-    (projectile-add-known-project directory)))
-
-;;; Don't show "MRev" in the modeline
-(when (bound-and-true-p magit-auto-revert-mode)
-  (diminish 'magit-auto-revert-mode))
+  (advice-add 'magit-clone-regular :after #'exordium-projectile-add-known-project))
 
 
 ;; SMerge Dispatch
@@ -142,6 +159,10 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   (magit-status-setup-buffer))
 
 (use-package transient
+  :functions exordium-smerge-dispatch
+  :autoload (transient-prefix
+             transient-setup
+             transient-suffix)
   :config
   (transient-define-suffix exordium-smerge:undo ()
     :description "undo"
@@ -187,14 +208,15 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 
 (use-package smerge-mode
   :ensure nil
+  :defer t
   :bind
   (:map smerge-mode-map
-        ("C-c ^ d" . #'exordium-smerge-dispatch)))
+  ("C-c ^ d" . #'exordium-smerge-dispatch)))
 
 (defun exordium-smerge-dispatch-maybe ()
   "Display `exordium-smerge-dispatch' when buffer is in `smerge-mode'."
   (when (and smerge-mode exordium-smerge-show-dispatch)
-    (exordium-smerge-dispatch)))
+    (funcall-interactively #'exordium-smerge-dispatch)))
 
 (use-package magit
   :hook
@@ -202,6 +224,15 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
+
+(use-package git-gutter
+  :if exordium-git-gutter
+  :diminish
+  :autoload (git-gutter--turn-on)
+  :commands (git-gutter:next-hunk
+             git-gutter:previous-hunk
+             git-gutter:popup-hunk
+             git-gutter:revert-hunk))
 
 ;;;###autoload
 (define-globalized-minor-mode exordium-global-git-gutter-mode
@@ -211,10 +242,12 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
                          file-name ;; enable for all files
                        (and file-name ;; enable only for local files
                             (not (file-remote-p file-name)))))
-               (git-gutter--turn-on))))
+               (git-gutter--turn-on)))
+  :group 'exordium)
 
 (use-package git-gutter
-  :if exordium-git-gutter-non-fringe
+  :if (and exordium-git-gutter exordium-git-gutter-non-fringe
+           (version< "29" emacs-version)) ;; TODO: fails in Emacs-28
   :init
   (setq exordium-git-gutter nil)
   :config
@@ -222,18 +255,17 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
   :diminish)
 
 (use-package git-gutter-fringe
-  :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe))
+  :if (and exordium-git-gutter (not exordium-git-gutter-non-fringe)
+           (version< "29" emacs-version)) ;; TODO: fails in Emacs-28
   :diminish git-gutter-mode
   :bind
   (:map exordium-git-map
-        ("<down>" . #'git-gutter:next-hunk)
-        ("n" . #'git-gutter:next-hunk)
-        ("<up>" . #'git-gutter:previous-hunk)
-        ("p" . #'git-gutter:previous-hunk)
-        ("d" . #'git-gutter:popup-hunk)
-        ("r" . #'git-gutter:revert-hunk))
-  :init
-  (add-hook 'git-gutter:update-hooks 'magit-revert-buffer-hook)
+   ("<down>" . #'git-gutter:next-hunk)
+   ("n" . #'git-gutter:next-hunk)
+   ("<up>" . #'git-gutter:previous-hunk)
+   ("p" . #'git-gutter:previous-hunk)
+   ("d" . #'git-gutter:popup-hunk)
+   ("r" . #'git-gutter:revert-hunk))
   :config
   (exordium-global-git-gutter-mode t)
 
@@ -247,45 +279,49 @@ The function is meant to be used as an advice with conjunction with `exordium-ma
     (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
       nil nil 'bottom)))
 
-
 
 ;;; Git Timemachine
 (use-package git-timemachine
-  :defer t
   :bind
   (:map exordium-git-map
         ("t" . #'git-timemachine-toggle)))
 
 
 ;;; Git Grep
+(defun exordium-helm-do-git-grep ()
+  "Call `helm-grep-do-git-grep' with prefix ARG to git-grep whole repository."
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively #'helm-grep-do-git-grep)))
 
-(define-key exordium-git-map (kbd "g")
-  (if exordium-helm-everywhere
-      (lambda()
-        (interactive)
-        (setq current-prefix-arg '(4))
-        (call-interactively 'helm-grep-do-git-grep))
-    (function vc-git-grep)))
+(bind-key "g"
+          (if exordium-helm-everywhere
+              #'exordium-helm-do-git-grep
+            #'vc-git-grep)
+  exordium-git-map)
 
 
 ;;; Make backtick an electric pair
-(require 'init-lib)
-
-(add-hook 'git-commit-mode-hook 'exordium-electric-mode-add-back-tick)
+(add-hook 'git-commit-mode-hook #'exordium-electric-mode-add-back-tick)
 
 
 (use-package ediff
   :ensure nil
-  :defer t
-  :config
+  :functions (exordium-ediff-copy-both-to-C)
+  :autoload (ediff-copy-diff
+             ediff-get-region-contents)
+  :init
   (defun exordium-ediff-copy-both-to-C (first second)
     "Copy FIRST then SECOND into the C buffer in `ediff-mode'.
 This command should be called form `ediff''s control buffer.
 
-Adapted from: http://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-how-can-i-take-the-changes-of-both-version"
+Adapted from:
+http://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-how-can-i-take-the-changes-of-both-version"
     (interactive
-     (let ((first-string (completing-read "First: " '("A" "B") nil t "A"))
-           (second-string (completing-read "Second: " '("A" "B") nil t "B")))
+     (let* ((first-string (completing-read "First: " '("A" "B") nil t "A"))
+            (second-string (completing-read "Second: " '("A" "B") nil t
+                                            (if (equal first-string "A")
+                                                "B" "A"))))
        (list first-string second-string)))
     (let ((first (or first "A"))
           (second (or second "B")))
@@ -298,14 +334,16 @@ Adapted from: http://stackoverflow.com/questions/9656311/conflict-resolution-wit
 
   (defun exordium--add-copy-both-to-ediff-mode-map ()
     (when ediff-merge-job
-      (define-key ediff-mode-map "A"
-        #'(lambda ()
-            (interactive)
-            (exordium-ediff-copy-both-to-C "A" "B")))
-      (define-key ediff-mode-map "B"
-        #'(lambda ()
-            (interactive)
-            (exordium-ediff-copy-both-to-C "B" "A")))))
+      (bind-key "A"
+                (lambda ()
+                  (interactive)
+                  (exordium-ediff-copy-both-to-C "A" "B"))
+                ediff-mode-map)
+      (bind-key "B"
+                (lambda ()
+                  (interactive)
+                  (exordium-ediff-copy-both-to-C "B" "A"))
+                ediff-mode-map)))
 
   (defconst exordium--ediff-long-help-message-merge
     "
@@ -335,8 +373,11 @@ This follows what `ediff-set-help-message' function is doing."
       (when ediff-use-long-help-message
         (setq ediff-help-message ediff-long-help-message))))
 
-  (add-hook 'ediff-display-help-hook 'exordium--ediff-set-help-message)
-  (add-hook 'ediff-keymap-setup-hook 'exordium--add-copy-both-to-ediff-mode-map))
+  :hook ((ediff-display-help . exordium--ediff-set-help-message)
+         (ediff-keymap-setup . exordium--add-copy-both-to-ediff-mode-map)))
 
 
+
 (provide 'init-git)
+
+;;; init-git.el ends here

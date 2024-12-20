@@ -1,34 +1,40 @@
-;;;; Let's give Light Table a run for its money
-;;;;
-;;;; Installed packages (and dependencies):
-;;;; - cider
-;;;; - rainbow-delimiters
-;;;; - paredit
-;;;; And you need 'lein' from leiningen.org in your path.
-;;;; Note that clojure.el is in subdir 'extensions'.
-;;;;
-;;;; Usage:
-;;;;   M-x cider-jack-in
-;;;;   (Ignore the error when it starts). Use M-C-x to evaluate Clojure forms.
-;;;;   C-c C-q to quit in the REPL (or use teh CIDER menu)
+;;; init-clojure.el --- Let's give Light Table a run for its money -*- lexical-binding: t -*-
 
-(use-package clojure-mode)
-(use-package cider)
-(use-package rainbow-delimiters)
-(use-package paredit)
+;;; Commentary:
+;;
+;; Installed packages (and dependencies):
+;; - cider
+;; - rainbow-delimiters
+;; - paredit
+;; And you need 'lein' from leiningen.org in your shell PATH.
+;; Note that clojure.el is in subdir 'extensions'.
+;;
+;; Usage:
+;;   M-x cider-jack-in
+;;   (Ignore the error when it starts).  Use M-C-x to evaluate Clojure forms.
+;;   C-c C-q to quit in the REPL (or use the CIDER menu)
 
-;;; Env PATH
-(defun set-exec-path-for-lein ()
-  (let ((path-from-shell
-         (shell-command-to-string "$SHELL -i -c -n 'echo $PATH'")))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-(set-exec-path-for-lein)
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-environment)
 
-;;; Flyspell often slows down editing so it's turned off
-(remove-hook 'text-mode-hook 'turn-on-flyspell)
+(use-package clojure-mode
+  :defer t)
+(use-package cider
+  :defer t)
+(use-package rainbow-delimiters
+  :defer t)
+(use-package paredit
+  :defer t)
 
-(load "clojure.el")
+(unless exordium-osx ; otherwise it is in init-osx.el
+  (use-package exec-path-from-shell
+    :config
+    (exec-path-from-shell-initialize)))
+
+(exordium-require 'clojure :location "extensions")
 
 ;;; Hippie expand - don't try to complete with file names
 (setq hippie-expand-try-functions-list
@@ -36,6 +42,6 @@
 (setq hippie-expand-try-functions-list
       (delete 'try-complete-file-name-partially hippie-expand-try-functions-list))
 
-;; (setq ido-use-filename-at-point nil)
-
 (provide 'init-clojure)
+
+;;; init-clojure.el ends here

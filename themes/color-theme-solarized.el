@@ -1,55 +1,69 @@
-;;; color-theme-solarized.el -- a low contrast theme.
-;;;
-;;; Credit:
-;;; Solarized colors are from Ethan Schoonover.
-;;; See http://ethanschoonover.com/solarized
-;;; Greg Pfeil created a theme for Emacs. This file is a different
-;;; implementation but uses the same choices for most faces.
+;;; color-theme-solarized.el -- a low contrast theme. -*- lexical-binding: t -*-
 
-;;; see https://github.com/sellout/emacs-color-theme-solarized/blob/master/solarized-definitions.el
-;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
-(require 'init-prefs)
+;;; Commentary:
+;;
+;; Credit:
+;; Solarized colors are from Ethan Schoonover.
+;; See http://ethanschoonover.com/solarized
+;; Greg Pfeil created a theme for Emacs.  This file is a different
+;; implementation but uses the same choices for most faces.
+
+;; see https://github.com/sellout/emacs-color-theme-solarized/blob/master/solarized-definitions.el
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
+
+
 (require 'org)
 (require 'cl-lib)
 
-;;; Color palette
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
-(defconst solarized-colors
-  '((base03  . "#002b36")
-    (base02  . "#073642")
-    (base01  . "#586e75")
-    (base00  . "#657b83")
-    (base0   . "#839496")
-    (base1   . "#93a1a1")
-    (base2   . "#eee8d5")
-    (base3   . "#fdf6e3")
-    (yellow  . "#b58900")
-    (orange  . "#cb4b16")
-    (red     . "#dc322f")
-    (magenta . "#d33682")
-    (violet  . "#6c71c4")
-    (blue    . "#268bd2")
-    (cyan    . "#2aa198")
-    (green   . "#859900")))
+;;; Code:
 
 ;;; Theme definition
 
 (defmacro with-solarized-colors (mode &rest body)
-  "Execute `BODY' in a scope with variables bound to the solazized colors.
-`MODE' is 'dark or 'light."
-  `(let ((class '((class color) (min-colors 89)))
-         (back (cdr (assoc (if (eq ,mode 'light) 'base3 'base03)
-                           solarized-colors)))
-         ,@(mapcar (lambda (cons)
-                     (list (car cons) (cdr cons)))
-                   solarized-colors))
-     (when (eq ,mode 'light)
-       ;; swap the base colors
-       (cl-rotatef base03 base3)
-       (cl-rotatef base02 base2)
-       (cl-rotatef base01 base1)
-       (cl-rotatef base00 base0))
-     ,@body))
+  "Execute BODY in a scope with variables bound to the solazized colors.
+MODE is \\='dark or \\='light."
+  ;; Color palette
+  (let* ((solarized-colors
+          '((base03  . "#002b36")
+            (base02  . "#073642")
+            (base01  . "#586e75")
+            (base00  . "#657b83")
+            (base0   . "#839496")
+            (base1   . "#93a1a1")
+            (base2   . "#eee8d5")
+            (base3   . "#fdf6e3")
+            (yellow  . "#b58900")
+            (orange  . "#cb4b16")
+            (red     . "#dc322f")
+            (magenta . "#d33682")
+            (violet  . "#6c71c4")
+            (blue    . "#268bd2")
+            (cyan    . "#2aa198")
+            (green   . "#859900")))
+         (back (cdr (assoc (if (eq (eval mode) 'light) 'base3 'base03)
+                             solarized-colors))))
+    `(let ((class '((class color) (min-colors 89)))
+           (back ,back)
+           ,@(mapcar (lambda (cons)
+                       (list (car cons) (cdr cons)))
+                     solarized-colors))
+       (ignore class)
+       (ignore back)
+       ,@(mapcar (lambda (cons)
+                   `(ignore ,(car cons)))
+                 solarized-colors)
+       (when (eq ,mode 'light)
+         ;; swap the base colors
+         (cl-rotatef base03 base3)
+         (cl-rotatef base02 base2)
+         (cl-rotatef base01 base1)
+         (cl-rotatef base00 base0))
+       ,@body)))
 
 ;; for testing do in a scratch:
 ;; (let ((custom--inhibit-theme-enable nil))
@@ -57,7 +71,7 @@
 ;;   (set-colors-solarized-light))
 
 (defmacro solarized-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -362,46 +376,35 @@ names to which it refers are bound."
 
 ;;; Extra functions
 
-(defun solarized-mode-name ()
-  "Return the mode without the solarized- prefix, e.g. dark or light."
-  (intern (substring (symbol-name exordium-theme) 10)))
-
 ;; TODO: rename me and use a standard
 (defun set-solarized-extra-org-statuses ()
-  "Set colors for WORK and WAIT org statuses"
-  (with-solarized-colors
-   (solarized-mode-name)
-   ;; TODO: but this should go to a common bit in exordium within `use-package' and `markdown'
-   (when exordium-theme-use-big-font
-     (custom-set-variables
-      '(markdown-header-scaling-values `(,exordium-height-plus-4
-                                         ,exordium-height-plus-3
-                                         ,exordium-height-plus-2
-                                         ,exordium-height-plus-1
-                                         1.0
-                                         1.0))
-      '(markdown-header-scaling t)))))
+  "Set colors for WORK and WAIT org statuses."
+  (when exordium-theme-use-big-font
+    (custom-set-variables
+     `(markdown-header-scaling-values '(,exordium-height-plus-4
+                                        ,exordium-height-plus-3
+                                        ,exordium-height-plus-2
+                                        ,exordium-height-plus-1
+                                        1.0
+                                        1.0))
+     '(markdown-header-scaling t))))
 
 ;;; Debugging functions
 
 (defun set-colors-solarized-dark ()
-  "Sets the colors to the solarized dark theme"
+  "Set the colors to the solarized dark theme."
   (interactive)
   (with-solarized-colors
    'dark
    (apply 'custom-set-faces (solarized-face-specs))))
 
 (defun set-colors-solarized-light ()
-  "Sets the colors to the solarized light theme"
+  "Set the colors to the solarized light theme."
   (interactive)
   (with-solarized-colors
    'light
    (apply 'custom-set-faces (solarized-face-specs))))
 
 (provide 'color-theme-solarized)
-
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
 
 ;;; color-theme-solarized.el ends here

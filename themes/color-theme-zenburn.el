@@ -1,80 +1,92 @@
-;;; color-theme-zenburn.el --- A low contrast color theme.
-;;;
-;;; Credits:
-;;; Jani Nurminen created the original theme for vim on such this port
-;;; is based.
-;;; Inspired by the emacs theme by Bozhidar Batsov:
-;;; https://github.com/bbatsov/zenburn-emacs
-;;; Additional modes merged from zenburn-emacs
+;;; color-theme-zenburn.el --- A low contrast color theme. -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; Credits:
+;; Jani Nurminen created the original theme for vim on such this port
+;; is based.
+;; Inspired by the Emacs theme by Bozhidar Batsov:
+;; https://github.com/bbatsov/zenburn-emacs
+;; Additional modes merged from zenburn-emacs
+
+;;; Code:
 
 (require 'org)
-(require 'init-prefs)
 
-;;; Color palette.
-;;; `+N' suffixes indicate a color is lighter.
-;;; `-N' suffixes indicate a color is darker.
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
-(defconst zenburn-colors
-  '((zenburn-fg+1     . "#FFFFEF")
-    (zenburn-fg       . "#DCDCCC")
-    (zenburn-fg-1     . "#656555")
-    (zenburn-bg-2     . "#000000")
-    (zenburn-bg-1     . "#2B2B2B")
-    (zenburn-bg-05    . "#383838")
-    (zenburn-bg       . "#3F3F3F")
-    (zenburn-bg+05    . "#494949")
-    (zenburn-bg+1     . "#4F4F4F")
-    (zenburn-bg+2     . "#5F5F5F")
-    (zenburn-bg+3     . "#6F6F6F")
-    (zenburn-red+2    . "#ECB3B3")
-    (zenburn-red+1    . "#DCA3A3")
-    (zenburn-red      . "#CC9393")
-    (zenburn-red-1    . "#BC8383")
-    (zenburn-red-2    . "#AC7373")
-    (zenburn-red-3    . "#9C6363")
-    (zenburn-red-4    . "#8C5353")
-    (zenburn-red-5    . "#7C4343")
-    (zenburn-red-6    . "#6C3333")
-    (zenburn-orange   . "#DFAF8F")
-    (zenburn-yellow   . "#F0DFAF")
-    (zenburn-yellow-1 . "#E0CF9F")
-    (zenburn-yellow-2 . "#D0BF8F")
-    (zenburn-green-5  . "#2F4F2F")
-    (zenburn-green-4  . "#3F5F3F")
-    (zenburn-green-3  . "#4F6F4F")
-    (zenburn-green-2  . "#5F7F5F")
-    (zenburn-green-1  . "#6F8F6F")
-    (zenburn-green    . "#7F9F7F")
-    (zenburn-green+1  . "#8FB28F")
-    (zenburn-green+2  . "#9FC59F")
-    (zenburn-green+3  . "#AFD8AF")
-    (zenburn-green+4  . "#BFEBBF")
-    (zenburn-cyan     . "#93E0E3")
-    (zenburn-blue+3   . "#BDE0F3")
-    (zenburn-blue+2   . "#ACE0E3")
-    (zenburn-blue+1   . "#94BFF3")
-    (zenburn-blue     . "#8CD0D3")
-    (zenburn-blue-1   . "#7CB8BB")
-    (zenburn-blue-2   . "#6CA0A3")
-    (zenburn-blue-3   . "#5C888B")
-    (zenburn-blue-4   . "#4C7073")
-    (zenburn-blue-5   . "#366060")
-    (zenburn-magenta  . "#DC8CC3")))
 
 ;;; Theme definition
 
 (defmacro with-zenburn-colors (&rest body)
-  "Execute `BODY' in a scope with variables bound to the zenburn colors."
-  `(let ((class '((class color) (min-colors 89)))
-         ,@(mapcar (lambda (cons)
-                     (list (car cons) (cdr cons)))
-                   zenburn-colors)
-         (exordium-variable-pitch (if exordium-use-variable-pitch
-                                      'variable-pitch 'default)))
-     ,@body))
+  "Execute BODY in a scope with variables bound to the zenburn colors."
+  ;; Color palette.
+  ;; `+N' suffixes indicate a color is lighter.
+  ;; `-N' suffixes indicate a color is darker.
+  (let ((zenburn-colors
+         '((zenburn-fg+1     . "#FFFFEF")
+           (zenburn-fg       . "#DCDCCC")
+           (zenburn-fg-1     . "#656555")
+           (zenburn-bg-2     . "#000000")
+           (zenburn-bg-1     . "#2B2B2B")
+           (zenburn-bg-05    . "#383838")
+           (zenburn-bg       . "#3F3F3F")
+           (zenburn-bg+05    . "#494949")
+           (zenburn-bg+1     . "#4F4F4F")
+           (zenburn-bg+2     . "#5F5F5F")
+           (zenburn-bg+3     . "#6F6F6F")
+           (zenburn-red+2    . "#ECB3B3")
+           (zenburn-red+1    . "#DCA3A3")
+           (zenburn-red      . "#CC9393")
+           (zenburn-red-1    . "#BC8383")
+           (zenburn-red-2    . "#AC7373")
+           (zenburn-red-3    . "#9C6363")
+           (zenburn-red-4    . "#8C5353")
+           (zenburn-red-5    . "#7C4343")
+           (zenburn-red-6    . "#6C3333")
+           (zenburn-orange   . "#DFAF8F")
+           (zenburn-yellow   . "#F0DFAF")
+           (zenburn-yellow-1 . "#E0CF9F")
+           (zenburn-yellow-2 . "#D0BF8F")
+           (zenburn-green-5  . "#2F4F2F")
+           (zenburn-green-4  . "#3F5F3F")
+           (zenburn-green-3  . "#4F6F4F")
+           (zenburn-green-2  . "#5F7F5F")
+           (zenburn-green-1  . "#6F8F6F")
+           (zenburn-green    . "#7F9F7F")
+           (zenburn-green+1  . "#8FB28F")
+           (zenburn-green+2  . "#9FC59F")
+           (zenburn-green+3  . "#AFD8AF")
+           (zenburn-green+4  . "#BFEBBF")
+           (zenburn-cyan     . "#93E0E3")
+           (zenburn-blue+3   . "#BDE0F3")
+           (zenburn-blue+2   . "#ACE0E3")
+           (zenburn-blue+1   . "#94BFF3")
+           (zenburn-blue     . "#8CD0D3")
+           (zenburn-blue-1   . "#7CB8BB")
+           (zenburn-blue-2   . "#6CA0A3")
+           (zenburn-blue-3   . "#5C888B")
+           (zenburn-blue-4   . "#4C7073")
+           (zenburn-blue-5   . "#366060")
+           (zenburn-magenta  . "#DC8CC3"))))
+    `(let ((class '((class color) (min-colors 89)))
+           ,@(mapcar (lambda (cons)
+                       (list (car cons) (cdr cons)))
+                     zenburn-colors)
+           (exordium-variable-pitch (if exordium-use-variable-pitch
+                                        'variable-pitch 'default)))
+       (ignore class)
+       (ignore exordium-variable-pitch)
+       ,@(mapcar (lambda (cons)
+                   `(ignore ,(car cons)))
+                 zenburn-colors)
+       ,@body)))
 
 (defmacro zenburn-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -901,7 +913,7 @@ names to which it refers are bound."
 
 
 (defmacro zenburn-variables ()
-  "Return a backquote which defines a list of variables.
+  "Return a backquote which define a list of variables.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -935,7 +947,7 @@ names to which it refers are bound."
      )))
 
 (defun define-zenburn-theme ()
-  "Define the zenburn theme (only one variant for now)"
+  "Define the zenburn theme (only one variant for now)."
   (deftheme zenburn "A low contrast theme")
   (with-zenburn-colors
    (apply 'custom-theme-set-faces 'zenburn (zenburn-face-specs)))
@@ -946,7 +958,7 @@ names to which it refers are bound."
 ;;; Debugging functions
 
 (defun set-colors-zenburn ()
-  "Sets the colors to the zenburn theme"
+  "Set the colors to the zenburn theme."
   (interactive)
   (with-zenburn-colors
     (apply 'custom-set-faces (zenburn-face-specs))))

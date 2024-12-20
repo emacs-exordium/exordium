@@ -1,16 +1,23 @@
-;;;; Init lib
-;;;
-;;; This file defines utility functions reused in other modules. It should be
-;;; loaded before any other module.
+;;; init-lib.el --- Init lib -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
+;;; Commentary:
+;;
+;; This file defines utility functions reused in other modules.  It should be
+;; loaded before any other module.
 
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+
+(require 'cl-lib)
 
 ;;; Files
 
 (defun exordium-directory-tree (dir)
-  "Returns the list of subdirs of 'dir' excluding any dot
-dirs. Input is a string and output is a list of strings."
+  "Return the list of subdirs of DIR excluding any dot dirs.
+Input is a string and output is a list of strings."
   (let* ((dir   (directory-file-name dir))
          (dirs  '())
          (files (directory-files dir nil nil t)))
@@ -23,20 +30,30 @@ dirs. Input is a string and output is a list of strings."
     dirs))
 
 (defun exordium-read-file-lines (file)
-  "Return a list of lines (strings) of the specified file"
+  "Return a list of lines (strings) of the specified FILE."
   (with-temp-buffer
     (insert-file-contents file)
     (split-string (buffer-string) "\n" t)))
 
 (defun exordium-read-file-as-string (file)
-  "Return the content of the specified file as a string."
+  "Return the content of the specified FILE as a string."
   (with-temp-buffer
     (insert-file-contents file)
     (buffer-string)))
 
 (defun exordium-parent-directory (dir)
-  "Return the path of the dir's parent directory"
+  "Return the path of the DIR's parent directory."
   (file-name-directory (directory-file-name dir)))
+
+(defun exordium-add-directory-tree-to-load-path (dir &optional ignore-if-absent)
+  "Add DIR and all its subdirs to the load path.
+Warn if DIR is not a directory and IGNORE-IF-ABSENT is nil."
+  (cond ((file-directory-p dir)
+         (add-to-list 'load-path dir)
+         (let ((default-directory dir))
+           (normal-top-level-add-subdirs-to-load-path)))
+        ((not ignore-if-absent)
+         (warn "Missing directory: %s" dir))))
 
 
 ;;; String manipulation functions
@@ -46,9 +63,9 @@ dirs. Input is a string and output is a list of strings."
   (substring string 0 (max 0 (- (length string) n))))
 
 
-;;; Add backtick to electric pair mode. It makes buffer local variable with
-;;; an extra back tick added
 (defun exordium-electric-mode-add-back-tick ()
+ "Add backtick to electric pair mode.
+It makes buffer local variable with an extra back tick added."
   (when exordium-enable-electric-pair-mode
     (setq-local electric-pair-pairs
                 (append electric-pair-pairs '((?` . ?`))))
@@ -61,8 +78,10 @@ dirs. Input is a string and output is a list of strings."
   (interactive)
   (when-let* ((url (thing-at-point 'url)))
     (browse-url url)))
+
 
 (defmacro exordium-setf-when-nil (&rest args)
+                                        ; checkdoc-params: (args)
   "Like `setf', but check each PLACE before evaluating corresponding VAL.
 When the PLACE is non nil return it.  Otherwise set the PLACE to
 evaluated VAL and return it.  Note, that the VAL will be
@@ -75,8 +94,7 @@ Example use:
                                     (alist-get \\='b alist) 2)))
     (format \"alist=%s, a=%s, b=%s\" alist a b))
 yields:
-  \"alist=((b . 2) (a . 1)), a=1, b=2\"
-\=(fn PLACE VAL PLACE VAL ...)"
+  \"alist=((b . 2) (a . 1)), a=1, b=2\""
   (declare (debug setf))
   (if (/= (logand (length args) 1) 0)
       (signal 'wrong-number-of-arguments (list 'setf (length args))))
@@ -92,4 +110,7 @@ yields:
         (push `(exordium-setf-when-nil ,(pop args) ,(pop args)) sets))
       (cons 'progn (nreverse sets)))))
 
+
 (provide 'init-lib)
+
+;;; init-lib.el ends here

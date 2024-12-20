@@ -124,6 +124,8 @@ See the [Customization](#customization) section below for more details.
 
 ## Keymap
 
+Exordium uses `bind-key` to set up key bindings, which keeps track of all bindings made. You can display a comprehensive list using <kbd>M-x describe-personal-keybindings</kbd>.
+
 General:
 
 Keybinding           | Description
@@ -139,20 +141,20 @@ Keybinding           | Description
 
 Editing:
 
-Keybinding          | Description
---------------------|----------------------------------------------------------
-<kbd>RETURN</kbd>   | Return and indent by default; use <kbd>S-RETURN</kbd> for just return.
-<kbd>M-BCKSP</kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
-<kbd>C-\\</kbd>     | Delete spaces after cursor (`delete-horizontal-space-forward`).
-<kbd>C-BCKSP</kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
-<kbd>M-\\</kbd>     | Delete all spaces around cursor.
-<kbd>M-LEFT</kbd> and <kbd>M-RIGHT</kbd> | Move cursor by semantic units (use <kbd>C-LEFT</kbd> and <kbd>C-RIGHT</kbd> to move by words).
-<kbd>C-c d</kbd>    | Duplicate line.
-<kbd>C-=</kbd>      | Expand region by semantic units.
-<kbd>M-C-=</kbd>    | Contract region by semantic units.
-<kbd>M-<up></kbd>   | Move region one line up
-<kbd>M-<down></kbd> | Move region one line down
-<kbd>C-&#124;</kbd> | Toggle the 80-column ruler (fill column indicator).
+Keybinding                | Description
+--------------------------|----------------------------------------------------------
+<kbd>RET</kbd>            | Return and indent by default; use <kbd>S-RET</kbd> for just return.
+<kbd>M-<backspace></kbd>  | `backward-kill-word` (e.g. the opposite of <kbd>M-d</kbd> `kill-word`).
+<kbd>C-\\</kbd>           | Delete spaces after cursor (`delete-horizontal-space-forward`).
+<kbd>C-<backspace></kbd>  | Delete spaces before cursor (`delete-horizontal-space-backward`).
+<kbd>M-\\</kbd>           | Delete all spaces around cursor.
+<kbd>M-<left></kbd> and <kbd>M-<right></kbd> | Move cursor by semantic units (use <kbd>C-<left></kbd> and <kbd>C-<right></kbd> to move by words).
+<kbd>C-c d</kbd>          | Duplicate line.
+<kbd>C-=</kbd>            | Expand region by semantic units.
+<kbd>M-C-=</kbd>          | Contract region by semantic units.
+<kbd>M-<up></kbd>         | Move region one line up
+<kbd>M-<down></kbd>       | Move region one line down
+<kbd>C-&#124;</kbd>       | Toggle the 80-column ruler (fill column indicator).
 
 Navigation:
 
@@ -343,7 +345,7 @@ Treemacs displays the git status of files (added, modified, ignored etc.) using
 different faces.
 
 With the cursor in the Treemacs window, you can use <kbd>TAB</kbd> to
-open/close directories, <kbd>RETURN</kbd> to open a file, and <kbd>q</kbd> to
+open/close directories, <kbd>RET</kbd> to open a file, and <kbd>q</kbd> to
 quit. Use <kbd>?</kbd> to view all the available keys. See the documentation of
 Treemacs for details.
 
@@ -465,7 +467,7 @@ and auto-complete/company-complete. You can easily use a function key if you pre
 by adding this in your `after-init.el`:
 
 ```lisp
-(define-key yas-minor-mode-map (kbd "<f2>") 'yas-expand)
+(bind-key "<f2>" #'yas-expand yas-minor-mode-map)
 ```
 
 Snippets are stored in `~/.emacs.d/snippets/c++-mode`. Here are
@@ -714,8 +716,8 @@ Any navigation is recorded onto a stack, so it is easy to go back and forth:
 
 Keybinding                                   | Description
 ---------------------------------------------|---------------------------------
-<kbd>C-c r LEFT</kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
-<kbd>C-c r RIGHT</kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
+<kbd>C-c r <left></kbd> or <kbd>C-c r [</kbd>  | Go back to previous location.
+<kbd>C-c r <right></kbd> or <kbd>C-c r ]</kbd> | Go forward to next location.
 
 Refactoring:
 
@@ -885,79 +887,111 @@ The configuration variable is `exordium-treesit-modes-enable` and is disabled by
 The main file of the configuration is `init.el`. It looks like this:
 
 ```lisp
-;;; 1. Load all before-init.el files. The ~/.emacs.d/before-init.el
-;;; comes first (if exists), followed by any existing before-init.el
-;;; file from all ~/.emacs.d/taps/subdirs.
+;; 1. Load all before-init.el files.  The ~/.emacs.d/before-init.el comes first
+;; (if exists), followed by all existing before-init.el files from all
+;; ~/.emacs.d/taps/subdirs.
+;; Load before init files
 (dolist (tapped-file exordium-tapped-before-init-files)
-  (load tapped-file))
+  (message "Loadding tapped before-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
-;;; 2. Define the list of Melpa packages that we need, and load any missing
-;;; one. Note that they are NOT updated automatically.
+;; 2. Define the list of Melpa packages that we need, and load any missing one.
+;; Note that they are NOT updated automatically.
+;; [...]
 
-;;; 3. Local preferences: load all prefs.el. The ~/.emacs.d/prefs.el
-;;; comes first (if exists), followed by any existing prefs.el
-;;; file from all ~/.emacs.d/taps/subdirs.
-(require 'init-prefs)       ; defines variables that prefs.el can override
+;; 3. Local preferences: load all prefs.el.  The ~/.emacs.d/prefs.el comes
+;; first (if exists), followed by all existing prefs.el file from all
+;; ~/.emacs.d/taps/subdirs.
 (dolist (tapped-file exordium-tapped-prefs-files)
-  (load tapped-file))
+  (message "Loadding tapped prefs file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 
-;;; 4. Load the "modules" in ~/.emacs.d/modules. See below.
+;; 4. Load the default theme in ~/.emacs.d/themes. See below.
 
-;;; 5. Load the default theme in ~/.emacs.d/themes.
+;; 5. Load the "modules" in ~/.emacs.d/modules. See below.
 
-;;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el
-;;; comes first (if exists), followed by any existing after-init.el
-;;; file from all ~/.emacs.d/taps/subdirs.
+;; 6. Load all after-init.el files.The ~/.emacs.d/after-init.el comes first (if
+;; exists), followed by all existing after-init.el file from all
+;; ~/.emacs.d/taps/subdirs.
+;; Local extensions
 (dolist (tapped-file exordium-tapped-after-init-files)
-  (load tapped-file))
+  (message "Loadding tapped after-init file: %s" tapped-file)
+  (load (file-name-sans-extension tapped-file)))
 ```
 
 Modules can be individually commented out if needed:
 
 ```lisp
-;;; Uncomment the modules you'd like to use and restart Emacs afterwards,
-;;; or evaluate the require expression with M-C-x.
+;; Themes
+;; Note: use "export TERM=xterm-256color" for emacs -nw
+(setq custom-theme-directory exordium-themes-dir)
+(exordium-require 'init-progress-bar)
 
-;;; Look and feel
-(require 'init-look-and-feel)   ; fonts, UI, keybindings, saving files etc.
-(require 'init-linum)           ; line numbers
+(when exordium-nw
+  (set-face-background 'highlight nil))
+(when exordium-theme
+  (exordium-require 'init-themes))
 
-;;; Usability
-(require 'init-window-manager)  ; navigate between windows
-(require 'init-util)            ; utilities like match paren, bookmarks...
-(require 'init-ido)             ; supercharged completion engine
-(require 'init-highlight)       ; highlighting current line, symbol under point
-(cond ((eq exordium-complete-mode :auto-complete)
-       (require 'init-autocomplete)) ; auto-completion (see below for RTags AC)
-      ((eq exordium-complete-mode :company)
-       (require 'init-company))) ; company mode (rtags are on by default)
-(when exordium-helm-projectile  ; find files anywhere in project
-  (require 'init-helm-projectile))
-(require 'init-helm)            ; setup helm
+;; Look and feel
+(exordium-require 'init-look-and-feel)     ; fonts, UI, keybindings, saving files etc.
+(exordium-require 'init-font-lock)         ; enables/disables font-lock globally.
+(exordium-require 'init-linum)             ; line numbers
+(when exordium-smooth-scroll
+  (exordium-require 'init-smooth-scroll)
+  (smooth-scroll-mode 1))                  ; smooth scroll
 
-;;; Magit and git gutter
-(require 'init-git)
+(update-progress-bar)
 
-;;; Themes
-(if exordium-nw
-    (set-face-background 'highlight nil)
-  ;; Using Emacs with GUI:
-  (require 'init-themes)
-  (require 'init-powerline))
+;; Usability
+(exordium-require 'init-window-manager)   ; navigate between windows
+(exordium-require 'init-util)             ; utilities like match paren, bookmarks...
+(unless exordium-helm-everywhere
+  (exordium-require 'init-ido))           ; supercharged completion engine
+(exordium-require 'init-highlight)        ; highlighting current line, symbol under point
 
-;;; Shell mode
-(require 'init-shell)
+(pcase exordium-complete-mode
+  (:auto-complete
+   (exordium-require 'init-autocomplete))
+  (:company
+   (exordium-require 'init-company)))     ; completion
 
-;;; Major modes
-(require 'init-markdown)
-(require 'init-org)
-(require 'init-xml)
+(exordium-require 'init-helm)             ; setup helm
+(when exordium-projectile
+  (exordium-require 'init-projectile))
+(when (and exordium-projectile exordium-helm-projectile)
+  (exordium-require 'init-helm-projectile))
 
-;;; OS-specific things
-(when *environment-osx*
-  (require 'init-osx))
+(when exordium-help-extensions
+  (exordium-require 'init-help))           ; extra help
 
-;;; Etc.
+(update-progress-bar)
+
+(exordium-require 'init-dired)            ; enable dired+ and wdired permission editing
+(exordium-require 'init-git)              ; Magit and git gutter
+(exordium-require 'init-git-visit-diffs)  ; visit diffs in successive narrowed buffers
+(exordium-require 'init-forge)            ; Forge
+(exordium-require 'init-flb-mode)         ; frame-local buffers
+
+(update-progress-bar)
+
+;; Prog mode
+(exordium-require 'init-prog-mode )
+
+;; Shell mode
+(exordium-require 'init-prog-mode)
+
+;; Major modes
+(exordium-require 'init-markdown)
+(exordium-require 'init-org)
+(exordium-require 'init-xml)
+
+;; OS-specific things
+(when exordium-osx
+  (exordium-require 'init-osx))
+
+;; C++
+(exordium-require 'init-cpp)
+;; Etc.
 ```
 
 If you are looking for a specific feature or key binding,
@@ -994,6 +1028,19 @@ rename your tapped repositories (clones). The [Local files](#local-files) from
 your `~/.emacs.d` are always first in each respective tapped list. Each tapped
 list is processed (each file from it is loaded) as a replacement for a
 respective [Local file](#local-files).
+
+Note that Exordium doesn't add any directory to a load path. If your tap expects
+that it's directory tree is in load path, you can use the following code to
+update the load-path:
+
+```lisp
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-lib)
+(when (bound-and-true-p load-file-name)
+  (exordium-add-directory-tree-to-load-path (file-name-directory load-file-name)))
+```
 
 Exordium-specific emacs functions are WIP.
 

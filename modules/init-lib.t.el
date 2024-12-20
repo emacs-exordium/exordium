@@ -1,11 +1,21 @@
-;;; Unit tests for init-util.el.
-;;; To run all tests:
-;;;     M-x eval-buffer
-;;;     M-x ert
+;;; init-lib.t.el --- Unit tests for init-util.el -*- lexical-binding: t -*-
 
-(require 'init-util)
+;;; Commentary:
+;;
+;; To run all tests:
+;;     M-x eval-buffer
+;;     M-x ert
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-util)
+
 (require 'ert)
 
+
 (ert-deftest test-exordium-setf-when-nil-empty-alist ()
   (should
    (equal '((a . 1))
@@ -58,6 +68,6 @@
                     1))
             alist))))
 
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
+(provide 'init-lib.t)
+
+;;; init-lib.t.el ends here

@@ -1,43 +1,50 @@
-;;; init-git-visit-diffs.el --- View changes in a git repo in narrowed buffers
-;;;
-;;; This extension finds all the changes ("hunks") between a working copy of a
-;;; git repository and a reference (branch name or hashref) and presents them
-;;; as a series of narrowed buffers.
-;;;
-;;; Interactive functions:
-;;;
-;;; blp-git-visit-diffs (ref) : prompts for a ref, to be passed to `git diff`;
-;;; collects the hunks and view the first hunk, if any. Operates from the
-;;; current directory.
-;;; blp-git-visit-diffs-next () : view the next hunk, if any.
-;;; blp-git-visit-diffs-prev () : view the previous hunk, if any.
+;;; init-git-visit-diffs.el --- View changes in a git repo in narrowed buffers -*- lexical-binding: t -*-
+
+;;; Commentary:
+;;
+;; This extension finds all the changes ("hunks") between a working copy of a
+;; git repository and a reference (branch name or hashref) and presents them
+;; as a series of narrowed buffers.
+;;
+;; Interactive functions:
+;;
+;; blp-git-visit-diffs (ref) : prompts for a ref, to be passed to `git diff`;
+;; collects the hunks and view the first hunk, if any.  Operates from the
+;; current directory.
+;; blp-git-visit-diffs-next () : view the next hunk, if any.
+;; blp-git-visit-diffs-prev () : view the previous hunk, if any.
 
 
-;;; Global variables and types
+;;; Code:
 
-(defvar *blp-git-visit-current-hunk-list*)
-(defvar *blp-git-visit-previous-hunk-list*)
+
+;;; Global variables and types
+(defvar *blp-git-visit-current-hunk-list* nil)
+(defvar *blp-git-visit-previous-hunk-list* nil)
 (define-error 'git-error "Git error")
 
 
 ;;; Utility functions
 
 (defun blp-git-visit-visit-modified-region (filename line count)
-  "Visit a hunk in a narrowed buffer"
+  "Visit a hunk in a narrowed buffer.
+The buffer visiting FILENAME is narrowed starting from LINE and
+ending after COUNT lines."
   (find-file filename)
   (widen)
-  (goto-line line)
+  (goto-char (point-min))
+  (forward-line line)
   (beginning-of-line)
   (let ((beginning-position (line-beginning-position)))
-    (next-line count)
+    (forward-line count)
     (narrow-to-region beginning-position (line-beginning-position))
-    (beginning-of-buffer))
+    (goto-char (point-min)))
   (let ((cur-len (length *blp-git-visit-current-hunk-list*))
         (prev-len (length *blp-git-visit-previous-hunk-list*)))
     (message (format "%d / %d" prev-len (+ cur-len prev-len)))))
 
 (defun blp-git-visit-get-hunk-list (dir ref)
-  "Return a list of changes between the current working copy and a git ref"
+  "Return a list of hunks in DIR between the current working copy and git REF."
   ;; one triplet per change, like this: ((file1 13 8) (file1 19 63) (file2 24 12))
   (save-excursion
     (let (hunk-list file)
@@ -45,7 +52,7 @@
       ;; (with-current-buffer (get-buffer-create "*blp-git-visit-output*") (erase-buffer)
         (if (zerop (call-process "git" nil (current-buffer) t "diff" ref))
             (progn
-              (beginning-of-buffer)
+              (goto-char (point-min))
               (while (re-search-forward "\\+\\+\\+ \\(.*\\)\\|@@ -[0-9]+,[0-9]+ \\+\\([0-9]+\\),\\([0-9]+\\) @@" nil t)
                 (if (match-string 1)
                     (setq file
@@ -87,7 +94,8 @@
     (message "at beginning of hunk list")))
 
 (defun blp-git-visit-diffs (ref)
-  "Finds the diffs between REF and working copy. Shows the first diff in a narrowed buffer."
+  "Find the diffs between REF and working copy.
+Show the first diff in a narrowed buffer."
   (interactive "sref: ")
   (let ((dir (ignore-errors
                (file-name-as-directory (car (process-lines "git" "rev-parse" "--show-toplevel"))))))
@@ -101,4 +109,7 @@
             (blp-git-visit-diffs-next))
         (git-error (message (cadr error)))))))
 
+
 (provide 'init-git-visit-diffs)
+
+;;; init-git-visit-diffs.el ends here

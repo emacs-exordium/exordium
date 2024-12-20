@@ -1,34 +1,40 @@
-;;;; Look and feel
-;;;
-;;; Keyboard preferences: remaps existing functions to new keys
-;;;
-;;; ----------------- ---------------------------------------------------------
-;;; Key               Definition
-;;; ----------------- ---------------------------------------------------------
-;;; ESC               Quit (= Ctrl-G)
-;;; M-g               Goto line
-;;; C-z               Undo
-;;; C-`               Kill current buffer (= C-x k)
-;;;
-;;; RETURN            Return or Return + indent, depending on init-prefs
-;;; S-RETURN          The opposite
-;;;
-;;; M-C-l             Switch to last buffer
-;;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
-;;; C- +/-            Zoom
+;;; init-look-and-feel.el --- Look and feel -*- lexical-binding: t -*-
 
-;;; C-=               Expand region by semantic units
-;;; M-C-=             Contract region by semantic units
-;;;
-;;; M-<up>            Move selected region up
-;;; M-<down>          Move selected region down
-;;;
-;;; F10               Speedbar
-;;; ----------------- ---------------------------------------------------------
+;;; Commentary:
+;;
+;; Keyboard preferences: remaps existing functions to new keys
+;;
+;; ----------------- ---------------------------------------------------------
+;; Key               Definition
+;; ----------------- ---------------------------------------------------------
+;; ESC               Quit (= Ctrl-G)
+;; M-g               Goto line
+;; C-z               Undo
+;; C-`               Kill current buffer (= C-x k)
+;;
+;; RETURN            Return or Return + indent, depending on init-prefs
+;; S-RETURN          The opposite
+;;
+;; M-C-l             Switch to last buffer
+;; C-x C-b           Buffer menu with `ibuffer', replacing `list-buffers'
+;; C- +/-            Zoom
 
-(use-package cl-lib :ensure nil)
-(require 'init-prefs)
+;; C-=               Expand region by semantic units
+;; M-C-=             Contract region by semantic units
+;;
+;; M-<up>            Move selected region up
+;; M-<down>          Move selected region down
+;;
+;; F10               Speedbar
+;; ----------------- ---------------------------------------------------------
 
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+
+(require 'cl-lib)
 
 ;;; Font
 
@@ -49,10 +55,12 @@
     (caar (exordium-available-preferred-fonts))))
 
 (defun exordium-set-font (&optional font size)
-  "Find the preferred fonts that are available and choose the first one.  Set FONT and SIZE if they are passed as arguments."
+  "Find the preferred fonts that are available and choose the first one.
+Set FONT and SIZE if they are passed as arguments."
   (interactive
    (list (completing-read (format "Font (default %s): " (exordium-font-name))
-                          (exordium-available-preferred-fonts) nil nil nil nil (exordium-font-name))
+                          (exordium-available-preferred-fonts) nil nil nil nil
+                          (exordium-font-name))
          (read-number "Size: " (exordium-font-size))))
   (let ((font (or font (exordium-font-name)))
         (size (or size (exordium-font-size))))
@@ -68,7 +76,7 @@
   (exordium-set-font))
 
 (if (daemonp)
-    (add-hook 'server-after-make-frame-hook 'exordium-set-font))
+    (add-hook 'server-after-make-frame-hook #'exordium-set-font))
 
 ;;; User interface
 
@@ -111,7 +119,7 @@
     (set-scroll-bar-mode nil)))
 
 ;;; Better frame title with buffer name
-(setq frame-title-format (concat "%b - emacs@" system-name))
+(setq frame-title-format (concat "%b - emacs@" (system-name)))
 
 ;;; Disable beep
 ;;(setq visual-bell t)
@@ -123,7 +131,10 @@
 (show-paren-mode t)
 
 ;;; Mouse selection
-(setq x-select-enable-clipboard t)
+(use-package select
+  :ensure nil
+  :custom
+  (select-enable-clipboard t))
 
 ;;; http://www.reddit.com/r/emacs/comments/30g5wo/the_kill_ring_and_the_clipboard/
 (setq save-interprogram-paste-before-kill t)
@@ -145,14 +156,14 @@
 ;;;(global-visual-line-mode 1)
 
 ;; Show only 1 window on startup (useful if you open multiple files)
-(add-hook 'emacs-startup-hook (lambda () (delete-other-windows)) t)
+(add-hook 'emacs-startup-hook #'delete-other-windows t)
 
 
 ;;; Keyboard preferences
 
 ;; Use ESC as Control-G
 (when exordium-keyboard-escape
-  (global-set-key (kbd "<escape>") 'keyboard-quit))
+  (bind-key "ESC" #'keyboard-quit))
 
 ;;; Use "y or n" answers instead of full words "yes or no"
 (when exordium-enable-y-or-n
@@ -168,11 +179,12 @@
 
 ;;; Evil-mode
 (if exordium-enable-evil-mode
-    (progn (use-package evil)
-           (when (fboundp 'evil-mode)
-             (evil-mode t)))
+    (use-package evil
+      :commands (evil-mode)
+      :config
+      (evil-mode))
   ;; Evil mode depends in undo-tree, which thinks it should work by default
-  (when (boundp 'global-undo-tree-mode)
+  (when (fboundp 'global-undo-tree-mode)
     (global-undo-tree-mode -1)))
 
 (defun insert-gui-primary-selection ()
@@ -185,34 +197,34 @@
         (insert-for-yank text)))))
 
 (when exordium-enable-insert-gui-primary-selection
-  (global-set-key [(meta insert)] #'insert-gui-primary-selection))
+  (bind-key "M-<insert>" #'insert-gui-primary-selection))
 
 
 ;;; Shortcut keys
 
-(global-set-key [(meta g)] (function goto-line))
+(bind-key "M-g" #'goto-line)
 (when exordium-keyboard-ctrl-z-undo
-  (define-key global-map [(control z)] (function undo)))
-(global-set-key [(control ?`)] (function kill-this-buffer))
-
+  (bind-key "C-z" #'undo))
+(bind-key "C-`" #'kill-this-buffer)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()
-  "Alternates between the two most recent buffers"
+  "Alternates between the two most recent buffers."
   (interactive)
   (switch-to-buffer (other-buffer)))
 
-(define-key global-map [(meta control l)] (function switch-to-other-buffer))
+(bind-key "M-C-l" #'switch-to-other-buffer)
 
 ;;; C-x C-b = ibuffer (better than list-buffers)
-(define-key global-map [(control x)(control b)] (function ibuffer))
+(bind-key "C-x C-b" #'ibuffer)
 
 ;;; Zoom
-(use-package default-text-scale)
-(define-key global-map [(control +)] (function default-text-scale-increase))
-(define-key global-map [(control -)] (function default-text-scale-decrease))
-(define-key global-map [(control mouse-4)] (function default-text-scale-increase))
-(define-key global-map [(control mouse-5)] (function default-text-scale-decrease))
+(use-package default-text-scale
+  :bind
+  ("C-+" . #'default-text-scale-increase)
+  ("C--" . #'default-text-scale-decrease)
+  ("C-<mouse-4>" . #'default-text-scale-increase)
+  ("C-<mouse-5>" . #'default-text-scale-decrease))
 
 ;;; CUA.
 ;;; CUA makes C-x, C-c and C-v cut/copy/paste when a region is selected.
@@ -228,13 +240,14 @@
 ;;; Cool extensions
 
 ;;; Expand region
-(use-package expand-region)
-(global-set-key (kbd "C-=") (function er/expand-region))
-(global-set-key (kbd "M-C-=") (function er/contract-region))
+(use-package expand-region
+  :bind
+  (("C-=" . #'er/expand-region)
+   ("C-M-=" . #'er/contract-region)))
 
 ;;; Move regions up and down (from https://www.emacswiki.org/emacs/MoveRegion)
 (defun move-region (start end n)
-  "Move the current region up or down by N lines."
+  "Move the current region from START to END up or down by N lines."
   (interactive "r\np")
   (let ((line-text (delete-and-extract-region start end)))
     (forward-line n)
@@ -244,17 +257,17 @@
       (set-mark start))))
 
 (defun move-region-up (start end n)
-  "Move the current line up by N lines."
+  "Move the current region from START to END up by N lines."
   (interactive "r\np")
   (move-region start end (if (null n) -1 (- n))))
 
 (defun move-region-down (start end n)
-  "Move the current line down by N lines."
+  "Move the current region from START to END down by N lines."
   (interactive "r\np")
   (move-region start end (if (null n) 1 n)))
 
-(global-set-key (kbd "M-<up>") 'move-region-up)
-(global-set-key (kbd "M-<down>") 'move-region-down)
+(bind-key "M-<up>" #'move-region-up)
+(bind-key "M-<down>" #'move-region-down)
 
 
 ;;; File saving and opening
@@ -265,11 +278,12 @@
 ;; Propose vlf (Very Large File) as a choice when opening large files
 ;; (otherwise one can open a file using M-x vlf):
 (use-package vlf-setup
-  :ensure vlf)
+  :ensure vlf
+  :defer t)
 
 ;; Remove trailing blanks on save
 (define-minor-mode delete-trailing-whitespace-mode
-  "Remove trailing whitespace upon saving a buffer"
+  "Remove trailing whitespace upon saving a buffer."
   :lighter nil
   (if delete-trailing-whitespace-mode
       (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
@@ -278,20 +292,22 @@
 (define-globalized-minor-mode global-delete-trailing-whitespace-mode
   delete-trailing-whitespace-mode
   (lambda ()
-    (delete-trailing-whitespace-mode t)))
+    (delete-trailing-whitespace-mode t))
+  :group 'exordium)
 
 (when exordium-delete-trailing-whitespace
   (global-delete-trailing-whitespace-mode t))
 
 ;;; Disable backup files (e.g. file~)
 (defun no-backup-files ()
-  "Disable creation of backup files"
+  "Disable creation of backup files."
   (interactive)
   (setq make-backup-files nil))
 
 (unless exordium-backup-files
   (no-backup-files))
 
-
 
 (provide 'init-look-and-feel)
+
+;;; init-look-and-feel.el ends here

@@ -1,19 +1,31 @@
-;;;; Configuration for C++
-;;;
-;;; -------------- -------------------------------------------------------
-;;; Key            Definition
-;;; -------------- -------------------------------------------------------
-;;; C-tab          Switch between .h and .cpp
-;;; C-c ;          IEdit mode (rename selected variable)
-;;;
-;;; Features:
-;;; - Open .h files in C++ mode by default
-;;; - Highlight dead code between #if 0 and #endif (after saving)
+;;; init-cpp.el --- Configuration for C++            -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
-(require 'init-lib)
+;;; Commentary:
+;;
+;; -------------- -------------------------------------------------------
+;; Key            Definition
+;; -------------- -------------------------------------------------------
+;; C-tab          Switch between .h and .cpp
+;; C-c ;          IEdit mode (rename selected variable)
+;;
+;; Features:
+;; - Open .h files in C++ mode by default
+;; - Highlight dead code between #if 0 and #endif (after saving)
+
+;;; Code:
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
+(when exordium-help-extensions
+  (exordium-require 'init-help))
+
+(require 'cl-lib)
 
 (use-package cc-mode
+  :ensure nil
   :config
   ;;; Open a header file in C++ mode by default
   (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode)))
@@ -21,9 +33,33 @@
 
 ;;; IEdit: rename the symbol under point
 (use-package iedit
+  :custom
+  ;; Fix A bug: normal key is "C-;", but we're going to roll our own bindings
+  ;; with bind-key
+  (iedit-toggle-key-default nil)
   :init
-  ;;; Fix A bug (normal key is "C-;")
-  :bind ("C-c ;" . #'iedit-mode))
+  (use-package isearch
+    :ensure nil
+    :defer t
+    :bind
+    (:map isearch-mode-map
+     ("C-c ;" . #'iedit-mode-from-isearch)))
+  (use-package help
+    :ensure nil
+    :defer t
+    :bind
+    (:map help-map
+     ("C-;" . #'iedit-mode-toggle-on-function)))
+  (when exordium-help-extensions
+    (use-package helpful
+      :defer t
+      :bind
+      (:map helpful-mode-map
+       ("C-;" . #'iedit-mode-toggle-on-function))))
+  :bind
+  (("C-c ;" . #'iedit-mode)
+   :map esc-map
+   ("C-;" . #'iedit-execute-last-modification)))
 
 ;;; Don't show the abbrev minor mode in the mode line
 (diminish 'abbrev-mode)
@@ -31,9 +67,10 @@
 
 ;;; Highlight dead code between #if 0 and #endif
 
-(use-package cpp)
+(use-package cpp
+  :ensure nil)
 (defun cpp-highlight-dead-code ()
-  "highlight c/c++ #if 0 #endif macros"
+  "Highlight c/c++ #if 0 #endif macros."
   (let ((color (face-background 'shadow)))
     (setq cpp-known-face 'default)
     (setq cpp-unknown-face 'default)
@@ -44,15 +81,18 @@
     (cpp-highlight-buffer t)))
 
 (defun cpp-highlight-dead-code-hook ()
+  "Highlight dead code blocks."
   (cpp-highlight-dead-code)
-  (add-hook 'after-save-hook 'cpp-highlight-dead-code 'append 'local))
+  (add-hook 'after-save-hook #'cpp-highlight-dead-code 'append 'local))
 
 ;;; Highlight dead code between "#if 0" and "#endif"
-(add-hook 'c-mode-common-hook 'cpp-highlight-dead-code-hook)
-(when exordium-treesit-modes-enable
+(add-hook 'c-mode-common-hook #'cpp-highlight-dead-code-hook)
+(when (and exordium-treesit-modes-enable
+           ;; same conditions as in init-treesit.el
+           (version< "29" emacs-version) (treesit-available-p))
   (progn
-    (add-hook 'c-ts-mode-hook #'(lambda () (run-hooks 'c-mode-common-hook)))
-    (add-hook 'c++-ts-mode-hook #'(lambda () (run-hooks 'c-mode-common-hook)))
+    (add-hook 'c-ts-mode-hook (lambda () (run-hooks 'c-mode-common-hook)))
+    (add-hook 'c++-ts-mode-hook (lambda () (run-hooks 'c-mode-common-hook)))
     (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
     (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
     (add-to-list 'major-mode-remap-alist
@@ -70,11 +110,11 @@
     ("cpp"     . ("h" "t.cpp" "g.cpp" "u.t.cpp" "i.t.cpp"))
     ("cc"      . ("h" "t.cc" "u.t.cc" "i.t.cc"))
     ("c"       . ("h")))
-  "A-list of extension -> list of matching extensions")
+  "A-list of extension -> list of matching extensions.")
 
 (defun bde-file-name-extension (file-name)
-  "Like `file-name-extension' but returning 't.cpp' for a
-  BDE-style test driver"
+                                        ; checkdoc-params: (file-name)
+  "Like `file-name-extension' respecting a BDE-style test driver infixes."
   (cond ((string-suffix-p ".u.t.cpp" file-name)
          "u.t.cpp")
         ((string-suffix-p ".i.t.cpp" file-name)
@@ -87,11 +127,13 @@
          (file-name-extension file-name))))
 
 (defun cpp-switch-h-cpp (arg)
-  "Switch between .h and .cpp buffer or file. Look first into the
- open buffers, and look into the current directory if no matching
- buffer was found.
- With argument, switch to the second choice. For example, from a
- .h or a .cpp open the .t.cpp, or from a .t.cpp open the .cpp."
+                                        ; checkdoc-params: (arg)
+  "Switch between .h and .cpp buffer or file.
+Look first into the open buffers, and look into the current
+directory if no matching buffer was found.
+
+With argument, switch to the second choice.  For example, from a
+.h or a .cpp open the .t.cpp, or from a .t.cpp open the .cpp."
   (interactive "P")
   (let ((ext (bde-file-name-extension (buffer-file-name))))
     (let ((base-name    (exordium-string-truncate (buffer-name) (length ext)))
@@ -153,38 +195,41 @@
             (t (message "This is not a C/C++ file"))))))
 
 ;;; Ctrl-Tab to switch between .h and .cpp
-(define-key c-mode-base-map [(control tab)] 'cpp-switch-h-cpp)
+(bind-key "C-TAB" #'cpp-switch-h-cpp c-mode-base-map)
 
 
 ;;; C++11 keywords
-
-(require 'init-prefs)
-(use-package cl-lib :ensure nil)
-
-(defconst exordium-extra-c++-keywords
-  (cl-remove-if #'null
-                (list
+(pcase exordium-enable-c++11-keywords
+  (:simple
+   (let ((keywords (concat "\\<"
+                                (regexp-opt
+                                 '("alignas"
+                                   "alignof"
+                                   "char16_t"
+                                   "char32_t"
+                                   "constexpr"
+                                   "decltype"
+                                   "final"
+                                   "noexcept"
+                                   "nullptr"
+                                   "override"
+                                   "static_assert"
+                                   "thread_local")
+                                 t)
+                                "\\>")))
+     (add-hook 'c++-mode-hook
+               (lambda()
                  ;; This can be completed with other things later (C++17?)
-                 (when (eq exordium-enable-c++11-keywords :simple)
-                   '("\\<\\(alignas\\|alignof\\|char16_t\\|char32_t\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face))))
-  "A-list of pairs (regex . face) for highlighting extra keywords in C++ mode.")
+                 (font-lock-add-keywords
+                  nil `((,keywords . font-lock-keyword-face))))
+               t)))
+  (:modern
+   (use-package modern-cpp-font-lock
+     :diminish modern-c++-font-lock-mode
+     :hook (c++-mode . modern-c++-font-lock-mode))))
 
-(when exordium-extra-c++-keywords
-  (add-hook 'c++-mode-hook
-            #'(lambda()
-                (font-lock-add-keywords nil exordium-extra-c++-keywords))
-            t))
-
-(use-package modern-cpp-font-lock
-  :if (eq exordium-enable-c++11-keywords :modern)
-  :diminish modern-c++-font-lock-mode
-  :hook (c++-mode . modern-c++-font-lock-mode))
-
-(use-package cmake-mode
-  :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
-         ("\\.cmake\\'" . cmake-mode)))
 
+
 (provide 'init-cpp)
-;; Local Variables:
-;; byte-compile-warnings: (not cl-functions)
-;; End:
+
+;;; init-cpp.el ends here

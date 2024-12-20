@@ -1,25 +1,35 @@
-;;; color-theme-material.el --- based on the colors of the Google Material Design
-;;;
-;;; Credit:
-;;; Inspired by the theme from Paulik Christoph
-;;; See https://github.com/cpaulik/emacs-material-theme
-;;;
-;;; The colors in this theme should be defined from the Material palette: see
-;;; http://www.google.com/design/spec/style/color.html
+;;; color-theme-material.el --- based on the colors of the Google Material Design -*- lexical-binding: t -*-
 
+;;; Commentary:
+;;
+;; Credit:
+;; Inspired by the theme from Paulik Christoph
+;; See https://github.com/cpaulik/emacs-material-theme
+;;
+;; The colors in this theme should be defined from the Material palette: see
+;; http://www.google.com/design/spec/style/color.html
+
+;;; Code:
 (require 'org)
-(require 'init-prefs)
+
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
 
 ;;; Themes options
 
 (defcustom exordium-material-italics nil
-  "Enable italics for certain faces, such as comments"
+  "Enable italics for certain faces, such as comments."
   :group 'exordium
   :type  'boolean)
 
-;;; Color palette
+;;; Theme definition
 
-(defconst material-colors
+(defmacro with-material-colors (&rest body)
+  "Execute BODY in a scope with variables bound to the material colors."
+  ;; Color palette
+  (let ((material-colors
   '((background          . "#263238")  ; = Blue Gray 900
     (current-line        . "#37474f")  ; = Blue Gray 800
     (far-background      . "#1c1f26")
@@ -49,20 +59,19 @@
     (blue-gray-100       . "#cfd8dc")
     (blue-gray-700       . "#455a64")
     (purple              . "#b39ddb")
-    (black               . "#000000")))
-
-;;; Theme definition
-
-(defmacro with-material-colors (&rest body)
-  "Execute `BODY' in a scope with variables bound to the material colors."
-  `(let ((class '((class color) (min-colors 89)))
+    (black               . "#000000"))))
+   `(let ((class '((class color) (min-colors 89)))
          ,@(mapcar (lambda (cons)
                      (list (car cons) (cdr cons)))
                    material-colors))
-     ,@body))
+      (ignore class)
+      ,@(mapcar (lambda (cons)
+                  `(ignore ,(car cons)))
+                material-colors)
+     ,@body)))
 
 (defmacro material-face-specs ()
-  "Return a backquote which defines a list of face specs.
+  "Return a backquote with a list of face specs definitions.
 It expects to be evaluated in a scope in which the various color
 names to which it refers are bound."
   (quote
@@ -458,7 +467,7 @@ names to which it refers are bound."
      )))
 
 (defun define-material-theme ()
-  "Define the material theme"
+  "Define the material theme."
   (deftheme material "A theme based on the colors of the Google Material Design")
   (with-material-colors
    (apply 'custom-theme-set-faces 'material (material-face-specs)))
@@ -468,16 +477,11 @@ names to which it refers are bound."
 ;;; Debugging functions
 
 (defun set-colors-material ()
-  "Sets the colors to the material theme"
+  "Set the colors to the material theme."
   (interactive)
   (with-material-colors
    (apply 'custom-set-faces (material-face-specs))))
 
 (provide 'color-theme-material)
 
-;;; material-theme.el ends here
-
-;; Local Variables:
-;; no-byte-compile: t
-;; indent-tabs-mode: nil
-;; End:
+;;; color-theme-material.el ends here

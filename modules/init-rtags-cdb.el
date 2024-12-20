@@ -1,85 +1,95 @@
-;;;; Command to create a compilation database.
-;;;
-;;; ---------- ----------------------------------------------------------------
-;;; Key        Command
-;;; ---------- ----------------------------------------------------------------
-;;;            `rtags-create-compilation-database': see doc below.
-;;; ---------- ----------------------------------------------------------------
-;;;
-;;; This module provides a single command, `rtags-create-compilation-database',
-;;; which is an easy way to generate a CLang compilation database
-;;; (`compile_commands.json') for non-CMake projects.
-;;;
-;;; The first step is to create a file `compile_includes' in the project root
-;;; dir, which specifies how to compile your project and in particular where
-;;; are all the source files and all the include files. For example:
-;;;
-;;;   # Where are the source files (there could be multiple directories).
-;;;   # We will scan recursively any subdirectories that do not match any
-;;;   # 'exclude' regex.
-;;;   src .
-;;;
-;;;   # What to put in -I directives (in addition to the source files above).
-;;;   # We will scan recursively any subdirectories that do not match any
-;;;   # 'exclude' regex.
-;;;   include /Users/phil/Code/cpp/include/bsl
-;;;   include /Users/phil/Code/cpp/include/bdl
-;;;
-;;;   # Optional: patterns to exclude in -I directives and for looking for
-;;;   # sources:
-;;;   exclude /test$
-;;;   exclude /doc$
-;;;   exclude /group$
-;;;   exclude /package$
-;;;
-;;;   # Optional: if any file name pattern must be excluded from the "src" files,
-;;;   # use the "excludesrc" directive. For example this will exclude all test
-;;;   # drivers:
-;;;   excludesrc \.t\.cpp$
-;;;
-;;; In addition, the creation of a compilation database uses these variables:
-;;;
-;;; - `rtags-compile-includes-base-dir': set this to your workspace path
-;;;   if you want to use relative paths in `compile_includes' (by default any
-;;;   relative path in this file is relative to the project root dir).
-;;; - `rtags-clang-command-prefix': default is "/usr/bin/clang++ -Irelative"
-;;;   (Note that rtags ignores the clang++ command because it uses libclang).
-;;; - `rtags-clang-command-suffix': default is "-c -o".
-;;;
-;;; Once you have created the `compile_includes' file, run the command
-;;; M-x `rtags-create-compilation-database'. It will:
-;;;
-;;; - Prompt for the project root dir
-;;; - Scan all source dirs and include dirs
-;;; - Create `compilation_database.json' (it overwrites without asking)
-;;; - Ask if you want to reload it (if rdm is running).
+;;; init-rtags-cdb.el --- Command to create a compilation database -*- lexical-binding: t -*-
 
-(use-package cl-lib :ensure nil)
-(require 'init-lib)
+;;; Commentary:
+;;
+;; ---------- ----------------------------------------------------------------
+;; Key        Command
+;; ---------- ----------------------------------------------------------------
+;;            `rtags-create-compilation-database': see doc below.
+;; ---------- ----------------------------------------------------------------
+;;
+;; This module provides a single command, `rtags-create-compilation-database',
+;; which is an easy way to generate a CLang compilation database
+;; (`compile_commands.json') for non-CMake projects.
+;;
+;; The first step is to create a file `compile_includes' in the project root
+;; dir, which specifies how to compile your project and in particular where
+;; are all the source files and all the include files.  For example:
+;;
+;;   # Where are the source files (there could be multiple directories).
+;;   # We will scan recursively any subdirectories that do not match any
+;;   # 'exclude' regex.
+;;   src .
+;;
+;;   # What to put in -I directives (in addition to the source files above).
+;;   # We will scan recursively any subdirectories that do not match any
+;;   # 'exclude' regex.
+;;   include /Users/phil/Code/cpp/include/bsl
+;;   include /Users/phil/Code/cpp/include/bdl
+;;
+;;   # Optional: patterns to exclude in -I directives and for looking for
+;;   # sources:
+;;   exclude /test$
+;;   exclude /doc$
+;;   exclude /group$
+;;   exclude /package$
+;;
+;;   # Optional: if any file name pattern must be excluded from the "src" files,
+;;   # use the "excludesrc" directive.  For example this will exclude all test
+;;   # drivers:
+;;   excludesrc \.t\.cpp$
+;;
+;; In addition, the creation of a compilation database uses these variables:
+;;
+;; - `rtags-compile-includes-base-dir': set this to your workspace path
+;;   if you want to use relative paths in `compile_includes' (by default any
+;;   relative path in this file is relative to the project root dir).
+;; - `rtags-clang-command-prefix': default is "/usr/bin/clang++ -Irelative"
+;;   (Note that rtags ignores the clang++ command because it uses libclang).
+;; - `rtags-clang-command-suffix': default is "-c -o".
+;;
+;; Once you have created the `compile_includes' file, run the command
+;; M-x `rtags-create-compilation-database'.  It will:
+;;
+;; - Prompt for the project root dir
+;; - Scan all source dirs and include dirs
+;; - Create `compilation_database.json' (it overwrites without asking)
+;; - Ask if you want to reload it (if rdm is running).
+
+;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+(exordium-require 'init-lib)
+(exordium-require 'init-rtags)
+(when exordium-projectile
+ (exordium-require 'init-projectile))
+(require 'cl-lib)
 
 ;; Override these variables in your .emacs as needed:
 
 (defvar rtags-clang-command-prefix
   "/usr/bin/clang++ "
-  "Compilation command prefix to use for creating compilation
-  databases. Override this variable for your local environment.")
+  "Compilation command prefix to use for creating compilation databases.
+Override this variable for your local environment.")
 
 (defvar rtags-clang-command-suffix
   " -c -o "
-  "Compilation command suffix to use for creating compilation
-  databases. Override this variable for you local environment.")
+  "Compilation command suffix to use for creating compilation databases.
+Override this variable for you local environment.")
 
 (defvar rtags-compile-includes-base-dir
   nil
-  "If non-nil, base directory to use for all relative paths in
-  `compile_include'. Use nil for absolute paths.")
+  "If non-nil, base directory to use for all relative paths in compile_include.
+Use nil for absolute paths.")
 
 
 ;;; Creating a compilation DB
 
 (defun rtags-load-compile-includes-file-content (compile-includes-file)
-  "Read and parse the specified compile-includes file, and return
-a list of five sublists:
+  "Read and parse the specified COMPILE-INCLUDES-FILE.
+Return a list of five sublists:
 - The list of `src' directives,
 - The list of `include' directives,
 - The list of `exclude' directives,
@@ -95,7 +105,7 @@ a list of five sublists:
     (dolist (record (exordium-read-file-lines compile-includes-file))
       (cl-incf line-number)
       (setq value (cl-second (split-string record " ")))
-      (cond ((or (eq "" record)
+      (cond ((or (equal "" record)
                  (string-prefix-p "#" record))
              ;; Comment or empty string; skip it
              nil)
@@ -119,8 +129,7 @@ a list of five sublists:
     (list src-list include-list exclude-list exclude-src-list macro-list)))
 
 (defun rtags-is-excluded-p (path excluded-regexs)
-  "Return non-nil if the specified path matches any regex in
-the list of excluded regexs"
+  "Return non-nil if PATH matches any regex in the list of EXCLUDED-REGEXS."
   (catch 'return
     (dolist (excluded excluded-regexs)
       (when (string-match excluded path)
@@ -128,14 +137,12 @@ the list of excluded regexs"
     (throw 'return nil)))
 
 (defun rtags-directory-contains-sources-p (path)
-  "Return non-nil if the specified path contains any C/C++ source
-  or header file"
+  "Return list of C/C++ source or header files in PATH."
   (directory-files path nil ".*\\.\\(c\\|cpp\\|h\\|hpp\\)$" nil))
 
 (defun rtags-scan-subdirectories (dir excluded-regexs)
-  "Return a list of subdirectories under the specified root dir,
-excluding any that match any regex in the specified excluded
-regex list."
+  "Return a list of subdirectories under the specified root DIR.
+Exclude any subdirectory that matches any of EXCLUDED-REGEXS list."
   (let ((result ()))
     (dolist (subdir (cons dir (exordium-directory-tree dir)))
       (when (and (rtags-directory-contains-sources-p subdir)
@@ -144,10 +151,10 @@ regex list."
     result))
 
 (defun rtags-load-compile-includes-file (dir)
-  "Loads the `compile_includes' file from the specified directory
-and returns its content as a property list, or nil if the file
-could not be loaded. The property list looks like this:
-'(:src-dirs (...)
+  "Load compile_includes file from the specified DIR.
+Return its content as a property list, or nil if the file
+could not be loaded.  The property list looks like this:
+\\='(:src-dirs (...)
   :include-dirs (...)
   :exclude-src (...)
   :macros (...))"
@@ -193,8 +200,8 @@ could not be loaded. The property list looks like this:
            nil))))
 
 (defun rtags-create-compilation-command (plist)
-  "Returns a string containing the clang compilation command to
-use for the compilation database, using the content of PLIST."
+  "From PLIST create string containing the clang compilation command.
+To be used for the compilation database."
   (let ((command rtags-clang-command-prefix))
     ;; -D options:
     (dolist (m (plist-get plist :macros))
@@ -207,20 +214,22 @@ use for the compilation database, using the content of PLIST."
     (concat command rtags-clang-command-suffix)))
 
 (defun rtags-prompt-compilation-database-dir ()
-  "Prompts the user for the directory where to generate the
-compilation database. If we're in a projectile project, propose
-the project root first, and prompt for a dir if the user
-declines. Returns the directory string."
-  (let ((project-root (and (featurep 'projectile)
-                           (projectile-project-root))))
+  "Prompt user for directory where to generate the compilation database.
+If we're in a projectile project, propose the project root first,
+and prompt for a dir if the user declines.  Return the directory
+string."
+  (let ((project-root (or
+                       (and (featurep 'projectile)
+                            (projectile-project-root))
+                       (or (featurep 'project)
+                           (project-root (project-current))))))
     (if (and project-root
              (y-or-n-p (format "Create at project root (%s)?" project-root)))
         project-root
       (read-directory-name "Project root: "))))
 
 (defun rtags-create-compilation-database (dir)
-  "Regenerates `compile_commands.json' from `compile_includes' in
-the specified directory."
+  "Regenerate compile_commands.json from compile_includes in DIR."
   (interactive (list (rtags-prompt-compilation-database-dir)))
   (let ((plist (rtags-load-compile-includes-file dir)))
     (when plist
@@ -258,7 +267,7 @@ the specified directory."
           (newline)
           (write-region (buffer-string) nil dbfilename))
         (when (yes-or-no-p
-               (format "Wrote compile_commands.json (%d files). Reload it?" num-files))
+               (format "Wrote compile_commands.json (%d files).  Reload it?" num-files))
           ;; FIXME: rtags-call-rc does not work if you don't specify a current buffer?
           ;; That seems broken.
           (rtags-call-rc :path t :output nil :unsaved (current-buffer) "-J" dir)
@@ -281,7 +290,7 @@ the specified directory."
 
 (define-derived-mode rtags-compile-includes-mode fundamental-mode
   "compile-includes"
-  "Mode for editing compile_includes files"
+  "Mode for editing compile_includes files."
   :syntax-table rtags-compile-includes-mode-syntax-table
   ;; Syntax highlighting:
   (setq font-lock-defaults '((rtags-compile-includes-mode-keywords))))
@@ -291,3 +300,5 @@ the specified directory."
 
 
 (provide 'init-rtags-cdb)
+
+;;; init-rtags-cdb.el ends here
