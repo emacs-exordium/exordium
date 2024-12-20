@@ -19,14 +19,6 @@
 (exordium-require 'init-markdown)
 
 (require 'cl-lib)
-
-
-;; `emacsql' (a dependency of `forge') requires sqlite3 support.  How the
-;; support is provided changes with Emacs-29 (i.e., built-in).  See
-;; https://github.com/magit/emacsql/commit/6401226 for more details.
-(unless (and (fboundp 'sqlite-available-p)
-             (sqlite-available-p))
-  (use-package sqlite3))
 
 ;;; Magit Forge
 (use-package forge
