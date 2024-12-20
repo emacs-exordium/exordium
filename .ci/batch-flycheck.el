@@ -19,22 +19,7 @@ SOURCE is the source file used to compile with
     (let (matches
           (not-errors
            (list
-            (rx "the function ‘exordium--require-load’ might not be defined at runtime.")
-            ;; RTags issues are bubbling up.  This should automatically adjust
-            ;; to where init-rtags is loaded inside init.el, as well it should
-            ;; signal error when it has not been found.
-            (rx-to-string `(seq "init.el:"
-                               ,(with-temp-buffer
-                                  (insert-file-contents "~/.emacs.d/init.el")
-                                  (re-search-forward
-                                   (rx line-start
-                                       "(exordium-require 'init-rtags"
-                                       (or " " (seq (optional ")") line-end))))
-                                  (number-to-string
-                                   (line-number-at-pos)))
-                               ":" (one-or-more digit) ": Warning: Package cl is deprecated"))
-            (rx "init-rtags" (or "-cmake" "-cdb" "-helm" "") ".el:"
-                (= 2 (one-or-more digit) ":") " Warning: Package cl is deprecated"))))
+            (rx "the function ‘exordium--require-load’ might not be defined at runtime."))))
       (when-let* (((re-search-forward (rx-to-string `(seq " -- " ,source line-end))
                                       nil t))
                   (pattern (rx-to-string

@@ -9,11 +9,8 @@
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
 
-(when (version< "29.1" emacs-version)
+(when (version< "29" emacs-version)
   (exordium-require 'init-forge))
-
-(eval-when-compile
-  (use-package rtags)) ; init-rtags
 
 (use-package company
   :diminish "CA"
@@ -28,7 +25,6 @@
   (company-transformers '(delete-consecutive-dups))
 
   :config
-  (setq rtags-completions-enabled t)
   (add-to-list 'company-backends
                '(company-capf company-yasnippet company-files
                  :with company-dabbrev-code))
@@ -42,7 +38,7 @@
 
 (use-package company
   :diminish "CA"
-  :if (version< "29.1" emacs-version)
+  :if (version< "29" emacs-version)
   :defer t
   :commands (company-begin-backend)
   :init

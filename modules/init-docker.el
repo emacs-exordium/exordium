@@ -13,7 +13,7 @@
   :custom
   (docker-use-sudo nil))
 
-(when (version<  emacs-version "29")
+(when (version< emacs-version "29")
   (use-package docker-tramp
     :after docker
     :defer t))

@@ -6,8 +6,6 @@
 ;; -------------- -------------------------------------------------------
 ;; Key            Definition
 ;; -------------- -------------------------------------------------------
-;; C-c r r        `helm-flycheck' show rtags & flycheck errors in helm buffer
-;;                when buffer is in `c-mode'
 ;; C-x c f        `helm-flycheck' show flycheck errors in helm buffer
 ;; -------------- -------------------------------------------------------
 
@@ -32,12 +30,6 @@
       (flycheck-mode)
       (diminish 'flycheck-mode))
     (helm-flycheck))
-  (use-package cc-mode
-    :ensure nil
-    :defer t
-    :bind
-    (:map c-mode-base-map
-     ("C-c r r" . #'exordium-helm-flycheck)))
   (use-package helm
     :defer t
     :bind

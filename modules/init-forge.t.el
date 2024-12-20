@@ -11,7 +11,7 @@
 (require 'ert)
 (require 'cl-lib)
 
-(when (version< "29.1" emacs-version)
+(when (version< "29" emacs-version)
 
 (eval-when-compile
   (unless (featurep 'init-require)
@@ -74,7 +74,7 @@
                      (exordium-forge-cleanup-known-repositories--concat to-delete)))))
 
 
-) ;; (version< "29.1" emacs-version)
+) ;; (version< "29" emacs-version)
 
 (provide 'init-forge.t)
 
