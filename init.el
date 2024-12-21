@@ -150,6 +150,11 @@ melpa-stable.")
   (message "Loading tapped before-init file: %s" tapped-file)
   (load (file-name-sans-extension tapped-file)))
 
+(require 'cl-lib)
+(when (version< "29" emacs-version)
+  ;; The `if-let*' macros are not available by default until Emacs-29.
+  (unless (fboundp 'if-let*)
+    (require 'subr-x)))
 
 ;;; Packages from Melpa
 ;; Use M-x `package-refresh-contents' to update the cache.
@@ -234,6 +239,7 @@ melpa-stable.")
 (eval-and-compile
   (load (file-name-concat (locate-user-emacs-file "modules") "init-require")))
 (exordium-require 'init-force-elpa)
+(exordium-require 'init-vc-checkout)
 
 ;; Pin user extra packages early, in case they are dependencies of some other
 ;; packages that are installed early.
