@@ -103,6 +103,11 @@ Github and recompiles everything. Restart Emacs after that.
 Melpa packages are not updated automatically: you can do it with <kbd>M-x
 package-list-packages</kbd>, then <kbd>U</kbd> then <kbd>x</kbd>.
 
+Exordium tries to automatically refresh ELPAs package contents to when it may
+be necessary. You can force or inhibit such a refresh by starting Emacs with
+command line argument `-exordium-force-package-refresh-contents` or
+`-exordium-inhibit-package-refresh-contents` respectively.
+
 ### Files
 
 The main file is `init.el`: it load the modules from the `modules` subdirectory
