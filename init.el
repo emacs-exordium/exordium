@@ -177,7 +177,42 @@ melpa-stable.")
 
 (package-initialize)
 
-(package-refresh-contents)
+;; Limit calls to `package-refresh-contents' to when it may be necessary
+;; respecting users forcible refreshes and inhibits.
+(let ((last-exordium-commit (string-to-number
+                             (let ((default-directory user-emacs-directory))
+                               (shell-command-to-string
+                                "git log -1 --format=%ct | tr -d '\n'"))))
+      (last-archive-contents
+       (apply #'max
+              (or
+               (mapcar (lambda (archive)
+                         (let ((contents-file (file-name-concat
+                                               package-user-dir
+                                               "archives"
+                                               (car archive)
+                                               "archive-contents")))
+                           (if (file-exists-p contents-file)
+                               (time-convert (file-attribute-modification-time
+                                              (file-attributes contents-file))
+                                             'integer)
+                             0)))
+                       package-archives)
+               (list 0)))))
+  (when (and
+         (not (member "--exordium-inhibit-package-refresh-contents"
+                      command-line-args))
+         (or
+          (member "--exordium-force-package-refresh-contents"
+                  command-line-args)
+          ;; No archive contents, likely a first Exordium start refresh
+          ;; package contents to allow for packages installation
+          (null package-archive-contents)
+          ;; The newest archive contents is older than last Exordium commit:
+          ;; refresh package contents to allow installation of possible new
+          ;; packages
+          (< last-archive-contents last-exordium-commit)))
+    (package-refresh-contents)))
 
 ;; If there's a new use-package to upgrade it needs to happen before any other
 ;; work.  Otherwise the new version is not visible when something tries to pull
