@@ -102,8 +102,8 @@ package-list-packages</kbd>, then <kbd>U</kbd> then <kbd>x</kbd>.
 
 Exordium tries to automatically refresh ELPAs package contents to when it may
 be necessary. You can force or inhibit such a refresh by starting Emacs with
-command line argument `-exordium-force-package-refresh-contents` or
-`-exordium-inhibit-package-refresh-contents` respectively.
+command line argument `--exordium-force-package-refresh-contents` or
+`--exordium-inhibit-package-refresh-contents` respectively.
 
 ### Files
 
