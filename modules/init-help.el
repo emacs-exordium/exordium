@@ -49,9 +49,18 @@
     (helm-describe-variable-function #'helpful-variable)
     (helm-describe-function-function #'helpful-function))
 
-  (use-package paren
-    :ensure nil
-    :commands (show-paren-local-mode))
+  :custom
+  ;; By default `show-paren-mode' is disabled in modes deriving from
+  ;; `special-mode'.  Enable it for `helpful' if it doesn't match
+  ;; the `show-paren-predicate'
+  (show-paren-predicate (if (with-temp-buffer
+                              (require 'helpful nil t)
+                              (helpful-mode)
+                              (buffer-match-p show-paren-predicate
+                                              (current-buffer)))
+                            show-paren-predicate
+                          (list 'or '(derived-mode . helpful-mode)
+                                show-paren-predicate)))
 
   :bind
   (;; Note that the built-in `describe-function' includes both functions
@@ -70,11 +79,7 @@
    ("C-h C" . #'helpful-command)
    :map helpful-mode-map
    ("C-c C-d" . #'helpful-at-point)
-   ("C-c C-o" . #'exordium-browse-url-at-point))
-  :config
-  ;; By default `show-paren-mode' is disabled in modes deriving from
-  ;; `special-mode'.  Force it for `helpful'.
-  (add-hook 'helpful-mode-hook #'show-paren-local-mode))
+   ("C-c C-o" . #'exordium-browse-url-at-point)))
 
 
 
