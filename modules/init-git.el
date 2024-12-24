@@ -21,6 +21,11 @@
 ;; C-c g r           Revert current hunk (asks for confirmation)
 ;;
 ;; C-c ^ d           Show SMerge Dispatch
+;;
+;; When in `magit-diff' or `magit-blame' transient,
+;; or in `magit-blame-read-only-mode':
+;; D                 Run Difftastic diff (guessing what to diff from context)
+;; S                 Run Difftastic show
 
 ;;; Code:
 (eval-when-compile
@@ -221,6 +226,12 @@ with `exordium-magit-quit-session'."
 (use-package magit
   :hook
   (magit-diff-visit-file . exordium-smerge-dispatch-maybe))
+
+;;; Difftastic - a structural diff tool that understands syntax!
+(use-package difftastic-bindings
+  :ensure difftastic
+  :config
+  (difftastic-bindings-mode))
 
 
 ;;; Git gutter fringe: display added/removed/changed lines in the left fringe.
