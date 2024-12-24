@@ -134,7 +134,7 @@ names to which it refers are bound."
      (match ((t (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight bold))))
 
      ;; info
-     `(Info-quoted ((t (:inherit font-lock-constant-face))))
+     (Info-quoted ((t (:inherit font-lock-constant-face))))
 
      ;; isearch
      (isearch ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg+2))))
@@ -259,7 +259,7 @@ names to which it refers are bound."
      (font-latex-sectioning-5-face ((t (:foreground ,zenburn-red :weight bold ))))
      (font-latex-sedate-face ((t (:foreground ,zenburn-yellow))))
      (font-latex-italic-face ((t (:foreground ,zenburn-cyan :slant italic))))
-     (font-latex-string-face ((t (:inherit ,font-lock-string-face))))
+     (font-latex-string-face ((t (:inherit font-lock-string-face))))
      (font-latex-math-face ((t (:foreground ,zenburn-orange))))
 
      ;; auto-complete
