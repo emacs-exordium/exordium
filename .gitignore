@@ -64,3 +64,4 @@ request/
 /.cask/
 /forge-database-*.sqlite
 /projects
+/multisession/
