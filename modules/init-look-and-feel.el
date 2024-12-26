@@ -158,6 +158,14 @@ Set FONT and SIZE if they are passed as arguments."
 ;; Show only 1 window on startup (useful if you open multiple files)
 (add-hook 'emacs-startup-hook #'delete-other-windows t)
 
+;; Remove surrounding quotes for link buttons and stick to the same window
+(use-package help
+  :ensure nil
+  :defer t
+  :custom
+  (help-clean-buttons t)
+  (help-window-keep-selected t))
+
 
 ;;; Keyboard preferences
 

@@ -52,6 +52,13 @@
     (helm-describe-variable-function #'helpful-variable)
     (helm-describe-function-function #'helpful-function))
 
+  (defun exordium--helpful-pop-to-buffer (buffer)
+    "Pop to BUFFER in the same window if it is a Helpful window.
+Otherwise pop to buffer (presumably in a new window)."
+    (if (derived-mode-p 'helpful-mode)
+        (pop-to-buffer-same-window buffer)
+      (pop-to-buffer buffer)))
+
   :custom
   ;; By default `show-paren-mode' is disabled in modes deriving from
   ;; `special-mode'.  Enable it for `helpful' if it doesn't match
@@ -64,6 +71,7 @@
                             show-paren-predicate
                           (list 'or '(derived-mode . helpful-mode)
                                 show-paren-predicate)))
+  (helpful-switch-buffer-function #'exordium--helpful-pop-to-buffer)
 
   :bind
   (;; Note that the built-in `describe-function' includes both functions
