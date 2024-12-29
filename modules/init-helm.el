@@ -120,12 +120,9 @@
    ("C-c C-k" . #'helm-swoop--edit-cancel)
    ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
 
-(use-package helm-xref
-  :after helm
-  :if exordium-helm-everywhere
-  :commands helm-xref
-  :config
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+(when exordium-helm-everywhere
+  (use-package helm-xref
+    :defer t))
 
 
 
