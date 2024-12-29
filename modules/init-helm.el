@@ -95,6 +95,14 @@
 
 (use-package helm-swoop
   :defer t
+  :init
+  (use-package isearch
+    :ensure nil
+    :defer t
+    :bind
+    (:map isearch-mode-map
+     ("C-S-s" . #'helm-swoop-from-isearch)))
+
   :commands (helm-swoop--edit-complete
              helm-swoop--edit-cancel
              helm-swoop--edit-delete-all-lines)
