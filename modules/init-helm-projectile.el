@@ -90,6 +90,7 @@ project's file using completion and show it in another window."
     (helm-projectile-on)))
 
 (use-package treemacs-projectile
+  :defer t
   :bind
   (("C-c e" . #'treemacs)
    ("C-c E" . #'treemacs-projectile)))

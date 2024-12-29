@@ -66,12 +66,12 @@
   (helm-mode))
 
 (use-package helm-descbinds
-  :after (helm)
+  :defer t
   :bind
-  (("C-h b" . #'helm-descbinds)))
+  ("C-h b" . #'helm-descbinds))
 
 (use-package helm-ag
-  :after (helm)
+  :defer t
   :custom
   (helm-ag-insert-at-point 'symbol)
   :bind
@@ -79,23 +79,22 @@
    ("C-S-f" . #'helm-do-ag-this-file)))
 
 (use-package helm-ag
-  :after (helm)
+  :defer t
   :unless exordium-helm-projectile
   :bind
-  (("C-S-a" . #'helm-ag-project-root)))
+  ("C-S-a" . #'helm-ag-project-root))
 
 (use-package helm-rg
-  :after (helm)
   :defer t)
 
 (use-package helm-rg
-  :after (helm)
   :unless exordium-helm-projectile
+  :defer t
   :bind
-  (("C-S-r" . #'helm-rg)))
+  ("C-S-r" . #'helm-rg))
 
 (use-package helm-swoop
-  :after (helm)
+  :defer t
   :commands (helm-swoop--edit-complete
              helm-swoop--edit-cancel
              helm-swoop--edit-delete-all-lines)
