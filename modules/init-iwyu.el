@@ -16,6 +16,7 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
+(exordium-require 'init-lib)
 (exordium-require 'init-projectile)
 
 (require 'cl-lib)
@@ -116,12 +117,13 @@ Such constructed list then is appended to arguments in
                (format "include-what-you-use results for file %s:\n" file))
               (read-only-mode)
               (iwyu-mode)
-              (substitute-key-definition
+              (compat-call keymap-substitute ; Since Emacs-29
+               iwyu-mode-map
                'recompile
                (lambda ()
                  (interactive)
                  (iwyu-start-process-for compile-commands-db file))
-                (current-local-map)))
+               compilation-mode-map))
             (apply
              'start-process
              "iwyu-process"
