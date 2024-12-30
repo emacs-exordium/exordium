@@ -5,9 +5,10 @@
 ;; ----------------- ---------------------------------------------------------
 ;; Key               Definition
 ;; ----------------- ---------------------------------------------------------
-;; C-c C-p           Markdown preview (in `forge-post-mode')
-;; C-c C-d           Forge post submit as draft (in `forge-post-mode')
-;; C-c C-d           Forge mark pull request at point mark as ready for review
+;; C-c M-p           Markdown preview (in `forge-post-mode')
+;; C-c M-r           Forge post submit as draft (in `forge-post-mode')
+;; C-c M-d           Forge show diff for pull request (in `forge-post-mode')
+;; C-c M-r           Forge mark pull request at point mark as ready for review
 ;;                   (in `magit-status-mode' and in `forge-topic-mode')
 
 ;;; Code:
@@ -21,13 +22,23 @@
 (require 'cl-lib)
 
 ;;; Magit Forge
+
+(defvar-local exordium--forge-diff-buffer-window-configuration nil
+  "A cons in form (DIFF-BUFFER . WINDOW-CONFIGURATION).
+The DIFF-BUFFER is diff buffer created for a pull-request (if
+any), while WINDOW-CONFIGURATION is a windows configuration prior
+to displaying new-pullreq buffer.")
+
 (use-package forge
   :functions (exordium-forge--add-draft
               exordium-ghub-graphql--pull-request-id
               exordium-ghub-grqphql--mark-pull-request-ready-for-review
               exordium-forge-markdown-preview
               exordium-forge-post-submit-draft
-              exordium-forge-mark-ready-for-rewiew)
+              exordium-forge-mark-ready-for-rewiew
+              exordium--forge-diff-for-pullreq
+              exordium--forge-store-window-configuration
+              exordium--forge-kill-diff-buffer-restore-window-configuration)
   :defer t
   :init
   (use-package ghub-graphql
@@ -50,6 +61,46 @@
   (use-package markdown-mode
     :defer t
     :autoload (markdown-preview))
+
+
+  (defun exordium--forge-diff-for-pullreq (source target)
+                                        ; checkdoc-params: (source target)
+    "Show diff for the current pull-request."
+    (when-let* ((magit-commit-show-diff)
+                (pullreq-buffer (current-buffer))
+                (pullreq-window (frame-selected-window)))
+      (when exordium-use-magit-fullscreen
+        (delete-other-windows))
+      (let ((diff-buffer (magit-diff-range (format "%s..%s" target source))))
+        (with-current-buffer pullreq-buffer
+          (setq exordium--forge-diff-buffer-window-configuration
+                (cons diff-buffer
+                      (cdr exordium--forge-diff-buffer-window-configuration)))))
+      (select-window pullreq-window)))
+
+  (defun exordium--forge-store-window-configuration (orig-fun &rest args)
+                                        ; checkdoc-params: (orig-fun args)
+    "Store windows configuration."
+    (let ((window-configuration (current-window-configuration))
+          (pullreq-buffer (apply orig-fun args)))
+      (with-current-buffer pullreq-buffer
+        (setq exordium--forge-diff-buffer-window-configuration
+              (cons nil
+                    window-configuration)))
+      pullreq-buffer))
+
+  (defun exordium--forge-kill-diff-buffer-restore-window-configuration (orig-fun &rest args)
+                                        ; checkdoc-params: (orig-fun args)
+    "Kill a diff buffer and restore windows configuration."
+    (pcase-let ((`(,diff-buffer . ,window-configuration)
+                 exordium--forge-diff-buffer-window-configuration))
+      (apply orig-fun args)
+      (when diff-buffer
+        (with-current-buffer diff-buffer
+          (magit-mode-bury-buffer 'kill))
+        (when window-configuration
+          (set-window-configuration window-configuration)))))
+
 
   (defun exordium-forge-markdown-preview ()
     "Preview current buffer as a preview in a `markdown-mode' buffer would do."
@@ -62,23 +113,13 @@
         (markdown-preview))
       (delete-file temp-file)))
 
-  (defun exordium-forge--add-draft (alist)
-    "Add draft to ALIST."
-    (append alist '((draft . "t"))))
-
   (defun exordium-forge-post-submit-draft ()
     "Submit the post that is being edited in the current buffer as a draft.
 This relies on implementation of `forge--topic-parse-buffer', that requires
 a key `draft' to have a value of t."
     (interactive)
-    (advice-add 'forge--topic-parse-buffer
-                :filter-return #'exordium-forge--add-draft)
-    (condition-case err
-        (forge-post-submit)
-      (t
-       (advice-remove 'forge--topic-parse-buffer #'exordium-forge--add-draft)
-       (signal (car err) (cdr err))))
-    (advice-remove 'forge--topic-parse-buffer #'exordium-forge--add-draft))
+    (setq-local forge-buffer-draft-p t)
+    (forge-post-submit))
 
   (cl-defun exordium-ghub-graphql--pull-request-id
       (owner name number &key username auth host)
@@ -140,16 +181,34 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
     :defer t
     :bind
     (:map magit-status-mode-map
-     ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
-  :hook
-  (forge-post-mode . (lambda ()
-                       (set-fill-column 1000)))
+     ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew)))
+
   :bind
   (:map forge-post-mode-map
-   ("C-c C-p" . #'exordium-forge-markdown-preview)
-   ("C-c C-d" . #'exordium-forge-post-submit-draft)
+   ("C-c M-p" . #'exordium-forge-markdown-preview)
+   ("C-c M-r" . #'exordium-forge-post-submit-draft)
+   ("C-c M-d" . #'exordium--forge-diff-for-pullreq)
    :map forge-topic-mode-map
-   ("C-c C-d" . #'exordium-forge-mark-ready-for-rewiew)))
+   ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew))
+
+  :config
+  (advice-add 'forge--prepare-post-buffer
+              :around #'exordium--forge-store-window-configuration)
+  (advice-add 'forge-create-pullreq
+              :after #'exordium--forge-diff-for-pullreq)
+  (advice-add 'forge-post-cancel
+              :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
+  (advice-add 'forge-post-submit
+              :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
+
+  (with-eval-after-load 'forge-post
+    (dolist (suffix '(("M-p" "Markdown preview" exordium-forge-markdown-preview)
+                      ("M-d" "Diff" exordium--forge-diff-for-pullreq)
+                      ("M-r" "Submit draft" exordium-forge-post-submit-draft)))
+      (unless (ignore-errors
+                  (transient-get-suffix 'forge-post-dispatch (car suffix)))
+        (transient-append-suffix 'forge-post-dispatch
+          "C-c" suffix)))))
 
 (use-package forge-db
   :ensure forge
