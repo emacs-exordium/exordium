@@ -68,6 +68,13 @@ jobs:
       - name: Verify no obsolete cl- functions
         run: '"${HOME}/.emacs.d/.ci/unit-test-cl.sh"'
 
+      - name: 'Checkout checkdoc-batch'
+        uses: actions/checkout@v4
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        with:
+          repository: 'pkryger/ckeckdoc-batch.el'
+          path: .emacs.d/checkdoc-batch
+
       - name: 'Lint: checkdoc'
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-checkdoc.sh"'

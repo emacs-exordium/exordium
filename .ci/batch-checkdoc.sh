@@ -19,6 +19,6 @@ ${EMACS} -Q --batch \
         eval-expression-print-length 100
         edebug-print-length 500
         user-emacs-directory "'"${EMACS_DIR}"'/")
-  (load-file "'"${EMACS_DIR}"'/.ci/batch-checkdoc.el"))' \
-         --funcall batch-checkdoc \
+  (load-file "'"${EMACS_DIR}"'/checkdoc-batch/checkdoc-batch.el"))' \
+         --funcall checkdoc-batch \
          "${files[@]}"
