@@ -54,24 +54,42 @@
         (mapc #'exordium--add-forward-ts-hook
               '(
                 LaTeX
+                ada
+                awk
                 bash
                 c
                 c++
+                closure
                 cmake
                 csharp
                 css
+                dockerfile
+                elixir
                 go
                 go-mod
+                graphql
+                haskell
+                heex
+                html
                 java
+                jq
                 js
                 json
+                julia
+                kotlin
+                lua
                 markdown
+                nix
+                php
                 python
+                protobuf
                 ruby
                 rust
                 scala
+                swift
                 toml
                 typescript
+                tsx
                 yaml
                 ))))
 
