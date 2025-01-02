@@ -899,7 +899,7 @@ in `provide` and the symbol in `require` are the same.
 ### Configuration profiling
 
 <kbd>M-x use-package-report</kbd> shows the time `use-package` and
-`exordium-require` used to load and configure packages.  eNote that the times
+`exordium-require` used to load and configure packages.  Note that the times
 for `exordium-require` have corresponding `use-package` times included.
 
 <kbd>M-x emacs-init-time</kbd> shows the time Emacs took to start. You can profile the
@@ -910,6 +910,6 @@ $ Applications/Emacs.app/Contents/MacOS/Emacs -Q -l ~/.emacs.d/extensions/profil
 
 ```
 
-It's probably not the best idea to profile your first start as bulk of the
+It's probably not the best idea to profile your first start as the bulk of the
 startup time in such a case is spent on downloading and byte-compiling
 packages.
