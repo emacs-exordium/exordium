@@ -534,10 +534,9 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
   (save-restriction
     (widen)
     (save-excursion
-      ;; Starting with emacs-28 python strings are split when using a generic
-      ;; string delimeter: first and last two quotes are a separate sexp, and
-      ;; the `forward-sexp' only works from the most inner quote.  However,
-      ;; in emacs-27, the `forward-sexp' works only from the most outer quote.
+      ;; Python strings are split on a generic string delimeter: first and last
+      ;; two quotes are a separate sexp, and the `forward-sexp' only works from
+      ;; the most inner quote.
       (when-let* ((orig-start (if (region-active-p)
                                   (let* ((pt (min (region-beginning)
                                                   (region-end)))
@@ -569,13 +568,9 @@ Otherwise escape quotes in the inner string (rationalising escaping)."
                                     pt))
                               (save-excursion
                                 (goto-char orig-start)
-                                (forward-char (if (version< emacs-version "28")
-                                                  0
-                                                (logand quote-length 2)))
+                                (forward-char (logand quote-length 2))
                                 (forward-sexp)
-                                (forward-char (if (version< emacs-version "28")
-                                                  0
-                                                (logand quote-length 2)))
+                                (forward-char (logand quote-length 2))
                                 (point)))))
         (goto-char orig-start)
         (delete-char quote-length)

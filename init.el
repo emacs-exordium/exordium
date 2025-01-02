@@ -13,9 +13,9 @@
 ;; the startup time.
 (setq gc-cons-threshold 100000000)
 
-(let ((min-version "27.1"))
+(let ((min-version "28"))
   (when (version< emacs-version min-version)
-    (error "This config requires at least Emacs %s, but you're running %s"
+    (error "This config requires at least Emacs-%s, but you're running %s"
            min-version emacs-version)))
 
 (setq initial-scratch-message
@@ -140,7 +140,7 @@ melpa-stable.")
 ;; Bind this early, and only if it has not been bound already,
 ;; so customisation from other places (i.e., before-init files)
 ;; are not overwritten.
-(unless (boundp 'package-install-upgrade-built-in)
+(unless (boundp 'package-install-upgrade-built-in) ;; since Emacs-29
   (setq package-install-upgrade-built-in t))
 
 ;; Load before init files
@@ -172,7 +172,7 @@ melpa-stable.")
 (setq package-user-dir
       (locate-user-emacs-file (concat "elpa-" emacs-version)))
 
-(when (fboundp 'native-comp-available-p) ;; check needed before Emacs-28
+(when (fboundp 'native-comp-available-p)
   (setq package-native-compile (native-comp-available-p)))
 
 (package-initialize)
@@ -461,7 +461,7 @@ after it's been byte compiled."
 (exordium-require 'init-dired)            ; enable dired+ and wdired permission editing
 (exordium-require 'init-git)              ; Magit and git gutter
 (exordium-require 'init-git-visit-diffs)  ; visit diffs in successive narrowed buffers
-(when (version< "29.1" emacs-version)
+(when (version< "29" emacs-version)
   (exordium-require 'init-forge))         ; Forge
 
 (exordium-require 'init-flb-mode)         ; frame-local buffers
@@ -489,16 +489,6 @@ after it's been byte compiled."
 (when exordium-yasnippet
   (exordium-require 'init-yasnippet))
 (exordium-require 'init-gdb)
-
-;; RTags
-(exordium-require 'init-rtags
-  :functions (rtags-auto-complete))
-(when (and (eq exordium-complete-mode :auto-complete)
-           exordium-rtags-auto-complete)
-  (rtags-auto-complete))
-(exordium-require 'init-rtags-helm)
-(exordium-require 'init-rtags-cmake)
-(exordium-require 'init-rtags-cdb)
 
 (update-progress-bar)
 
