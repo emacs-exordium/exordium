@@ -48,8 +48,10 @@ might want to check these links:
   [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3 key-strokes);
   [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows);
   [helpful](https://github.com/Wilfred/helpful) (a better Emacs *help* buffer);
-  [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings).
-  [Treesitter]()(Parser-based font lock.)
+  [casual](https://github.com/kickingvegas/casual) (A collection of opinionated
+  keyboard-driven user interfaces for various built-in Emacs modes);
+  [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings);
+  [Treesitter]()(Parser-based font lock).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
@@ -141,6 +143,7 @@ Keybinding           | Description
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
 <kbd>C-c C-SPC</kbd> | Toggle highlight of the symbol under the cursor (by default, up to 8 different symbols using different colors).
+<kbd>C-o</kbd>       | Display a transient with bindings for a `casual` user of `org-agenda`, `bookmark`, `calc`, `calendar`, `dired`, `ibuffer`, `info`, `isearch`, `rebuilder`, `symbol-overlay` or a Casual EditKit menu.
 
 Editing:
 
@@ -175,7 +178,7 @@ Keybinding              | Description
 ------------------------|----------------------------------------------------------
 <kbd>C-c ARROW</kbd>    | Move cursor between windows.
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
-<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
+<kbd>M-o NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
 
 Auto-complete/Company:
 
@@ -198,11 +201,11 @@ of the symbol.
 
 A few example bindings:
 
-Keybinding     | Description
--------------- |----------------------------------------------------------
-<kbd>M-n</kbd> | Jump to next location of highlighted symbol at point.
-<kbd>M-p</kbd> | Jump to previous location of highlighted symbol at point.
-<kbd>M-h</kbd> | Display bindings for highlighted symbol at point.
+Keybinding                       | Description
+-------------------------------- |----------------------------------------------------------
+<kbd>M-n</kbd>                   | Jump to next location of highlighted symbol at point.
+<kbd>M-p</kbd>                   | Jump to previous location of highlighted symbol at point.
+<kbd>M-h</kbd> or <kbd>C-o</kbd> | Display bindings for highlighted symbol at point.
 
 You can change the modifier key (default: <kbd>M</kbd>) by customizing `exordium-highlight-symbol-map-modifier`.
 
@@ -415,6 +418,12 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>D</kbd>          | Run Difftastic diff (guessing what to diff from context) (`difftastic-magit-diff`).
 <kbd>S</kbd>          | Run Difftastic show (`difftastic-magit-show`).
+
+or when you are in `dired-mode`:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c =</kbd>      | Run Difftastic (`difftastic-dired-diff`).
 
 Forge keys:
 

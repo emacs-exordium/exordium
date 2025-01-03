@@ -20,7 +20,9 @@
 ;; C-c g d           Diff current hunk
 ;; C-c g r           Revert current hunk (asks for confirmation)
 ;;
-;; C-c ^ d           Show SMerge Dispatch
+;; C-c ^ d           Show SMerge Dispatch (when in `smerge-mode')
+;; C-o               Show SMerge Dispatch (when in `smerge-mode' and
+;;                   `exordium-help-extensions' is non-nil)
 ;;
 ;; When in `magit-diff' or `magit-blame' transient,
 ;; or in `magit-blame-read-only-mode':
@@ -218,10 +220,23 @@ with `exordium-magit-quit-session'."
   (:map smerge-mode-map
   ("C-c ^ d" . #'exordium-smerge-dispatch)))
 
+(use-package smerge-mode
+  :ensure nil
+  :defer t
+  :if exordium-help-extensions
+  :bind
+  (:map smerge-mode-map
+  ("C-o" . #'exordium-smerge-dispatch)))
+
 (defun exordium-smerge-dispatch-maybe ()
   "Display `exordium-smerge-dispatch' when buffer is in `smerge-mode'."
-  (when (and smerge-mode exordium-smerge-show-dispatch)
-    (funcall-interactively #'exordium-smerge-dispatch)))
+  (when (and smerge-mode
+             exordium-smerge-show-dispatch
+             (fboundp 'smerge-next))
+    (funcall-interactively #'exordium-smerge-dispatch)
+    (goto-char (point-min))
+    (smerge-next)
+    (recenter-top-bottom)))
 
 (use-package magit
   :hook
