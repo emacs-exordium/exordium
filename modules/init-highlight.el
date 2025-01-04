@@ -7,22 +7,21 @@
 ;;
 ;; If `exordium-line-mode' is t, the line under the cursor is highlighted.
 ;;
-;; If `exordium-highlight-symbol-at-point' is t, the symbol under the cursor is
+;; If `exordium-highlight-symbol' is t, the symbol under the cursor is
 ;; highlighted after a small delay using a dim background.
 ;;
-;; Alternatively, one can use the key C-c C-SPACE to highlight/un-highlight the
-;; symbol under the cursor in the current buffer.  Up to 4 different symbols
-;; may be highlighted at one time, using different colors.  Feel free to rebind
-;; function `exordium-highlight-symbol-at-point' to a better key, like for example:
+;; Alternatively, one can use the key C-c C-SPC to highlight/un-highlight the
+;; symbol under the cursor in the current buffer.  When point is in symbol that
+;; has been highlighted it is possible to, for example navigate between
+;; different instances of the symbol.  See `symbol-overlay-map-help' and
+;; `exordium-highlight-symbol-map-modifier' for more information.
+
+;; Feel free to rebind function `symbol-overlay-put' to a better key, like for
+;; example:
 ;;
-;; (bind-key "C-RET" #'exordium-highlight-symbol-at-point)
-;; (bind-key "<f6>" #'exordium-highlight-symbol-at-point)
+;; (bind-key "C-RET" #'sybmol-overlay-put)
+;; (bind-key "<f6>" #'sybmol-overlay-put)
 ;;
-;; Notes: Exordium uses 2 packages for highlighting the symbol under
-;; point.  One is "highlight-symbol" used for automatic highlighting after a
-;; delay, and the other is the built-in "hi-lock" used for highlighting using
-;; a key.  highlight-symbol's usage of faces is a bit broken which is why we
-;; also use hi-lock.
 
 ;;; Code:
 
@@ -30,9 +29,6 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
-
-(use-package highlight
-  :defer t)
 
 ;;; Highlight the line where the cursor is
 (use-package hl-line
@@ -42,70 +38,121 @@
   (global-hl-line-mode +1))
 
 
-;;; Highlight symbol under point automatically after a small delay.
-(when exordium-highlight-symbol
-  (use-package highlight-symbol
-    ;; N.B. the `highlight-symbol' package has not been updated for a while (at
-    ;; the time of writing this comment in 2024 last update was from 2016) and
-    ;; it forcibly defines its own alias for `highlight-symbol-at-point',
-    ;; clobbering the one delivered with Emacs in `hi-lock'. However, the
-    ;; `highlight-symbol' implementation is nicer, as it allows to remove
-    ;; highlighting with the same keybinding. Also the `highlight-symbol-mode'
-    ;; is the mode that is turned on (`hi-lock-mode' is not turned on), so
-    ;; let's keep that implementation, by ensuring load order.
-    :after (hi-lock)
-    ;; Also, the `highlight-symbol-flush' implementation is not accounting for
-    ;; `jit-lock-mode', which causes a few seconds delay when automatically
-    ;; highlighted symbols.  Call `font-lock-ensure' to speed things up, but
-    ;; limit it to the visible portion of a buffer.
-    :functions (exordium--highlight-symbol-ensure)
-    :init
-    (defun exordium--highlight-symbol-ensure ()
-      (when (eq (font-lock-value-in-major-mode font-lock-support-mode)
-              'jit-lock-mode)
-        (font-lock-ensure (window-start) (window-end))))
-
-    :diminish highlight-symbol-mode
-    :hook ((prog-mode . highlight-symbol-mode)
-           (prog-mode . highlight-symbol-nav-mode)
-           (help-mode . highlight-symbol-mode)
-           (help-mode . highlight-symbol-nav-mode))
-    :custom
-    (highlight-symbol-on-navigation-p t)
-    :config
-    (advice-add 'highlight-symbol-flush
-                :after #'exordium--highlight-symbol-ensure)))
-
-
-;;; Highlight/unhighlight symbol under point using a key.
-
-(defvar-local exordium-highlighted-symbols ()
-  "List of regexps for the currently highlighted symbols.
-This variable is buffer-local.")
-
-(use-package hi-lock
-  :ensure nil
-  :demand t
-  :autoload (hi-lock-regexp-okay)
-  :functions (exordium-highlight-symbol-at-point)
+(use-package symbol-overlay
+  :diminish
+  :commands (symbol-overlay-map-help)
+  :functions (exordium--extract-font-lock-keywords)
   :init
-  (defun exordium-highlight-symbol-at-point ()
-    "Toggle highlighting of occurrences of the symbol under point.
-Faces from `hi-lock-face-defaults' are used to perform the highlight, so up
-to the number of elements in that list of different symbols can
-be highlighted using different colors at one time."
-    (interactive)
-    (when-let* ((regexp (ignore-errors (hi-lock-regexp-okay
-                                        (find-tag-default-as-symbol-regexp)))))
-      (cond ((member regexp exordium-highlighted-symbols)
-             ;; Remove highlight for this symbol.
-             (setq exordium-highlighted-symbols (remove regexp exordium-highlighted-symbols))
-             (hi-lock-unface-buffer regexp))
-            (t
-             ;; Add highlight for this symbol.
-             (setq exordium-highlighted-symbols (cons regexp exordium-highlighted-symbols))
-             (hi-lock-face-symbol-at-point)))))
-  :bind  ("C-c C-SPC" . #'exordium-highlight-symbol-at-point))
+  (when exordium-highlight-symbol
+    (let ((form '(add-hook 'prog-mode-hook #'symbol-overlay-mode)))
+      (if (boundp 'prog-mode-hook)
+          (eval form)
+        (eval-after-load 'prog-mode `,form)))
+    (when exordium-help-extensions
+      (let ((form '(add-hook 'helpful-mode-hook #'symbol-overlay-mode)))
+      (if (boundp 'helpful-mode-hook)
+          (eval form)
+        (eval-after-load 'helpful-mode `,form)))))
+
+  ;; Remove temporary highlighting from Emacs Lisp and Lisp keywords.  N.B.,
+  ;; This matches only some of keywords, more basic for example `defun',
+  ;; `progn', or `cl-defmacro', but not constructs like `if', `setq' or `let'.
+  ;; The latter will still be highlighted.
+  (defun exordium--extract-font-lock-keywords (keywords)
+    "Extract regexp from `font-lock' style KEYWORDS."
+    (with-temp-buffer
+      (insert (caar keywords))
+      (when-let* ((begin (1+ (point-min)))
+                  ((< begin (point-max))))
+        (goto-char (1+ (point-min)))
+        (re-search-forward (rx "\\_>") nil t)
+        (when (< begin (point))
+          (concat "\\`" (buffer-substring-no-properties begin (point)))))))
+
+  (require 'lisp-mode)
+  (defconst exordium--symbol-overlay-ignore-keywords-el
+    (exordium--extract-font-lock-keywords lisp-el-font-lock-keywords-1))
+  (defconst exordium--symbol-overlay-ignore-keywords-cl
+    (exordium--extract-font-lock-keywords lisp-cl-font-lock-keywords-1))
+
+  (defun exordium--symbol-overlay-ignore-function-el (symbol)
+    "Determine whether SYMBOL should be ignored (Emacs-Lisp Language)."
+    (when exordium--symbol-overlay-ignore-keywords-el
+      (string-match-p exordium--symbol-overlay-ignore-keywords-el symbol)))
+
+  (defun exordium--symbol-overlay-ignore-function-cl (symbol)
+    "Determine whether SYMBOL should be ignored (Lisp Language)."
+    (when exordium--symbol-overlay-ignore-keywords-cl
+      (string-match-p exordium--symbol-overlay-ignore-keywords-cl symbol)))
+
+  :bind
+  ("C-c C-SPC" . #'symbol-overlay-put)
+
+  :config
+  (unless (get 'symbol-overlay-map
+               'exordium-original-value)
+    (put 'symbol-overlay-map
+         'exordium-original-value
+         (copy-keymap symbol-overlay-map)))
+
+  (if-let* ((template (alist-get exordium-highlight-symbol-map-modifier
+                                 '((meta . "M-%c")
+                                   (control . "C-%c")
+                                   (super . "s-%c")
+                                   (hyper . "H-%c"))))
+              (map (make-sparse-keymap)))
+      (progn
+        (map-keymap (lambda (key definition)
+                      (when (and (functionp definition) (< ?  key 127))
+                        (bind-key (format template key) definition map)))
+                    (get 'symbol-overlay-map
+                         'exordium-original-value))
+        (bind-keys :map map
+                   ((format template ?N) . symbol-overlay-switch-forward)
+                   ((format template ?P) . symbol-overlay-switch-backward))
+        (setq symbol-overlay-map map))
+    (bind-keys :map symbol-overlay-map
+               ("N" . symbol-overlay-switch-forward)
+               ("P" . symbol-overlay-switch-backward)))
+
+  (when exordium-help-extensions
+    ;; Like in `casual' bind help to "C-o", unless it has been bound above.
+    (unless (and (eq exordium-highlight-symbol-map-modifier 'control)
+                 (catch 'bound
+                   (map-keymap (lambda (key _)
+                                 (when (eq key ?o) (throw 'bound key)))
+                               (get 'symbol-overlay-map
+                                    'exordium-original-value))))
+      (bind-keys :map symbol-overlay-map
+                 ("C-o" . symbol-overlay-map-help))))
+
+  ;; Add ts-modes handling.  Do it here, as it can't be referred to a definiens
+  ;; in a definiendum.  The reason being that, when using :custom, the
+  ;; unevaluated definiendum is installed for setting when the relevant
+  ;; defcustom is evaluated.  The latter happens when feature is loaded.  This
+  ;; is nice as it allows to install a custom standard value for variable,
+  ;; without a need to set it to the standard.  However, at such a point
+  ;; there's no standard value for the variable (the definiens).
+  (dolist (elt (append
+                '((emacs-lisp-mode . exordium--symbol-overlay-ignore-function-el)
+                  (lisp-interaction-mode . exordium--symbol-overlay-ignore-function-el)
+                  (lisp-mode . exordium--symbol-overlay-ignore-function-cl))
+                (delq
+                 nil (mapcar
+                      (lambda (elt)
+                        (when-let* ((mode (car elt))
+                                    (ts-mode (intern (replace-regexp-in-string
+                                                      (rx "-mode" string-end)
+                                                      "-ts-mode"
+                                                      (symbol-name mode))))
+                                    ((not (eq ts-mode mode)))
+                                    ((fboundp ts-mode))
+                                    ((not (assq ts-mode
+                                                symbol-overlay-ignore-functions))))
+                          (cons ts-mode (cdr elt))))
+                      symbol-overlay-ignore-functions))))
+    (unless (assq (car elt) symbol-overlay-ignore-functions)
+      (push elt symbol-overlay-ignore-functions))))
 
 
 ;; Highlight color name and Hex values in buffer.

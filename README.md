@@ -139,7 +139,7 @@ Keybinding           | Description
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).
 <kbd>C--</kbd>       | Decrease font size (`text-scale-decrease`).
 <kbd>M-C-l</kbd>     | Switch back and forth between the 2 top buffers (from XEmacs).
-<kbd>C-c C-SPC</kbd> | Toggle highlight of the symbol under the cursor (up to 4 different symbols using different colors).
+<kbd>C-c C-SPC</kbd> | Toggle highlight of the symbol under the cursor (by default, up to 8 different symbols using different colors).
 
 Editing:
 
@@ -187,6 +187,23 @@ Tip: if you are looking for a particular key and you know it starts with a
 given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
 the list of keys starting with that prefix. For example <kbd>C-c C-h</kbd> lists
 all the keys starting with <kbd>C-c</kbd>.
+
+Highlighted symbols:
+
+When a symbol has been highlighted using <kbd>C-C C-SPC</kbd>
+(`symbol-overlay-put`) and a point is placed on the highlighted symbol extra
+keymap is active that allows for example to navigate and edit withing context
+of the symbol.
+
+A few example bindings:
+
+Keybinding     | Description
+-------------- |----------------------------------------------------------
+<kbd>M-n</kbd> | Jump to next location of highlighted symbol at point.
+<kbd>M-p</kbd> | Jump to previous location of highlighted symbol at point.
+<kbd>M-h</kbd> | Display bindings for highlighted symbol at point.
+
+You can change the modifier key (default: <kbd>M</kbd>) by customizing `exordium-highlight-symbol-map-modifier`.
 
 ## Projectile
 
