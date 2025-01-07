@@ -11,6 +11,9 @@ on:
       - '**.md'
       - '.gitignore'
 
+permissions:
+  checks: write
+
 jobs:
   ci-tests:
     runs-on: ${{ matrix.os }}
@@ -59,10 +62,18 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: success() || failure() # Always run even if the previous step fails
         with:
+          include_passed: true
           report_paths: '.emacs.d/modules/*.t.xml'
 
       - name: Verify no obsolete cl- functions
         run: '"${HOME}/.emacs.d/.ci/unit-test-cl.sh"'
+
+      - name: 'Checkout checkdoc-batch'
+        uses: actions/checkout@v4
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        with:
+          repository: 'pkryger/ckeckdoc-batch.el'
+          path: .emacs.d/checkdoc-batch
 
       - name: 'Lint: checkdoc'
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
@@ -76,6 +87,10 @@ jobs:
       - name: 'Lint: flycheck' # After compilation that should install all packages
         if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-flycheck.sh"'
+
+      - name: 'Lint: relint'
+        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        run: '"${HOME}/.emacs.d/.ci/batch-relint.sh"'
 
   pkryger-taps:
     runs-on: ${{ matrix.os }}

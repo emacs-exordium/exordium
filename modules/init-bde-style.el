@@ -429,7 +429,7 @@ If the current line is a #include, inserts a redundant include
 guard around it."
   (interactive)
   (let ((current-line (thing-at-point 'line)))
-    (cond ((string-match "^#include <\\([_\.a-z0-9]+\\)\.h>$" current-line)
+    (cond ((string-match "^#include <\\([_.a-z0-9]+\\)\\.h>$" current-line)
            (let ((file-name (match-string 1 current-line)))
              (save-excursion
                (beginning-of-line)
@@ -806,7 +806,7 @@ declaration or definition."
                 (message "Longest line is %d chars" longest-length))))))
       ;; Leave the cursor after the closing parenthese instead of on the opening
       ;; one, since most likely we want to add code after the arg list.
-      (when (looking-at "\\s\(")
+      (when (looking-at "\\s(")
         (end-of-thing 'arglist)))))
 
 (bind-key "C-c a" #'bde-align-fundecl c-mode-base-map)
@@ -879,7 +879,7 @@ call.  It puts one argument per line and aligns to the right."
                   (message "Longest line is %d chars" longest-length))))))))
     ;; Leave the cursor after the closing parenthese instead of on the opening
     ;; one, since most likely we want to add code after the arg list.
-    (when (looking-at "\\s\(")
+    (when (looking-at "\\s(")
       (forward-list 1))))
 
 (bind-key "C-c f" #'bde-align-funcall c-mode-base-map)

@@ -28,13 +28,13 @@ Use \\[iwyu-start-process-for] (substitution to \\[recompile]
 typically bound to g) to reparse recent file."
   (font-lock-add-keywords
    nil
-   `((,(concat "^\\(\- \\)?\\(#include\\) "
-               "\\(\"[-[:alnum:]_\\.\/]+\"\\|<[-[:alnum:]_\\.\/]+>\\) +"
+   `((,(concat "^\\(- \\)?\\(#include\\) "
+               "\\(\"[-[:alnum:]_./]+\"\\|<[-[:alnum:]_./]+>\\) +"
                "\\(//.*\\)$")
       (2 font-lock-preprocessor-face)
       (3 font-lock-string-face)
       (4 font-lock-comment-face))
-     (,(concat "\\(^\\|\\(for \\)\\)\\(\\(/[-[:alnum:]_\\.]+\\)+\\."
+     (,(concat "\\(^\\|\\(for \\)\\)\\(\\(/[-[:alnum:]_.]+\\)+\\."
                (regexp-opt '("h" "hh" "hpp" "c" "cc" "cpp"))
                "\\)")
       (3 font-lock-function-name-face)))))
@@ -69,7 +69,7 @@ returned as single element."
   (let* ((quote-match
           (lambda (list start)
             (cl-position-if
-             (lambda (x) (string-match "\\\"" x))
+             (lambda (x) (string-match (rx "\\\"") x))
              list
              :start start)))
          (args (cdr (split-string command)))

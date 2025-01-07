@@ -25,7 +25,18 @@
     (should-not (string-match-p pattern "cl-defunx"))))
 
 
+(ert-deftest test-exordium-hex-colors-font-lock-keywords ()
+  (let ((regexp (caar exordium-hex-colors-font-lock-keywords)))
+    (should (string-match-p regexp " #1Aa"))
+    (should (string-match-p regexp " #Aa12Bb"))
+    (should (string-match-p regexp " #a1ABb2cC3"))
+    (should (string-match-p regexp " #1aAb2BC3cDd4"))
+    (should-not (string-match-p regexp "&#1Aa"))
+    (should-not (string-match-p regexp "&#Aa12Bb"))
+    (should-not (string-match-p regexp "&#a1ABb2cC3"))
+    (should-not (string-match-p regexp "&#1aAb2BC3cDd4"))))
 
+
 (provide 'init-highlight.t)
 
 ;;; init-highlight.t.el ends here

@@ -175,7 +175,7 @@ With argument, switch to the second choice.  For example, from a
                                               (directory-file-name base-dir))
                                              test-path))))))
                              ;; If test file => look in parent and group directories
-                             ((string-match ".*/t\\(e\\)?st/.*\.[gt]\.cpp$"
+                             ((string-match ".*/t\\(e\\)?st/.*\\.[gt]\\.cpp\\'"
                                             (buffer-file-name))
                               (let ((base-dir
                                     (file-name-directory

@@ -113,7 +113,9 @@ melpa-stable.")
 
 
 (when (file-accessible-directory-p exordium-taps-root)
-  (dolist (tap (nreverse (directory-files exordium-taps-root t "^[^\.].*")))
+  (dolist (tap (nreverse (directory-files
+                          exordium-taps-root t
+                          directory-files-no-dot-files-regexp)))
     (when (file-accessible-directory-p tap)
       (when-let* ((tapped (file-name-concat tap exordium-before-init))
                   ((file-readable-p tapped)))
@@ -284,13 +286,13 @@ Also discard .elc without corresponding .el."
                      exordium-local-dir))
     (when (file-directory-p dir)
       ;; Recompile
-      (dolist (el (directory-files dir t "\\.el$"))
+      (dolist (el (directory-files dir t "\\.el\\'"))
         (let ((elc (byte-compile-dest-file el)))
           (when (and (file-exists-p elc)
                      (file-newer-than-file-p el elc))
             (byte-compile-file el))))
       ;; Discard .elc singletons
-      (dolist (elc (directory-files dir t "\\.elc$"))
+      (dolist (elc (directory-files dir t "\\.elc\\'"))
         (let ((el (concat (concat (file-name-sans-extension elc) ".el"))))
           (unless (file-exists-p el)
             (warn "Removing singleton .elc file: %s" elc)

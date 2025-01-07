@@ -26,7 +26,7 @@ Otherwise return nil."
                          (derived-mode-p mode))
                        exordium-inhibit-line-numbers-modes))
       (and exordium-inhibit-line-numbers-star-buffers
-           (eq 0 (string-match "*" (buffer-name))))
+           (string-match (rx string-start "*") (buffer-name)))
       (and exordium-inhibit-line-numbers-buffer-size
            (> (buffer-size) exordium-inhibit-line-numbers-buffer-size))))
 
