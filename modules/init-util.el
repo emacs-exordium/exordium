@@ -390,6 +390,7 @@ buffer."
       (not (cl-member (buffer-name) '("scratch-" "*scratch")
                       :test (lambda (buffer-name prefix)
                               (string-prefix-p prefix buffer-name))))
+      (equal (point-min) (point-max))
       (yes-or-no-p
 	   (format "Buffer %S has not been written to a file; kill it? "
 		       (buffer-name (current-buffer))))))

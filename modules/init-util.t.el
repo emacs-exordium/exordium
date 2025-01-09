@@ -241,6 +241,7 @@ Return the BODY return value"
         (progn
           (should buffer)
           (with-current-buffer buffer
+            (insert "test")
             (mocklet ((yes-or-no-p => t :times 1))
               (should (exordium--scratch-kill-buffer-query-function))))
           (with-current-buffer buffer
@@ -261,6 +262,7 @@ Return the BODY return value"
         (progn
           (should buffer)
           (with-current-buffer buffer
+            (insert "test")
             (mocklet ((yes-or-no-p => t :times 1))
               (should (exordium--scratch-kill-buffer-query-function))))
           (with-current-buffer buffer
@@ -283,6 +285,18 @@ Return the BODY return value"
       (when (and file (file-exists-p file))
         (delete-file file)))))
 
+(ert-deftest test-exordium--scratch-kill-buffer-query-function-4 ()
+  (let ((buffer (with-current-buffer (scratch)
+                  (current-buffer))))
+    (unwind-protect
+        (progn
+          (should buffer)
+          (with-current-buffer buffer
+            (mocklet ((yes-or-no-p not-called))
+              (should (exordium--scratch-kill-buffer-query-function)))))
+      (when buffer
+        (kill-buffer buffer))
+        (should-not (buffer-live-p buffer)))))
 
 
 (provide 'init-util.t)
