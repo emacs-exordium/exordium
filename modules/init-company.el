@@ -2,6 +2,17 @@
 
 ;;; Commentary:
 ;;
+;; ----------------- -------------------------------------------------------
+;; Key               Definition
+;; ----------------- -------------------------------------------------------
+;; C-.               Force trigger company-complete.
+;; C-\               Switch to other backend (`company-other-backend').
+;; C-M-h             Show doc buffer for current candidate (`company-show-doc-buffer').
+;; C-M-v             Scroll doc buffer up (`scroll-other-window').
+;; C-M-S-v           Scroll doc buffer down ('scroll-other-window-down').
+;; C-h or <f1>       Show quick help for current candidate (`company-posframe-quickhelp-toggle').
+;; C-S-v or <f2>     Scroll quick help up (`company-posframe-quickhelp-scroll-up').
+;; M-V or <f3>       Scroll quick help down (`company-posframe-quickhelp-scroll-down').
 
 ;;; Code:
 (eval-when-compile
@@ -37,7 +48,8 @@
 
   :bind
   (("C-." . #'company-complete)
-   ("C-c C-\\" . #'company-other-backend)))
+   :map company-active-map
+   ("C-\\" . #'company-other-backend)))
 
 (use-package company
   :diminish "CA"
@@ -273,6 +285,28 @@ See https://www.conventionalcommits.org for details."
   (company-statistics-mode)
   (add-to-list 'company-transformers
                'company-sort-by-backend-importance 'append))
+
+(use-package company-posframe
+  :demand t
+  :diminish
+  :init
+  (use-package company
+    :defer t
+    :commands (company-show-doc-buffer))
+  :commands (company-posframe-quickhelp-toggle
+             company-posframe-quickhelp-scroll-down
+             company-posframe-quickhelp-scroll-up)
+  :bind
+  (:map company-posframe-active-map
+   ("C-h" . #'company-posframe-quickhelp-toggle)
+   ("C-M-h" . #'company-show-doc-buffer)
+   ("C-S-v" . #'company-posframe-quickhelp-scroll-up)
+   ("M-V" . #'company-posframe-quickhelp-scroll-down))
+  :custom
+  (company-posframe-quickhelp-delay 0.2)
+  (company-posframe-quickhelp-x-offset 5)
+  :config
+  (company-posframe-mode 1))
 
 (provide 'init-company)
 

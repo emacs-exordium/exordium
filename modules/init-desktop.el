@@ -9,6 +9,8 @@
 (require 'savehist)
 (require 'desktop)
 
+(add-to-list 'desktop-minor-mode-table '(company-posframe-mode nil))
+
 (defun exordium--restore-desktop ()
   "Restore desktop."
   (setq desktop-path (list user-emacs-directory))
