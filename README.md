@@ -349,6 +349,7 @@ Keybinding          | Description
 <kbd>M-y</kbd>      | Select yank pop.
 <kbd>C-x b</kbd>    | Switch buffer.
 <kbd>C-x C-f</kbd>  | Find file.
+<kbd>C-x c g</kbd>  | Google suggest.
 
 #### Other Helm tools
 

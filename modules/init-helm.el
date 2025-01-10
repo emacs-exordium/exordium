@@ -18,6 +18,7 @@
 ;; C-S-a             Search with Ag: in current project root.
 ;;                   See also`init-helm-porojectile.el'.
 ;; C-S-s             Helm Swoop
+;; C-x c g           Helm Google suggest.
 
 ;;; Code:
 
@@ -28,6 +29,9 @@
 
 (use-package helm
   :diminish
+  :bind
+  (:map helm-command-map
+   ("g" . #'helm-google-suggest))
   :custom
   (helm-split-window-default-side 'other)
   (helm-split-window-other-side-when-one-window 'right)
