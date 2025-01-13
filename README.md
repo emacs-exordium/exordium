@@ -54,7 +54,8 @@ might want to check these links:
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
   [Forge](https://magit.vc/manual/forge/) (work with Git forges);
-  [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer).
+  [Git Gutter](https://github.com/syohex/emacs-git-gutter) (diffs in buffer);
+  [difftastic](https://github.com/pkryger/difftastic.el) (structural diffs).
 * C++:
   * Formatting keys and snippets for the
     [BDE](https://github.com/bloomberg/bde) code style.
@@ -403,6 +404,17 @@ Keybinding            | Description
 <kbd>C-c g b</kbd>    | Toggles git blame mode on and off (`magit-blame-mode`).
 <kbd>C-c g c</kbd>    | Clone a repository (`magit-clone`).
 <kbd>C-c g g</kbd>    | Git grep (`vc-git-grep`) or (`helm-grep-do-git-grep`).
+
+To perform structural diffs you need to install an external tool
+[`difftastic`](https://difftastic.wilfred.me.uk) (see the web page for
+details).  Once `difftastic` has been installed, and you are in either
+`magit-diff` transient, or `magit-blame` transient, or in
+`magit-blame-read-only-mode`:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>D</kbd>          | Run Difftastic diff (guessing what to diff from context) (`difftastic-magit-diff`).
+<kbd>S</kbd>          | Run Difftastic show (`difftastic-magit-show`).
 
 Forge keys:
 
