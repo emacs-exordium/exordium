@@ -45,6 +45,7 @@
 
 
 (use-package helpful
+  :functions (exordium--helpful-with-affixation)
   :init
   (use-package helm
     :defer t
@@ -59,6 +60,12 @@ Otherwise pop to buffer (presumably in a new window)."
         (pop-to-buffer-same-window buffer)
       (pop-to-buffer buffer)))
 
+  (defun exordium--helpful-with-affixation (orig-fun &rest args)
+    "Ensure `helm-symbol-completion-table-affixation' is used."
+    (let ((completion-extra-properties
+           '(:affixation-function helm-symbol-completion-table-affixation)))
+      (apply orig-fun args)))
+
   :custom
   ;; By default `show-paren-mode' is disabled in modes deriving from
   ;; `special-mode'.  Enable it for `helpful' if it doesn't match
@@ -72,6 +79,7 @@ Otherwise pop to buffer (presumably in a new window)."
                           (list 'or '(derived-mode . helpful-mode)
                                 show-paren-predicate)))
   (helpful-switch-buffer-function #'exordium--helpful-pop-to-buffer)
+  (completions-detailed t)
 
   :bind
   (;; Note that the built-in `describe-function' includes both functions
@@ -90,7 +98,10 @@ Otherwise pop to buffer (presumably in a new window)."
    ("C-h C" . #'helpful-command)
    :map helpful-mode-map
    ("C-c C-d" . #'helpful-at-point)
-   ("C-c C-o" . #'exordium-browse-url-at-point)))
+   ("C-c C-o" . #'exordium-browse-url-at-point))
+  :config
+  (advice-add 'helpful--read-symbol
+              :around #'exordium--helpful-with-affixation))
 
 
 (when (version< "29" emacs-version) ;; Since Emacs-29
