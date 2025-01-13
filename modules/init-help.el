@@ -11,10 +11,11 @@
 ;; C-h v             Show help for variable
 ;; C-h k             Show help for interactive command bound to key sequence
 ;; C-h C             Show help for interactive command
+;; C-j               Show help for currentlyselected candidate, when completing
+;;                   read for `helpful' commands
 ;; C-c C-d           Show help for thing at point (in `emacs-lisp-mode')
 ;; C-o               Show a `casual' transient, which one depends on mode.
 ;; C-c =             Run `difftastic-dired-diff' in `dired-mode'.
-
 
 
 ;;; Code:
@@ -45,13 +46,18 @@
 
 
 (use-package helpful
-  :functions (exordium--helpful-with-affixation)
+  :functions (exordium--helpful-persistent-action
+              exordium--helm-helpful-completing-read)
   :init
   (use-package helm
     :defer t
     :custom
     (helm-describe-variable-function #'helpful-variable)
     (helm-describe-function-function #'helpful-function))
+  (use-package helm-mode
+    :ensure helm
+    :defer t
+    :autoload (helm-completing-read-default-handler))
 
   (defun exordium--helpful-pop-to-buffer (buffer)
     "Pop to BUFFER in the same window if it is a Helpful window.
@@ -60,11 +66,49 @@ Otherwise pop to buffer (presumably in a new window)."
         (pop-to-buffer-same-window buffer)
       (pop-to-buffer buffer)))
 
-  (defun exordium--helpful-with-affixation (orig-fun &rest args)
-    "Ensure `helm-symbol-completion-table-affixation' is used."
-    (let ((completion-extra-properties
-           '(:affixation-function helm-symbol-completion-table-affixation)))
-      (apply orig-fun args)))
+  (defun exordium--helpful-persistent-action (type)
+    "Generate a function that adds `:persistent-action' TYPE to args."
+    (lambda (&rest args)
+      (plist-put (plist-put (car args)
+                            :persistent-help
+                            (format "Describe %s" type))
+                 :persistent-action
+                 (lambda (candidate)
+                   (pcase (intern-soft candidate)
+                     ((and (pred fboundp) (pred boundp) sym)
+                      (if (eq type 'variable)
+                          (helm-describe-variable sym)
+                        (helm-describe-function sym)))
+                     ((and (pred boundp) sym)
+                      (helm-describe-variable sym))
+                     ((and (pred fboundp) sym)
+                      (helm-describe-function sym))
+                     ((and (pred facep) sym)
+                      (helm-describe-face sym)))))))
+
+  (defun exordium--helm-helpful-completing-read (&rest args)
+                                        ; checkdoc-params: (args)
+    "Ensure affixation and persistent actions are used."
+    (let* ((current-command (or (helm-this-command) this-command))
+           (str-command (if current-command
+                            (helm-symbol-name current-command)
+                          "completing-read"))
+           (buf-name (format "*%s*" str-command))
+           (type (cond
+                  ((eq current-command 'helpful-variable) 'variable)
+                  ((eq current-command 'helpful-symbol) 'symbol)
+                  (t 'function)))
+           (persistent-action (exordium--helpful-persistent-action type)))
+      (unwind-protect
+          (let ((completion-extra-properties
+                 '(:affixation-function
+                   helm-symbol-completion-table-affixation)))
+            (advice-add 'helm-comp-read
+                        :filter-args persistent-action)
+            (apply #'helm-completing-read-default-handler
+                   (append args
+                           (list str-command buf-name))))
+        (advice-remove 'helm-comp-read persistent-action))))
 
   :custom
   ;; By default `show-paren-mode' is disabled in modes deriving from
@@ -100,8 +144,15 @@ Otherwise pop to buffer (presumably in a new window)."
    ("C-c C-d" . #'helpful-at-point)
    ("C-c C-o" . #'exordium-browse-url-at-point))
   :config
-  (advice-add 'helpful--read-symbol
-              :around #'exordium--helpful-with-affixation))
+  (require 'helm-mode)
+  (dolist (fun '(helpful-callable
+                 helpful-command
+                 helpful-function
+                 helpful-macro
+                 helpful-variable
+                 helpful-symbol))
+    (add-to-list 'helm-completing-read-handlers-alist
+                 (cons fun #'exordium--helm-helpful-completing-read))))
 
 
 (when (version< "29" emacs-version) ;; Since Emacs-29
