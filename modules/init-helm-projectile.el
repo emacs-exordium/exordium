@@ -86,6 +86,40 @@ project's file using completion and show it in another window."
   (helm-add-action-to-source "ripgrep (rg) in project `C-S-r'"
                              #'exordium-helm-projectile--switch-project-and-do-rg
                              helm-source-projectile-projects)
+  ;; The following lambda is constructed similarly to what
+  ;; `helm-completing-read-default-1' does.  However, it's calculated once on
+  ;; startup (when `helm-projectile' package is configured) and not on each
+  ;; `helm-projectile-switch-to-buffer'/`helm-projectile' call (which is how
+  ;; original behaves).  This has been done in an attempt to making this
+  ;; solution slightly simpler as we need to modify a helm-source prototype
+  ;; which would be cumbersome to do dynamically.  Caveat is that it doesn't
+  ;; let user to use their desired annotation or affixation function via
+  ;; `completion-extra-properties' when `completions-detailed' is non-nil.
+  (when exordium-help-extensions
+    (let* ((metadata (completion-metadata "" 'internal-complete-buffer nil))
+           (category (completion-metadata-get metadata 'category))
+           (sort-fn (unless (eq helm-completion-style 'helm-fuzzy)
+                      (or
+                       (completion-metadata-get
+                        metadata 'display-sort-function)
+                       (lambda (candidates)
+                         (sort candidates #'helm-generic-sort-fn)))))
+           (metadata (assoc-default category helm-completing-read-extra-metadata))
+           (afun (completion-metadata-get metadata 'annotation-function))
+           (afix (completion-metadata-get metadata 'affixation-function)))
+      (when (or afun afix)
+        (helm-set-attr
+         'filtered-candidate-transformer
+         (list
+          'helm-skip-boring-buffers
+          (lambda (candidates _source)
+            (helm-completion--decorate
+             (if (and sort-fn (> (length helm-pattern) 0))
+                 (funcall sort-fn candidates)
+               candidates)
+             afun afix category)))
+         helm-source-projectile-buffers-list))))
+
   (when exordium-helm-everywhere
     (helm-projectile-on)))
 
