@@ -54,19 +54,104 @@
 (use-package helm
   :diminish
   :when exordium-helm-everywhere
+  :functions (exordium--helm-swith-to-buffer-update-sources
+              exordium--helm-switch-to-buffer-completing-read)
+  :init
+  (use-package helm-lib
+    :ensure helm
+    :defer t
+    :autoload (helm-this-command
+               helm-symbol-name
+               helm-get-attr
+               helm-set-attr
+               helm-mklist))
+  (use-package helm-mode
+    :ensure helm
+    :defer t
+    :autoload (helm-completing-read-default-handler))
+  (use-package helm-source
+    :ensure helm
+    :defer t
+    :autoload (helm-make-source))
+
+  (defun exordium--helm-swith-to-buffer-update-sources (&rest args)
+    "Copy relevant attributes from a `helm-source-buffers' to `:sources' in ARGS."
+    (if-let* ((args (car args))
+              ((plistp args))
+              (sources (cl-remove-if (lambda (source)
+                                       (equal "Unknown candidate"
+                                              (helm-get-attr 'name source)))
+                                     (plist-get args :sources)))
+              (source-buffers (helm-make-source "Buffers" 'helm-source-buffers)))
+        (progn
+          (dolist (source sources)
+            (helm-set-attr 'filtered-candidate-transformer
+                           (append '(helm-skip-boring-buffers)
+                                   (helm-get-attr 'filtered-candidate-transformer
+                                                  source))
+                           source)
+            (dolist (attr '(keymap
+                            action
+                            persistent-action
+                            persistent-help
+                            help-message
+                            match
+                            mode-line
+                            heder-line
+                            find-file-target))
+              (helm-set-attr attr
+                             (helm-get-attr attr source-buffers)
+                             source)))
+          (plist-put args
+                     :sources (append sources
+                                      (list helm-source-buffer-not-found))))
+      args))
+
+  (defun exordium--helm-switch-to-buffer-completing-read (&rest args)
+                                        ; checkdoc-params: (args)
+  "Ensure `helm-source-buffers' attributes are used."
+  (let* ((current-command (or (helm-this-command) this-command))
+         (str-command (if current-command
+                          (helm-symbol-name current-command)
+                        "completing-read"))
+         (buf-name (format "*%s*" str-command)))
+    (unwind-protect
+        (progn
+          (advice-add
+           'helm
+           :filter-args #'exordium--helm-swith-to-buffer-update-sources)
+
+          (apply #'helm-completing-read-default-handler
+                 (append args
+                         (list str-command buf-name))))
+      (advice-remove
+       'helm #'exordium--helm-swith-to-buffer-update-sources))))
+
   :custom
   (history-delete-duplicates t)
   (helm-M-x-always-save-history t)
   (helm-M-x-show-short-doc t)
+  (completions-detailed exordium-help-extensions)
+
   :bind
   (([remap execute-extended-command] . #'helm-M-x) ; M-x
    ([remap yank-pop] . #'helm-show-kill-ring) ; M-y
    ([remap find-file] . #'helm-find-files) ; C-x C-f
    ([remap find-file-read-only] . #'helm-recentf)) ; C-x C-r
+
   :config
   ;; Do not show these files in helm buffer
-  (add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
-  (add-to-list 'helm-boring-file-regexp-list "\\.log\\.")
+  (dolist (pat (list (rx ".tsk" string-end)
+                     (rx ".log.")))
+    (add-to-list 'helm-boring-file-regexp-list pat))
+
+  (require 'helm-mode)
+  (dolist (fun '(switch-to-buffer
+                 switch-to-buffer-other-frame
+                 switch-to-buffer-other-tab
+                 switch-to-buffer-other-window))
+    (add-to-list 'helm-completing-read-handlers-alist
+                 (cons fun #'exordium--helm-switch-to-buffer-completing-read)))
   (helm-mode))
 
 (use-package helm-descbinds
