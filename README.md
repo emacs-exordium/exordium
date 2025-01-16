@@ -455,6 +455,7 @@ Keybinding            | Description
 <kbd>C-c M-p</kbd>    | in `forge-post-mode`: Preview post with markdown (`exordium-forge-markdown-preview`)
 <kbd>C-c M-d</kbd>    | in `forge-post-mode`: Show diff for pull request (`exordium-forge-diff-for-pullreq`)
 <kbd>C-c M-r</kbd>    | in `forge-post-mode`: Submit current post (a Pull Request) as a draft (`exordium-forge-post-submit-draft`)
+<kbd>C-c M-c</kbd>    | in `forge-post-mode`: Insert messages from all commits that are in this pull request (`exordium-forge-insert-pullreq-commit-messages`)
 <kbd>C-c M-r</kbd>    | in `magit-status-mode` and in `forge-topic-mode`: Mark a Pull Request at point as ready for review (`exordium-forge-mark-ready-for-rewiew`)
 
 

@@ -10,6 +10,8 @@
 ;; C-c M-d           Forge show diff for pull request (in `forge-post-mode')
 ;; C-c M-r           Forge mark pull request at point mark as ready for review
 ;;                   (in `magit-status-mode' and in `forge-topic-mode')
+;; C-c M-c           Insert messages from all commits that are part of
+;;                   a pull-request (in `forge-post-mode')
 
 ;;; Code:
 
@@ -36,6 +38,7 @@ to displaying new-pullreq buffer.")
               exordium-forge-markdown-preview
               exordium-forge-post-submit-draft
               exordium-forge-mark-ready-for-rewiew
+              exordium-forge-insert-pullreq-commit-messages
               exordium--forge-diff-for-pullreq
               exordium--forge-store-window-configuration
               exordium--forge-kill-diff-buffer-restore-window-configuration)
@@ -50,6 +53,10 @@ to displaying new-pullreq buffer.")
     :defer t
     :commands (forge-post-submit)
     :autoload (forge-post-at-point))
+  (use-package forge-commands
+    :ensure forge
+    :defer t
+    :autoload (forge-create-pullreq--read-args))
   (use-package forge-topic
     :ensure forge
     :defer t
@@ -176,6 +183,24 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
                      :username username :auth 'forge :host host))))
         (message "PR #%s is ready for review." number)
       (user-error "Nothing at point that is a PR or mark failed")))
+
+
+  (defun exordium-forge-insert-pullreq-commit-messages (source target)
+    "Insert messages from all commits that are part of a pull-request.
+Commits that are part of accessible from SOURCE but not from
+TARGET.  When called interactively SOURCE and TARGET are by
+default the same as the ones in forge's pull-request buffer. When
+called with a prefix arg or not from a pull-request buffer then
+ask for SOURCE and TARGET."
+    (interactive (if (and forge--buffer-base-branch forge--buffer-head-branch
+                          (not current-prefix-arg))
+                     (list forge--buffer-head-branch forge--buffer-base-branch)
+                  (forge-create-pullreq--read-args)))
+    (dolist (commit (magit-git-lines "rev-list" "--left-only"
+                                     (format "%s...%s" source target)))
+      (insert "## ")
+      (magit-rev-insert-format "%B" commit)))
+
 
   (use-package magit
     :defer t
@@ -188,6 +213,7 @@ USERNAME, AUTH, and HOST behave as for `ghub-request'."
    ("C-c M-p" . #'exordium-forge-markdown-preview)
    ("C-c M-r" . #'exordium-forge-post-submit-draft)
    ("C-c M-d" . #'exordium--forge-diff-for-pullreq)
+   ("C-c M-c" . #'exordium-forge-insert-pullreq-commit-messages)
    :map forge-topic-mode-map
    ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew))
 
