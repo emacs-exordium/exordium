@@ -7,9 +7,10 @@
 ;; ----------------- ---------------------------------------------------------
 ;; C-c <arrow>       Move cursor between windows (similar to C-x o).
 ;; C-c shift-<arrow> Move the windows themselves, e.g. swap them.
-;; M-p <number>      Ace-window: M-p displays a number in each window, and you
-;;                   just have to type the number you want.  If there are only
-;;                   2 windows, it cycles between them.
+;; M-o <letter>      Ace-window: M-o displays a letter in each window, and you
+;;                   just have to type the letter you want.  If there are only
+;;                   2 windows, it cycles between them.  When called with
+;;                   prefix arg, swap windows.
 ;;
 ;; Simple test:
 ;; - C-x 2           split the screen between 2 windows one on top of the other

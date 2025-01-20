@@ -19,7 +19,8 @@ SOURCE is the source file used to compile with
     (let (matches
           (not-errors
            (list
-            (rx "the function ‘exordium--require-load’ might not be defined at runtime."))))
+            (rx "the function ‘exordium--require-load’ might not be defined at runtime.")
+            (rx "the function `exordium--require-load' might not be defined at runtime."))))
       (when-let* (((re-search-forward (rx-to-string `(seq " -- " ,source line-end))
                                       nil t))
                   (pattern (rx-to-string

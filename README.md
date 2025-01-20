@@ -48,8 +48,10 @@ might want to check these links:
   [Avy](https://github.com/abo-abo/avy) (jump to visible text in 2 or 3 key-strokes);
   [ace-window](https://github.com/abo-abo/ace-window) (quick jump between windows);
   [helpful](https://github.com/Wilfred/helpful) (a better Emacs *help* buffer);
-  [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings).
-  [Treesitter]()(Parser-based font lock.)
+  [casual](https://github.com/kickingvegas/casual) (A collection of opinionated
+  keyboard-driven user interfaces for various built-in Emacs modes);
+  [which-key](https://github.com/justbur/emacs-which-key) (display available keybindings);
+  [Treesitter]()(Parser-based font lock).
 * Projects: [Projectile](http://batsov.com/projectile) (project-based file
   management tool).
 * Git: [Magit](http://magit.vc) (git UI);
@@ -175,7 +177,7 @@ Keybinding              | Description
 ------------------------|----------------------------------------------------------
 <kbd>C-c ARROW</kbd>    | Move cursor between windows.
 <kbd>C-c S-ARROW</kbd>  | Move the windows themselves.
-<kbd>M-p NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
+<kbd>M-o NUMBER</kbd>   | Jump to the specified window number using [ace-window](https://github.com/abo-abo/ace-window). If you only have 2 windows, cycle between them.
 
 Auto-complete/Company:
 
@@ -198,13 +200,36 @@ of the symbol.
 
 A few example bindings:
 
-Keybinding     | Description
--------------- |----------------------------------------------------------
-<kbd>M-n</kbd> | Jump to next location of highlighted symbol at point.
-<kbd>M-p</kbd> | Jump to previous location of highlighted symbol at point.
-<kbd>M-h</kbd> | Display bindings for highlighted symbol at point.
+Keybinding                       | Description
+-------------------------------- |----------------------------------------------------------
+<kbd>M-n</kbd>                   | Jump to next location of highlighted symbol at point.
+<kbd>M-p</kbd>                   | Jump to previous location of highlighted symbol at point.
+<kbd>M-h</kbd> or <kbd>C-o</kbd> | Display bindings for highlighted symbol at point.
 
 You can change the modifier key (default: <kbd>M</kbd>) by customizing `exordium-highlight-symbol-map-modifier`.
+
+## Help extensions
+Exordium provides a few help extensions that enhance default Emacs
+configuration presenting user with more information. All of them are enabled by
+setting `exordium-help-extensions` to t. Noteably, the following are turned on:
+
+- [which-key](https://github.com/justbur/emacs-which-key) - display available
+  keybindings after a short while (for example type <kbd>C-x</kbd> and wait a
+  second,
+- [casual](https://github.com/kickingvegas/casual) - a collection of
+  opinionated keyboard-driven user interfaces for various built-in Emacs modes,
+- [helpful](https://github.com/Wilfred/helpful) - an alternative to the
+  built-in Emacs help that provides much more contextual information.
+
+Keybinding          | Description
+------------------- |----------------------------------------------------------
+<kbd>C-o</kbd>      | Display a transient with bindings for a `casual` user of `org-agenda`, `bookmark`, `calc`, `calendar`, `dired`, `ibuffer`, `info`, `isearch`, `rebuilder`, `symbol-overlay` or a Casual EditKit menu.
+<kbd>C-h f</kbd>    | Show `helpful` buffer for function, macro, or a special form (`helpful-callable`).
+<kbd>C-h F</kbd>    | Show `helpful` buffer for function (`helpful-function`).
+<kbd>C-h v</kbd>    | Show `helpful` buffer for variable (`helpful-variable`).
+<kbd>C-h C</kbd>    | Show `helpful` buffer for interactive command (`helpful-command`).
+<kbd>C-c C-d</kbd>  | Show `helpful` buffer for thing at point, when in `emacs-lisp-mode` (`helpful-thing-at-point`).
+<kbd>C-j</kbd>      | Show `helpful` buffer for currently selected candidate, when completing read for `helpful` commands.
 
 ## Projectile
 
@@ -415,6 +440,12 @@ Keybinding            | Description
 ----------------------|-----------------------------------------------------------
 <kbd>D</kbd>          | Run Difftastic diff (guessing what to diff from context) (`difftastic-magit-diff`).
 <kbd>S</kbd>          | Run Difftastic show (`difftastic-magit-show`).
+
+or when you are in `dired-mode`:
+
+Keybinding            | Description
+----------------------|-----------------------------------------------------------
+<kbd>C-c =</kbd>      | Run Difftastic (`difftastic-dired-diff`).
 
 Forge keys:
 
