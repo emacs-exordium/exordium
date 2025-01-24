@@ -6,7 +6,7 @@
 ;; Key               Definition
 ;; ----------------- -------------------------------------------------------
 ;; C-.               Force trigger company-complete.
-;; C-\               Switch to other backend (`company-other-backend').
+;; C-o or C-\        Switch to other backend (`company-other-backend').
 ;; C-M-h             Show doc buffer for current candidate (`company-show-doc-buffer').
 ;; C-M-v             Scroll doc buffer up (`scroll-other-window').
 ;; C-M-S-v           Scroll doc buffer down ('scroll-other-window-down').
@@ -49,7 +49,8 @@
   :bind
   (("C-." . #'company-complete)
    :map company-active-map
-   ("C-\\" . #'company-other-backend)))
+   ("C-\\" . #'company-other-backend)
+   ("C-o" . #'company-other-backend)))
 
 (use-package company
   :diminish "CA"

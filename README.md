@@ -185,7 +185,7 @@ Keybinding                          | Description
 ------------------------------------|------------------------------------------------------------------------------------------
 <kbd>C-.</kbd>                      | Force trigger auto-complete/company-complete.
 <kbd>ESC</kbd>                      | Abort auto-complete/company-complete.
-<kbd>C-\\</kbd>                     | Company only: switch to other backend (`company-other-backend`)
+<kbd>C-o</kbd> or <kbd>C-\\</kbd>   | Company only: switch to other backend (`company-other-backend`)
 <kbd>C-M-h</kbd>                    | Company only: show doc buffer for current candidate (`company-show-doc-buffer`)
 <kbd>C-M-v</kbd>                    | Company only: scroll doc buffer up (`scroll-other-window`)
 <kbd>C-M-S-v</kbd>                  | Company only: scroll doc buffer down (`scroll-other-window-down`)
