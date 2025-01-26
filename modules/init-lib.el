@@ -12,6 +12,8 @@
 (exordium-require 'init-prefs)
 
 (require 'cl-lib)
+
+(use-package compat)
 
 ;;; Files
 

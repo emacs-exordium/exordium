@@ -174,41 +174,44 @@ Uses `current-date-time-format' for the formatting the date/time."
 
 ;;; Duplicate lines
 
-(defun duplicate-line-or-region (arg)
-  "Duplicate current line or region, leaving point in lower line.
-When called with ARG, do this that many times."
-  (interactive "*p")
-  ;; Save the point for undo
-  (setq buffer-undo-list (cons (point) buffer-undo-list))
-  (let ((bol (if mark-active (region-beginning)
-               (save-excursion (beginning-of-line) (point))))
-        eol
-        (num-lines (if mark-active
-                       (count-lines (region-beginning) (region-end))
-                     1))
-        (col (current-column)))
-    (save-excursion
-      (if mark-active
-          (setq eol (region-end))
-        (end-of-line)
-        (setq eol (point)))
-      ;; Disable the recording of undo information
-      (let ((line (buffer-substring bol eol))
-            (buffer-undo-list t))
-        ;; Insert the line arg times
-        (dotimes (_i (if (> arg 0) arg 1))
-          (unless (string-suffix-p "\n" line)
-            (newline))
-          (insert line)))
-      ;; Create the undo information
-      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
-    ;; Move the point to the lowest line
-    (forward-line (* arg num-lines))
-    (when (= num-lines 1)
-      ;; Leave the cursor an the same column if we duplicated 1 line
-      (move-to-column col))))
+(if (fboundp 'duplicate-dwim) ;; Since Emacs-29
+    (bind-key "C-c d" #'duplicate-dwim)
 
-(bind-key "C-c d" #'duplicate-line-or-region)
+  (defun duplicate-line-or-region (arg)
+    "Duplicate current line or region, leaving point in lower line.
+When called with ARG, do this that many times."
+    (interactive "*p")
+    ;; Save the point for undo
+    (setq buffer-undo-list (cons (point) buffer-undo-list))
+    (let ((bol (if mark-active (region-beginning)
+                 (save-excursion (beginning-of-line) (point))))
+          eol
+          (num-lines (if mark-active
+                         (count-lines (region-beginning) (region-end))
+                       1))
+          (col (current-column)))
+      (save-excursion
+        (if mark-active
+            (setq eol (region-end))
+          (end-of-line)
+          (setq eol (point)))
+        ;; Disable the recording of undo information
+        (let ((line (buffer-substring bol eol))
+              (buffer-undo-list t))
+          ;; Insert the line arg times
+          (dotimes (_i (if (> arg 0) arg 1))
+            (unless (string-suffix-p "\n" line)
+              (newline))
+            (insert line)))
+        ;; Create the undo information
+        (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
+      ;; Move the point to the lowest line
+      (forward-line (* arg num-lines))
+      (when (= num-lines 1)
+        ;; Leave the cursor an the same column if we duplicated 1 line
+        (move-to-column col))))
+  (declare-function duplicate-line-or-region nil) ;; to silence compiler
+  (bind-key "C-c d" #'duplicate-line-or-region))
 
 
 ;;; Deleting Spaces
@@ -387,6 +390,7 @@ buffer."
       (not (cl-member (buffer-name) '("scratch-" "*scratch")
                       :test (lambda (buffer-name prefix)
                               (string-prefix-p prefix buffer-name))))
+      (equal (point-min) (point-max))
       (yes-or-no-p
 	   (format "Buffer %S has not been written to a file; kill it? "
 		       (buffer-name (current-buffer))))))

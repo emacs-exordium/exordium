@@ -118,6 +118,12 @@
 
 (use-package ace-window
   :diminish
+  :init
+  (use-package diff-mode
+    :ensure nil
+    :bind
+    (:map diff-mode-map
+     ("M-o" . nil)))
   :custom
   (aw-scope 'frame)
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))

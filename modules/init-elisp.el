@@ -73,7 +73,7 @@
 (use-package page-break-lines
   :diminish
   :init
-  (defun exordium-page-break-lines-hook ()
+  (defun exordium-page-break-lines ()
     "Enable `page-break-lines' mode.
 When in TUI enable line truncation as well to prevent a rendering
 bug (page break lines wrap around)."
@@ -81,8 +81,8 @@ bug (page break lines wrap around)."
       (set (make-local-variable 'truncate-lines) t))
     (page-break-lines-mode))
   :hook
-  ((emacs-lisp-mode . exordium-page-break-lines-hook)
-   ((compilation-mode help-mode) . page-break-lines-mode)))
+  ((emacs-lisp-mode compilation-mode help-mode emacs-news-mode)
+   . exordium-page-break-lines))
 
 ;;; Animation when evaluating a defun or a region:
 ;; The `eval-sexp-fu-mode' is global so it makes no sense to add it to relevant hooks.
