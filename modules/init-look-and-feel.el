@@ -128,7 +128,75 @@ Set FONT and SIZE if they are passed as arguments."
 (transient-mark-mode 'on)
 
 ;;; Show matching parentheses
-(show-paren-mode t)
+(use-package paren
+  :ensure nil
+  :if (version< emacs-version "29")
+  :config
+  (show-paren-mode t))
+
+(use-package paren
+  :ensure nil
+  :if (version<= "29" emacs-version)
+  :functions (exordium--show-paren-tune-child-frame-context)
+  :init
+  (defun exordium--show-paren-tune-child-frame-context (&rest _)
+    "Set face `child-frame-border' and add matching paren overlay."
+    (when-let* ((frame show-paren--context-child-frame)
+                (overlay-face (overlay-get show-paren--overlay-1 'face)))
+      (set-face-attribute 'child-frame-border frame
+                          :background
+                          (face-attribute overlay-face :background nil t))
+      (when-let* (((eq show-paren-style 'parenthesis))
+                  (data (funcall show-paren-data-function))
+                  (pos (min (nth 0 data) (nth 2 data)))
+                  (pos (save-excursion
+                         ;; The following is adjusted from
+                         ;; `blink-paren-open-paren-line-string'
+                         (goto-char pos)
+                         (cond
+                          ;; Context is what precedes the open in its line, if
+                          ;; anything.
+                          ((save-excursion (skip-chars-backward " \t")
+                                           (not (bolp)))
+                           (- (1+ pos) (line-beginning-position)))
+                          ;; Context is what follows the open in its line, if
+                          ;; anything
+                          ((save-excursion (forward-char 1)
+                                           (skip-chars-forward " \t")
+                                           (not (eolp)))
+                           1)
+                          ;; Context is the previous nonblank line, if there is
+                          ;; one.
+                          ((save-excursion (skip-chars-backward "\n \t")
+                                           (not (bobp)))
+                           (+  (- (- (progn (skip-chars-backward "\n \t")
+                                            (line-beginning-position))
+                                     (progn (end-of-line)
+                                            (skip-chars-backward " \t")
+                                            (point))))
+                              4)) ; regions are concatenated with "..."
+                          ;; There is no context except the char itself.
+                          (t 1))))
+                  ((< 0 pos))
+                  (win (frame-root-window frame))
+                  (buffer (window-buffer win)))
+        (move-overlay show-paren--overlay pos (1+ pos) buffer)
+        (overlay-put show-paren--overlay 'priority show-paren-priority)
+        (overlay-put show-paren--overlay 'face overlay-face))))
+
+  :custom
+  (show-paren-context-when-offscreen 'child-frame)
+  :config
+  ;; Make border for context in child frame a little bit more prominent
+  (setf (alist-get 'child-frame-border-width
+                   show-paren--context-child-frame-parameters)
+        2)
+  (setf (alist-get 'font
+                   show-paren--context-child-frame-parameters)
+        (exordium-font-name))
+  (advice-add 'show-paren--show-context-in-child-frame
+              :after #'exordium--show-paren-tune-child-frame-context)
+  (show-paren-mode t))
 
 ;;; Mouse selection
 (use-package select
