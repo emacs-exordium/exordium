@@ -1,4 +1,4 @@
-name: CI Tests
+name: Exordium - CI Tests
 
 on:
   workflow_dispatch:
