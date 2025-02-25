@@ -18,6 +18,7 @@
 ;; C-S-a             Search with Ag: in current project root.
 ;;                   See also`init-helm-porojectile.el'.
 ;; C-S-s             Helm Swoop
+;; C-x c g           Helm Google suggest.
 
 ;;; Code:
 
@@ -28,6 +29,9 @@
 
 (use-package helm
   :diminish
+  :bind
+  (:map helm-command-map
+   ("g" . #'helm-google-suggest))
   :custom
   (helm-split-window-default-side 'other)
   (helm-split-window-other-side-when-one-window 'right)
@@ -50,28 +54,113 @@
 (use-package helm
   :diminish
   :when exordium-helm-everywhere
+  :functions (exordium--helm-swith-to-buffer-update-sources
+              exordium--helm-switch-to-buffer-completing-read)
+  :init
+  (use-package helm-lib
+    :ensure helm
+    :defer t
+    :autoload (helm-this-command
+               helm-symbol-name
+               helm-get-attr
+               helm-set-attr
+               helm-mklist))
+  (use-package helm-mode
+    :ensure helm
+    :defer t
+    :autoload (helm-completing-read-default-handler))
+  (use-package helm-source
+    :ensure helm
+    :defer t
+    :autoload (helm-make-source))
+
+  (defun exordium--helm-swith-to-buffer-update-sources (&rest args)
+    "Copy relevant attributes from a `helm-source-buffers' to `:sources' in ARGS."
+    (if-let* ((args (car args))
+              ((plistp args))
+              (sources (cl-remove-if (lambda (source)
+                                       (equal "Unknown candidate"
+                                              (helm-get-attr 'name source)))
+                                     (plist-get args :sources)))
+              (source-buffers (helm-make-source "Buffers" 'helm-source-buffers)))
+        (progn
+          (dolist (source sources)
+            (helm-set-attr 'filtered-candidate-transformer
+                           (append '(helm-skip-boring-buffers)
+                                   (helm-get-attr 'filtered-candidate-transformer
+                                                  source))
+                           source)
+            (dolist (attr '(keymap
+                            action
+                            persistent-action
+                            persistent-help
+                            help-message
+                            match
+                            mode-line
+                            heder-line
+                            find-file-target))
+              (helm-set-attr attr
+                             (helm-get-attr attr source-buffers)
+                             source)))
+          (plist-put args
+                     :sources (append sources
+                                      (list helm-source-buffer-not-found))))
+      args))
+
+  (defun exordium--helm-switch-to-buffer-completing-read (&rest args)
+                                        ; checkdoc-params: (args)
+  "Ensure `helm-source-buffers' attributes are used."
+  (let* ((current-command (or (helm-this-command) this-command))
+         (str-command (if current-command
+                          (helm-symbol-name current-command)
+                        "completing-read"))
+         (buf-name (format "*%s*" str-command)))
+    (unwind-protect
+        (progn
+          (advice-add
+           'helm
+           :filter-args #'exordium--helm-swith-to-buffer-update-sources)
+
+          (apply #'helm-completing-read-default-handler
+                 (append args
+                         (list str-command buf-name))))
+      (advice-remove
+       'helm #'exordium--helm-swith-to-buffer-update-sources))))
+
   :custom
   (history-delete-duplicates t)
   (helm-M-x-always-save-history t)
   (helm-M-x-show-short-doc t)
+  (completions-detailed exordium-help-extensions)
+
   :bind
   (([remap execute-extended-command] . #'helm-M-x) ; M-x
    ([remap yank-pop] . #'helm-show-kill-ring) ; M-y
    ([remap find-file] . #'helm-find-files) ; C-x C-f
    ([remap find-file-read-only] . #'helm-recentf)) ; C-x C-r
+
   :config
   ;; Do not show these files in helm buffer
-  (add-to-list 'helm-boring-file-regexp-list "\\.tsk$")
-  (add-to-list 'helm-boring-file-regexp-list "\\.log\\.")
+  (dolist (pat (list (rx ".tsk" string-end)
+                     (rx ".log.")))
+    (add-to-list 'helm-boring-file-regexp-list pat))
+
+  (require 'helm-mode)
+  (dolist (fun '(switch-to-buffer
+                 switch-to-buffer-other-frame
+                 switch-to-buffer-other-tab
+                 switch-to-buffer-other-window))
+    (add-to-list 'helm-completing-read-handlers-alist
+                 (cons fun #'exordium--helm-switch-to-buffer-completing-read)))
   (helm-mode))
 
 (use-package helm-descbinds
-  :after (helm)
+  :defer t
   :bind
-  (("C-h b" . #'helm-descbinds)))
+  ("C-h b" . #'helm-descbinds))
 
 (use-package helm-ag
-  :after (helm)
+  :defer t
   :custom
   (helm-ag-insert-at-point 'symbol)
   :bind
@@ -79,23 +168,30 @@
    ("C-S-f" . #'helm-do-ag-this-file)))
 
 (use-package helm-ag
-  :after (helm)
+  :defer t
   :unless exordium-helm-projectile
   :bind
-  (("C-S-a" . #'helm-ag-project-root)))
+  ("C-S-a" . #'helm-ag-project-root))
 
 (use-package helm-rg
-  :after (helm)
   :defer t)
 
 (use-package helm-rg
-  :after (helm)
   :unless exordium-helm-projectile
+  :defer t
   :bind
-  (("C-S-r" . #'helm-rg)))
+  ("C-S-r" . #'helm-rg))
 
 (use-package helm-swoop
-  :after (helm)
+  :defer t
+  :init
+  (use-package isearch
+    :ensure nil
+    :defer t
+    :bind
+    (:map isearch-mode-map
+     ("C-S-s" . #'helm-swoop-from-isearch)))
+
   :commands (helm-swoop--edit-complete
              helm-swoop--edit-cancel
              helm-swoop--edit-delete-all-lines)
@@ -109,12 +205,9 @@
    ("C-c C-k" . #'helm-swoop--edit-cancel)
    ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
 
-(use-package helm-xref
-  :after helm
-  :if exordium-helm-everywhere
-  :commands helm-xref
-  :config
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+(when exordium-helm-everywhere
+  (use-package helm-xref
+    :defer t))
 
 
 

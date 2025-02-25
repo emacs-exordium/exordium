@@ -334,7 +334,7 @@ Keybinding                             | Description
 See [Projectile](https://github.com/bbatsov/projectile) documentation for other
 keys.
 
-### Helm
+## Helm
 
 Helm can be set up as a primary completion and selection narrowing framework
 for most commonly used functions. You can achieve that by setting
@@ -349,8 +349,9 @@ Keybinding          | Description
 <kbd>M-y</kbd>      | Select yank pop.
 <kbd>C-x b</kbd>    | Switch buffer.
 <kbd>C-x C-f</kbd>  | Find file.
+<kbd>C-x c g</kbd>  | Google suggest.
 
-#### Other Helm tools
+### Other Helm tools
 
 Helm is a pretty good when you need quickly scan search results. The commands below
 will start different search modes. By default, they will use symbol under the point.
