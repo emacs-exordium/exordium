@@ -37,7 +37,7 @@
 project's file using completion and show it in another window."
     (interactive)
     (let ((projectile-switch-project-action #'projectile-find-file-other-window))
-      (projectile-switch-project)))
+      (helm-projectile-switch-project)))
 
   (use-package projectile
     :defer t
