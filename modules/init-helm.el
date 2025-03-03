@@ -73,6 +73,10 @@
     :ensure helm
     :defer t
     :autoload (helm-make-source))
+  (use-package helm-core
+    :ensure helm
+    :defer t
+    :autoload (helm-normalize-sources))
 
   (defun exordium--helm-swith-to-buffer-update-sources (&rest args)
     "Copy relevant attributes from a `helm-source-buffers' to `:sources' in ARGS."
@@ -81,7 +85,8 @@
               (sources (cl-remove-if (lambda (source)
                                        (equal "Unknown candidate"
                                               (helm-get-attr 'name source)))
-                                     (plist-get args :sources)))
+                                     (helm-normalize-sources
+                                      (plist-get args :sources))))
               (source-buffers (helm-make-source "Buffers" 'helm-source-buffers)))
         (progn
           (dolist (source sources)
@@ -90,8 +95,14 @@
                                    (helm-get-attr 'filtered-candidate-transformer
                                                   source))
                            source)
+            (helm-set-attr 'action
+                           (append (let ((action (helm-get-attr 'action source)))
+                                     (if (listp action)
+                                         (list (car action))
+                                       (list action)))
+                                   (cdr helm-type-buffer-actions))
+                           source)
             (dolist (attr '(keymap
-                            action
                             persistent-action
                             persistent-help
                             help-message
