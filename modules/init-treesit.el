@@ -10,15 +10,6 @@
 (exordium-require 'init-prefs)
 (exordium-require 'init-git)
 
-(defun exordium--add-forward-ts-hook (mode)
-  "Add hook to a ts-MODE that will run hooks from MODE."
-  (when-let* ((ts-hook (intern (concat (symbol-name mode) "-ts-mode-hook")))
-              (hook (intern (concat (symbol-name mode) "-mode-hook")))
-              ((and (symbolp ts-hook) (symbolp hook))))
-    (add-hook ts-hook
-              (lambda ()
-                (run-hooks hook)))))
-
 (defmacro exordium-eval-unless-compile-or-ci (&rest body)
   "Don't evaluate BODY when either file is byte compiled when in CI."
   (declare (debug (&rest def-form)) (indent 0))
@@ -151,6 +142,20 @@
       (use-package treesit-auto
         :after treesit
         :demand t
+        :init
+        (defun exordium--add-forward-ts-hook (recipe)
+          "Add hook to a `ts-mode' slot from RECIPE.
+A hook is added for each mode that is found in `remap' slot in recipe."
+          (when-let* ((modes (ensure-list (treesit-auto-recipe-remap recipe)))
+                      (ts-mode (treesit-auto-recipe-ts-mode recipe)))
+            (dolist (mode modes)
+              (let* ((ts-hook (intern (concat (symbol-name ts-mode) "-hook")))
+                     (hook (intern (concat (symbol-name mode) "-hook"))))
+                (add-hook ts-hook
+                          (lambda ()
+                            (run-hooks hook)))))))
+
+        :functions (exordium--add-forward-ts-hook)
         :autoload (make-treesit-auto-recipe)
         :commands (global-treesit-auto-mode)
         :defines (treesit-auto-recipe-alist
@@ -171,55 +176,14 @@
             :ext "\\COMMIT_EDITMSG\\'")
            treesit-auto-recipe-list)
           (push 'gitcommit treesit-auto-langs))
-        (global-treesit-auto-mode))
+        (global-treesit-auto-mode)
+        (dolist (recipe treesit-auto-recipe-list)
+          (exordium--add-forward-ts-hook recipe)))
 
       (use-package treesit
         :ensure nil
         :custom
-        (treesit-font-lock-level 4)
-        :config
-        (mapc #'exordium--add-forward-ts-hook
-              '(
-                LaTeX
-                ada
-                awk
-                bash
-                c
-                c++
-                closure
-                cmake
-                csharp
-                css
-                dockerfile
-                elixir
-                git-commit
-                go
-                go-mod
-                graphql
-                haskell
-                heex
-                html
-                java
-                jq
-                js
-                json
-                julia
-                kotlin
-                lua
-                markdown
-                nix
-                php
-                python
-                protobuf
-                ruby
-                rust
-                scala
-                swift
-                toml
-                typescript
-                tsx
-                yaml
-                ))))
+        (treesit-font-lock-level 4)))
 
   (exordium-eval-unless-compile-or-ci
     (message "Enabling external tree-sitter and tree-sitter-langs")
