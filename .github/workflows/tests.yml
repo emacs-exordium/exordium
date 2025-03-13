@@ -1,4 +1,4 @@
-name: CI Tests
+name: Exordium - CI Tests
 
 on:
   workflow_dispatch:
@@ -33,6 +33,7 @@ jobs:
           - 29.2
           - 29.3
           - 29.4
+          - 30.1
           - snapshot
     steps:
       - uses: purcell/setup-emacs@master
@@ -70,26 +71,26 @@ jobs:
 
       - name: 'Checkout checkdoc-batch'
         uses: actions/checkout@v4
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        if: contains(fromJSON('["29.4", "30.1", "snapshot"]'), matrix.emacs_version)
         with:
           repository: 'pkryger/ckeckdoc-batch.el'
           path: .emacs.d/checkdoc-batch
 
       - name: 'Lint: checkdoc'
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        if: contains(fromJSON('["29.4", "30.1", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-checkdoc.sh"'
 
       - name: 'Lint: compilation' # Close to the end, to let other builds escape errors
                                   # caused by compilation shenanigans
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        if: contains(fromJSON('["29.4", "30.1", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-byte-compile.sh"'
 
       - name: 'Lint: flycheck' # After compilation that should install all packages
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        if: contains(fromJSON('["29.4", "30.1", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-flycheck.sh"'
 
       - name: 'Lint: relint'
-        if: contains(fromJSON('["29.4", "snapshot"]'), matrix.emacs_version)
+        if: contains(fromJSON('["29.4", "30.1", "snapshot"]'), matrix.emacs_version)
         run: '"${HOME}/.emacs.d/.ci/batch-relint.sh"'
 
   pkryger-taps:
@@ -102,6 +103,7 @@ jobs:
           - macos-latest
         emacs_version:
           - 29.4
+          - 30.1
           - snapshot
     steps:
       - uses: purcell/setup-emacs@master
