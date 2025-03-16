@@ -35,34 +35,43 @@
     (progn
       (message "Enabling built-in treesit and external treesit-auto")
       (use-package git-commit-ts-mode
-        :functions (exordium--git-commit-ts-verify)
+        :functions (exordium--git-commit-ts-adaptive-fill)
         :init
+        (use-package treesit
+          :ensure nil
+          :defer t
+          :autoload (treesit-node-at))
+
         (use-package git-commit
           :ensure magit
           :defer t
           :custom
-          (git-commit-major-mode #'git-commit-ts-mode))
+          (git-commit-major-mode #'git-commit-ts-mode)
+          :config
+          ;; When the changelog support is on, the `fill-paragraph' doesn't
+          ;; respect "hanging" multiline trailers (second and following line
+          ;; starting with one or more spaces). This is due to
+          ;; `fill-indent-according-to-mode'. Remove support for the changelog
+          ;; in `git-commit'.
+          (setq git-commit-setup-hook
+                (remq #'git-commit-setup-changelog-support
+                      git-commit-setup-hook)))
 
-        (defun exordium--git-commit-ts-verify ()
-          "Used for `flyspell-generic-check-word-predicate' in `git-commit-ts-mode'."
-          ;; Like `flyspell-generic-progmode-verify', but use faces from
-          ;; `git-commit-ts-mode' and include nil (no face) for regular message
-          ;; body text.  Unfortunately, the `font-lock' in a `treesit' mode
-          ;; kicks in too late to fontify heading prefixes, and trailers, so
-          ;; these tend to be highlighted as well.
-          (unless (eql (point) (point-min))
-            (let ((f (get-text-property (1- (point)) 'face)))
-              (memq f '(nil
-                        git-commit-ts-comment-face
-                        git-commit-ts-title-face
-                        git-commit-ts-overflow-face
-                        git-commit-ts-breaking-change-value-face)))))
+        (defun exordium--git-commit-ts-adaptive-fill ()
+          "Return two spaces when in a trailer node or a breaking change node."
+          (when (member (treesit-node-type
+                         (treesit-node-parent
+                          (treesit-node-at (point))))
+                        '("trailer" "breaking_change"))
+            (make-string 2 ? )))
+
+        (defun exordium--git-commit-ts-setup-hanging-trailers ()
+          "Setup `adaptive-fill-function' to auto fill with hanging trailers."
+          (setq-local adaptive-fill-function
+                      #'exordium--git-commit-ts-adaptive-fill))
+
         :hook (git-commit-ts-mode
-               . exordium--git-commit-ts-setup-hanging-trailers)
-        :config
-        (put 'git-commit-ts-mode
-             'flyspell-mode-predicate
-             #'exordium--git-commit-ts-verify))
+               . exordium--git-commit-ts-setup-hanging-trailers))
 
       (use-package treesit-auto
         :after treesit
