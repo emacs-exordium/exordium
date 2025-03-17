@@ -35,7 +35,8 @@
     (progn
       (message "Enabling built-in treesit and external treesit-auto")
       (use-package git-commit-ts-mode
-        :functions (exordium--git-commit-ts-adaptive-fill)
+        :functions (exordium--git-commit-ts-verify
+                    exordium--git-commit-ts-adaptive-fill)
         :init
         (use-package treesit
           :ensure nil
@@ -70,8 +71,80 @@
           (setq-local adaptive-fill-function
                       #'exordium--git-commit-ts-adaptive-fill))
 
+        (use-package thingatpt
+          :ensure nil
+          :defer t
+          :defines (thing-at-point-email-regexp))
+
+        (defun exordium--git-commit-ts-verify ()
+          "Used for `flyspell-generic-check-word-predicate' in `git-commit-ts-mode'."
+          (unless (eql (point) (point-min))
+            (let* ((node (treesit-node-at (point)))
+                   (node-type (treesit-node-type node)))
+              (when (equal node-type "value")
+                (setq node-type (treesit-node-type
+                                 (treesit-node-parent node))))
+              (when (member node-type '("subject"
+                                        "message_line"
+                                        "trailer"
+                                        "breaking_change"))
+                (cond
+                 ;; Tokens for trailer and breaking change are only parsed
+                 ;; after colon and space are entered. This leads to spell
+                 ;; checking them, which is probably best to avoid.
+                 ((and (equal node-type "message_line")
+                       (string-match-p
+                        (rx string-start
+                            (or (seq "BREAKING" (or " " "-") "CHANGE")
+                                (one-or-more (any (?a . ?z) (?A . ?Z) "-")))
+                            (zero-or-more " ") (or ":" ?\xff1a))
+                        (buffer-substring (pos-bol) (min (1+ (point))
+                                                         (point-max)))))
+                  nil)
+                 ;; `thing-at-point' returns nil for `email' when it ends
+                 ;; with an `@'. This is however, quite normal, for example
+                 ;; while in the middle of typing an address.
+                 ((pcase-let* ((`(,user ,domain)
+                                (string-split thing-at-point-email-regexp
+                                              "@"))
+                               (thing-at-point-email-regexp
+                                (rx-to-string
+                                 `(seq (regexp ,user)
+                                       "@"
+                                       (zero-or-one (regexp ,domain))))))
+                    (thing-at-point 'email))
+                  nil)
+                 ;; User and team @mentions contain characters `@' and
+                 ;; `/'. Neither is a part of a word, so let's temporarily
+                 ;; modify syntax table such they are grabbed.
+                 ((let ((table (copy-syntax-table)))
+                    (modify-syntax-entry ?@ "w" table)
+                    (modify-syntax-entry ?/ "w" table)
+                    (with-syntax-table table
+                      (string-match-p
+                       (rx-let ((identifier
+                                 (seq alphanumeric
+                                      (repeat 0 38 (or alphanumeric "-")))))
+                         (rx string-start
+                             "@"
+                             (zero-or-one identifier
+                                          (zero-or-one "/"))
+                             (zero-or-one identifier)
+                             string-end))
+                       (thing-at-point 'word))))
+                  nil)
+                 ;; Spell check everything else
+                 (t t))))))
+
         :hook (git-commit-ts-mode
-               . exordium--git-commit-ts-setup-hanging-trailers))
+               . exordium--git-commit-ts-setup-hanging-trailers)
+        :config
+        ;; Only set our `flyspell-mode-predicate' when there's none set,
+        ;; see: https://github.com/danilshvalov/git-commit-ts-mode/pull/8
+        (unless (get 'git-commit-ts-mode 'flyspell-mode-predicate)
+          (put 'git-commit-ts-mode
+               'flyspell-mode-predicate
+               #'exordium--git-commit-ts-verify)))
 
       (use-package treesit-auto
         :after treesit
