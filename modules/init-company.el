@@ -29,8 +29,7 @@
 (use-package company
   :diminish "CA"
   :demand t
-  :commands (company-other-backend
-             company-abort)
+  :commands (company-other-backend)
   :custom
   (company-idle-delay nil)
   (company-files-exclusions '(".git/" ".gitignore" ".gitmodules" ".DS_Store"
