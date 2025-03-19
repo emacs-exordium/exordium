@@ -324,7 +324,7 @@ names to which it refers are bound."
      ;; Org
      (org-level-1 ((t
                     ,(append `(:foreground ,green
-                               :overline ,green
+                               :overline nil
                                :inherit nil
                                :extend t)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
