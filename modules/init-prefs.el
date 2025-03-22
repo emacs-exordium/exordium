@@ -44,7 +44,7 @@ evaluating `font-family-list'."
   :group 'exordium
   :type  'integer)
 
-(defcustom exordium-split-window-preffered-direction 'vertical
+(defcustom exordium-split-window-preferred-direction 'vertical
   "The first direction tried when Emacs needs to split a window.
 This variable controls in which order
 `split-window-sensibly' (which see) will try to split the window.
