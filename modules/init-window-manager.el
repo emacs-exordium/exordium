@@ -34,7 +34,7 @@
 (use-package window
   :ensure nil
   :custom
-  (split-window-preferred-direction exordium-split-window-preffered-direction)
+  (split-window-preferred-direction exordium-split-window-preferred-direction)
   :functions (exordium--window-try-vertical-split
               exordium--window-try-horizontal-split
               exordium-split-window-sensibly)
@@ -56,8 +56,8 @@
       "Split WINDOW in a way suitable for `display-buffer'."
       (let ((window (or window (selected-window))))
         (or (if (or
-                 (eq exordium-split-window-preffered-direction 'horizontal)
-                 (and (eq exordium-split-window-preffered-direction 'longest)
+                 (eq exordium-split-window-preferred-direction 'horizontal)
+                 (and (eq exordium-split-window-preferred-direction 'longest)
                       (> (frame-width) (frame-height))))
                 (or (exordium--window-try-horizontal-split window)
                     (exordium--window-try-vertical-split window))

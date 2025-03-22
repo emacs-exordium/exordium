@@ -36,12 +36,12 @@
   (helm-split-window-default-side 'other)
 
   (helm-split-window-other-side-when-one-window
-   (if (eq exordium-split-window-preffered-direction 'horizontal)
+   (if (eq exordium-split-window-preferred-direction 'horizontal)
        'right
      'below))
 
   (helm-split-window-preferred-function
-   (if (eq exordium-split-window-preffered-direction 'longest)
+   (if (eq exordium-split-window-preferred-direction 'longest)
        #'split-window-sensibly
      #'helm-split-window-default-fn))
 
@@ -217,7 +217,7 @@
              helm-swoop--edit-cancel
              helm-swoop--edit-delete-all-lines)
   :custom
-  (helm-swoop-split-direction (pcase exordium-split-window-preffered-direction
+  (helm-swoop-split-direction (pcase exordium-split-window-preferred-direction
                                 ('longest #'split-window-sensibly)
                                 ('horizontal #'split-window-horizontally)
                                 (_ #'split-window-vertically)))
