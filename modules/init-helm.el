@@ -34,8 +34,18 @@
    ("g" . #'helm-google-suggest))
   :custom
   (helm-split-window-default-side 'other)
-  (helm-split-window-other-side-when-one-window 'right)
-  (helm-buffer-details-flag nil)
+
+  (helm-split-window-other-side-when-one-window
+   (if (eq exordium-split-window-preferred-direction 'horizontal)
+       'right
+     'below))
+
+  (helm-split-window-preferred-function
+   (if (eq exordium-split-window-preferred-direction 'longest)
+       #'split-window-sensibly
+     #'helm-split-window-default-fn))
+
+  (helm-buffer-max-length nil)
   (helm-completion-style (cond
                           ((and exordium-helm-fuzzy-match
                                 (eq exordium-helm-completion-style 'helm))
@@ -207,7 +217,10 @@
              helm-swoop--edit-cancel
              helm-swoop--edit-delete-all-lines)
   :custom
-  (helm-swoop-split-direction 'split-window-horizontally)
+  (helm-swoop-split-direction (pcase exordium-split-window-preferred-direction
+                                ('longest #'split-window-sensibly)
+                                ('horizontal #'split-window-horizontally)
+                                (_ #'split-window-vertically)))
   :bind
   (("C-S-s" . #'helm-swoop)
    ;; Use similar bindings to `helm-ag-edit'

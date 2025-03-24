@@ -44,6 +44,37 @@ evaluating `font-family-list'."
   :group 'exordium
   :type  'integer)
 
+(defcustom exordium-split-window-preferred-direction 'vertical
+  "The first direction tried when Emacs needs to split a window.
+This variable controls in which order
+`split-window-sensibly' (which see) will try to split the window.
+That order specially matters when both dimensions of the frame
+are long enough to be split according to `split-width-threshold'
+and `split-height-threshold'.  It is recommended to
+experimentally set latter options to values that are compatible
+with specific Emacs configuration (as they may differ depending
+on frame size (or a screen size if Emacs run in full screen) and
+chosen font size.
+
+If the value is `vertical' (the default), `split-window-sensibly'
+tries to split vertically first and then horizontally.  If the
+value is `horizontal' it does the opposite.  If the value
+`longest' the first direction tried depends on the frame shape:
+in landscape orientation it will be like `horizontal', but in
+portrait it will be like `vertical'.  Basically, the longest of
+the two dimension is split first.
+
+If both `split-width-threshold' and `split-height-threshold'
+cannot be satisfied, it will fallback to split vertically."
+  :group 'exordium
+  :type '(radio
+          (const :tag "Try to split vertically first"
+                 vertical)
+          (const :tag "Try to split horizontally first"
+                 horizontal)
+          (const :tag "Try to split along the longest edge"
+                 longest)))
+
 (defcustom exordium-line-mode t
   "Whether the current line is highlighted or not."
   :group 'exordium

@@ -26,6 +26,66 @@
 
 
 ;;; Code:
+(eval-when-compile
+  (unless (featurep 'init-require)
+    (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
+(exordium-require 'init-prefs)
+
+(use-package window
+  :ensure nil
+  :custom
+  (split-window-preferred-direction exordium-split-window-preferred-direction)
+  :functions (exordium--window-try-vertical-split
+              exordium--window-try-horizontal-split
+              exordium-split-window-sensibly)
+  :init
+  (unless (boundp 'split-window-preferred-direction) ;; Until Emacs-29
+    (defun exordium--window-try-vertical-split (window)
+      "Try split WINDOW vertically."
+      (when (window-splittable-p window)
+        (with-selected-window window
+          (split-window-below))))
+
+    (defun exordium--window-try-horizontal-split (window)
+      "Try split WINDOW horizontally."
+      (when (window-splittable-p window t)
+        (with-selected-window window
+          (split-window-right))))
+
+    (defun exordium-split-window-sensibly (&optional window)
+      "Split WINDOW in a way suitable for `display-buffer'."
+      (let ((window (or window (selected-window))))
+        (or (if (or
+                 (eq exordium-split-window-preferred-direction 'horizontal)
+                 (and (eq exordium-split-window-preferred-direction 'longest)
+                      (> (frame-width) (frame-height))))
+                (or (exordium--window-try-horizontal-split window)
+                    (exordium--window-try-vertical-split window))
+              (or (exordium--window-try-vertical-split window)
+                  (exordium--window-try-horizontal-split window)))
+	        (and
+             ;; If WINDOW is the only usable window on its frame (it is
+             ;; the only one or, not being the only one, all the other
+             ;; ones are dedicated) and is not the minibuffer window, try
+             ;; to split it vertically disregarding the value of
+             ;; `split-height-threshold'.
+             (let ((frame (window-frame window)))
+               (or
+                (eq window (frame-root-window frame))
+                (catch 'done
+                  (walk-window-tree (lambda (w)
+                                      (unless (or (eq w window)
+                                                  (window-dedicated-p w))
+                                        (throw 'done nil)))
+                                    frame nil 'nomini)
+                  t)))
+	         (not (window-minibuffer-p window))
+             (let ((split-height-threshold 0))
+               (exordium--window-try-vertical-split window))))))
+
+    ;; Helm directly calls `split-window-sensibly'
+    (advice-add 'split-window-sensibly :override
+                #'exordium-split-window-sensibly)))
 
 (use-package windmove
   :ensure nil
