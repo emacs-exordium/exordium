@@ -176,6 +176,18 @@ A hook is added for each mode that is found in `remap' slot in recipe."
             :ext "\\COMMIT_EDITMSG\\'")
            treesit-auto-recipe-list)
           (push 'gitcommit treesit-auto-langs))
+
+        ;; Recipe in `treesit-auto' for `janet' (from
+        ;; https://github.com/sogaiu/tree-sitter-janet-simple) uses C function
+        ;; `tree_sitter_janet_simple' as entrypoint
+        (when-let* ((recipe (cl-find-if (lambda (recipe)
+                                  (eq (oref recipe lang) 'janet))
+                                treesit-auto-recipe-list)))
+          (oset recipe lang 'janet-simple)
+          (setq treesit-auto-langs
+                (delq 'janet treesit-auto-langs))
+          (push 'janet-simple treesit-auto-langs))
+
         (global-treesit-auto-mode)
         (dolist (recipe treesit-auto-recipe-list)
           (exordium--add-forward-ts-hook recipe)))
