@@ -188,6 +188,14 @@ A hook is added for each mode that is found in `remap' slot in recipe."
                 (delq 'janet treesit-auto-langs))
           (push 'janet-simple treesit-auto-langs))
 
+        ;; Recipe in `treesit-auto' for `markdown' (from
+        ;; https://github.com/tree-sitter-grammars/tree-sitter-markdown) has a
+        ;; different location for source code
+        (when-let* ((recipe (cl-find-if (lambda (recipe)
+                                  (eq (oref recipe lang) 'markdown))
+                                treesit-auto-recipe-list)))
+          (oset recipe source-dir "tree-sitter-markdown/src"))
+
         (global-treesit-auto-mode)
         (dolist (recipe treesit-auto-recipe-list)
           (exordium--add-forward-ts-hook recipe)))
