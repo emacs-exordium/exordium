@@ -202,8 +202,33 @@ A hook is added for each mode that is found in `remap' slot in recipe."
 
       (use-package treesit
         :ensure nil
+        :demand t
+        :functions (exordium--treesit-generate-parser)
+        :autoload (treesit--call-process-signal)
+        :init
+        (defun exordium--treesit-generate-parser (&rest args)
+          "Try to run \\='tree-sitter generate\\=' if there's no parser.c."
+          (when-let* (((equal "parser.c" (car (last args))))
+                      ((not (file-exists-p (expand-file-name "parser.c"))))
+                      (tree-sitter (executable-find "tree-sitter"))
+                      (default-directory (file-name-parent-directory
+                                          default-directory)))
+            (message "Generating parser.c")
+            (treesit--call-process-signal
+             tree-sitter nil t nil "generate")))
         :custom
-        (treesit-font-lock-level 4)))
+        (treesit-font-lock-level 4)
+        :config
+        ;; Some treesit grammars are delivered without a `parser.c' file, for
+        ;; example https://github.com/latex-lsp/tree-sitter-latex/pull/114. It
+        ;; seems that onus is on user to generate the file or use a versioned
+        ;; release which should have the file. Unfortunately, Emacs is quite
+        ;; simplistic when it comes to source of language grammars: it needs to
+        ;; be a git repository (or a local directory, since Emacs-30). Let's
+        ;; try to generate the `parser.c' file if it doesn't exists, and the
+        ;; `tree-sitter' command line tool is available.
+        (advice-add 'treesit--call-process-signal
+                    :before #'exordium--treesit-generate-parser)))
 
   (exordium-eval-unless-compile-or-ci
     (message "Enabling external tree-sitter and tree-sitter-langs")
