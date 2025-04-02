@@ -138,6 +138,8 @@
 
         :hook (git-commit-ts-mode
                . exordium--git-commit-ts-setup-hanging-trailers)
+        :bind (:map git-commit-ts-mode-map
+               ([remap prog-fill-reindent-defun] . #'fill-paragraph))
         :config
         ;; Only set our `flyspell-mode-predicate' when there's none set,
         ;; see: https://github.com/danilshvalov/git-commit-ts-mode/pull/8
