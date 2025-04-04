@@ -142,6 +142,7 @@
       (use-package treesit-auto
         :after treesit
         :demand t
+        :autoload (treesit-auto--build-treesit-source-alist)
         :init
         (defun exordium--add-forward-ts-hook (recipe)
           "Add hook to a `ts-mode' slot from RECIPE.
@@ -154,6 +155,15 @@ A hook is added for each mode that is found in `remap' slot in recipe."
                 (add-hook ts-hook
                           (lambda ()
                             (run-hooks hook)))))))
+
+        (defun exordium-treesit-auto-install-language-grammar (lang)
+          "Install grammar for LANG using recipe from `treesit-auto-recipe-list'."
+          (interactive
+           (list (intern
+                  (completing-read "Language: " treesit-auto-langs nil t))))
+          (let ((treesit-language-source-alist
+                 (treesit-auto--build-treesit-source-alist)))
+            (treesit-install-language-grammar lang)))
 
         :functions (exordium--add-forward-ts-hook)
         :autoload (make-treesit-auto-recipe)
