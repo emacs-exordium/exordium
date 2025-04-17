@@ -12,6 +12,7 @@
 (exordium-require 'init-prefs)
 
 (require 'cl-lib)
+(require 'elec-pair)
 
 (use-package compat)
 
