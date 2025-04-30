@@ -527,9 +527,10 @@ parenthesis has been found within the first
   "Return the position of the function argument list closing parenthesis.
 The search starts after the specified FROM position and ends when
 either a semicolon, `inline-open', `defun-open',
-`member-init-intro', or `noexcept' has been encountered.  Return
-nil when no qualifying parenthesis has been found withing the
-first `exordium-bde-search-max-bound' characters."
+`member-init-intro', `brace-entry-open', or `noexcept' has been
+encountered.  Return nil when no qualifying parenthesis has been
+found withing the first `exordium-bde-search-max-bound'
+characters."
   (when from
     (save-excursion
       (goto-char from)
@@ -551,7 +552,10 @@ first `exordium-bde-search-max-bound' characters."
                    ;; breaks more functionality. It would require some support
                    ;; in `bde-align-funcdecl', i.e., to move initializer list
                    ;; after the c-tor arguments, before aligning.
-                   (when (cl-member '(inline-open defun-open member-init-intro)
+                   (when (cl-member '(inline-open
+                                      defun-open
+                                      member-init-intro
+                                      brace-entry-open)
                                     (c-guess-basic-syntax)
                                     :test any-of-is-car-of)
                      (throw 'pos candidate)))
@@ -583,7 +587,8 @@ been found."
                  (exordium-bde-arglist-at-point--open-paren-position
                   (nth 1
                        (car (cl-member '(topmost-intro
-                                         topmost-intro-cont)
+                                         topmost-intro-cont
+                                         brace-list-intro)
                                        basic-syntax
                                        :test any-of-is-car-of)))
                   t)
