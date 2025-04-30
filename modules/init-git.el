@@ -245,6 +245,9 @@ with `exordium-magit-quit-session'."
 ;;; Difftastic - a structural diff tool that understands syntax!
 (use-package difftastic-bindings
   :ensure difftastic
+  :demand t
+  :hook
+  (difftastic-diff-visit-file . exordium-smerge-dispatch-maybe)
   :config
   (difftastic-bindings-mode))
 
