@@ -136,7 +136,7 @@ General:
 Keybinding           | Description
 ---------------------|---------------------------------------------------------
 <kbd>C-z</kbd>       | Undo! (`undo`).
-<kbd>C-\`</kbd>      | `kill-this-buffer` (faster than <kbd>C-x k</kbd>).
+<kbd>C-\`</kbd>      | `kill-current-buffer` (faster than <kbd>C-x k</kbd>).
 <kbd>C-x C-r</kbd>   | Open recent file (completes open file with <kbd>C-x C-f</kbd>).
 <kbd>M-g</kbd>       | `goto-line` (prompts for a line number).
 <kbd>C-+</kbd>       | Increase font size (`text-scale-increase`).

@@ -37,6 +37,17 @@
      '("-l" "-i")))
   :hook (after-init . exec-path-from-shell-initialize))
 
+;; Workaround for https://debbugs.gnu.org/cgi/bugreport.cgi?bug=77944
+(use-package man ;; Until Emacs-31 (perhaps fix in Emacs-30.2)
+  :ensure nil
+  :defer t
+  :autoload (Man-init-defvars)
+  :custom
+  (Man-sed-command (or (executable-find "gsed") "sed"))
+  (Man-awk-command (or (executable-find "gawk") "awk"))
+  :config
+  (Man-init-defvars))
+
 (provide 'init-osx)
 
 ;;; init-osx.el ends here

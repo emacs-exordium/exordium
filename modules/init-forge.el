@@ -250,6 +250,9 @@ ask for SOURCE and TARGET."
     :ensure magit
     :defer t
     :autoload (magit-refresh))
+  (use-package closql
+    :defer t
+    :autoload (closql-delete))
 
   (defun exordium-forge-cleanup-known-repositories--question (to-delete &optional number)
     "Return a question about deletion of up to NUMBER of TO-DELETE repositories.

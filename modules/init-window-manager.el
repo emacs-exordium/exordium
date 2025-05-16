@@ -39,7 +39,7 @@
               exordium--window-try-horizontal-split
               exordium-split-window-sensibly)
   :init
-  (unless (boundp 'split-window-preferred-direction) ;; Until Emacs-29
+  (unless (boundp 'split-window-preferred-direction) ;; Until Emacs-31
     (defun exordium--window-try-vertical-split (window)
       "Try split WINDOW vertically."
       (when (window-splittable-p window)

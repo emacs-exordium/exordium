@@ -281,7 +281,7 @@ Set FONT and SIZE if they are passed as arguments."
 (bind-key "M-g" #'goto-line)
 (when exordium-keyboard-ctrl-z-undo
   (bind-key "C-z" #'undo))
-(bind-key "C-`" #'kill-this-buffer)
+(bind-key "C-`" #'kill-current-buffer)
 
 ;;; Meta-Control-L = switch to last buffer
 (defun switch-to-other-buffer ()

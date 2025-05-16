@@ -167,7 +167,8 @@ with `exordium-magit-quit-session'."
 
 (use-package transient
   :functions exordium-smerge-dispatch
-  :autoload (transient-prefix
+  :autoload (transient--set-layout
+             transient-prefix
              transient-setup
              transient-suffix)
   :config
@@ -245,6 +246,9 @@ with `exordium-magit-quit-session'."
 ;;; Difftastic - a structural diff tool that understands syntax!
 (use-package difftastic-bindings
   :ensure difftastic
+  :demand t
+  :hook
+  (difftastic-diff-visit-file . exordium-smerge-dispatch-maybe)
   :config
   (difftastic-bindings-mode))
 
