@@ -167,7 +167,8 @@ with `exordium-magit-quit-session'."
 
 (use-package transient
   :functions exordium-smerge-dispatch
-  :autoload (transient-prefix
+  :autoload (transient--set-layout
+             transient-prefix
              transient-setup
              transient-suffix)
   :config
