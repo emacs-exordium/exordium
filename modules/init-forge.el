@@ -39,7 +39,7 @@ to displaying new-pullreq buffer.")
               exordium-forge-post-submit-draft
               exordium-forge-mark-ready-for-rewiew
               exordium-forge-insert-pullreq-commit-messages
-              exordium--forge-diff-for-pullreq
+              exordium-forge-diff-for-pullreq
               exordium--forge-store-window-configuration
               exordium--forge-kill-diff-buffer-restore-window-configuration)
   :defer t
@@ -53,6 +53,15 @@ to displaying new-pullreq buffer.")
     :defer t
     :commands (forge-post-submit)
     :autoload (forge-post-at-point))
+  (use-package forge-pullreq
+    :ensure forge
+    :defer t
+    :autoload (forge-pullreq-p
+               forge--pullreq-ref))
+  (use-package forge-repo
+    :ensure forge
+    :defer t
+    :autoload (forge--get-remote))
   (use-package forge-commands
     :ensure forge
     :defer t
@@ -70,9 +79,21 @@ to displaying new-pullreq buffer.")
     :autoload (markdown-preview))
 
 
-  (defun exordium--forge-diff-for-pullreq (source target)
+  (defun exordium-forge-diff-for-pullreq (source target)
                                         ; checkdoc-params: (source target)
     "Show diff for the current pull-request."
+    (interactive (cond
+                  ((equal current-prefix-arg '(4))
+                   (forge-create-pullreq--read-args))
+                  ((and forge--buffer-base-branch forge--buffer-head-branch
+                        (eq forge-edit-post-action 'new-pullreq))
+                   (list forge--buffer-head-branch forge--buffer-base-branch))
+                  ((when-let* ((topic (or (forge-current-topic)
+                                          forge--buffer-post-object))
+                               ((forge-pullreq-p topic))
+                               (head (forge--pullreq-ref topic)))
+                     (list head
+                           (format "%s/%s" (forge--get-remote) (oref topic base-ref)))))))
     (when-let* ((magit-commit-show-diff)
                 (pullreq-buffer (current-buffer))
                 (pullreq-window (frame-selected-window)))
@@ -212,7 +233,7 @@ ask for SOURCE and TARGET."
   (:map forge-post-mode-map
    ("C-c M-p" . #'exordium-forge-markdown-preview)
    ("C-c M-r" . #'exordium-forge-post-submit-draft)
-   ("C-c M-d" . #'exordium--forge-diff-for-pullreq)
+   ("C-c M-d" . #'exordium-forge-diff-for-pullreq)
    ("C-c M-c" . #'exordium-forge-insert-pullreq-commit-messages)
    :map forge-topic-mode-map
    ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew))
@@ -221,7 +242,7 @@ ask for SOURCE and TARGET."
   (advice-add 'forge--prepare-post-buffer
               :around #'exordium--forge-store-window-configuration)
   (advice-add 'forge-create-pullreq
-              :after #'exordium--forge-diff-for-pullreq)
+              :after #'exordium-forge-diff-for-pullreq)
   (advice-add 'forge-post-cancel
               :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
   (advice-add 'forge-post-submit
@@ -229,7 +250,7 @@ ask for SOURCE and TARGET."
 
   (with-eval-after-load 'forge-post
     (dolist (suffix '(("M-p" "Markdown preview" exordium-forge-markdown-preview)
-                      ("M-d" "Diff" exordium--forge-diff-for-pullreq)
+                      ("M-d" "Diff" exordium-forge-diff-for-pullreq)
                       ("M-r" "Submit draft" exordium-forge-post-submit-draft)))
       (unless (ignore-errors
                   (transient-get-suffix 'forge-post-menu (car suffix)))
