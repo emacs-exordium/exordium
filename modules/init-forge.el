@@ -232,8 +232,8 @@ ask for SOURCE and TARGET."
                       ("M-d" "Diff" exordium--forge-diff-for-pullreq)
                       ("M-r" "Submit draft" exordium-forge-post-submit-draft)))
       (unless (ignore-errors
-                  (transient-get-suffix 'forge-post-dispatch (car suffix)))
-        (transient-append-suffix 'forge-post-dispatch
+                  (transient-get-suffix 'forge-post-menu (car suffix)))
+        (transient-append-suffix 'forge-post-menu
           "C-c" suffix)))))
 
 (use-package forge-db
