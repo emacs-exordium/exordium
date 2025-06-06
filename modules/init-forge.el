@@ -39,7 +39,7 @@ to displaying new-pullreq buffer.")
               exordium-forge-post-submit-draft
               exordium-forge-mark-ready-for-rewiew
               exordium-forge-insert-pullreq-commit-messages
-              exordium--forge-diff-for-pullreq
+              exordium-forge-diff-for-pullreq
               exordium--forge-store-window-configuration
               exordium--forge-kill-diff-buffer-restore-window-configuration)
   :defer t
@@ -70,9 +70,13 @@ to displaying new-pullreq buffer.")
     :autoload (markdown-preview))
 
 
-  (defun exordium--forge-diff-for-pullreq (source target)
+  (defun exordium-forge-diff-for-pullreq (source target)
                                         ; checkdoc-params: (source target)
     "Show diff for the current pull-request."
+    (interactive (if (and forge--buffer-base-branch forge--buffer-head-branch
+                          (not current-prefix-arg))
+                     (list forge--buffer-head-branch forge--buffer-base-branch)
+                  (forge-create-pullreq--read-args)))
     (when-let* ((magit-commit-show-diff)
                 (pullreq-buffer (current-buffer))
                 (pullreq-window (frame-selected-window)))
@@ -212,7 +216,7 @@ ask for SOURCE and TARGET."
   (:map forge-post-mode-map
    ("C-c M-p" . #'exordium-forge-markdown-preview)
    ("C-c M-r" . #'exordium-forge-post-submit-draft)
-   ("C-c M-d" . #'exordium--forge-diff-for-pullreq)
+   ("C-c M-d" . #'exordium-forge-diff-for-pullreq)
    ("C-c M-c" . #'exordium-forge-insert-pullreq-commit-messages)
    :map forge-topic-mode-map
    ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew))
@@ -221,7 +225,7 @@ ask for SOURCE and TARGET."
   (advice-add 'forge--prepare-post-buffer
               :around #'exordium--forge-store-window-configuration)
   (advice-add 'forge-create-pullreq
-              :after #'exordium--forge-diff-for-pullreq)
+              :after #'exordium-forge-diff-for-pullreq)
   (advice-add 'forge-post-cancel
               :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
   (advice-add 'forge-post-submit
@@ -229,11 +233,11 @@ ask for SOURCE and TARGET."
 
   (with-eval-after-load 'forge-post
     (dolist (suffix '(("M-p" "Markdown preview" exordium-forge-markdown-preview)
-                      ("M-d" "Diff" exordium--forge-diff-for-pullreq)
+                      ("M-d" "Diff" exordium-forge-diff-for-pullreq)
                       ("M-r" "Submit draft" exordium-forge-post-submit-draft)))
       (unless (ignore-errors
-                  (transient-get-suffix 'forge-post-dispatch (car suffix)))
-        (transient-append-suffix 'forge-post-dispatch
+                  (transient-get-suffix 'forge-post-menu (car suffix)))
+        (transient-append-suffix 'forge-post-menu
           "C-c" suffix)))))
 
 (use-package forge-db
