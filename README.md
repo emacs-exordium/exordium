@@ -847,8 +847,8 @@ following will give you this:
 ### Local modules
 
 You can create a directory `~/.emacs.d/local` for your own local modules (this
-directory is ignored in git). In that case you should use `require` forms in
-`after-init.el` to load them.
+directory is ignored in git). Since this directory is not included in the load-path, one way to load modules from that local directory is to use `exordium-require` in
+`after-init.el` with an additional location argument.
 
 Here is an example. Create a file named `~/.emacs.d/local/init-test-local.el`
 with this content:
@@ -868,7 +868,8 @@ Then create a file `~/.emacs.d/after-init.el` with this content:
 
 (message "**** after_init ****")
 
-(require 'init-test-local)
+(exordium-require 'init-test-local
+  :location "local")
 ```
 
 Restart Emacs. The message buffer should show two lines:
@@ -879,7 +880,7 @@ Restart Emacs. The message buffer should show two lines:
 ```
 
 Local modules files can be named anything as long as the file name, the symbol
-in `provide` and the symbol in `require` are the same.
+in `provide` and the symbol in `exordium-require` are the same.
 
 ## Troubleshooting
 
