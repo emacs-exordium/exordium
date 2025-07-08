@@ -14,10 +14,8 @@
 ;; C-S-r             Search with ripgrep: in current project root.
 ;;                   See also`init-helm-porojectile.el'
 ;; C-S-d             Search with Ag: ask for directory first.
-;; C-S-f             Search with Ag: this file (like Swoop).
-;; C-S-a             Search with Ag: in current project root.
 ;;                   See also`init-helm-porojectile.el'.
-;; C-S-s             Helm Swoop
+;; C-S-s             Helm occur
 ;; C-x c g           Helm Google suggest.
 
 ;;; Code:
@@ -26,6 +24,8 @@
   (unless (featurep 'init-require)
     (load (file-name-concat (locate-user-emacs-file "modules") "init-require"))))
 (exordium-require 'init-prefs)
+
+(require 'cl-lib)
 
 (use-package helm
   :diminish
@@ -65,7 +65,9 @@
   :diminish
   :when exordium-helm-everywhere
   :functions (exordium--helm-swith-to-buffer-update-sources
-              exordium--helm-switch-to-buffer-completing-read)
+              exordium--helm-switch-to-buffer-completing-read
+              exordium--helm-occur-ensure-input
+              exordium-helm-do-grep-ag-in-directory)
   :init
   (use-package helm-lib
     :ensure helm
@@ -73,8 +75,7 @@
     :autoload (helm-this-command
                helm-symbol-name
                helm-get-attr
-               helm-set-attr
-               helm-mklist))
+               helm-set-attr))
   (use-package helm-mode
     :ensure helm
     :defer t
@@ -87,6 +88,10 @@
     :ensure helm
     :defer t
     :autoload (helm-normalize-sources))
+  (use-package helm-grep
+    :ensure helm
+    :defer t
+    :autoload (helm-grep-ag))
 
   (defun exordium--helm-swith-to-buffer-update-sources (&rest args)
     "Copy relevant attributes from a `helm-source-buffers' to `:sources' in ARGS."
@@ -148,17 +153,62 @@
       (advice-remove
        'helm #'exordium--helm-swith-to-buffer-update-sources))))
 
+  (defun exordium--helm-occur-ensure-input (args)
+    "Add `:input' equal to `:default' to ARGS plist if it's not already there."
+    (if (or (not (eq 'helm-occur this-command))
+            (not (plistp args))
+            (plist-get args :input))
+        args
+      (plist-put args :input (plist-get args :default))))
+
+  (defun exordium-helm-do-grep-ag-in-directory (&optional arg)
+    "Like `helm-do-grep-ag', but ask for a directory first."
+    (interactive "P")
+    (let ((dir (helm-read-file-name
+                "Search in directory: "
+                :test #'file-directory-p
+                :default default-directory
+                :must-match t)))
+      (helm-grep-ag (expand-file-name dir) arg)))
+
   :custom
   (history-delete-duplicates t)
   (helm-M-x-always-save-history t)
   (helm-M-x-show-short-doc t)
   (completions-detailed exordium-help-extensions)
+  (helm-grep-ag-command exordium-helm-grep-ag-command)
+  ;; Extract value of --color-match argument (if present) when
+  ;; `exordium-helm-grep-ag-command' uses ag.
+  (helm-grep-ag-pipe-cmd-switches
+   (when (and
+          (member
+           (when-let* ((cmd (car
+                             (cl-remove-if (lambda (str)
+                                             (string-match
+                                              (rx string-start
+                                                  alpha
+                                                  (zero-or-more alnum)
+                                                  "=")
+                                              str))
+                                           (split-string
+                                            exordium-helm-grep-ag-command)))))
+             (file-name-nondirectory cmd))
+           '("ag" "pt"))
+          (string-match (rx (group
+                             "--color-match"
+                             (or "=" (one-or-more space))
+                             (+? (not space)))
+                            (or "\\" space string-end))
+                        exordium-helm-grep-ag-command))
+     (list (match-string 1 exordium-helm-grep-ag-command))))
 
   :bind
   (([remap execute-extended-command] . #'helm-M-x) ; M-x
    ([remap yank-pop] . #'helm-show-kill-ring) ; M-y
    ([remap find-file] . #'helm-find-files) ; C-x C-f
-   ([remap find-file-read-only] . #'helm-recentf)) ; C-x C-r
+   ([remap find-file-read-only] . #'helm-recentf) ; C-x C-r
+   ("C-S-d" . #'exordium-helm-do-grep-ag-in-directory)
+   ("C-S-s" . #'helm-occur))
 
   :config
   ;; Do not show these files in helm buffer
@@ -173,26 +223,15 @@
                  switch-to-buffer-other-window))
     (add-to-list 'helm-completing-read-handlers-alist
                  (cons fun #'exordium--helm-switch-to-buffer-completing-read)))
+
+  (advice-add #'helm :filter-args #'exordium--helm-occur-ensure-input)
+
   (helm-mode))
 
 (use-package helm-descbinds
   :defer t
   :bind
   ("C-h b" . #'helm-descbinds))
-
-(use-package helm-ag
-  :defer t
-  :custom
-  (helm-ag-insert-at-point 'symbol)
-  :bind
-  (("C-S-d" . #'helm-do-ag)
-   ("C-S-f" . #'helm-do-ag-this-file)))
-
-(use-package helm-ag
-  :defer t
-  :unless exordium-helm-projectile
-  :bind
-  ("C-S-a" . #'helm-ag-project-root))
 
 (use-package helm-rg
   :defer t)
@@ -203,53 +242,9 @@
   :bind
   ("C-S-r" . #'helm-rg))
 
-(use-package helm-swoop
-  :defer t
-  :init
-  (use-package isearch
-    :ensure nil
-    :defer t
-    :bind
-    (:map isearch-mode-map
-     ("C-S-s" . #'helm-swoop-from-isearch)))
-
-  :commands (helm-swoop--edit-complete
-             helm-swoop--edit-cancel
-             helm-swoop--edit-delete-all-lines)
-  :custom
-  (helm-swoop-split-direction (pcase exordium-split-window-preferred-direction
-                                ('longest #'split-window-sensibly)
-                                ('horizontal #'split-window-horizontally)
-                                (_ #'split-window-vertically)))
-  :bind
-  (("C-S-s" . #'helm-swoop)
-   ;; Use similar bindings to `helm-ag-edit'
-   :map helm-swoop-edit-map
-   ("C-c C-c" . #'helm-swoop--edit-complete)
-   ("C-c C-k" . #'helm-swoop--edit-cancel)
-   ("C-c C-q C-k" . #'helm-swoop--edit-delete-all-lines)))
-
 (when exordium-helm-everywhere
   (use-package helm-xref
     :defer t))
-
-
-
-;; TODO: work in progress
-;; The intent is to improve the readability of the helm swoop selection line
-;; (in the helm buffer).
-
-;; (defun fix-helm-swoop-colors (orig-fun &rest args)
-;;   "Advice around `helm-swoop' to change the background of the
-;; selected line in the hem buffer, for better readability"
-;;   (let ((bg       (face-attribute 'helm-selection :background))
-;;         (swoop-bg (face-attribute 'helm-swoop-target-line-face :background)))
-;;     (set-face-attribute 'helm-selection nil :background swoop-bg)
-;;     (let ((res (apply orig-fun args)))
-;;       (set-face-attribute 'helm-selection nil :background bg)
-;;       res)))
-
-;; (advice-add 'helm-swoop :around #'fix-helm-swoop-colors)
 
 
 

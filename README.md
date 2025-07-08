@@ -358,17 +358,14 @@ will start different search modes. By default, they will use symbol under the po
 However if it is not there just start typing text: the Helm window shows all
 matching lines, and you can jump from one to another using the arrow keys.
 
-Some of them will use  [Helm Swoop](https://github.com/ShingoFukuyama/helm-swoop) while
-the reminder will use [Silver Searcher](https://github.com/ggreer/the_silver_searcher).
+Some of them will use [Silver Searcher](https://github.com/ggreer/the_silver_searcher).
 The latter, abbreviated `Ag`, being substitute to `grep` and `ack` has support for regular
 expressions.
 
 * <kbd>C-S-a</kbd>: Ag search for text in current projectile project.
-* <kbd>C-S-s</kbd> or <kbd>M-x helm-swoop</kbd>: Swoop search for text in current buffer.
+* <kbd>C-S-s</kbd> or <kbd>M-x helm-occur</kbd>: Find occurrences of text in current buffer.
 * <kbd>C-S-d</kbd>: Ag search for text, but ask for directory to start first.
-* <kbd>C-S-f</kbd>: Ag search for text in current buffer (similar to Swoop).
 * <kbd>C-S-r</kbd>: ripgrep search for text in current projectile project.
-* <kbd>M-x helm-multiple-swoop-all</kbd>: Swoop search within all buffers.
 
 Note that <kbd>C-S-a</kbd> and <kbd>C-S-r</kbd> work also directly from
 `helm-projectile-switch-project`. This means that you searching a project with `ag` or `rg`
