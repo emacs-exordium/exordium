@@ -87,11 +87,17 @@
   (use-package helm-core
     :ensure helm
     :defer t
-    :autoload (helm-normalize-sources))
+    :autoload (helm-normalize-sources
+               helm-set-local-variable))
   (use-package helm-grep
     :ensure helm
     :defer t
     :autoload (helm-grep-ag))
+
+  (use-package helm-buffers
+    :ensure helm
+    :defer t
+    :autoload (helm-buffer--format-mode-name))
 
   (defun exordium--helm-swith-to-buffer-update-sources (&rest args)
     "Copy relevant attributes from a `helm-source-buffers' to `:sources' in ARGS."
@@ -106,7 +112,8 @@
         (progn
           (dolist (source sources)
             (helm-set-attr 'filtered-candidate-transformer
-                           (append '(helm-skip-boring-buffers)
+                           (append '(helm-skip-boring-buffers
+                                     helm-buffers-sort-transformer)
                                    (helm-get-attr 'filtered-candidate-transformer
                                                   source))
                            source)
@@ -146,6 +153,18 @@
           (advice-add
            'helm
            :filter-args #'exordium--helm-swith-to-buffer-update-sources)
+          (when-let* ((buffers (all-completions "" (cadr args)))
+                      (result (cl-loop for b in buffers
+                                       maximize (length b)
+                                       into len-buf
+                                       maximize (length
+                                                 (helm-buffer--format-mode-name b))
+                                       into len-mode
+                                       finally return (cons len-buf len-mode))))
+            (unless (default-value 'helm-buffer-max-length)
+              (helm-set-local-variable 'helm-buffer-max-length (car result)))
+            (unless (default-value 'helm-buffer-max-len-mode)
+              (helm-set-local-variable 'helm-buffer-max-len-mode (cdr result))))
 
           (apply #'helm-completing-read-default-handler
                  (append args
