@@ -25,6 +25,7 @@
 (exordium-require 'init-projectile)
 
 (use-package helm-projectile
+  :demand t
   :functions (exordium-projectile-switch-project-find-file-other-window
               exordium-helm-projectile--switch-project-and-do-ag
               exordium-helm-projectile--switch-project-and-do-rg
