@@ -26,36 +26,15 @@
 
 (use-package helm-projectile
   :demand t
-  :functions (exordium-projectile-switch-project-find-file-other-window
-              exordium-helm-projectile--switch-project-and-do-ag
+  :functions (exordium-helm-projectile--switch-project-and-do-ag
               exordium-helm-projectile--switch-project-and-do-rg
               exordium-helm-projectile--exit-helm-and-do-ag
-              exordium-helm-projectile--exit-helm-and-do-rg
-              exordium-helm-projectile--make-source-with)
+              exordium-helm-projectile--exit-helm-and-do-rg)
   :commands (helm-projectile-switch-project)
   :init
   (use-package projectile
     :defer t
     :autoload (projectile-switch-project-by-name))
-
-  (defun exordium-helm-projectile--make-source-with (action)
-    "Make a new `helm-source-projectile-buffer' with FUN as the first action.
-ACTION is a cons in a form of (DESCRIPTION . FUNCTION)."
-    (let ((source (helm-make-source "Project buffers"
-                     'helm-source-projectile-buffer)))
-     (helm-set-attr
-      'action
-      (cons
-       action
-       (cl-remove-if (lambda (act)
-                       (eq (cdr act)
-                           (cdr action)))
-                     (pcase (helm-get-attr 'action  source)
-                       ((and (pred symbolp) act) (eval act))
-                       ((and (pred listp) act) act)
-                       (act (list act)))))
-      source)
-     source))
 
   (defun exordium-helm-projectile--switch-project-and-do-ag (project)
     "Switch projct to PROJECT and run ag there."
@@ -104,33 +83,8 @@ ACTION is a cons in a form of (DESCRIPTION . FUNCTION)."
                              #'exordium-helm-projectile--switch-project-and-do-rg
                              helm-source-projectile-projects)
 
-  (unless (fboundp 'helm-projectile-switch-to-buffer-other-window)
-    (declare-function helm-projectile-switch-to-buffer-other-window nil)
-    (helm-projectile-command
-     "switch-to-buffer-other-window"
-     (exordium-helm-projectile--make-source-with
-      (cons "Switch to buffer(s) other window"
-            #'helm-buffer-switch-buffers-other-window))
-     "Switch to buffer: "
-     nil helm-buffers-truncate-lines))
-
-  (unless (fboundp 'helm-projectile-switch-to-buffer-other-frame)
-    (declare-function helm-projectile-switch-to-buffer-other-frame nil)
-    (helm-projectile-command
-     "switch-to-buffer-other-frame"
-     (exordium-helm-projectile--make-source-with
-      (cons "Switch to buffer(s) other frame"
-            #'helm-buffer-switch-to-buffer-other-frame))
-     "Switch to buffer: "
-     nil helm-buffers-truncate-lines))
-
   (when exordium-helm-everywhere
-    (helm-projectile-on)
-    (bind-keys :map projectile-mode-map
-               ([remap projectile-switch-to-buffer-other-window]
-                . helm-projectile-switch-to-buffer-other-window)
-               ([remap projectile-switch-to-buffer-other-frame]
-                . helm-projectile-switch-to-buffer-other-frame))))
+    (helm-projectile-on)))
 
 (use-package treemacs-projectile
   :defer t
