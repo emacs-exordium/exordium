@@ -350,6 +350,7 @@ Keybinding          | Description
 <kbd>C-x b</kbd>    | Switch buffer.
 <kbd>C-x C-f</kbd>  | Find file.
 <kbd>C-x c g</kbd>  | Google suggest.
+<kbd>C-c C-p</kbd>  | Edit helm ag/grep/occur etc. search results (after exporting/saving them).
 
 ### Other Helm tools
 

@@ -17,6 +17,7 @@
 ;;                   See also`init-helm-porojectile.el'.
 ;; C-S-s             Helm occur
 ;; C-x c g           Helm Google suggest.
+;; C-c C-p           Edit helm ag/grep/occur etc. search results (after exporting/saving them)
 
 ;;; Code:
 
@@ -246,6 +247,9 @@
   (advice-add #'helm :filter-args #'exordium--helm-occur-ensure-input)
 
   (helm-mode))
+
+(use-package wgrep-helm
+  :defer t)
 
 (use-package helm-descbinds
   :defer t
