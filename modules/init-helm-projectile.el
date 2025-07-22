@@ -34,20 +34,9 @@
               exordium-helm-projectile--make-source-with)
   :commands (helm-projectile-switch-project)
   :init
-  (defun exordium-projectile-switch-project-find-file-other-window ()
-    "Switch to a project we have visited before then jump to a
-project's file using completion and show it in another window."
-    (interactive)
-    (let ((projectile-switch-project-action #'projectile-find-file-other-window))
-      (helm-projectile-switch-project)))
-
   (use-package projectile
     :defer t
-    :autoload (projectile-switch-project-by-name)
-    :bind
-    (:map projectile-command-map
-     ("p" . #'helm-projectile-switch-project)
-     ("4 p" . #'exordium-projectile-switch-project-find-file-other-window)))
+    :autoload (projectile-switch-project-by-name))
 
   (defun exordium-helm-projectile--make-source-with (action)
     "Make a new `helm-source-projectile-buffer' with FUN as the first action.
