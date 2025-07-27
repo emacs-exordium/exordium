@@ -26,63 +26,15 @@
 
 (use-package helm-projectile
   :demand t
-  :functions (exordium-helm-projectile--switch-project-and-do-ag
-              exordium-helm-projectile--switch-project-and-do-rg
-              exordium-helm-projectile--exit-helm-and-do-ag
-              exordium-helm-projectile--exit-helm-and-do-rg)
-  :commands (helm-projectile-switch-project)
   :init
-  (use-package projectile
-    :defer t
-    :autoload (projectile-switch-project-by-name))
-
-  (defun exordium-helm-projectile--switch-project-and-do-ag (project)
-    "Switch projct to PROJECT and run ag there."
-    (interactive)
-    (let ((projectile-switch-project-action #'helm-projectile-ag))
-      (projectile-switch-project-by-name project)))
-
-  (defun exordium-helm-projectile--exit-helm-and-do-ag ()
-    "Exit helm and run ag on first selected candidate."
-    (interactive)
-    (if-let* ((project (car (helm-marked-candidates))))
-        (helm-run-after-exit #'exordium-helm-projectile--switch-project-and-do-ag
-                             project)
-      (error "No candidates selected")))
-
-  (defun exordium-helm-projectile--switch-project-and-do-rg (project)
-    "Switch projct to PROJECT and run ripgrep there."
-    (interactive)
-    (let ((projectile-switch-project-action #'helm-projectile-rg))
-      (projectile-switch-project-by-name project)))
-
-  (defun exordium-helm-projectile--exit-helm-and-do-rg ()
-    "Exit helm and switch project to first selected candidate and run rg there."
-    (interactive)
-    (if-let* ((project (car (helm-marked-candidates))))
-        (helm-run-after-exit #'exordium-helm-projectile--switch-project-and-do-rg
-                             project)
-      (error "No candidates selected")))
-
   :bind
   (("C-c h"   . #'helm-projectile)
    ("C-c H"   . #'helm-projectile-switch-project)
    ("C-c M-h" . #'helm-projectile-switch-project)
    ("C-S-a"   . #'helm-projectile-ag)
-   ("C-S-r"   . #'helm-projectile-rg)
-   :map helm-projectile-projects-map
-   ("C-S-a" . #'exordium-helm-projectile--exit-helm-and-do-ag)
-   ("C-S-r" . #'exordium-helm-projectile--exit-helm-and-do-rg))
+   ("C-S-r"   . #'helm-projectile-rg))
 
   :config
-  (helm-add-action-to-source "Silver Searcher (ag) in project `C-S-a'"
-                             #'exordium-helm-projectile--switch-project-and-do-ag
-                             helm-source-projectile-projects)
-
-  (helm-add-action-to-source "ripgrep (rg) in project `C-S-r'"
-                             #'exordium-helm-projectile--switch-project-and-do-rg
-                             helm-source-projectile-projects)
-
   (when exordium-helm-everywhere
     (helm-projectile-on)))
 
