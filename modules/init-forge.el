@@ -39,9 +39,8 @@ to displaying new-pullreq buffer.")
               exordium-forge-post-submit-draft
               exordium-forge-mark-ready-for-rewiew
               exordium-forge-insert-pullreq-commit-messages
-              exordium--forge-diff-for-pullreq
-              exordium--forge-store-window-configuration
-              exordium--forge-kill-diff-buffer-restore-window-configuration)
+              exordium-forge-diff-for-pullreq
+              exordium--forge-new-post-maybe-delete-other-windows)
   :defer t
   :init
   (use-package ghub-graphql
@@ -53,6 +52,15 @@ to displaying new-pullreq buffer.")
     :defer t
     :commands (forge-post-submit)
     :autoload (forge-post-at-point))
+  (use-package forge-pullreq
+    :ensure forge
+    :defer t
+    :autoload (forge-pullreq-p
+               forge--pullreq-ref))
+  (use-package forge-repo
+    :ensure forge
+    :defer t
+    :autoload (forge--get-remote))
   (use-package forge-commands
     :ensure forge
     :defer t
@@ -70,43 +78,32 @@ to displaying new-pullreq buffer.")
     :autoload (markdown-preview))
 
 
-  (defun exordium--forge-diff-for-pullreq (source target)
-                                        ; checkdoc-params: (source target)
+  (defun exordium-forge-diff-for-pullreq (base head)
+                                        ; checkdoc-params: (base head)
     "Show diff for the current pull-request."
-    (when-let* ((magit-commit-show-diff)
-                (pullreq-buffer (current-buffer))
-                (pullreq-window (frame-selected-window)))
-      (when exordium-use-magit-fullscreen
-        (delete-other-windows))
-      (let ((diff-buffer (magit-diff-range (format "%s..%s" target source))))
-        (with-current-buffer pullreq-buffer
-          (setq exordium--forge-diff-buffer-window-configuration
-                (cons diff-buffer
-                      (cdr exordium--forge-diff-buffer-window-configuration)))))
-      (select-window pullreq-window)))
+    (interactive (cond
+                  ((equal current-prefix-arg '(4))
+                   (nreverse (forge-create-pullreq--read-args)))
+                  ((and forge--buffer-base-branch forge--buffer-head-branch
+                        (eq forge-edit-post-action 'new-pullreq))
+                   (list forge--buffer-base-branch forge--buffer-head-branch))
+                  ((when-let* ((topic (or (forge-current-topic)
+                                          forge--buffer-post-object))
+                               ((forge-pullreq-p topic))
+                               (head (forge--pullreq-ref topic)))
+                     (list (format "%s/%s" (forge--get-remote) (oref topic base-ref))
+                           head)))))
+    (magit-diff-setup-buffer
+     (format "%s...%s" base head)
+     nil (car (magit-diff-arguments)) nil 'committed t))
 
-  (defun exordium--forge-store-window-configuration (orig-fun &rest args)
-                                        ; checkdoc-params: (orig-fun args)
-    "Store windows configuration."
-    (let ((window-configuration (current-window-configuration))
-          (pullreq-buffer (apply orig-fun args)))
-      (with-current-buffer pullreq-buffer
-        (setq exordium--forge-diff-buffer-window-configuration
-              (cons nil
-                    window-configuration)))
-      pullreq-buffer))
-
-  (defun exordium--forge-kill-diff-buffer-restore-window-configuration (orig-fun &rest args)
-                                        ; checkdoc-params: (orig-fun args)
-    "Kill a diff buffer and restore windows configuration."
-    (pcase-let ((`(,diff-buffer . ,window-configuration)
-                 exordium--forge-diff-buffer-window-configuration))
-      (apply orig-fun args)
-      (when diff-buffer
-        (with-current-buffer diff-buffer
-          (magit-mode-bury-buffer 'kill))
-        (when window-configuration
-          (set-window-configuration window-configuration)))))
+  (defun exordium--forge-new-post-maybe-delete-other-windows ()
+    "Delete other windows when creating a new post."
+    (when (and exordium-use-magit-fullscreen
+               (memq forge-edit-post-action '(new-pullreq
+                                              new-issue
+                                              new-discussion)))
+      (delete-other-windows)))
 
 
   (defun exordium-forge-markdown-preview ()
@@ -212,28 +209,26 @@ ask for SOURCE and TARGET."
   (:map forge-post-mode-map
    ("C-c M-p" . #'exordium-forge-markdown-preview)
    ("C-c M-r" . #'exordium-forge-post-submit-draft)
-   ("C-c M-d" . #'exordium--forge-diff-for-pullreq)
+   ("C-c M-d" . #'exordium-forge-diff-for-pullreq)
    ("C-c M-c" . #'exordium-forge-insert-pullreq-commit-messages)
    :map forge-topic-mode-map
    ("C-c M-r" . #'exordium-forge-mark-ready-for-rewiew))
 
   :config
-  (advice-add 'forge--prepare-post-buffer
-              :around #'exordium--forge-store-window-configuration)
-  (advice-add 'forge-create-pullreq
-              :after #'exordium--forge-diff-for-pullreq)
-  (advice-add 'forge-post-cancel
-              :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
-  (advice-add 'forge-post-submit
-              :around #'exordium--forge-kill-diff-buffer-restore-window-configuration)
+  ;; Delete other windows after setting up the diff, as this is the only
+  ;; window, i.e., the post window for the new pull request hasn't been setup
+  ;; yet.
+  (add-hook 'forge-edit-post-hook
+            #'exordium--forge-new-post-maybe-delete-other-windows
+            99)
 
   (with-eval-after-load 'forge-post
     (dolist (suffix '(("M-p" "Markdown preview" exordium-forge-markdown-preview)
-                      ("M-d" "Diff" exordium--forge-diff-for-pullreq)
+                      ("M-d" "Diff" exordium-forge-diff-for-pullreq)
                       ("M-r" "Submit draft" exordium-forge-post-submit-draft)))
       (unless (ignore-errors
-                  (transient-get-suffix 'forge-post-dispatch (car suffix)))
-        (transient-append-suffix 'forge-post-dispatch
+                (transient-get-suffix 'forge-post-menu (car suffix)))
+        (transient-append-suffix 'forge-post-menu
           "C-c" suffix)))))
 
 (use-package forge-db
