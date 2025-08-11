@@ -504,6 +504,19 @@ They are passed \\='as is\\=' to \"include-what-you-use\" executable."
  "Use 'helm-fuzzy for `exordium-helm-completion-style' instead"
  "20241204"
  'set)
+
+(defcustom exordium-helm-grep-ag-command
+  (cond ((executable-find "ag")
+         "ag --line-numbers -S --color --color-match '1;34' --nogroup %s -- %s %s")
+        (t ;; Fall back to rg, just like `helm-grep' does
+         "rg --color=always --colors='match:fg:blue' --smart-case --search-zip --no-heading --line-number %s -- %s %s"))
+  "Default value for `helm-grep-ag-command', which see.
+Unlike `helm', Exordium prefers to use \"ag\" in case when it is
+available, as the \"rg\" is used via package `helm-rg'.  In addition
+colors are costomized."
+  :group 'exordium
+  :type 'string)
+
 
 ;;; Desktop state
 (defcustom exordium-desktop nil
