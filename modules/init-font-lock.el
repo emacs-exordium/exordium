@@ -12,11 +12,10 @@
 
 (cond (exordium-font-lock
        (global-font-lock-mode 1)
-       (setq font-lock-maximum-decoration
-             '((emacs-lisp-mode . t)
-               (c-mode . t)
-               (C++-mode . 1) ;; t or 1 or 2
-               (t . t)))
+       (unless exordium-treesit-modes-enable
+         (setq font-lock-maximum-decoration
+               '((c++-mode . 1) ;; t or 1 or 2
+                 (t . t))))
        (setq jit-lock-chunk-size 5000
              jit-lock-context-time 0.2
              jit-lock-defer-time .1
