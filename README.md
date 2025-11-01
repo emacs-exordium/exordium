@@ -181,10 +181,17 @@ Keybinding              | Description
 
 Auto-complete/Company:
 
-Keybinding         | Description
--------------------|-----------------------------------------------------------
-<kbd>C-.</kbd>     | Force trigger auto-complete/company-complete.
-<kbd>ESC</kbd>     | Abort auto-complete/company-complete.
+Keybinding                          | Description
+------------------------------------|------------------------------------------------------------------------------------------
+<kbd>C-.</kbd>                      | Force trigger auto-complete/company-complete.
+<kbd>ESC</kbd>                      | Abort auto-complete/company-complete.
+<kbd>C-o</kbd> or <kbd>C-\\</kbd>   | Company only: switch to other backend (`company-other-backend`)
+<kbd>C-M-h</kbd>                    | Company only: show doc buffer for current candidate (`company-show-doc-buffer`)
+<kbd>C-M-v</kbd>                    | Company only: scroll doc buffer up (`scroll-other-window`)
+<kbd>C-M-S-v</kbd>                  | Company only: scroll doc buffer down (`scroll-other-window-down`)
+<kbd>C-h</kbd> or <kbd><f1></kbd>   | Company only: show quick help for current candidate (`company-posframe-quickhelp-toggle`)
+<kbd>C-S-v</kbd> or <kbd><f2></kbd> | Company only: scroll quick help up (`company-posframe-quickhelp-scroll-up`)
+<kbd>M-V</kbd> or <kbd><f3></kbd>   | Company only: scroll quick help down (`company-posframe-quickhelp-scroll-down`)
 
 Tip: if you are looking for a particular key and you know it starts with a
 given prefix, type the prefix followed by <kbd>C-h</kbd>: Emacs will display
