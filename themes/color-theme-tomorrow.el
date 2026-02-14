@@ -355,7 +355,7 @@ names to which it refers are bound."
      (org-footnote ((t (:foreground ,aqua))))
      (org-formula ((t (:foreground ,red))))
      (org-hide ((t (:foreground ,current-line))))
-     (org-link ((t (:foreground ,blue))))
+     (org-link ((t (:foreground ,blue :underline t))))
      (org-scheduled ((t (:foreground ,green))))
      (org-scheduled-previously ((t (:foreground ,orange))))
      (org-scheduled-today ((t (:foreground ,green))))
