@@ -506,7 +506,7 @@ names to which it refers are bound."
      (magit-tag ((t (:foreground ,peach))))
      (magit-section-heading ((t (:foreground ,blue :weight bold))))
      (magit-section-highlight ((t (:background ,surface0 :extend t))))
-     (magit-diff-context-highlight ((t (:background ,surface0 :foreground ,text :extend t))))
+     (magit-diff-context-highlight ((t (:background ,base :foreground ,text :extend t))))
      (magit-diff-revision-summary ((t (:foreground ,blue :weight bold))))
      (magit-diff-revision-summary-highlight ((t (:foreground ,blue :weight bold))))
      (magit-diff-added ((t (:foreground ,green :extend t))))
@@ -633,16 +633,16 @@ names to which it refers are bound."
 
      ;; Org
      (org-level-1 ((t
-                    ,(append `(:foreground ,red
+                    ,(append `(:foreground ,blue
                                :overline nil
                                :inherit nil
                                :extend t)
                              (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
-     (org-level-2 ((t (:foreground ,peach))))
-     (org-level-3 ((t (:foreground ,yellow))))
+     (org-level-2 ((t (:foreground ,sapphire))))
+     (org-level-3 ((t (:foreground ,lavender))))
      (org-level-4 ((t (:foreground ,green))))
-     (org-level-5 ((t (:foreground ,sapphire))))
-     (org-level-6 ((t (:foreground ,lavender))))
+     (org-level-5 ((t (:foreground ,yellow))))
+     (org-level-6 ((t (:foreground ,peach))))
      (org-level-7 ((t (:foreground ,mauve))))
      (org-level-8 ((t (:foreground ,maroon))))
      (org-link ((t (:inherit link))))
@@ -715,19 +715,19 @@ names to which it refers are bound."
      (markdown-footnote-face ((t (:foreground ,yellow))))
      (markdown-header-face ((t (:weight normal))))
      (markdown-header-face-1 ((t ,(append
-                                   `(:foreground ,red)
+                                   `(:foreground ,blue)
                                    (if exordium-theme-use-big-font
                                        `(:height ,exordium-height-plus-4)
                                      nil)))))
      (markdown-header-face-2 ((t ,(append
-                                   `(:foreground ,peach)
+                                   `(:foreground ,sapphire)
                                    (if exordium-theme-use-big-font
                                        `(:height ,exordium-height-plus-2)
                                      nil)))))
-     (markdown-header-face-3 ((t (:foreground ,yellow))))
+     (markdown-header-face-3 ((t (:foreground ,lavender))))
      (markdown-header-face-4 ((t (:foreground ,green))))
-     (markdown-header-face-5 ((t (:foreground ,sapphire))))
-     (markdown-header-face-6 ((t (:foreground ,lavender))))
+     (markdown-header-face-5 ((t (:foreground ,yellow))))
+     (markdown-header-face-6 ((t (:foreground ,peach))))
      (markdown-inline-code-face ((t (:foreground ,green))))
      (markdown-plain-url-face ((t (:inherit link))))
      (markdown-pre-face ((t (:foreground ,green))))
