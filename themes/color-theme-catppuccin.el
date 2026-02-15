@@ -232,7 +232,7 @@ or \\='latte."
   `(let ((colors (or (cdr (assoc ,mode catppuccin-colors))
                      (error "No such theme flavor"))))
      (let ((rosewater (cdr (assoc 'rosewater colors)))
-           (flamingo  (cdr (assoc 'flamingo colors)))
+           ;;(flamingo  (cdr (assoc 'flamingo colors)))
            (pink      (cdr (assoc 'pink colors)))
            (mauve     (cdr (assoc 'mauve colors)))
            (red       (cdr (assoc 'red colors)))
