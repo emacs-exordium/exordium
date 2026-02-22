@@ -230,8 +230,7 @@ with checkout in %s"
                    (or kind "ELPA") name dir)
           (exordium--vc-checkout-package-delete desc))))
      (unless installed
-       (with-no-warnings
-         (package-vc-install-from-checkout dir (symbol-name name)))))))
+       (package-vc-install-from-checkout dir (symbol-name name))))))
 
 (defun exordium--vc-checkout-use-package-handler (name _keyword arg rest state)
   "Generate code to install package NAME from a VC checkout, or do so directly.

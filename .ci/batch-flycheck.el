@@ -20,7 +20,9 @@ SOURCE is the source file used to compile with
           (not-errors
            (list
             (rx "the function ‘exordium--require-load’ might not be defined at runtime.")
-            (rx "the function `exordium--require-load' might not be defined at runtime."))))
+            (rx "the function `exordium--require-load' might not be defined at runtime.")
+            (rx "‘package-vc-install-from-checkout’ is an obsolete function (as of 31.1); use the User Lisp directory instead.")
+            (rx "`package-vc-install-from-checkout' is an obsolete function (as of 31.1); use the User Lisp directory instead."))))
       (when-let* (((re-search-forward (rx-to-string `(seq " -- " ,source line-end))
                                       nil t))
                   (pattern (rx-to-string
