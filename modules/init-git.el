@@ -52,7 +52,8 @@ These are restored by `exordium-magit-quit-session'.")
               exordium-magit-log-buffer
               exordium-magit-log
               exordium--magit-fullscreen
-              exordium-projectile-add-known-project)
+              exordium-projectile-add-known-project
+              exordium-refresh-git-gutter-all-buffers)
 
   :defines (magit-last-seen-setup-instructions)
   :init
@@ -150,7 +151,19 @@ with `exordium-magit-quit-session'."
     (when (fboundp 'magit-status-internal) ;; check just like in `projectile-vc'
       (advice-add 'magit-status-internal :around #'exordium--magit-fullscreen)))
 
-  (advice-add 'magit-clone-regular :after #'exordium-projectile-add-known-project))
+  (advice-add 'magit-clone-regular :after #'exordium-projectile-add-known-project)
+
+  ;; Refresh git-gutter after magit operations
+  (when exordium-git-gutter
+    (defun exordium-refresh-git-gutter-all-buffers ()
+      "Refresh git-gutter in all buffers after magit operations."
+      (dolist (buffer (buffer-list))
+        (with-current-buffer buffer
+          (when (and (bound-and-true-p git-gutter-mode)
+                     (buffer-file-name))
+            (git-gutter)))))
+
+    (add-hook 'magit-post-refresh-hook #'exordium-refresh-git-gutter-all-buffers)))
 
 
 ;; SMerge Dispatch
