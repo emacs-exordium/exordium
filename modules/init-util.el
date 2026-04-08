@@ -40,7 +40,8 @@
 ;;                directly to the word.  Note that the codes it generates are
 ;;                optimized for touch-type.
 ;;
-;; M-Q            `unfill-paragraph': the opposite of M-q.
+;; M-Q            `unfill-paragraph' or `exordium-unfill-paragraph'
+;;                (until Emacs 31): the opposite of M-q.
 ;;
 ;; Functions:
 ;;
@@ -401,7 +402,7 @@ buffer."
 
 ;;; Miscellaneous
 
-(defun unfill-paragraph (&optional region)
+(defun exordium-unfill-paragraph (&optional region)
   "Take a multi-line paragraph and make it into a single line of text.
 REGION is t when called interactively and is passed to
 `fill-paragraph', which see."
@@ -411,7 +412,9 @@ REGION is t when called interactively and is passed to
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(bind-key "M-S-q" #'unfill-paragraph)
+(bind-key "M-S-q" (if (fboundp 'unfill-paragraph)
+                      #'unfill-paragraph
+                    #'exordium-unfill-paragraph))
 
 
 ;;; Config management

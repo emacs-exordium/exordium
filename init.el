@@ -13,7 +13,7 @@
 ;; the startup time.
 (setq gc-cons-threshold 100000000)
 
-(let ((min-version "28"))
+(let ((min-version "28.2"))
   (when (version< emacs-version min-version)
     (error "This config requires at least Emacs-%s, but you're running %s"
            min-version emacs-version)))

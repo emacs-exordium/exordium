@@ -18,11 +18,10 @@ SOURCE is the source file used to compile with
     (goto-char (point-min))
     (let (matches
           (not-errors
-           (list
-            (rx "the function ‘exordium--require-load’ might not be defined at runtime.")
-            (rx "the function `exordium--require-load' might not be defined at runtime.")
-            (rx "‘package-vc-install-from-checkout’ is an obsolete function (as of 31.1); use the User Lisp directory instead.")
-            (rx "`package-vc-install-from-checkout' is an obsolete function (as of 31.1); use the User Lisp directory instead."))))
+           (rx-let ((quoted (func) (seq (or "‘" "`") func (or "’" "'"))))
+             (list
+              (rx "the function " (quoted "exordium--require-load") " might not be defined at runtime.")
+              (rx (quoted "package-vc-install-from-checkout") " is an obsolete function (as of 31.1); " (one-or-more not-newline))))))
       (when-let* (((re-search-forward (rx-to-string `(seq " -- " ,source line-end))
                                       nil t))
                   (pattern (rx-to-string
@@ -93,10 +92,7 @@ SOURCE is the source file used to compile with
             (setq command-line-args-left (cdr command-line-args-left))))
       (setq command-line-args-left nil)
       (when (< 0 number-of-errors)
-        (message "\n===Errors and Warnings===\n%s\n"
-                 (mapconcat #'identity errors "\n"))
-        (let ((msg (format "There are %s flycheck errors!" number-of-errors)))
-          (error msg))))))
+        (signal 'error errors)))))
 
 (provide 'batch-flycheck)
 

@@ -155,7 +155,7 @@ Otherwise pop to buffer (presumably in a new window)."
                  (cons fun #'exordium--helm-helpful-completing-read))))
 
 
-(when (version< "29" emacs-version) ;; Since Emacs-29
+(when (version< "30" emacs-version) ;; Since Emacs-30
 
 (use-package casual
   :defer t
@@ -219,6 +219,9 @@ Otherwise pop to buffer (presumably in a new window)."
            ("]" . #'ibuffer-forward-filter-group)
            ("$" . #'ibuffer-toggle-filter-group)))
   (use-package info
+    :autoload (Info-search
+               Info-history-forward
+               Info-history-back)
     :ensure nil
     :defer t
     :bind (:map Info-mode-map
