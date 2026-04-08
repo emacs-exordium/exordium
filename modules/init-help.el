@@ -219,6 +219,9 @@ Otherwise pop to buffer (presumably in a new window)."
            ("]" . #'ibuffer-forward-filter-group)
            ("$" . #'ibuffer-toggle-filter-group)))
   (use-package info
+    :autoload (Info-search
+               Info-history-forward
+               Info-history-back)
     :ensure nil
     :defer t
     :bind (:map Info-mode-map
