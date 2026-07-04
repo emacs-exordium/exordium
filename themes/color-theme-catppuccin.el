@@ -348,7 +348,7 @@ names to which it refers are bound."
      (font-lock-comment-face ((t ,(if exordium-catppuccin-italic-comments
                                       `(:inherit shadow :slant italic)
                                     `(:inherit shadow)))))
-     (font-lock-comment-delimiter-face ((t (:inherit shaddow))))
+     (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face))))
      (font-lock-constant-face ((t (:foreground ,peach))))
      (font-lock-doc-face ((t (:inherit font-lock-comment-face))))
      (font-lock-escape-face ((t (:foreground ,pink))))
