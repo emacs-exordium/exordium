@@ -74,11 +74,31 @@ Powerline follow."
     (powerline-reset)))
 
 (defun what-face (pos)
-  "Display the face at POS."
+  "Display the faces at POS.
+Faces set by text properties are reported separately from faces
+set by overlays: the latter take priority over the former, and
+would otherwise mask them.  For instance the overlay of
+`hl-line-mode' covers the whole current line."
   (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+  (let ((text-face (or (get-text-property pos 'read-face-name)
+                       (get-text-property pos 'face)))
+        (overlay-faces (delq nil
+                             (mapcar (lambda (overlay)
+                                       (or (overlay-get overlay 'read-face-name)
+                                           (overlay-get overlay 'face)))
+                                     (overlays-at pos)))))
+    (cond ((and text-face overlay-faces)
+           (message "Face: %s [overlays: %s]" text-face
+                    (mapconcat (lambda (face) (format "%s" face))
+                               overlay-faces ", ")))
+          (text-face
+           (message "Face: %s" text-face))
+          (overlay-faces
+           (message "Face: none [overlays: %s]"
+                    (mapconcat (lambda (face) (format "%s" face))
+                               overlay-faces ", ")))
+          (t
+           (message "No face at %d" pos)))))
 
 ;; Emacs daemon sometimes displays a some faces incorrectly: it seems like it
 ;; does not load all the theme colors/fonts when no frame is present during
