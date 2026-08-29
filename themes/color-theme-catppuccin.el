@@ -111,6 +111,21 @@ Must be one of `mocha`, `macchiato`, `frappe`, or `latte`."
                 (floor (* (- 1 factor) v)))
         (catppuccin--hex-to-rgb color)))))
 
+(defun catppuccin-mix (color background value)
+  "Mix VALUE% (0–100) of COLOR into BACKGROUND.
+Unlike `catppuccin-darken', which scales towards black and so desaturates,
+this keeps the hue of COLOR while staying close to BACKGROUND.  Use it for
+subtle tints that have to sit on top of a themed background."
+  (let* ((factor (/ value 100.0))
+         (fg (catppuccin--hex-to-rgb color))
+         (bg (catppuccin--hex-to-rgb background)))
+    (apply #'catppuccin--rgb-to-hex
+      (mapcar (lambda (i)
+                (let ((c (nth i fg))
+                      (b (nth i bg)))
+                  (catppuccin--rnd (+ b (* factor (- c b))))))
+        '(0 1 2)))))
+
 ;;; Color palette.
 
 (defconst catppuccin-colors
@@ -490,15 +505,54 @@ names to which it refers are bound."
      (helm-swoop-target-word-face ((t (:background ,blue))))
 
      ;; Diff
-     (diff-header ((t (:foreground ,blue))))
-     (diff-hunk-header ((t (:foreground ,text :background ,surface2))))
-     (diff-added ((t (:background ,(catppuccin-darken green 60)))))
-     (diff-removed ((t (:background ,(catppuccin-darken red 60)))))
-     (diff-indicator-added ((t (:foreground ,green))))
-     (diff-indicator-removed ((t (:foreground ,red))))
-     (diff-refine-added ((t (:background ,(catppuccin-darken green 40)))))
-     (diff-refine-removed ((t (:background ,(catppuccin-darken red 40)))))
-     (diff-refine-changed ((t (:background ,yellow :foreground ,base))))
+     ;;
+     ;; The accent is carried as a foreground over a neutral `surface0' band,
+     ;; so the hue lives in the text rather than in a coloured background.
+     ;; This matches the magit-diff-* faces.  diff-mode's faces show through in
+     ;; buffers that turn magit's own hunk highlighting off (see
+     ;; `magit-diff-highlight-hunk-body').
+     ;;
+     ;; Backgrounds that do need a hue are mixed into `base' rather than
+     ;; darkened: `catppuccin-darken' scales towards black, which gives
+     ;; near-black backgrounds on a light flavor.
+     (diff-header ((t (:foreground ,blue :extend t))))
+     (diff-file-header ((t (:foreground ,peach :weight bold :extend t))))
+     (diff-hunk-header ((t (:foreground ,subtext0 :background ,surface1 :extend t))))
+     (diff-function ((t (:foreground ,subtext0))))
+     (diff-index ((t (:foreground ,subtext0))))
+     (diff-context ((t (:foreground ,subtext1))))
+     (diff-added ((t (:foreground ,green :background ,surface0 :extend t))))
+     (diff-removed ((t (:foreground ,red :background ,surface0 :extend t))))
+     (diff-changed ((t (:foreground ,yellow :background ,surface0 :extend t))))
+     (diff-indicator-added ((t (:foreground ,green :weight bold))))
+     (diff-indicator-removed ((t (:foreground ,red :weight bold))))
+     (diff-indicator-changed ((t (:foreground ,yellow :weight bold))))
+     ;; The refine faces mark the changed words *within* an already-highlighted
+     ;; line, so they only have to beat `surface0', not the window background.
+     ;; Keep the mix low or they read as a second, louder highlight.
+     (diff-refine-added ((t (:foreground ,green
+                             :background ,(catppuccin-mix green base 22)))))
+     (diff-refine-removed ((t (:foreground ,red
+                               :background ,(catppuccin-mix red base 22)))))
+     (diff-refine-changed ((t (:foreground ,yellow
+                               :background ,(catppuccin-mix yellow base 22)))))
+     (diff-nonexistent ((t (:foreground ,overlay1))))
+     (diff-error ((t (:foreground ,red :weight bold))))
+
+     ;; Pending review comments from the emacs-pr-review package are rendered
+     ;; inside the diff, so they need a background of their own or they read as
+     ;; part of the hunk they sit in.  The recessed `mantle' band puts them
+     ;; below both `base' and `surface0'; the rules around them are drawn in
+     ;; `surface2' rather than the default foreground.
+     (pr-review-in-diff-pending-begin-face
+      ((t (:foreground ,mauve :background ,mantle
+           :weight bold :slant italic
+           :underline (:color ,surface2) :extend t))))
+     (pr-review-in-diff-pending-body-face
+      ((t (:foreground ,text :background ,mantle :extend t))))
+     (pr-review-in-diff-pending-end-face
+      ((t (:background ,mantle :height 0.5
+           :overline ,surface2 :extend t))))
 
      ;; ;; Magit
      (magit-branch-local ((t (:foreground ,teal))))
