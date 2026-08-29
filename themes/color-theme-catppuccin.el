@@ -569,6 +569,8 @@ names to which it refers are bound."
      (magit-diff-removed-highlight ((t (:background ,surface1 :foreground ,red :extend t))))
      (magit-diff-file-heading ((t (:foreground ,peach :bold t))))
      (magit-diff-file-heading-highlight ((t (:inherit magit-section-highlight))))
+     (magit-diff-lines-boundary ((t (:background ,surface2 :foreground ,text :extend t))))
+     (magit-diff-lines-heading ((t (:background ,lavender :foreground ,text :extend t))))
      (magit-diffstat-added ((t (:foreground ,green))))
      (magit-diffstat-removed ((t (:foreground ,red))))
      (magit-hash ((t (:foreground ,blue))))
