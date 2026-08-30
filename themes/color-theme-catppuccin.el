@@ -553,6 +553,10 @@ names to which it refers are bound."
      (pr-review-in-diff-pending-end-face
       ((t (:background ,mantle :height 0.5
            :overline ,surface2 :extend t))))
+     (pr-review-title-face
+      ((t
+        ,(append `(:foreground ,blue :overline nil :inherit nil :extend t)
+                 (if exordium-theme-use-big-font `(:height ,exordium-height-plus-4) nil)))))
 
      ;; ;; Magit
      (magit-branch-local ((t (:foreground ,teal))))
